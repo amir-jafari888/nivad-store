@@ -38,6 +38,8 @@ $add('Address deletion asks for confirmation', str_contains($a, 'window.confirm(
 $add('Order list/detail calls present', str_contains($a, 'request("/orders")') && str_contains($a, 'request(`/orders/${encodeURIComponent(id)}`)'));
 $add('Return list/detail routes are present', str_contains($api, "'/returns'") && str_contains($a, 'request("/returns")') && str_contains($a, 'request(`/returns/${encodeURIComponent(id)}`)'));
 $add('Return details consume items and history', str_contains($a, 'data.items') && str_contains($a, 'data.history'));
+$add('Return creation form matches controller fields', str_contains($read('pages/account/returns/index.php'), 'name="orderId"') && str_contains($read('pages/account/returns/index.php'), 'name="orderItemId"') && str_contains($a, 'items: [{ orderItemId, quantity }]') && str_contains($a, 'request("/returns"'));
+$add('Controller-only form fields use URL-encoded body', str_contains($c, 'application/x-www-form-urlencoded;charset=UTF-8') && str_contains($c, 'options.body.set("csrf_token", token)'));
 $add('Review form has labels and native validation', str_contains($r, '<label>') && !str_contains($r, 'novalidate'));
 $add('Review list/store API contracts preserved', str_contains($c, '/reviews/mine') && str_contains($c, '/reviews') && str_contains($api, '/reviews/mine'));
 $add('Notification read/read-all routes preserved', str_contains($c, '/notifications/read-all') && str_contains($api, "'/notifications/read-all'"));
