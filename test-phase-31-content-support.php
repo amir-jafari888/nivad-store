@@ -34,6 +34,8 @@ $header=$read('partials/header.php');
 $add('Buying guide feature links target real article anchors', str_contains($guide, 'buying-guide.php#charger') && str_contains($guide, 'buying-guide.php#usb-c-thunderbolt') && str_contains($guide, 'buying-guide.php#hdmi'));
 $add('View-all buying guide link targets article page', str_contains($guide, 'buying-guide.php') && !str_contains($guide, 'href="#"') && !str_contains($guide, "href='#'"));
 $add('Buying guide has no placeholder hash links', !str_contains($guide, 'href="#"') && !str_contains($guide, "href='#'"));
+$article=$read('pages/content/buying-guide.php');
+$add('Homepage guide anchors exist in the standalone article', str_contains($article, 'id="charger"') && str_contains($article, 'id="usb-c-thunderbolt"') && str_contains($article, 'id="hdmi"'));
 $add('Footer has no placeholder hash links', !str_contains($footer, 'href="#"') && !str_contains($footer, "href='#'"));
 $add('Footer links content destinations', str_contains($footer, '/pages/content/faq.php') && str_contains($footer, '/pages/content/contact.php') && str_contains($footer, '/pages/content/about.php'));
 $add('All CSS breakpoints import content-specific styles', str_contains($mobile, 'content-mobile.css') && str_contains($tablet, 'content-tablet.css') && str_contains($desktop, 'content-desktop.css'));
