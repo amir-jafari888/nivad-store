@@ -25,3 +25,6 @@ jobs:
           php -l pages/auth/forgot-password.php
           php -l pages/auth/reset-password.php
           php -l pages/auth/verify-email.php
+          php -l test-phase-29-authentication.php
+      - name: Run 70-contract static regression
+        run: php test-phase-29-authentication.php

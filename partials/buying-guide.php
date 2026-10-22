@@ -24,7 +24,7 @@
                       </svg>
                   </a>
 
-                  <a href="<?= e(url('/pages/content/buying-guide.php#charger')) ?>" class="guide-item">
+                  <a href="<?= e(url('/pages/content/buying-guide.php#usb-c-thunderbolt')) ?>" class="guide-item">
                       <span class="guide-number">02</span>
 
                       <div class="guide-content">
@@ -39,7 +39,7 @@
                       </svg>
                   </a>
 
-                  <a href="<?= e(url('/pages/content/buying-guide.php#charger')) ?>" class="guide-item">
+                  <a href="<?= e(url('/pages/content/buying-guide.php#hdmi')) ?>" class="guide-item">
                       <span class="guide-number">03</span>
 
                       <div class="guide-content">
