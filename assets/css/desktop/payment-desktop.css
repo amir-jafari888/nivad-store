@@ -25,3 +25,46 @@
 .payment-result__message {
   max-width: 48rem;
 }
+
+.payment-result__state {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-circle);
+  background: var(--color-surface);
+  display: grid;
+  place-items: center;
+}
+
+.payment-result__state span {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-circle);
+  background: var(--color-text-muted);
+}
+
+[data-payment-state="success"] .payment-result__state {
+  border-color: var(--color-success);
+}
+
+[data-payment-state="success"] .payment-result__state span {
+  background: var(--color-success);
+}
+
+[data-payment-state="failed"] .payment-result__state,
+[data-payment-state="cancelled"] .payment-result__state,
+[data-payment-state="timeout"] .payment-result__state {
+  border-color: var(--color-error);
+}
+
+[data-payment-state="failed"] .payment-result__state span,
+[data-payment-state="cancelled"] .payment-result__state span,
+[data-payment-state="timeout"] .payment-result__state span {
+  background: var(--color-error);
+}
+
+[data-payment-state="processing"] .payment-result__state {
+  border-color: var(--color-primary);
+}
+
+[data-payment-state="processing"] .payment-result__state span {
+  background: var(--color-primary);
+}

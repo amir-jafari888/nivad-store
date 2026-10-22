@@ -139,6 +139,12 @@ final class PaymentService
             );
         }
 
+        if ($userId === null || $userId <= 0) {
+            throw new RuntimeException(
+                'Authenticated order owner is required.'
+            );
+        }
+
         $gateway = trim($gateway);
 
         if ($gateway === '') {
@@ -147,45 +153,12 @@ final class PaymentService
             );
         }
 
-        $currency = strtoupper(
-            trim($currency)
-        );
-
-        if (
-            $currency === '' ||
-            !preg_match(
-                '/^[A-Z]{3}$/',
-                $currency
-            )
-        ) {
-            throw new InvalidArgumentException(
-                'Invalid payment currency.'
-            );
-        }
-
-        $amount = trim($amount);
-
-        if (
-            $amount === '' ||
-            !preg_match(
-                '/^\d+(?:\.\d{1,4})?$/',
-                $amount
-            ) ||
-            (float)$amount <= 0
-        ) {
-            throw new InvalidArgumentException(
-                'Invalid payment amount.'
-            );
-        }
-
         $this->pdo->beginTransaction();
 
         try {
             $order =
                 $this->orderRepository
-                ->findByIdForUpdate(
-                    $orderId
-                );
+                ->findByIdForUpdate($orderId);
 
             if ($order === null) {
                 throw new RuntimeException(
@@ -193,17 +166,62 @@ final class PaymentService
                 );
             }
 
+            if ($order->userId !== $userId) {
+                throw new RuntimeException(
+                    'Order does not belong to current user.'
+                );
+            }
+
+            $existingPayment =
+                $this->paymentRepository
+                ->findSuccessfulByOrder($orderId);
+
+            if ($existingPayment !== null) {
+                throw new RuntimeException(
+                    'Order has already been paid.'
+                );
+            }
+
+            $amount = trim($order->totalAmount);
+
+            $currency = strtoupper(
+                trim($order->currency)
+            );
+
+            if (
+                $amount === '' ||
+                !preg_match(
+                    '/^\d+(?:\.\d{1,4})?$/',
+                    $amount
+                ) ||
+                (float)$amount <= 0
+            ) {
+                throw new RuntimeException(
+                    'Order has an invalid payment amount.'
+                );
+            }
+
+            if (
+                !preg_match(
+                    '/^[A-Z]{3}$/',
+                    $currency
+                )
+            ) {
+                throw new RuntimeException(
+                    'Order has an invalid payment currency.'
+                );
+            }
+
             $latest =
                 $this->attemptRepository
-                ->findLatestByOrder(
-                    $orderId
-                );
+                ->findLatestByOrder($orderId);
 
             if (
                 $latest !== null &&
-                (
-                    $latest->status === 'initiated' ||
-                    $latest->status === 'pending'
+                in_array(
+                    $latest->status,
+                    ['initiated', 'pending'],
+                    true
                 )
             ) {
                 throw new RuntimeException(

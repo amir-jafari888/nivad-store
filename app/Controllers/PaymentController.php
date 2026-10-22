@@ -29,13 +29,11 @@ final class PaymentController extends Controller
             );
         }
 
-        $service =
-            new PaymentService();
+        $service = new PaymentService();
 
-        $attempt =
-            $service->findAttemptById(
-                $attemptId
-            );
+        $attempt = $service->findAttemptById(
+            $attemptId
+        );
 
         if ($attempt === null) {
             $this->error(
@@ -50,6 +48,26 @@ final class PaymentController extends Controller
         ) {
             $this->error(
                 'دسترسی به این تلاش پرداخت مجاز نیست.',
+                403
+            );
+        }
+
+        $orderRepository = new OrderRepository();
+
+        $order = $orderRepository->findById(
+            $attempt->orderId
+        );
+
+        if ($order === null) {
+            $this->error(
+                'سفارش مربوط به این پرداخت پیدا نشد.',
+                404
+            );
+        }
+
+        if ($order->userId !== $userId) {
+            $this->error(
+                'دسترسی به سفارش این پرداخت مجاز نیست.',
                 403
             );
         }
@@ -91,6 +109,42 @@ final class PaymentController extends Controller
             $this->error(
                 'شناسه سفارش نامعتبر است.',
                 422
+            );
+        }
+
+        $orderRepository = new OrderRepository();
+
+        $order = $orderRepository->findById(
+            $orderId
+        );
+
+        if (
+            $order === null ||
+            $order->userId !== $userId
+        ) {
+            $this->error(
+                'دسترسی به این سفارش مجاز نیست.',
+                403
+            );
+        }
+
+        $orderRepository = new OrderRepository();
+
+        $order = $orderRepository->findById(
+            $orderId
+        );
+
+        if ($order === null) {
+            $this->error(
+                'سفارش موردنظر پیدا نشد.',
+                404
+            );
+        }
+
+        if ($order->userId !== $userId) {
+            $this->error(
+                'دسترسی به این سفارش مجاز نیست.',
+                403
             );
         }
 
@@ -191,64 +245,10 @@ final class PaymentController extends Controller
     public function complete(
         array $parameters = []
     ): never {
-        $userId =
-            $this->currentUserId();
-
-        $attemptId =
-            (int)($parameters['id'] ?? 0);
-
-        $this->ownedAttempt(
-            $attemptId,
-            $userId
+        $this->error(
+            'تکمیل پرداخت تا زمان پیکربندی تأیید معتبر درگاه غیرفعال است.',
+            503
         );
-
-        $data =
-            Request::isJson()
-            ? Request::json()
-            : $_POST;
-
-        $transactionId =
-            isset($data['transactionId'])
-            ? trim((string)$data['transactionId'])
-            : '';
-
-        $expectedStatus =
-            isset($data['expectedCurrentStatus'])
-            ? trim(
-                (string)$data['expectedCurrentStatus']
-            )
-            : 'pending';
-
-        try {
-            $service =
-                new PaymentService();
-
-            $attempt =
-                $service->completeAttempt(
-                    $attemptId,
-                    $transactionId,
-                    $expectedStatus
-                );
-
-            $this->success(
-                $attempt,
-                'پرداخت با موفقیت تکمیل شد.'
-            );
-        } catch (
-            InvalidArgumentException $exception
-        ) {
-            $this->error(
-                $exception->getMessage(),
-                422
-            );
-        } catch (
-            RuntimeException $exception
-        ) {
-            $this->error(
-                $exception->getMessage(),
-                409
-            );
-        }
     }
 
     public function fail(

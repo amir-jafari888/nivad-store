@@ -79,91 +79,111 @@ const payment = () => {
     message,
     currentAttempt = null,
   ) => {
-    if (!wrapper) return;
+    const target = success || failed;
 
-    wrapper.dataset.paymentState = state;
-    wrapper.setAttribute("aria-busy", "false");
+    if (!target) return;
 
-    const retryable = ["failed", "cancelled", "expired"].includes(state);
+    const normalizedState =
+      {
+        initiated: "processing",
+        pending: "processing",
+        expired: "timeout",
+      }[state] || state;
 
-    const recovery = state === "error";
+    target.dataset.paymentState = normalizedState;
+    target.setAttribute("aria-busy", "false");
 
-    wrapper.innerHTML = `
-      <div class="payment-result" data-payment-result>
-        <span
-          class="payment-result__state"
-          aria-hidden="true">
-        </span>
+    const retryable = ["failed", "cancelled", "timeout"].includes(
+      normalizedState,
+    );
 
-        <h1>
-          ${escape(title)}
-        </h1>
+    const recoverable = normalizedState === "error";
 
-        <p>
-          ${escape(message)}
-        </p>
+    target.innerHTML = `
+    <div class="payment-result" data-payment-result>
+      <span
+        class="payment-result__state"
+        aria-hidden="true">
+        <span></span>
+      </span>
 
+      <p class="payment-result__eyebrow">
+        وضعیت پرداخت
+      </p>
+
+      <h1 class="payment-result__title">
+        ${escape(title)}
+      </h1>
+
+      <p class="payment-result__message">
+        ${escape(message)}
+      </p>
+
+      ${
+        currentAttempt?.id
+          ? `
+            <p class="payment-result__order">
+              شناسه تلاش پرداخت:
+              <strong>${escape(currentAttempt.id)}</strong>
+            </p>
+          `
+          : ""
+      }
+
+      ${
+        orderId
+          ? `
+            <p class="payment-result__order">
+              شماره سفارش:
+              <strong>${escape(orderId)}</strong>
+            </p>
+          `
+          : ""
+      }
+
+      <div class="payment-result__actions">
         ${
-          currentAttempt?.id
+          retryable
             ? `
-              <p>
-                شناسه تلاش پرداخت:
-                ${escape(currentAttempt.id)}
-              </p>
+              <button
+                type="button"
+                class="payment-result__action"
+                data-payment-retry>
+                تلاش دوباره
+              </button>
             `
             : ""
         }
 
         ${
-          orderId
+          recoverable
             ? `
-              <p>
-                شماره سفارش:
-                ${escape(orderId)}
-              </p>
+              <button
+                type="button"
+                class="payment-result__action"
+                data-payment-recover>
+                بررسی دوباره وضعیت
+              </button>
             `
             : ""
         }
 
-        <div class="payment-result__actions">
-          ${
-            retryable
-              ? `
-                <button
-                  type="button"
-                  data-payment-retry>
-                  تلاش دوباره
-                </button>
-              `
-              : ""
-          }
-
-          ${
-            recovery
-              ? `
-                <button
-                  type="button"
-                  data-payment-recover>
-                  بازیابی وضعیت پرداخت
-                </button>
-              `
-              : ""
-          }
-
-          <a href="${escape(`${baseUrl}/account/orders`)}">
-            مشاهده سفارش‌ها
-          </a>
-        </div>
+        <a
+          class="payment-result__action"
+          href="${escape(`${baseUrl}/?page=account/orders/index`)}">
+          مشاهده سفارش‌ها
+        </a>
       </div>
-    `;
+    </div>
+  `;
 
-    wrapper
+    target
       .querySelector("[data-payment-retry]")
       ?.addEventListener("click", retry);
 
-    wrapper
+    target
       .querySelector("[data-payment-recover]")
-      ?.addEventListener("click", load);
+      ?.addEventListener("click", () => load(true));
   };
 
   const setLoading = (wrapper, message = "در حال بررسی وضعیت پرداخت...") => {

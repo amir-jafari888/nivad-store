@@ -480,7 +480,6 @@ const customerCommerce = () => {
   initDashboard();
   initNotifications();
   initReviews();
-  initCheckout();
 };
 
 export default customerCommerce;
