@@ -1,6 +1,6 @@
 ﻿<?php
 
-$pageTitle = 'ط¬ط²ط¦غŒط§طھ ط³ظپط§ط±ط´ | ظ†غŒظˆط§ط¯';
+$pageTitle = 'جزئیات سفارش | ظ†غŒظˆط§ط¯';
 
 
 include_once __DIR__ . '/../../../partials/header.php';
@@ -18,7 +18,7 @@ include_once __DIR__ . '/../../../partials/header.php';
             ط­ط³ط§ط¨ ع©ط§ط±ط¨ط±غŒ
         </span>
 
-        <h1>ط¬ط²ط¦غŒط§طھ ط³ظپط§ط±ط´</h1>
+        <h1>جزئیات سفارش</h1>
 
         <p data-customer-state>
             ط¯ط± ط­ط§ظ„ ط¯ط±غŒط§ظپطھ ط§ط·ظ„ط§ط¹ط§طھ...

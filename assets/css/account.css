@@ -18,7 +18,7 @@
 .account-form {
   padding: 24px;
   border-radius: 16px;
-  background: #fff;
+  background: var(--color-surface);
 }
 
 .account-form__grid {
@@ -42,7 +42,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
 }
 
@@ -51,9 +51,9 @@
 .account-return {
   padding: 20px;
   margin-bottom: 16px;
-  border: 1px solid #eee;
+  border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: #fff;
+  background: var(--color-surface);
 }
 
 @media (max-width: 600px) {
@@ -65,3 +65,52 @@
     grid-column: auto;
   }
 }
+
+
+/* Phase 30 — Account experience tokens */
+.account-page {
+  --account-panel-background: var(--color-surface);
+  --account-panel-border: var(--color-border);
+  --account-panel-radius: var(--radius-lg);
+  --account-panel-padding: var(--spacing-6);
+  --account-panel-shadow: var(--shadow-sm);
+  --account-control-height: var(--control-height-md, 48px);
+  --account-gap: var(--spacing-5);
+  color: var(--color-text);
+}
+.account-page__header { display: grid; gap: var(--spacing-2); margin-block-end: var(--spacing-6); }
+.account-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--account-gap); margin-block-end: var(--spacing-6); }
+.account-page .customer-shop__panel, .account-address, .account-order, .account-return, .account-notification, .account-review, .account-session {
+  min-width: 0; padding: var(--account-panel-padding); border: 1px solid var(--account-panel-border);
+  border-radius: var(--account-panel-radius); background: var(--account-panel-background); box-shadow: var(--account-panel-shadow); color: var(--color-text);
+}
+.account-addresses, [data-account-orders], [data-account-returns], [data-account-return-detail], [data-account-order-detail], [data-account-reviews], [data-notifications-list], [data-account-sessions] { display: grid; gap: var(--account-gap); }
+.account-form { display: grid; gap: var(--spacing-4); }
+.account-form__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-4); }
+.account-form label, .account-password-form label { display: grid; gap: var(--spacing-2); min-width: 0; }
+.account-form input, .account-form textarea, .account-password-form input {
+  width: 100%; min-width: 0; min-height: var(--account-control-height); box-sizing: border-box; padding: var(--spacing-3);
+  border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text);
+}
+.account-form input:focus-visible, .account-form textarea:focus-visible, .account-password-form input:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.account-form [aria-invalid="true"] { border-color: var(--color-error); }
+.account-form__full { grid-column: 1 / -1; }
+.account-form__checkbox { display: flex !important; align-items: center; gap: var(--spacing-2); }
+.account-form__checkbox input { width: 1.25rem; min-height: 1.25rem; }
+.account-form button, .account-password-form button, .account-navigation a, .account-address__actions button, .account-session button, [data-notifications-read-all], [data-notification-read] {
+  min-height: var(--account-control-height); padding: var(--spacing-3) var(--spacing-4); border-radius: var(--radius-md);
+  background: var(--color-primary); color: var(--color-on-primary, #fff); transition: opacity var(--transition-fast);
+}
+.account-form button:disabled, .account-password-form button:disabled, .account-session button:disabled { opacity: .6; cursor: wait; }
+.account-navigation { display: flex; flex-wrap: wrap; gap: var(--spacing-3); margin-block: var(--spacing-6); }
+.account-navigation a { display: inline-flex; align-items: center; justify-content: center; background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); }
+.account-address__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-2); margin-block-start: var(--spacing-3); }
+.account-status { color: var(--color-success); }
+.account-section-head { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-4); margin-block-end: var(--spacing-4); }
+.account-password-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-4); }
+.account-session p, .account-address p, .account-order p, .account-return p { overflow-wrap: anywhere; }
+.account-page [aria-busy="true"] { opacity: .75; }
+.account-page [role="alert"] { color: var(--color-error); }
+:root[data-theme="dark"] .account-page .customer-shop__panel, :root[data-theme="dark"] .account-address,
+:root[data-theme="dark"] .account-order, :root[data-theme="dark"] .account-return, :root[data-theme="dark"] .account-notification,
+:root[data-theme="dark"] .account-review, :root[data-theme="dark"] .account-session { background: var(--color-surface); border-color: var(--color-border); color: var(--color-text); }
