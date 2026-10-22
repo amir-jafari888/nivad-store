@@ -10,7 +10,7 @@ include_once __DIR__ . '/../../partials/header.php';
   </header>
   <section class="auth-card" aria-labelledby="auth-reset-title">
     <h2 id="auth-reset-title" class="auth-card__title">رمز عبور جدید</h2>
-    <form class="auth-form" data-auth-reset-form novalidate>
+    <form class="auth-form" data-auth-reset-form>
       <label for="auth-reset-token">توکن بازیابی
         <input id="auth-reset-token" type="text" name="token" autocomplete="off" required>
       </label>
