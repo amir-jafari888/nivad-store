@@ -12,6 +12,6 @@ $baseUrl = $baseUrl ?? '';
 
         <div
             class="account-returns"
-            data-account-returns></div>
+            data-account-returns aria-live="polite">در حال دریافت درخواست‌ها...</div>
     </div>
 </section>
