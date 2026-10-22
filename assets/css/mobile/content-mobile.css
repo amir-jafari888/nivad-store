@@ -1,0 +1,9 @@
+.content-page {
+  width: min(calc(100% - (var(--spacing-4) * 2)), 960px);
+  padding-block: var(--spacing-7) var(--spacing-8);
+}
+.content-page__head { margin-bottom: var(--spacing-6); }
+.content-page__section { gap: var(--spacing-3); padding: var(--spacing-4); margin-top: var(--spacing-4); }
+.content-page__section h2 { font-size: var(--font-size-lg); }
+.content-page__faq details { padding: var(--spacing-4); }
+.content-page__head h1 { overflow-wrap: anywhere; }

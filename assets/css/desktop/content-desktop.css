@@ -1,0 +1,6 @@
+.content-page {
+  width: min(calc(100% - (var(--spacing-10) * 2)), 960px);
+  padding-block: var(--spacing-12);
+}
+.content-page__section { padding: var(--spacing-7); }
+.content-page__head { margin-bottom: var(--spacing-9); }

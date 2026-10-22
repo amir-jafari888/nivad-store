@@ -61,25 +61,25 @@ $footerTermsUrl = url(
 
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="<?= e(url('/products')) ?>">
                                 گوشی موبایل
                             </a>
                         </li>
 
                         <li>
-                            <a href="#">
+                            <a href="<?= e(url('/search')) ?>">
                                 شارژ و کابل
                             </a>
                         </li>
 
                         <li>
-                            <a href="#">
+                            <a href="<?= e(url('/search')) ?>">
                                 قاب و محافظ
                             </a>
                         </li>
 
                         <li>
-                            <a href="#">
+                            <a href="<?= e(url('/search')) ?>">
                                 پاوربانک
                             </a>
                         </li>

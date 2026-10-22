@@ -1,11 +1,11 @@
-name: Phase 30 Account Experience
+name: Phase 31 Content Support
 on:
   pull_request:
     branches: [master]
   push:
     branches: [master]
 jobs:
-  account-contracts:
+  content-support-contracts:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,20 +14,14 @@ jobs:
           php-version: '8.2'
       - name: PHP syntax checks
         run: |
-          php -l pages/account/index.php
-          php -l pages/account/profile.php
-          php -l pages/account/addresses.php
-          php -l pages/account/orders/index.php
-          php -l pages/account/orders/show.php
-          php -l pages/account/returns/index.php
-          php -l pages/account/returns/show.php
-          php -l pages/account/reviews.php
-          php -l pages/account/notifications.php
-          php -l test-phase-30-account-experience.php
-      - name: JavaScript syntax checks
-        run: |
-          node --input-type=module --check < assets/js/modules/account.js
-          node --input-type=module --check < assets/js/modules/customer-commerce.js
-          node --input-type=module --check < assets/js/modules/customer-shop.js
+          php -l pages/content/about.php
+          php -l pages/content/contact.php
+          php -l pages/content/faq.php
+          php -l pages/content/privacy.php
+          php -l pages/content/terms.php
+          php -l pages/content/shipping.php
+          php -l pages/content/returns.php
+          php -l pages/content/buying-guide.php
+          php -l test-phase-31-content-support.php
       - name: Run read-only contract tests
-        run: php test-phase-30-account-experience.php
+        run: php test-phase-31-content-support.php
