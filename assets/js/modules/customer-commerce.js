@@ -32,17 +32,17 @@ const customerCommerce = () => {
       }
     }
 
-    const response = await fetch(
-      `${baseUrl}/api/index.php?path=${encodeURIComponent(path)}`,
-      {
-        ...options,
-        method,
-        headers,
-        credentials: "same-origin",
-      },
-    );
-
-    return response.json();
+    let response;
+    try {
+      response = await fetch(`${baseUrl}/api/index.php?path=${encodeURIComponent(path)}`, { ...options, method, headers, credentials: "same-origin" });
+    } catch { throw new Error("ارتباط با سرور برقرار نشد. اتصال را بررسی کنید."); }
+    const payload = await response.json().catch(() => null);
+    if (!payload || typeof payload !== "object") throw new Error("پاسخ سرور قابل خواندن نیست.");
+    if (!response.ok || payload.success === false) {
+      const error = new Error(payload.message || (response.status === 401 ? "برای ادامه دوباره وارد حساب شوید." : "درخواست انجام نشد."));
+      error.status = response.status; error.payload = payload; throw error;
+    }
+    return payload;
   };
 
   const escape = (value) =>
@@ -54,98 +54,71 @@ const customerCommerce = () => {
       .replaceAll("'", "&#039;");
 
   const initDashboard = () => {
-    const wrapper = document.querySelector("[data-account-dashboard]");
-
+    const wrapper = document.querySelector("[data-account-page]");
     if (!wrapper) return;
-
-    const load = async () => {
-      const [security, verification, sessions, notifications, orders] =
-        await Promise.all([
-          request("/account/security"),
-          request("/account/verification-status"),
-          request("/account/sessions"),
-          request("/notifications/count"),
-          request("/orders"),
-        ]);
-
-      const sessionsData = sessions?.data?.sessions || [];
-
-      const ordersData = orders?.data?.orders || [];
-
-      wrapper.innerHTML = `
-        <section class="account-summary">
-          <div>
-            <strong>امنیت حساب</strong>
-            <span>
-              ${security?.data ? "فعال" : "نامشخص"}
-            </span>
-          </div>
-
-          <div>
-            <strong>تأیید حساب</strong>
-            <span>
-              ${verification?.data ? "بررسی شد" : "نامشخص"}
-            </span>
-          </div>
-
-          <div>
-            <strong>جلسات فعال</strong>
-            <span>
-              ${sessionsData.length}
-            </span>
-          </div>
-
-          <div>
-            <strong>اعلان خوانده‌نشده</strong>
-            <span>
-              ${notifications?.data?.count || 0}
-            </span>
-          </div>
-
-          <div>
-            <strong>سفارش‌ها</strong>
-            <span>
-              ${ordersData.length}
-            </span>
-          </div>
-        </section>
-
-        <nav class="account-navigation">
-          <a href="?page=account/profile">
-            پروفایل
-          </a>
-
-          <a href="?page=account/addresses">
-            آدرس‌ها
-          </a>
-
-          <a href="?page=account/orders/index">
-            سفارش‌ها
-          </a>
-
-          <a href="?page=account/returns/index">
-            مرجوعی‌ها
-          </a>
-
-          <a href="?page=account/reviews">
-            دیدگاه‌ها
-          </a>
-
-          <a href="?page=account/notifications">
-            اعلان‌ها
-          </a>
-
-          <a href="${baseUrl}/wishlist">
-              علاقه‌مندی‌ها
-          </a>  
-
-          <a href="${baseUrl}/cart">
-              سبد خرید
-          </a>
-        </nav>
-      `;
+    const state = wrapper.querySelector("[data-account-state]");
+    const security = wrapper.querySelector("[data-account-security]");
+    const verification = wrapper.querySelector("[data-account-verification]");
+    const sessionsNode = wrapper.querySelector("[data-account-sessions]");
+    const passwordForm = wrapper.querySelector("[data-password-form]");
+    const feedback = wrapper.querySelector("[data-account-message]");
+    const show = (node, text, error = false) => {
+      if (!node) return;
+      node.textContent = text; node.setAttribute("role", error ? "alert" : "status"); node.setAttribute("aria-live", "polite");
     };
-
+    const load = async () => {
+      show(state, "در حال دریافت اطلاعات حساب...");
+      try {
+        const [securityResult, verificationResult, sessionsResult, notificationsResult, ordersResult] = await Promise.all([
+          request("/account/security"), request("/account/verification-status"), request("/account/sessions"),
+          request("/notifications/count"), request("/orders"),
+        ]);
+        const sessions = Array.isArray(sessionsResult?.data) ? sessionsResult.data : (Array.isArray(sessionsResult?.data?.sessions) ? sessionsResult.data.sessions : []);
+        const orders = Array.isArray(ordersResult?.data?.orders) ? ordersResult.data.orders : [];
+        if (security) security.innerHTML = `<h2>امنیت حساب</h2><p>${escape(securityResult?.message || "اطلاعات امنیت حساب دریافت شد.")}</p>`;
+        if (verification) {
+          const verified = Boolean(verificationResult?.data?.email_verified ?? verificationResult?.data?.verified ?? verificationResult?.data?.is_verified);
+          verification.innerHTML = `<h2>تأیید حساب</h2><p>${verified ? "ایمیل تأیید شده است." : "ایمیل هنوز تأیید نشده یا وضعیت آن نامشخص است."}</p>`;
+        }
+        if (sessionsNode) sessionsNode.innerHTML = sessions.length ? sessions.map((item) => `<article class="account-session"><strong>${escape(item.user_agent || "دستگاه نامشخص")}</strong><p>IP: <span dir="ltr">${escape(item.ip_address || "نامشخص")}</span></p><p>آخرین فعالیت: ${escape(item.updated_at || "نامشخص")}</p><button type="button" data-revoke-session="${escape(item.id)}">بستن این نشست</button></article>`).join("") : "<p>نشست فعال دیگری وجود ندارد.</p>";
+        wrapper.querySelectorAll("[data-account-metric]").forEach((node) => {
+          if (node.dataset.accountMetric === "notifications") node.textContent = String(notificationsResult?.data?.count ?? 0);
+          if (node.dataset.accountMetric === "orders") node.textContent = String(orders.length);
+        });
+        show(state, "اطلاعات حساب دریافت شد.");
+      } catch (error) {
+        show(state, error.message || "دریافت اطلاعات حساب انجام نشد.", true);
+        [security, verification, sessionsNode].forEach((node) => show(node, error.message || "دریافت اطلاعات ناموفق بود.", true));
+      }
+    };
+    wrapper.addEventListener("click", async (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const revoke = target?.closest("[data-revoke-session]"), others = target?.closest("[data-logout-other-sessions]");
+      const button = revoke || others;
+      if (!button || button.disabled) return;
+      if (!window.confirm(revoke ? "این نشست بسته شود؟" : "تمام نشست‌های دیگر بسته شوند؟")) return;
+      button.disabled = true;
+      try {
+        const result = revoke ? await request("/account/sessions/revoke", { method: "POST", body: JSON.stringify({ session_id: Number(revoke.dataset.revokeSession) }) }) : await request("/logout-other-sessions", { method: "POST", body: JSON.stringify({}) });
+        show(feedback || state, result?.message || "عملیات نشست انجام شد."); await load();
+      } catch (error) { show(feedback || state, error.message, true); }
+      finally { button.disabled = false; }
+    });
+    passwordForm?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!passwordForm.reportValidity() || passwordForm.dataset.busy === "true") return;
+      if (passwordForm.elements.new_password.value !== passwordForm.elements.new_password_confirmation.value) {
+        show(feedback, "تکرار رمز عبور جدید یکسان نیست.", true); passwordForm.elements.new_password_confirmation.focus(); return;
+      }
+      passwordForm.dataset.busy = "true";
+      const submit = passwordForm.querySelector('button[type="submit"]');
+      if (submit) { submit.disabled = true; submit.setAttribute("aria-busy", "true"); }
+      try {
+        const result = await request("/account/password", { method: "POST", body: JSON.stringify({ current_password: passwordForm.elements.current_password.value, new_password: passwordForm.elements.new_password.value, new_password_confirmation: passwordForm.elements.new_password_confirmation.value }) });
+        passwordForm.reset(); show(feedback, result?.message || "رمز عبور تغییر کرد.");
+      } catch (error) { show(feedback, error.message, true); }
+      finally { passwordForm.dataset.busy = "false"; if (submit) { submit.disabled = false; submit.removeAttribute("aria-busy"); } }
+    });
     load();
   };
 
