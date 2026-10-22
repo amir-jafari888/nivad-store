@@ -6,6 +6,7 @@ import {
   getProductPrice,
   rankFinderProducts,
 } from "./finder-engine.js";
+import { clearCommerceContext, readCommerceContext, updateCommerceContext } from "./commerce-context.js";
 
 const finder = () => {
   const page = document.querySelector("[data-finder-page]");
@@ -31,6 +32,17 @@ const finder = () => {
   }
 
   const apiBase = page.dataset.apiBase || "/api/index.php";
+  const savedFinder = readCommerceContext().finder;
+  const intentInput = form.querySelector('[name="intent"]');
+  const budgetInput = form.querySelector('[name="budget"]');
+
+  if (intentInput && Object.values(FINDER_INTENTS).includes(savedFinder.intent)) intentInput.value = savedFinder.intent;
+  if (budgetInput && Object.values(FINDER_BUDGETS).includes(savedFinder.budget)) budgetInput.value = savedFinder.budget;
+  page.querySelectorAll("[data-finder-intent]").forEach((item) => {
+    const active = item.dataset.finderIntent === intentInput?.value;
+    item.classList.toggle("is-active", active);
+    item.setAttribute("aria-pressed", String(active));
+  });
 
   let products = [];
   let loading = false;
@@ -224,6 +236,7 @@ const finder = () => {
       }
 
       const request = getFormRequest();
+      updateCommerceContext({ finder: { intent: request.intent || "", budget: request.budget } });
 
       const rankedItems = rankFinderProducts(products, request);
 
@@ -252,6 +265,7 @@ const finder = () => {
 
   const resetForm = () => {
     form.reset();
+    clearCommerceContext("finder");
 
     results.replaceChildren();
 
@@ -295,6 +309,11 @@ const finder = () => {
         item.setAttribute("aria-pressed", String(active));
       });
     });
+  });
+
+  form.addEventListener("change", () => {
+    const request = getFormRequest();
+    updateCommerceContext({ finder: { intent: request.intent || "", budget: request.budget } });
   });
 
   form.querySelector('[name="budget"]')?.addEventListener("change", () => {

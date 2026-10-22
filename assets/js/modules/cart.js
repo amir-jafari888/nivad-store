@@ -286,21 +286,10 @@ const cart = () => {
         const serverItem = serverByVariant.get(variantId);
 
         if (serverItem) {
-          const serverPrice = Number(
-            serverItem?.variant?.price ??
-              serverItem?.unit_price ??
-              localItem.price,
-          );
-
-          await fetch(`/cart-items/${item.id}`, {
+          await apiRequest(`/cart-items/${serverItem.id}`, {
             method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRF-Token": csrfToken,
-            },
             body: JSON.stringify({
               quantity: Number(localItem.quantity),
-              unit_price: Number(localItem.price),
             }),
           });
 

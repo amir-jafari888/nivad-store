@@ -56,6 +56,7 @@ $add('Legacy phase test scripts were removed', !is_file($root . '/test-phase-29-
 /* Phase 32 commerce-context contracts: static/read-only checks only. */
 $context = $read('assets/js/modules/commerce-context.js');
 $searchJs = $read('assets/js/modules/search.js');
+$finderJs = $read('assets/js/modules/finder.js');
 $productJs = $read('assets/js/modules/product-detail.js');
 $setupJs = $read('assets/js/modules/setup-builder.js');
 $cartJs = $read('assets/js/modules/cart.js');
@@ -76,7 +77,15 @@ $add('Context excludes prices and personal-data fields', !preg_match('/(?:unitPr
 $add('Context can clear all or an allowlisted section', str_contains($context, 'export const clearCommerceContext') && str_contains($context, 'includes(section)'));
 $add('Search imports shared context helper', str_contains($searchJs, 'from "./commerce-context.js"'));
 $add('Search records submitted query before navigation', str_contains($searchJs, 'query: value') && str_contains($searchJs, 'updateCommerceContext'));
-$add('Search records local path and query only', str_contains($searchJs, 'window.location.pathname') && str_contains($searchJs, 'window.location.search'));
+$add('Search return path points to the actual result URL', str_contains($searchJs, 'returnPath: `${baseUrl}/search?q=${encodeURIComponent(value)}`'));
+$add('Finder uses shared commerce context', str_contains($finderJs, 'from "./commerce-context.js"'));
+$add('Finder restores only allowlisted intent and budget', str_contains($finderJs, 'Object.values(FINDER_INTENTS).includes(savedFinder.intent)') && str_contains($finderJs, 'Object.values(FINDER_BUDGETS).includes(savedFinder.budget)'));
+$add('Finder persists choices and clears them on reset', str_contains($finderJs, 'updateCommerceContext({ finder:') && str_contains($finderJs, 'clearCommerceContext("finder")'));
+$add('Setup Builder restores only a device returned by live API', str_contains($setupJs, 'state.devices.find((item) => Number(item.id) === Number(initialSetupContext.deviceId))'));
+$add('Setup Builder revalidates selected product and variant IDs against live candidates', str_contains($setupJs, 'state.candidates.find((item) => Number(item.id) === Number(productId) && variantId > 0 && Number(item.variantId) === variantId && item.price !== null)'));
+$add('Setup Builder uses deployment base URL and is safe on unrelated pages', str_contains($setupJs, 'window.NIVAD_BASE_URL || ""') && str_contains($setupJs, 'if (!root) {\n  return;'));
+$add('Setup Builder exports an initializer compatible with main.js', str_contains($setupJs, 'const setupBuilder = () => {') && str_contains($setupJs, 'export default setupBuilder;'));
+$add('Cart sync updates server item through CSRF-aware API helper without undefined variables', str_contains($cartJs, 'apiRequest(`/cart-items/${serverItem.id}`') && !str_contains($cartJs, 'csrfToken') && !str_contains($cartJs, '`/cart-items/${item.id}`'));
 $add('Product Detail imports shared context helper', str_contains($productJs, 'from "./commerce-context.js"'));
 $add('Product and selected variant IDs are recorded', str_contains($productJs, 'id: Number(product.id || productId)') && str_contains($productJs, 'variantId: Number(selectedVariant?.id || 0)'));
 $add('Compatibility stores selected device ID, not a result assertion', str_contains($productJs, 'compatibility: { deviceId }'));

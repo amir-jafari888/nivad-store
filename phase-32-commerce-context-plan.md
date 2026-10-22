@@ -48,14 +48,16 @@ Add a narrow, versioned, tab-scoped context for non-sensitive storefront intent 
 - Add assets/js/modules/commerce-context.js with versioned schema, sessionStorage, allowlisted sections, safe same-origin path validation, bounded IDs and safe defaults.
 - Record submitted search query and local return path.
 - Record loaded product/variant identifiers and selected compatibility device ID.
-- Record Setup Builder step/device/needs/product IDs/variant IDs/budget.
+- Record and restore Setup Builder step/device/needs/product IDs/variant IDs/budget, validating restoration against fresh API responses.
 - Extend the existing canonical read-only PHP test instead of creating another phase test file.
 - Add a Phase 32 GitHub Actions workflow for JavaScript syntax and the canonical PHP contract suite.
 
 ## Remaining blockers
-- Setup Builder state is recorded but not restored; restoration requires live API revalidation first.
-- Finder intent/budget and product-list return restoration are not wired yet.
-- Cart consistency, guest/authenticated merge, Checkout, CSRF, price/stock and browser-history scenarios need XAMPP/browser proof.
+- Setup Builder now restores a saved device only when present in the live device response, then restores only selected product/variant pairs found in the live Setup Products response with a valid price. Runtime refresh/step-flow proof remains pending.
+- Finder intent/budget now restore from allowlisted values, persist on changes/submission, and clear on reset; browser/history proof remains pending.
+- Search returnPath now points to the generated result URL; preservation of filters/sort/page is still pending because the current search submit flow redirects to `/search?q=...` and does not expose a verified filter contract here.
+- Cart sync existing-item update now uses the shared API helper and no longer references undefined `item.id` or `csrfToken`; guest/authenticated merge semantics, Checkout, CSRF, price/stock and browser-history scenarios still need XAMPP/browser proof.
+- Setup Builder API base now honors the existing `window.NIVAD_BASE_URL` deployment base and its module initializer is compatible with the main entry point. Verify under XAMPP.
 - Setup Builder API base is still hard-coded and requires deployment verification.
 - No backend API/schema, payment, price, stock, or authentication behavior is changed.
 - Previously reported login/register GET-query-string issue remains a separate unresolved security regression.

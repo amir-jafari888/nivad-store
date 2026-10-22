@@ -21,6 +21,8 @@ jobs:
           node --check --input-type=module < assets/js/modules/search.js
           node --check --input-type=module < assets/js/modules/product-detail.js
           node --check --input-type=module < assets/js/modules/setup-builder.js
+          node --check --input-type=module < assets/js/modules/finder.js
+          node --check --input-type=module < assets/js/modules/cart.js
       - name: PHP syntax check
         run: php -l test-phase-31-content-support.php
       - name: Run canonical read-only contract suite

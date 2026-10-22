@@ -1,6 +1,8 @@
-import { updateCommerceContext } from "./commerce-context.js";
+import { clearCommerceContext, readCommerceContext, updateCommerceContext } from "./commerce-context.js";
 
-const API_BASE = "/nivad-store-/api/index.php?path=";
+const setupBuilder = () => {
+const API_BASE = `${window.NIVAD_BASE_URL || ""}/api/index.php?path=`;
+const initialSetupContext = readCommerceContext().setup;
 
 const STEPS = Object.freeze([
   "device",
@@ -56,7 +58,7 @@ const state = {
 const root = document.querySelector("#setup-builder");
 
 if (!root) {
-  throw new Error("Setup Builder root not found.");
+  return;
 }
 
 const deviceOptions = root.querySelector("#setup-device-options");
@@ -387,7 +389,7 @@ function toggleNeed(needId) {
   persistSetupContext();
 }
 
-async function selectDevice(device) {
+async function selectDevice(device, { restore = false } = {}) {
   if (!device || state.isLoadingProducts) {
     return;
   }
@@ -422,7 +424,7 @@ async function selectDevice(device) {
   persistSetupContext();
 
   if (changed) {
-    await loadProducts();
+    await loadProducts({ restore });
   }
 }
 
@@ -449,7 +451,13 @@ async function loadDevices() {
 
     renderDevices();
 
-    await selectDevice(state.devices[0]);
+    const savedDevice = state.devices.find((item) => Number(item.id) === Number(initialSetupContext.deviceId));
+    if (initialSetupContext.deviceId && !savedDevice) clearCommerceContext("setup");
+    await selectDevice(savedDevice || state.devices[0], { restore: Boolean(savedDevice) });
+    if (savedDevice) {
+      const savedStep = STEPS.includes(initialSetupContext.step) ? initialSetupContext.step : "device";
+      setStep(canNavigateTo(savedStep) ? savedStep : "device");
+    }
   } catch (error) {
     state.error = error;
 
@@ -497,7 +505,7 @@ function normalizeProduct(product) {
   };
 }
 
-async function loadProducts() {
+async function loadProducts({ restore = false } = {}) {
   if (!state.device?.id) {
     return;
   }
@@ -516,10 +524,25 @@ async function loadProducts() {
     state.candidates = getItems(payload).map(normalizeProduct).filter(Boolean);
 
     state.selectedProducts = [];
+    if (restore) {
+      const savedProductIds = Array.isArray(initialSetupContext.selectedProductIds) ? initialSetupContext.selectedProductIds : [];
+      const savedVariantIds = Array.isArray(initialSetupContext.selectedVariantIds) ? initialSetupContext.selectedVariantIds : [];
+      state.selectedProducts = savedProductIds.map((productId, index) => {
+        const variantId = Number(savedVariantIds[index] || 0);
+        return state.candidates.find((item) => Number(item.id) === Number(productId) && variantId > 0 && Number(item.variantId) === variantId && item.price !== null) || null;
+      }).filter(Boolean);
+      state.needs = Array.isArray(initialSetupContext.needs) ? initialSetupContext.needs.filter((id) => NEEDS.some((need) => need.id === id)) : [];
+      const savedBudget = numberOf(initialSetupContext.budget);
+      state.budget = savedBudget !== null && savedBudget >= 0 ? savedBudget : null;
+      if (budgetInput) budgetInput.value = state.budget === null ? "" : String(state.budget);
+      renderNeeds();
+      renderComposition();
+    }
 
     show(productsChecking, false);
 
     renderProducts();
+    updateNavigation();
   } catch (error) {
     state.error = error;
 
@@ -968,12 +991,6 @@ setStep("device");
 
 loadDevices();
 
-export default {
-  loadDevices,
-  loadProducts,
-  setStep,
-  getState: () => ({
-    ...state,
-    compatibility: new Map(state.compatibility),
-  }),
 };
+
+export default setupBuilder;

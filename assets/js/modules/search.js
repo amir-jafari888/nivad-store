@@ -468,7 +468,7 @@ const search = () => {
 
     saveRecentSearch(value);
 
-    updateCommerceContext({ search: { query: value, returnPath: `${window.location.pathname}${window.location.search}` } });
+    updateCommerceContext({ search: { query: value, returnPath: `${baseUrl}/search?q=${encodeURIComponent(value)}` } });
 
     close();
 

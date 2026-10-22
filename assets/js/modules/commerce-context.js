@@ -41,7 +41,7 @@ const normalize = (value) => {
     result.setup.deviceId = positiveId(value.setup.deviceId);
     result.setup.needs = Array.isArray(value.setup.needs) ? [...new Set(value.setup.needs.filter((item) => SETUP_NEEDS.has(item)))] : [];
     result.setup.selectedProductIds = Array.isArray(value.setup.selectedProductIds) ? [...new Set(value.setup.selectedProductIds.map(positiveId).filter(Boolean))].slice(0, 30) : [];
-    result.setup.selectedVariantIds = Array.isArray(value.setup.selectedVariantIds) ? [...new Set(value.setup.selectedVariantIds.map(positiveId).filter(Boolean))].slice(0, 30) : [];
+    result.setup.selectedVariantIds = Array.isArray(value.setup.selectedVariantIds) ? value.setup.selectedVariantIds.slice(0, 30).map(positiveId) : [];
     const budget = value.setup.budget;
     result.setup.budget = budget === null || budget === "" || budget === undefined ? null : Number.isFinite(Number(budget)) && Number(budget) >= 0 ? Number(budget) : null;
   }
