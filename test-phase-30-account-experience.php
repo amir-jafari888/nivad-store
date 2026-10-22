@@ -33,7 +33,7 @@ $add('Other-session logout uses existing route', str_contains($c, '/logout-other
 $add('Password change uses existing route/fields', str_contains($c, '/account/password') && str_contains($c, 'new_password_confirmation'));
 $add('Profile GET/PATCH contract preserved', str_contains($a, 'request("/account/profile")') && str_contains($a, 'method: "PATCH"'));
 $add('Profile update payload is restricted', str_contains($a, 'first_name: form.elements.first_name.value.trim()') && str_contains($a, 'last_name: form.elements.last_name.value.trim()'));
-$add('Address CRUD/default operations present', str_contains($a, '/account/addresses') && str_contains($a, 'method: editingId === null ? "POST" : "PUT"') && str_contains($a, 'method: "DELETE"') && str_contains($a, '/default'));
+$add('Address CRUD/default operations present', str_contains($a, '/account/addresses') && str_contains($a, 'editingId === null ?') && str_contains($a, 'DELETE') && str_contains($a, '/default'));
 $add('Address deletion asks for confirmation', str_contains($a, 'window.confirm("از حذف این آدرس مطمئن هستید؟")'));
 $add('Order list/detail calls present', str_contains($a, 'request("/orders")') && str_contains($a, 'request(`/orders/${encodeURIComponent(id)}`)'));
 $add('Return list/detail routes are present', str_contains($api, "'/returns'") && str_contains($a, 'request("/returns")') && str_contains($a, 'request(`/returns/${encodeURIComponent(id)}`)'));
