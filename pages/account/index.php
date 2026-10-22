@@ -9,6 +9,10 @@ include_once __DIR__ . '/../../partials/header.php';
     <article class="customer-shop__panel" data-account-security aria-live="polite"><h2>امنیت حساب</h2><p>در حال دریافت اطلاعات...</p></article>
     <article class="customer-shop__panel" data-account-verification aria-live="polite"><h2>تأیید حساب</h2><p>در حال دریافت اطلاعات...</p></article>
   </section>
+  <section class="account-grid account-metrics" aria-label="خلاصه فعالیت">
+    <article class="customer-shop__panel"><h2>اعلان‌های خوانده‌نشده</h2><p><strong data-account-metric="notifications">—</strong></p></article>
+    <article class="customer-shop__panel"><h2>تعداد سفارش‌ها</h2><p><strong data-account-metric="orders">—</strong></p></article>
+  </section>
   <section class="customer-shop__panel account-panel">
     <div class="account-section-head"><div><h2>نشست‌های فعال دیگر</h2><p>نشست‌های دیگر حساب خود را بررسی و مدیریت کنید.</p></div><button type="button" data-logout-other-sessions>بستن نشست‌های دیگر</button></div>
     <div data-account-sessions class="account-sessions" aria-live="polite">در حال دریافت نشست‌ها...</div>
