@@ -1,0 +1,30 @@
+name: Phase 29 Authentication Regression
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [phase-29-authentication]
+
+jobs:
+  authentication-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+          coverage: none
+      - name: Lint authentication pages
+        run: |
+          php -l pages/auth/login.php
+          php -l pages/auth/register.php
+          php -l pages/auth/forgot-password.php
+          php -l pages/auth/reset-password.php
+          php -l pages/auth/verify-email.php
+          php -l test-phase-29-authentication.php
+      - name: Run 70-contract static regression
+        run: php test-phase-29-authentication.php
