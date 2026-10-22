@@ -46,6 +46,8 @@ $add('Notification read/read-all routes preserved', str_contains($c, '/notificat
 $add('Notification/review errors are handled', str_contains($c, 'دریافت اعلان‌ها ناموفق بود') && str_contains($c, 'ثبت دیدگاه ناموفق بود'));
 $add('Duplicate submission guard present', str_contains($a, 'form.dataset.busy === "true"') && str_contains($c, 'passwordForm.dataset.busy === "true"'));
 $add('Dashboard uses accessible live feedback', str_contains($d, 'aria-live="polite"') && str_contains($d, 'role="status"'));
+$add('Dashboard has notification and order metrics', str_contains($d, 'data-account-metric="notifications"') && str_contains($d, 'data-account-metric="orders"'));
+$add('Profile/address validation errors are mapped to fields', str_contains($a, 'const fieldErrors =') && str_contains($a, 'aria-invalid') && str_contains($a, 'aria-describedby'));
 $add('Dashboard links point to actual relative pages', str_contains($d, 'href="orders/index.php"') && str_contains($d, 'href="returns/index.php"'));
 $add('Account CSS uses semantic tokens', str_contains($css, 'var(--color-surface)') && str_contains($css, 'var(--color-border)') && str_contains($css, 'var(--radius-lg)'));
 $add('Account CSS avoids white hardcoded panel background', !preg_match('/background:\\s*#fff(?:fff)?\\b/i', $css));
