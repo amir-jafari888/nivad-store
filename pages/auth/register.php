@@ -10,7 +10,7 @@ include_once __DIR__ . '/../../partials/header.php';
   </header>
   <section class="auth-card" aria-labelledby="auth-register-title">
     <h2 id="auth-register-title" class="auth-card__title">اطلاعات حساب</h2>
-    <form class="auth-form" data-auth-register-form novalidate>
+    <form class="auth-form" data-auth-register-form>
       <label for="auth-first-name">نام
         <input id="auth-first-name" type="text" name="first_name" autocomplete="given-name" maxlength="100" required>
       </label>
