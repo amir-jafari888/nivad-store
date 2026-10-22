@@ -23,12 +23,13 @@ const customerCommerce = () => {
     };
 
     if (method !== "GET" && method !== "HEAD") {
-      headers["Content-Type"] = "application/json";
+      headers["Content-Type"] = options.body instanceof URLSearchParams ? "application/x-www-form-urlencoded;charset=UTF-8" : "application/json";
 
       const token = await csrf();
 
       if (token) {
         headers["X-CSRF-TOKEN"] = token;
+        if (options.body instanceof URLSearchParams) options.body.set("csrf_token", token);
       }
     }
 
@@ -75,9 +76,9 @@ const customerCommerce = () => {
         ]);
         const sessions = Array.isArray(sessionsResult?.data) ? sessionsResult.data : (Array.isArray(sessionsResult?.data?.sessions) ? sessionsResult.data.sessions : []);
         const orders = Array.isArray(ordersResult?.data?.orders) ? ordersResult.data.orders : [];
-        if (security) security.innerHTML = `<h2>امنیت حساب</h2><p>${escape(securityResult?.message || "اطلاعات امنیت حساب دریافت شد.")}</p>`;
+        if (security) security.innerHTML = `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? sessions?.data?.length ?? 0)}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`;
         if (verification) {
-          const verified = Boolean(verificationResult?.data?.email_verified ?? verificationResult?.data?.verified ?? verificationResult?.data?.is_verified);
+          const verified = Boolean(verificationResult?.data?.fully_verified);
           verification.innerHTML = `<h2>تأیید حساب</h2><p>${verified ? "ایمیل تأیید شده است." : "ایمیل هنوز تأیید نشده یا وضعیت آن نامشخص است."}</p>`;
         }
         if (sessionsNode) sessionsNode.innerHTML = sessions.length ? sessions.map((item) => `<article class="account-session"><strong>${escape(item.user_agent || "دستگاه نامشخص")}</strong><p>IP: <span dir="ltr">${escape(item.ip_address || "نامشخص")}</span></p><p>آخرین فعالیت: ${escape(item.updated_at || "نامشخص")}</p><button type="button" data-revoke-session="${escape(item.id)}">بستن این نشست</button></article>`).join("") : "<p>نشست فعال دیگری وجود ندارد.</p>";
@@ -99,7 +100,7 @@ const customerCommerce = () => {
       if (!window.confirm(revoke ? "این نشست بسته شود؟" : "تمام نشست‌های دیگر بسته شوند؟")) return;
       button.disabled = true;
       try {
-        const result = revoke ? await request("/account/sessions/revoke", { method: "POST", body: JSON.stringify({ session_id: Number(revoke.dataset.revokeSession) }) }) : await request("/logout-other-sessions", { method: "POST", body: JSON.stringify({}) });
+        const result = revoke ? await request("/account/sessions/revoke", { method: "POST", body: new URLSearchParams({ session_id: String(Number(revoke.dataset.revokeSession)) }) }) : await request("/logout-other-sessions", { method: "POST", body: JSON.stringify({}) });
         show(feedback || state, result?.message || "عملیات نشست انجام شد."); await load();
       } catch (error) { show(feedback || state, error.message, true); }
       finally { button.disabled = false; }
@@ -114,7 +115,7 @@ const customerCommerce = () => {
       const submit = passwordForm.querySelector('button[type="submit"]');
       if (submit) { submit.disabled = true; submit.setAttribute("aria-busy", "true"); }
       try {
-        const result = await request("/account/password", { method: "POST", body: JSON.stringify({ current_password: passwordForm.elements.current_password.value, new_password: passwordForm.elements.new_password.value, new_password_confirmation: passwordForm.elements.new_password_confirmation.value }) });
+        const result = await request("/account/password", { method: "POST", body: new URLSearchParams({ current_password: passwordForm.elements.current_password.value, new_password: passwordForm.elements.new_password.value, new_password_confirmation: passwordForm.elements.new_password_confirmation.value }) });
         passwordForm.reset(); show(feedback, result?.message || "رمز عبور تغییر کرد.");
       } catch (error) { show(feedback, error.message, true); }
       finally { passwordForm.dataset.busy = "false"; if (submit) { submit.disabled = false; submit.removeAttribute("aria-busy"); } }
