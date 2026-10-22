@@ -87,7 +87,17 @@ const auth = () => {
   };
 
   const clearFieldErrors = (form) => {
-    form.querySelectorAll("[data-auth-field-error]").forEach((node) => node.remove());
+    form.querySelectorAll("[data-auth-field-error]").forEach((node) => {
+      const field = node.closest("label")?.querySelector("input, select, textarea");
+      if (field) {
+        const ids = (field.getAttribute("aria-describedby") || "")
+          .split(/\\s+/)
+          .filter((id) => id && id !== node.id);
+        if (ids.length) field.setAttribute("aria-describedby", ids.join(" "));
+        else field.removeAttribute("aria-describedby");
+      }
+      node.remove();
+    });
     form.querySelectorAll("[aria-invalid='true']").forEach((field) => field.removeAttribute("aria-invalid"));
   };
 
@@ -146,7 +156,8 @@ const auth = () => {
     } catch (error) {
       const fieldErrors = error?.payload?.errors || error?.payload?.data?.errors;
       showFieldErrors(form, fieldErrors);
-      const safeMessage = options.genericFailure
+      const isNetworkFailure = error?.status === 0 || error?.status === 408;
+      const safeMessage = options.genericFailure && !isNetworkFailure
         ? options.genericFailure
         : (error?.message || "عملیات انجام نشد. دوباره تلاش کنید.");
       setMessage(root, safeMessage, "error", form);
