@@ -155,13 +155,48 @@ const account = (() => {
     }).catch((error) => { root.textContent = error.message; }).finally(() => root.removeAttribute("aria-busy"));
   };
   const initReturns = () => {
-    const list = document.querySelector("[data-account-returns]"); if (!list) return;
-    list.setAttribute("aria-busy", "true");
-    request("/returns").then((payload) => {
-      const items = Array.isArray(payload?.data?.returns) ? payload.data.returns : [];
-      list.innerHTML = items.length ? items.map((item) => `<article class="account-return"><h2>مرجوعی #${escapeHtml(item.id)}</h2><p>وضعیت: ${escapeHtml(item.status || "نامشخص")}</p><a href="show.php?id=${encodeURIComponent(item.id)}">مشاهده جزئیات</a></article>`).join("") : "<p>درخواستی برای مرجوعی ثبت نشده است.</p>";
-    }).catch((error) => { list.textContent = error.message; }).finally(() => list.removeAttribute("aria-busy"));
+    const list = document.querySelector("[data-account-returns]");
+    const form = document.querySelector("[data-account-return-form]");
+    if (!list && !form) return;
+    const feedback = form?.querySelector("[data-account-return-message]");
+    const load = async () => {
+      if (!list) return;
+      list.setAttribute("aria-busy", "true");
+      list.textContent = "در حال دریافت درخواست‌ها...";
+      try {
+        const payload = await request("/returns");
+        const items = Array.isArray(payload?.data?.returns) ? payload.data.returns : [];
+        list.innerHTML = items.length ? items.map((item) => `<article class="account-return"><h2>مرجوعی #${escapeHtml(item.id)}</h2><p>وضعیت: ${escapeHtml(item.status || "نامشخص")}</p><a href="show.php?id=${encodeURIComponent(item.id)}">مشاهده جزئیات</a></article>`).join("") : "<p>درخواستی برای مرجوعی ثبت نشده است.</p>";
+      } catch (error) { list.textContent = error.message; }
+      finally { list.removeAttribute("aria-busy"); }
+    };
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity() || form.dataset.busy === "true") return;
+      const orderId = Number(form.elements.orderId.value);
+      const orderItemId = Number(form.elements.orderItemId.value);
+      const quantity = Number(form.elements.quantity.value);
+      if (![orderId, orderItemId, quantity].every((value) => Number.isSafeInteger(value) && value > 0)) {
+        message(feedback, "شناسه سفارش، شناسه قلم و تعداد باید معتبر باشند.", true); return;
+      }
+      busy(form, true);
+      try {
+        const payload = await request("/returns", { method: "POST", body: JSON.stringify({
+          orderId, returnNumber: form.elements.returnNumber.value.trim(),
+          items: [{ orderItemId, quantity }],
+          reason: form.elements.reason.value.trim() || null,
+          customerNote: form.elements.customerNote.value.trim() || null,
+        }) });
+        if (!payload?.data) throw new Error(payload?.message || "ثبت درخواست مرجوعی تأیید نشد.");
+        message(feedback, payload.message || "درخواست مرجوعی ثبت شد.");
+        form.reset();
+        await load();
+      } catch (error) { message(feedback, error.message, true); }
+      finally { busy(form, false); }
+    });
+    load();
   };
+
   const initReturnDetail = () => {
     const root = document.querySelector("[data-account-return-detail]"); if (!root) return;
     const id = new URLSearchParams(location.search).get("id");
