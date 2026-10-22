@@ -1,0 +1,3 @@
+NIVAD GitHub connector read/write verification
+Test branch: chatgpt-access-test-20261022
+Purpose: temporary permission test only.
