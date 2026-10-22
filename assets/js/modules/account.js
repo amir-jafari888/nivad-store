@@ -34,6 +34,23 @@ const account = (() => {
     }
     return payload;
   };
+  const fieldErrors = (form, errors) => {
+    form.querySelectorAll("[data-field-error]").forEach((node) => node.remove());
+    form.querySelectorAll('[aria-invalid="true"]').forEach((node) => node.removeAttribute("aria-invalid"));
+    if (!errors || typeof errors !== "object") return;
+    Object.entries(errors).forEach(([name, value]) => {
+      const field = form.elements.namedItem(name);
+      if (!field || !("setAttribute" in field)) return;
+      const id = field.id || name;
+      field.setAttribute("aria-invalid", "true");
+      const node = document.createElement("small");
+      node.dataset.fieldError = name;
+      node.id = `${id}-error`;
+      node.textContent = Array.isArray(value) ? value.join(" ") : String(value);
+      field.setAttribute("aria-describedby", node.id);
+      field.insertAdjacentElement("afterend", node);
+    });
+  };
   const busy = (form, value) => {
     form.dataset.busy = value ? "true" : "false";
     form.querySelectorAll('button[type="submit"]').forEach((button) => {
@@ -60,7 +77,7 @@ const account = (() => {
         form.elements.first_name.value = payload.data.user.first_name ?? "";
         form.elements.last_name.value = payload.data.user.last_name ?? "";
         message(feedback, payload.message || "تغییرات ذخیره شد.");
-      } catch (error) { message(feedback, error.message, true); }
+      } catch (error) { fieldErrors(form, error.payload?.errors || error.payload?.data?.errors); message(feedback, error.message, true); }
       finally { busy(form, false); }
     });
   };
@@ -128,7 +145,7 @@ const account = (() => {
         const payload = await request(editingId === null ? "/account/addresses" : `/account/addresses/${editingId}`, { method: editingId === null ? "POST" : "PUT", body: JSON.stringify(readForm()) });
         if (!payload?.data?.address) throw new Error(payload.message || "ذخیره آدرس تأیید نشد.");
         message(feedback, payload.message || "آدرس ذخیره شد."); reset(); await load();
-      } catch (error) { message(feedback, error.message, true); }
+      } catch (error) { fieldErrors(form, error.payload?.errors || error.payload?.data?.errors); message(feedback, error.message, true); }
       finally { busy(form, false); }
     });
     cancel?.addEventListener("click", () => { reset(); message(feedback, "ویرایش لغو شد."); });
