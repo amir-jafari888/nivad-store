@@ -10,7 +10,7 @@ include_once __DIR__ . '/../../partials/header.php';
   </header>
   <section class="auth-card" aria-labelledby="auth-login-title">
     <h2 id="auth-login-title" class="auth-card__title">ورود</h2>
-    <form class="auth-form" data-auth-login-form novalidate>
+    <form class="auth-form" data-auth-login-form>
       <label for="auth-identifier">ایمیل یا شماره موبایل
         <input id="auth-identifier" type="text" name="identifier" autocomplete="username" required aria-describedby="auth-identifier-hint">
       </label>
