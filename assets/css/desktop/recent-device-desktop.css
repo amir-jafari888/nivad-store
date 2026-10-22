@@ -1,0 +1,14 @@
+[data-recent-device] {
+  padding: var(--recent-device-padding);
+}
+
+[data-recent-device-content] {
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+[data-recent-device-change]:focus-visible {
+  outline: 2px solid var(--color-primary-focus);
+  outline-offset: 2px;
+}

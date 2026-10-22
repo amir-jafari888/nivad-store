@@ -1,0 +1,36 @@
+.catalog-page {
+  padding-block: var(--catalog-page-padding-block-tablet);
+  padding-inline: var(--catalog-page-padding-inline-tablet);
+}
+
+.catalog-filter-panel__body {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.catalog-filter-attributes {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.catalog-grid {
+  grid-template-columns: repeat(
+    var(--catalog-grid-columns-tablet),
+    minmax(0, 1fr)
+  );
+  gap: var(--catalog-grid-gap-tablet);
+}
+
+.catalog-card__body {
+  padding: var(--catalog-card-padding-tablet);
+}
+
+.catalog-card__media {
+  min-height: 170px;
+}
+
+.catalog-card__body {
+  padding: var(--catalog-card-padding-tablet);
+}
+
+.catalog-pagination {
+  margin-top: var(--spacing-8);
+}

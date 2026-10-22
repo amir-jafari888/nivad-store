@@ -1,0 +1,75 @@
+[data-recommendation] {
+  display: grid;
+  gap: var(--recommendation-page-gap);
+  padding: var(--recommendation-card-padding);
+  border: 1px solid var(--recommendation-card-border);
+  border-radius: var(--recommendation-card-radius);
+  background: var(--recommendation-card-background);
+  box-shadow: var(--recommendation-card-shadow);
+}
+
+.recommendation__summary {
+  display: grid;
+  gap: var(--recommendation-page-gap);
+}
+
+.recommendation__reason,
+.recommendation__compatibility,
+.recommendation__confidence,
+.recommendation__current,
+.recommendation__alternative {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.recommendation__label,
+.recommendation__confidence-label {
+  color: var(--recommendation-muted);
+  font-size: var(--font-size-sm);
+}
+
+.recommendation__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--recommendation-control-height);
+  padding-inline: var(--spacing-3);
+  border-radius: var(--radius-full);
+  background: var(--recommendation-accent);
+}
+
+.recommendation__alternative {
+  padding: var(--spacing-3);
+  border: 1px solid var(--recommendation-card-border);
+  border-radius: var(--recommendation-card-radius);
+}
+
+.recommendation__alternative-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.recommendation__error {
+  color: var(--recommendation-error);
+}
+
+.recommendation__confidence--unavailable {
+  color: var(--recommendation-muted);
+}
+
+[data-recommendation-card] {
+  display: grid;
+  gap: var(--spacing-3);
+}
+
+[data-recommendation-trigger] {
+  min-height: var(--recommendation-control-height);
+  transition: var(--recommendation-transition);
+}
+
+[data-recommendation-panel] {
+  padding: var(--spacing-3);
+  border: 1px solid var(--recommendation-card-border);
+  border-radius: var(--recommendation-card-radius);
+  background: var(--recommendation-card-background);
+}

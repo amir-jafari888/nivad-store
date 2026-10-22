@@ -1,0 +1,258 @@
+const storefront = () => {
+  const categoriesSection = document.querySelector("[data-categories-section]");
+
+  const categoriesContainer =
+    categoriesSection?.querySelector(".categories-list");
+
+  const productsContainer = document.querySelector(".product-grid");
+
+  const api = async (path, options = {}) => {
+    const apiBase = categoriesSection?.dataset.apiBase || "/api/index.php";
+
+    const apiUrl = new URL(apiBase, window.location.origin);
+
+    apiUrl.searchParams.set("path", path);
+    apiUrl.searchParams.set("_", Date.now().toString());
+
+    const response = await fetch(apiUrl.toString(), {
+      credentials: "same-origin",
+      ...options,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Storefront API failed: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    if (!result?.success) {
+      throw new Error(result?.message || "Storefront API request failed.");
+    }
+
+    return result.data;
+  };
+
+  const renderCategories = (items) => {
+    if (!categoriesContainer) {
+      return;
+    }
+
+    const categoryBase =
+      categoriesSection?.dataset.categoryBase || "/categories";
+
+    categoriesContainer.replaceChildren();
+
+    items.forEach((category) => {
+      if (!category || !category.slug || !category.name) {
+        return;
+      }
+
+      const link = document.createElement("a");
+
+      link.href =
+        `${categoryBase.replace(/\/$/, "")}/` +
+        encodeURIComponent(category.slug);
+
+      link.className = "category-card";
+
+      link.innerHTML = `
+        <span
+          class="category-icon"
+          aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <rect
+              x="5"
+              y="5"
+              width="14"
+              height="14"
+              rx="2">
+            </rect>
+
+            <path
+              d="M8 9h8M8 12h6M8 15h4">
+            </path>
+          </svg>
+        </span>
+
+        <span class="category-name"></span>
+      `;
+
+      const categoryName = link.querySelector(".category-name");
+
+      if (categoryName) {
+        categoryName.textContent = category.name;
+      }
+
+      categoriesContainer.appendChild(link);
+    });
+  };
+
+  const formatPrice = (price, currency = "IRR") => {
+    if (price === null || price === undefined) {
+      return "قیمت نامشخص";
+    }
+
+    const numericPrice = Number(price);
+
+    if (!Number.isFinite(numericPrice)) {
+      return "قیمت نامشخص";
+    }
+
+    const formatted = new Intl.NumberFormat("fa-IR").format(numericPrice);
+
+    return currency === "IRR"
+      ? `${formatted} تومان`
+      : `${formatted} ${currency}`;
+  };
+
+  const renderProducts = (items) => {
+    if (!productsContainer) {
+      return;
+    }
+
+    productsContainer.replaceChildren();
+
+    items.forEach((product) => {
+      const article = document.createElement("article");
+
+      article.className = "product-card";
+
+      const variant = product.variant ?? null;
+
+      article.innerHTML = `
+        <div class="product-card-image">
+
+          ${
+            product.is_featured ? '<span class="product-badge">ویژه</span>' : ""
+          }
+
+          <button
+            class="product-wishlist"
+            type="button"
+            aria-label="افزودن محصول به علاقه‌مندی‌ها"
+            aria-pressed="false"
+            data-wishlist="${product.id}"
+            data-wishlist-variant-id="${variant?.id ?? ""}">
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true">
+
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z">
+              </path>
+
+            </svg>
+          </button>
+
+          <div class="product-image-placeholder">
+            <span>Product</span>
+          </div>
+        </div>
+
+        <div class="product-card-body">
+
+          <span class="product-brand">
+            ${product.brand_id ?? ""}
+          </span>
+
+          <h3 class="product-name"></h3>
+
+          <p class="product-spec"></p>
+
+          <div class="product-card-footer">
+
+            <strong
+              class="product-price numeric">
+            </strong>
+
+            <button
+              class="product-cart"
+              type="button"
+              aria-label="افزودن محصول به سبد خرید"
+              data-cart="${product.slug}"
+              data-product-name="${product.name}"
+              data-product-price="${variant?.price ?? ""}"
+              data-product-brand="${product.brand_id ?? ""}"
+              data-product-spec="${product.short_description || ""}"
+              data-variant-id="${variant?.id ?? ""}">
+
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true">
+
+                <path
+                  d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H6">
+                </path>
+
+                <circle
+                  cx="10"
+                  cy="20"
+                  r="1">
+                </circle>
+
+                <circle
+                  cx="18"
+                  cy="20"
+                  r="1">
+                </circle>
+
+              </svg>
+            </button>
+
+          </div>
+        </div>
+      `;
+
+      const productName = article.querySelector(".product-name");
+
+      const productSpec = article.querySelector(".product-spec");
+
+      const productPrice = article.querySelector(".product-price");
+
+      if (productName) {
+        productName.textContent = product.name;
+      }
+
+      if (productSpec) {
+        productSpec.textContent = product.short_description || "";
+      }
+
+      if (productPrice) {
+        productPrice.textContent = variant
+          ? formatPrice(variant.price, variant.currency)
+          : "قیمت نامشخص";
+      }
+
+      productsContainer.appendChild(article);
+    });
+  };
+
+  const load = async () => {
+    const requests = [];
+
+    if (categoriesContainer) {
+      requests.push(
+        api("/storefront/categories").then((data) => {
+          renderCategories(Array.isArray(data?.items) ? data.items : []);
+        }),
+      );
+    }
+
+    if (productsContainer) {
+      requests.push(
+        api("/storefront/products").then((data) => {
+          renderProducts(Array.isArray(data?.items) ? data.items : []);
+        }),
+      );
+    }
+
+    await Promise.all(requests);
+  };
+
+  load().catch((error) => {
+    console.error(error);
+  });
+};
+
+export default storefront;

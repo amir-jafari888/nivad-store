@@ -1,0 +1,118 @@
+.product-detail-page {
+  padding: var(--spacing-10) var(--spacing-5);
+}
+
+.product-detail-main {
+  grid-template-columns: minmax(0, 1.1fr) minmax(420px, 0.9fr);
+  gap: var(--product-detail-main-gap-desktop);
+  align-items: start;
+}
+
+.product-detail-gallery,
+.product-detail-info {
+  min-height: 620px;
+}
+
+.product-detail-gallery {
+  padding: var(--spacing-5);
+}
+
+.product-detail-gallery__main {
+  min-height: 520px;
+}
+
+.product-detail-gallery__main img {
+  height: 520px;
+}
+
+.product-detail-gallery__thumb {
+  flex-basis: var(--product-detail-thumbnail-size-desktop);
+  width: var(--product-detail-thumbnail-size-desktop);
+  height: var(--product-detail-thumbnail-size-desktop);
+}
+
+.product-detail-info {
+  padding: var(--spacing-8);
+}
+
+.product-detail-title {
+  font-size: var(--product-detail-title-size-desktop);
+}
+
+.product-detail-price {
+  font-size: var(--product-detail-price-size-desktop);
+}
+
+.product-detail-actions {
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.6fr);
+}
+
+.product-detail-cart,
+.product-detail-wishlist {
+  min-height: var(--product-detail-button-height-desktop);
+}
+
+.product-detail-description,
+.product-detail-compatibility,
+.product-detail-smart {
+  margin-top: var(--product-detail-section-gap-desktop);
+  padding: var(--spacing-7);
+}
+
+.product-detail-compatibility__controls {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.product-detail-feedback {
+  margin-top: var(--product-detail-section-gap-desktop);
+}
+
+.product-detail-feedback-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.product-detail-complements {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--complete-setup-gap-desktop);
+}
+
+.product-detail-complement {
+  padding: var(--complete-setup-card-padding-desktop);
+}
+
+.product-detail-complement:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--complete-setup-card-shadow-hover);
+}
+
+.product-detail-complement__title a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.product-detail-complete-setup {
+  gap: var(--spacing-6);
+}
+
+.complete-setup__candidates {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-5);
+}
+
+.complete-setup__item:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--complete-setup-card-shadow-hover);
+}
+
+.complete-setup__actions {
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(220px, 0.35fr);
+}
+
+.complete-setup__item h3 a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}

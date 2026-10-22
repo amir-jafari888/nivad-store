@@ -1,0 +1,52 @@
+.budget-optimizer {
+  padding-block: var(--budget-optimizer-page-padding-desktop);
+}
+
+.budget-optimizer__container {
+  width: min(
+    calc(100% - (var(--spacing-5) * 2)),
+    var(--budget-optimizer-max-width)
+  );
+}
+
+.budget-optimizer__header h1 {
+  font-size: var(--font-size-h1);
+}
+
+.budget-optimizer__form {
+  grid-template-columns:
+    minmax(220px, 1fr)
+    minmax(220px, 1fr)
+    auto;
+  padding: var(--spacing-6);
+}
+
+.budget-optimizer__result {
+  padding: var(--spacing-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--budget-optimizer-card-radius);
+  background: var(--color-surface);
+}
+
+.budget-optimizer__result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.budget-optimizer__summary {
+  min-width: 520px;
+}
+
+.budget-optimizer__item {
+  transition:
+    transform var(--budget-optimizer-transition),
+    border-color var(--budget-optimizer-transition),
+    box-shadow var(--budget-optimizer-transition);
+}
+
+.budget-optimizer__item:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-hover-color);
+  box-shadow: var(--shadow-md);
+}

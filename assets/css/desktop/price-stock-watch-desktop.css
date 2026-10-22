@@ -1,0 +1,9 @@
+.product-watch-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.product-watch-actions__button {
+  min-width: 13rem;
+}

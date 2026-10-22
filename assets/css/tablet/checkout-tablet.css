@@ -1,0 +1,28 @@
+[data-customer-page="checkout"] {
+  width: min(calc(100% - var(--spacing-7)), var(--container-max-width));
+  margin-inline: auto;
+  padding-block: var(--spacing-8) var(--spacing-11);
+}
+
+.checkout-page__layout {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  align-items: start;
+  gap: var(--spacing-5);
+}
+
+.checkout-page__summary {
+  position: sticky;
+  top: var(--spacing-5);
+}
+
+.checkout-card {
+  padding: var(--spacing-5);
+}
+
+.checkout-steps ol {
+  min-width: 0;
+}
+
+.checkout-page__head h1 {
+  font-size: var(--font-size-4xl);
+}

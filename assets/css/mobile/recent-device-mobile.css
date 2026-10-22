@@ -1,0 +1,30 @@
+[data-recent-device] {
+  display: block;
+  width: 100%;
+  padding: var(--recent-device-padding);
+  border: 1px solid var(--recent-device-border);
+  border-radius: var(--recent-device-radius);
+  background: var(--recent-device-background);
+  color: var(--recent-device-text);
+}
+
+[data-recent-device-content] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--recent-device-gap);
+}
+
+[data-recent-device-empty] {
+  color: var(--recent-device-muted);
+}
+
+[data-recent-device-change] {
+  min-height: var(--control-height);
+  transition: var(--recent-device-transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-recent-device-change] {
+    transition: none;
+  }
+}

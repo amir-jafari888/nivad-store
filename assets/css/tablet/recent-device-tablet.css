@@ -1,0 +1,13 @@
+[data-recent-device] {
+  padding: var(--recent-device-padding);
+}
+
+[data-recent-device-content] {
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+[data-recent-device-change] {
+  flex: 0 0 auto;
+}

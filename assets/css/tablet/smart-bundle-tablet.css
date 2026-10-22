@@ -1,0 +1,16 @@
+.smart-bundle {
+  padding: var(--smart-bundle-padding-tablet);
+}
+.smart-bundle__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  align-items: end;
+  gap: var(--smart-bundle-gap-tablet);
+  margin-bottom: var(--spacing-5);
+}
+.smart-bundle__items {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.smart-bundle__summary {
+  grid-column: 1/-1;
+}

@@ -1,0 +1,36 @@
+.catalog-page {
+  padding-block: var(--catalog-page-padding-block-desktop);
+  padding-inline: var(--catalog-page-padding-inline-desktop);
+}
+
+.catalog-filter-panel__body {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.catalog-filter-attributes {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.catalog-grid {
+  grid-template-columns: repeat(
+    var(--catalog-grid-columns-desktop),
+    minmax(0, 1fr)
+  );
+  gap: var(--catalog-grid-gap-desktop);
+}
+
+.catalog-card__body {
+  padding: var(--catalog-card-padding-desktop);
+}
+
+.catalog-card__media {
+  min-height: 200px;
+}
+
+.catalog-card__body {
+  padding: var(--catalog-card-padding-desktop);
+}
+
+.catalog-pagination {
+  margin-top: var(--spacing-10);
+}

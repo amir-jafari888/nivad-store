@@ -1,0 +1,111 @@
+.budget-optimizer {
+  width: 100%;
+  padding-block: var(--budget-optimizer-page-padding-mobile);
+}
+
+.budget-optimizer__container {
+  width: min(100% - (var(--spacing-4) * 2), var(--budget-optimizer-max-width));
+  margin-inline: auto;
+}
+
+.budget-optimizer__header {
+  margin-bottom: var(--spacing-6);
+}
+
+.budget-optimizer__header h1 {
+  margin: var(--spacing-2) 0;
+  font-size: var(--font-size-h2);
+}
+
+.budget-optimizer__header p {
+  max-width: 620px;
+  color: var(--text-secondary);
+}
+
+.budget-optimizer__form {
+  display: grid;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  border: 1px solid var(--budget-optimizer-card-border);
+  border-radius: var(--budget-optimizer-card-radius);
+  background: var(--budget-optimizer-card-background);
+}
+
+.budget-optimizer__field {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.budget-optimizer__field input,
+.budget-optimizer__field select,
+.budget-optimizer__submit,
+.budget-optimizer__cart,
+.budget-optimizer__reset {
+  min-height: var(--budget-optimizer-input-height);
+}
+
+.budget-optimizer__submit,
+.budget-optimizer__cart {
+  width: 100%;
+}
+
+.budget-optimizer__state {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-3);
+  border-radius: var(--budget-optimizer-state-radius);
+}
+
+.budget-optimizer__result {
+  margin-top: var(--spacing-6);
+}
+
+.budget-optimizer__result-header {
+  display: grid;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.budget-optimizer__summary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-3);
+}
+
+.budget-optimizer__summary-item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.budget-optimizer__items {
+  display: grid;
+  gap: var(--spacing-3);
+}
+
+.budget-optimizer__item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.budget-optimizer__item h3 {
+  margin: 0 0 var(--spacing-2);
+}
+
+.budget-optimizer__item p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.budget-optimizer__actions {
+  display: grid;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-5);
+}

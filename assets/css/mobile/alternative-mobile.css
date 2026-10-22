@@ -1,0 +1,173 @@
+.product-alternative {
+  display: grid;
+  gap: var(--spacing-5);
+  margin-top: var(--alternative-page-gap);
+  padding: var(--spacing-5);
+  border: 1px solid var(--alternative-card-border);
+  border-radius: var(--alternative-card-radius);
+  background: var(--alternative-card-background);
+  box-shadow: var(--alternative-card-shadow);
+}
+
+.product-alternative__heading {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.product-alternative__eyebrow {
+  color: var(--alternative-accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.product-alternative__heading h2 {
+  font-size: var(--font-size-h3);
+}
+
+.product-alternative__heading p {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.product-alternative__state {
+  padding: var(--alternative-state-padding);
+  border: 1px solid var(--alternative-state-border);
+  border-radius: var(--radius-lg);
+  background: var(--alternative-state-background);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.product-alternative__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-4);
+}
+
+.product-alternative-card {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: var(--spacing-4);
+  padding: var(--alternative-card-padding);
+  border: 1px solid var(--alternative-card-border);
+  border-radius: var(--alternative-card-radius);
+  background: var(--alternative-card-background);
+}
+
+.product-alternative-card__media {
+  display: grid;
+  place-items: center;
+  min-height: 112px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--alternative-media-background);
+}
+
+.product-alternative-card__media img {
+  width: 100%;
+  height: 112px;
+  object-fit: contain;
+}
+
+.product-alternative-card__body {
+  display: grid;
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+
+.product-alternative-card__rank {
+  color: var(--alternative-accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.product-alternative-card h3 {
+  font-size: var(--font-size-md);
+}
+
+.product-alternative-card h3 a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.product-alternative-card__reason,
+.product-alternative-card__availability {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.product-alternative-card__price {
+  font-weight: var(--font-weight-bold);
+}
+
+.product-alternative-card__availability {
+  color: var(--alternative-success);
+}
+
+.product-alternative-card__actions {
+  display: grid;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+.product-alternative-card__view,
+.product-alternative-card__cart,
+.product-alternative__retry {
+  min-height: var(--alternative-control-height);
+  padding-inline: var(--spacing-4);
+  border-radius: var(--radius-md);
+  transition: var(--alternative-transition);
+}
+
+.product-alternative-card__view {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--alternative-card-border);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.product-alternative-card__cart,
+.product-alternative__retry {
+  border: 0;
+  background: var(--alternative-accent);
+  color: var(--color-on-primary);
+  cursor: pointer;
+}
+
+.product-alternative-card__cart:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.product-alternative__retry {
+  justify-self: center;
+}
+
+.product-alternative[data-state="error"] .product-alternative__state {
+  border-color: var(--alternative-error);
+  color: var(--alternative-error);
+}
+
+.product-alternative-card__view:focus-visible,
+.product-alternative-card__cart:focus-visible,
+.product-alternative__retry:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.product-alternative-card__signal {
+  color: var(--alternative-accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.product-alternative__retry {
+  justify-self: center;
+}
+
+.product-alternative__retry:focus-visible,
+.product-alternative-card__view:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}

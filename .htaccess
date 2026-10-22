@@ -1,0 +1,22 @@
+RewriteEngine On
+
+RewriteRule ^sitemap\.xml$ api/index.php?path=/seo/sitemap [L,QSA]
+RewriteRule ^robots\.txt$ api/index.php?path=/seo/robots [L,QSA]
+
+# Storefront
+RewriteRule ^products/?$ pages/store/products/index.php [L,QSA]
+RewriteRule ^products/([^/]+)/?$ pages/store/products/show.php?slug=$1 [L,QSA]
+RewriteRule ^categories/([^/]+)/?$ pages/store/category/show.php?slug=$1 [L,QSA]
+RewriteRule ^search/?$ pages/store/search/index.php [L,QSA]
+RewriteRule ^brands/([^/]+)/?$ pages/store/brand/show.php?slug=$1 [L,QSA]
+RewriteRule ^discover/?$ pages/store/discover/show.php [L,QSA]
+RewriteRule ^collections/([^/]+)/?$ pages/store/collection/show.php?slug=$1 [L,QSA]
+RewriteRule ^finder/?$ pages/store/finder/index.php [L,QSA]
+RewriteRule ^budget-optimizer/?$ pages/store/budget-optimizer/index.php [L,QSA]
+
+# Customer Commerce
+RewriteRule ^cart/?$ pages/shop/cart.php [L,QSA]
+RewriteRule ^wishlist/?$ pages/shop/wishlist.php [L,QSA]
+RewriteRule ^checkout/?$ pages/shop/checkout.php [L,QSA]
+RewriteRule ^payment/success/?$ pages/shop/payment/success.php [L,QSA]
+RewriteRule ^payment/failed/?$ pages/shop/payment/failed.php [L,QSA]

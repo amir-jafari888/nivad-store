@@ -1,0 +1,221 @@
+.finder-page {
+  padding-block: var(--spacing-7);
+}
+
+.finder-page__container {
+  display: grid;
+  gap: var(--spacing-6);
+}
+
+.finder-page__breadcrumb {
+  display: flex;
+  gap: var(--spacing-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.finder-page__hero {
+  padding: var(--spacing-6);
+  border: 1px solid var(--finder-panel-border);
+  border-radius: var(--finder-card-radius);
+  background: var(--finder-panel-background);
+  box-shadow: var(--finder-panel-shadow);
+}
+
+.finder-page__eyebrow,
+.finder-step__eyebrow {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+}
+
+.finder-page__hero h1 {
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-h2);
+}
+
+.finder-page__hero p {
+  max-width: 720px;
+}
+
+.finder-form,
+.finder-results-section {
+  display: grid;
+  gap: var(--finder-section-gap);
+}
+
+.finder-step {
+  display: grid;
+  gap: var(--spacing-4);
+  padding: var(--spacing-5);
+  border: 1px solid var(--finder-panel-border);
+  border-radius: var(--finder-card-radius);
+  background: var(--finder-panel-background);
+}
+
+.finder-step__heading {
+  display: flex;
+  gap: var(--spacing-4);
+  align-items: flex-start;
+}
+
+.finder-step__heading > span {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.finder-step h2 {
+  font-size: var(--font-size-lg);
+}
+
+.finder-intents {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-2);
+}
+
+.finder-intents button,
+.finder-submit,
+.finder-reset,
+.finder-step select,
+.finder-step input {
+  min-height: var(--finder-control-height);
+  border-radius: var(--finder-control-radius);
+}
+
+.finder-intents button {
+  padding-inline: var(--spacing-3);
+  border: 1px solid var(--finder-panel-border);
+  background: transparent;
+  color: var(--color-text);
+  transition: var(--finder-transition);
+}
+
+.finder-intents button.is-active {
+  border-color: var(--finder-accent-border);
+  background: var(--finder-accent-background);
+}
+
+.finder-step label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.finder-step select,
+.finder-step input {
+  width: 100%;
+  padding-inline: var(--spacing-4);
+  border: 1px solid var(--finder-panel-border);
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.finder-form__actions {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.finder-submit,
+.finder-reset {
+  padding-inline: var(--spacing-5);
+}
+
+.finder-submit {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.finder-reset {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--finder-panel-border);
+}
+
+.finder-results__header {
+  display: grid;
+  gap: var(--spacing-3);
+}
+
+.finder-results__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  color: var(--color-text-secondary);
+}
+
+.finder-results {
+  display: grid;
+  gap: var(--finder-result-gap);
+}
+
+.finder-card {
+  display: grid;
+  gap: var(--spacing-4);
+  padding: var(--finder-card-padding);
+  border: 1px solid var(--finder-panel-border);
+  border-radius: var(--finder-card-radius);
+  background: var(--finder-panel-background);
+  box-shadow: var(--finder-panel-shadow);
+}
+
+.finder-card__topline,
+.finder-card__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
+.finder-card__badge {
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.finder-card__confidence,
+.finder-card__reason {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.finder-card__title {
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-lg);
+}
+
+.finder-card__description {
+  margin-bottom: var(--spacing-4);
+}
+
+.finder-card__reason {
+  display: grid;
+  gap: var(--spacing-1);
+}
+
+.finder-card__price {
+  font-family: var(--font-latin), var(--font-persian), sans-serif;
+}
+
+.finder-card__link {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.finder-state {
+  padding: var(--finder-state-padding);
+  border: 1px solid var(--finder-panel-border);
+  border-radius: var(--finder-card-radius);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.finder-status[data-state="error"] {
+  color: var(--color-error);
+}
+
+.finder-status[data-state="success"] {
+  color: var(--color-success);
+}

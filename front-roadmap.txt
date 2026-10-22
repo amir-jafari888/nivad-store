@@ -1,0 +1,1559 @@
+
+# Nivad E-Commerce
+## Final Frontend Master Roadmap — v4
+
+---
+
+# 0. قوانین پایه و غیرقابل مذاکره Frontend
+
+این Roadmap بر اساس وضعیت واقعی پروژه Nivad اجرا می‌شود.
+
+### قانون 01 — No Guessing
+
+هیچ Class، File، Component، Route، Variable، Method، Selector، API، State یا Dependency حدس زده نمی‌شود.
+
+اگر چیزی از پروژه اثبات نشده باشد:
+
+`UNKNOWN`
+
+---
+
+### قانون 02 — Actual Project First
+
+ترتیب تصمیم‌گیری:
+
+```text
+Actual Project
+↓
+Existing Architecture
+↓
+Existing Dependencies
+↓
+Existing Contracts
+↓
+Design System
+↓
+Implementation
+↓
+Test
+```
+
+---
+
+# 1. اتصال کامل Design به Root و setting.css
+
+تمام Frontend باید از یک Design Source of Truth استفاده کند.
+
+مرجع اصلی:
+
+```text
+:root
+[data-theme="light"]
+[data-theme="dark"]
+```
+
+و تمام Tokenهای اصلی در:
+
+```text
+assets/css/setting.css
+```
+
+مدیریت می‌شوند.
+
+هیچ Phaseای نباید برای رنگ، Radius، Shadow، Spacing، Typography، Gradient، Transition یا Animation مقدارهای پراکنده و بی‌دلیل ایجاد کند.
+
+---
+
+## Design Tokens
+
+موارد زیر باید از Design System کنترل شوند:
+
+### Colors
+
+```text
+Primary
+Secondary
+Accent
+Background
+Surface
+Surface Elevated
+Text
+Text Muted
+Border
+Success
+Warning
+Error
+Info
+```
+
+### Radius
+
+```text
+Small
+Medium
+Large
+XL
+Pill
+Circle
+```
+
+### Spacing
+
+```text
+XS
+SM
+MD
+LG
+XL
+2XL
+...
+```
+
+### Shadows
+
+```text
+Subtle
+Card
+Elevated
+Modal
+Floating
+```
+
+### Typography
+
+```text
+Font Family
+Font Size
+Font Weight
+Line Height
+Letter Spacing
+Heading Scale
+Body Scale
+Caption
+Label
+```
+
+### Motion
+
+```text
+Duration
+Easing
+Transition
+Hover
+Focus
+Enter
+Exit
+```
+
+### Gradient
+
+تمام Gradientهای برند باید Tokenized باشند.
+
+هیچ Gradient تصادفی در یک Section ساخته نمی‌شود.
+
+---
+
+# 2. Theme Architecture
+
+کل سایت باید از ابتدا برای:
+
+```text
+Light Theme
+Dark Theme
+```
+
+طراحی شود.
+
+Dark Theme یک نسخه رنگی از Light نیست؛ بلکه یک Design System مستقل ولی هماهنگ با همان Brand Tokens است.
+
+تمام موارد زیر باید در هر دو Theme بررسی شوند:
+
+- Background
+- Surface
+- Card
+- Text
+- Border
+- Shadow
+- Gradient
+- Button
+- Input
+- Modal
+- Drawer
+- Toast
+- Skeleton
+- Empty State
+- Error State
+- Image
+- Overlay
+- Navigation
+- Admin
+- Commerce
+
+---
+
+# 3. Root Consistency
+
+تمام صفحات، Components و Sections باید با Root و Design Tokens هماهنگ باشند.
+
+زنجیره:
+
+```text
+setting.css
+↓
+Root Tokens
+↓
+Theme Tokens
+↓
+Shared Components
+↓
+Page Components
+↓
+Sections
+```
+
+هیچ Section نباید Design System مستقل خودش را بسازد.
+
+---
+
+# 4. Design Quality Standard
+
+هدف بصری Nivad:
+
+```text
+Professional
++
+Luxury
++
+Trustworthy
++
+Soft
++
+Modern
++
+Calm
+```
+
+### ویژگی طراحی
+
+- Premium
+- تمیز
+- خلوت
+- قابل اعتماد
+- نرم
+- خوانا
+- بدون شلوغی
+- بدون افکت‌های نمایشی غیرضروری
+- بدون Gradientهای بیش از حد
+- بدون Animationهای آزاردهنده
+- بدون Shadowهای سنگین
+- بدون Borderهای تصادفی
+
+---
+
+# 5. Responsive Standard
+
+تمام مراحل:
+
+```text
+Mobile  ≤ 600px
+Tablet  601px – 1009px
+Desktop ≥ 1010px
+```
+
+و هر Feature باید در هر سه Breakpoint طراحی و تست شود.
+
+---
+
+# 6. UI/UX First
+
+ترتیب اجرای هر Feature:
+
+```text
+AUDIT
+↓
+UX STRUCTURE
+↓
+UI DESIGN
+↓
+LIGHT/DARK DESIGN
+↓
+RESPONSIVE DESIGN
+↓
+IMPLEMENTATION
+↓
+TEST
+↓
+REGRESSION
+↓
+LOCK
+```
+
+---
+
+# 7. No Polish Phase
+
+هیچ Phase جداگانه‌ای برای:
+
+```text
+Polish
+Beautification
+Final Styling
+Redesign
+```
+
+وجود ندارد.
+
+تمام کیفیت مورد نیاز باید هنگام Design همان Phase حل شود.
+
+اگر بعداً Defect واقعی پیدا شود، فقط همان Defect طبق Audit اصلاح می‌شود.
+
+---
+
+# 8. Batch Rule
+
+هر Phase در زمان اجرا به Batch تقسیم می‌شود.
+
+هر Batch:
+
+```text
+10 Steps
+```
+
+دقیقاً.
+
+ساختار:
+
+```text
+AUDIT
+→ IMPLEMENT
+→ TEST
+→ REGRESSION
+→ PASS
+→ LOCK
+→ NEXT BATCH
+```
+
+اگر حتی یک Test Fail شود:
+
+```text
+BATCH FAIL
+LOCK = NO
+```
+
+---
+
+# 9. Frontend Backend Freeze
+
+Backend فعلاً Freeze است.
+
+Frontend نباید صرفاً به دلیل یک Feature جدید، Backend را تغییر دهد.
+
+اگر قابلیت جدید به Backend نیاز داشته باشد:
+
+```text
+Frontend Ready
+Backend Dependency = Documented
+```
+
+و تغییر Backend تا زمان مناسب به تعویق می‌افتد.
+
+---
+
+# FINAL ROADMAP
+
+---
+
+# PHASE 01 — Frontend Baseline & Architecture Audit
+
+### هدف
+
+شناخت کامل وضعیت فعلی Frontend قبل از هر تغییر.
+
+### بررسی
+
+- تمام صفحات
+- Partials
+- CSS
+- JS
+- Components
+- Routes
+- Links
+- Existing Landing
+- Existing States
+- Responsive
+- Theme
+- Dependencies
+- Hardcoded Content
+- Placeholderها
+
+### خروجی
+
+یک Baseline واقعی از پروژه.
+
+هیچ کدی بدون Audit تغییر نمی‌کند.
+
+---
+
+# PHASE 02 — Nivad Premium Design System
+
+### هدف
+
+ساخت سیستم طراحی اصلی Nivad.
+
+### موارد
+
+- Colors
+- Light Theme
+- Dark Theme
+- Typography
+- Spacing
+- Radius
+- Shadows
+- Gradients
+- Borders
+- Containers
+- Grid
+- Buttons
+- Inputs
+- Cards
+- Icons
+- Motion
+- Focus
+- Disabled
+- Loading
+
+تمام موارد به:
+
+```text
+setting.css
++
+:root
++
+Theme Tokens
+```
+
+متصل می‌شوند.
+
+---
+
+# PHASE 03 — Shared Component Architecture
+
+### هدف
+
+ساخت Components مشترک برای جلوگیری از Duplication.
+
+### Components
+
+- Header
+- Footer
+- Button
+- Icon Button
+- Product Card
+- Product Image
+- Price
+- Rating
+- Badge
+- Input
+- Search
+- Select
+- Dropdown
+- Modal
+- Drawer
+- Toast
+- Alert
+- Tabs
+- Accordion
+- Pagination
+- Breadcrumb
+- Skeleton
+- Empty State
+- Error State
+- Loader
+
+تمام Components:
+
+```text
+Light
+Dark
+Mobile
+Tablet
+Desktop
+Accessibility
+```
+
+را پشتیبانی می‌کنند.
+
+---
+
+# PHASE 04 — Global UI State Architecture
+
+### هدف
+
+ساخت زبان مشترک Stateهای کل سایت.
+
+### شامل
+
+- Loading
+- Skeleton
+- Empty
+- Error
+- Success
+- Warning
+- Info
+- Partial Failure
+- Retry
+- Offline
+- Timeout
+- Network Error
+- Form Error
+- Validation
+- Disabled
+- Processing
+
+### HTTP/Error Pages
+
+- 400
+- 401
+- 403
+- 404
+- 405
+- 408
+- 409
+- 422
+- 429
+- 500
+- 502
+- 503
+- 504
+- Maintenance
+- Offline
+
+---
+
+# PHASE 05 — Landing Page / index.php
+
+## مهم‌ترین Phase سایت
+
+Landing قبل از تمام صفحات اصلی طراحی و نهایی می‌شود.
+
+هدف:
+
+> ساخت ویترین Premium و قابل اعتماد Nivad.
+
+---
+
+## ساختار Landing
+
+```text
+Header
+↓
+Hero
+↓
+Smart Product Finder
+↓
+Featured Categories
+↓
+Compatibility Engine
+↓
+Smart Recommendations
+↓
+Complete Your Setup
+↓
+Smart Setup Builder
+↓
+Budget Optimizer
+↓
+Smart Bundle & Discount
+↓
+Featured / Popular Products
+↓
+Discovery / Collections
+↓
+Why This Product
+↓
+Compatibility Confidence
+↓
+Smart Alternatives
+↓
+Price Drop / Back-in-Stock
+↓
+Trust & Value Proposition
+↓
+Buying Guide
+↓
+Final CTA
+↓
+Footer
+```
+
+---
+
+## قابلیت‌های هوشمند داخل Landing
+
+### Smart Product Finder
+
+CTA:
+
+> محصول مناسب من را پیدا کن
+
+---
+
+### Compatibility Engine
+
+CTA:
+
+> سازگاری دستگاه من را بررسی کن
+
+---
+
+### Smart Setup Builder
+
+CTA:
+
+> ست خرید خودم را بساز
+
+---
+
+### Complete Your Setup
+
+CTA:
+
+> ست من را کامل کن
+
+---
+
+### Budget Optimizer
+
+CTA:
+
+> با بودجه من بهترین ست را پیدا کن
+
+---
+
+### Smart Bundle & Discount
+
+CTA:
+
+> ست پیشنهادی را ببین
+
+---
+
+### Smart Recommendations
+
+در Product Card:
+
+- Why this product
+- Compatibility
+- Confidence
+- Smart Alternative
+
+---
+
+### Smart Comparison
+
+CTA:
+
+> محصولات را هوشمند مقایسه کن
+
+---
+
+### Price Drop
+
+CTA:
+
+> کاهش قیمت را به من اطلاع بده
+
+---
+
+### Back-in-Stock
+
+CTA:
+
+> موجود شدن را به من اطلاع بده
+
+---
+
+### Recently Selected Device
+
+فقط در صورت وجود User State.
+
+---
+
+## Landing Design Requirements
+
+Landing باید از ابتدا:
+
+```text
+Light
+Dark
+Mobile
+Tablet
+Desktop
+Accessible
+Fast
+Responsive
+```
+
+باشد.
+
+تمام Sectionها باید به Design System متصل باشند.
+
+---
+
+# PHASE 06 — Global Shell & Navigation
+
+### هدف
+
+ساخت Shell نهایی سایت بعد از تثبیت Landing.
+
+### شامل
+
+- Header
+- Navigation
+- Search
+- Theme Switcher
+- Account
+- Wishlist
+- Cart
+- Mobile Navigation
+- Tablet Navigation
+- Desktop Navigation
+
+---
+
+# PHASE 07 — Category / Brand / Discovery
+
+### هدف
+
+طراحی تجربه کشف محصولات.
+
+### شامل
+
+- Category
+- Brand
+- Discovery
+- Collections
+- Filters
+- Navigation
+- Empty/Error/Loading States
+
+---
+
+# PHASE 08 — Product Listing System
+
+### هدف
+
+ساخت Catalog Experience حرفه‌ای.
+
+### شامل
+
+- Product Grid
+- Filters
+- Sort
+- Pagination
+- Product Card
+- Price
+- Availability
+- Wishlist
+- Quick Actions
+- Loading
+- Empty
+- Error
+
+---
+
+# PHASE 09 — Search Experience
+
+### هدف
+
+تبدیل Search به یک تجربه سریع و هوشمند.
+
+### شامل
+
+- Search Input
+- Suggestions
+- Recent Search
+- Results
+- Empty Search
+- No Results
+- Loading
+- Filters
+- Search State
+- Error
+
+---
+
+# PHASE 10 — Product Detail
+
+### هدف
+
+ساخت مهم‌ترین صفحه فروش محصول.
+
+### شامل
+
+- Gallery
+- Product Information
+- Price
+- Availability
+- Variants
+- Compatibility
+- Recommendations
+- Reviews
+- Questions
+- Alternatives
+- Related Products
+- Add to Cart
+- Wishlist
+- Loading/Error States
+
+---
+
+# PHASE 11 — Review & Q&A
+
+### هدف
+
+ساخت سیستم اعتماد اجتماعی.
+
+### شامل
+
+- Reviews
+- Ratings
+- Questions
+- Answers
+- Empty
+- Loading
+- Error
+- Form States
+- Success
+- Validation
+
+---
+
+# PHASE 12 — Existing Compatibility Audit & Upgrade
+
+### هدف
+
+ابتدا قابلیت Compatibility فعلی پروژه بررسی می‌شود.
+
+هیچ چیزی از صفر ساخته نمی‌شود مگر اینکه Audit نشان دهد لازم است.
+
+---
+
+# PHASE 13 — Compatibility Engine
+
+### هدف
+
+تبدیل Compatibility به یکی از Signature Features Nivad.
+
+### شامل
+
+- Device Selection
+- Compatibility Result
+- Compatible
+- Incompatible
+- Conditional
+- Confidence
+- Reason
+- Alternatives
+- Recovery
+
+---
+
+# PHASE 14 — Smart Product Finder
+
+### هدف
+
+کمک به کاربر برای رسیدن به محصول مناسب.
+
+### Flow
+
+```text
+Need
+↓
+Questions
+↓
+Requirements
+↓
+Products
+↓
+Recommendation
+```
+
+---
+
+# PHASE 15 — Existing Setup Audit & Upgrade
+
+بررسی Setup فعلی پروژه و تعیین اینکه چه بخش‌هایی موجود، ناقص یا نیازمند ارتقا هستند.
+
+---
+
+# PHASE 16 — Smart Setup Builder
+
+### هدف
+
+ساخت تجربه ساخت ست خرید.
+
+```text
+Device
+↓
+Needs
+↓
+Compatible Products
+↓
+Setup
+↓
+Budget
+↓
+Final Setup
+```
+
+---
+
+# PHASE 17 — Complete Your Setup
+
+### هدف
+
+پیشنهاد محصولات مکمل برای تکمیل خرید.
+
+---
+
+# PHASE 18 — Smart Comparison
+
+### هدف
+
+مقایسه قابل فهم محصولات.
+
+### شامل
+
+- Specs
+- Price
+- Compatibility
+- Pros
+- Differences
+- Recommendation
+
+---
+
+# PHASE 19 — Smart Alternative
+
+### هدف
+
+وقتی محصول مناسب نیست یا گزینه بهتری وجود دارد:
+
+```text
+Current Product
+↓
+Reason
+↓
+Alternative
+```
+
+---
+
+# PHASE 20 — Budget Optimizer
+
+### هدف
+
+پیدا کردن بهترین ترکیب با بودجه کاربر.
+
+```text
+Budget
+↓
+Requirements
+↓
+Compatible Products
+↓
+Optimization
+↓
+Best Setup
+```
+
+---
+
+# PHASE 21 — Smart Bundle & Discount
+
+### هدف
+
+ساخت Bundleهای هوشمند و نمایش ارزش اقتصادی آنها.
+
+---
+
+# PHASE 22 — Recommendation Reason & Compatibility Confidence
+
+### هدف
+
+اعتمادسازی در Recommendation.
+
+کاربر باید بفهمد:
+
+```text
+Why this product?
+Why compatible?
+How confident?
+Why this alternative?
+```
+
+---
+
+# PHASE 23 — Price Drop & Back-in-Stock
+
+### هدف
+
+ساخت تجربه Notification برای:
+
+- کاهش قیمت
+- موجود شدن
+
+---
+
+# PHASE 24 — Recently Selected Device
+
+### هدف
+
+بازگرداندن Context کاربر بدون ایجاد اصطکاک.
+
+---
+
+# PHASE 25 — Cart
+
+### هدف
+
+ساخت تجربه Cart حرفه‌ای.
+
+### شامل
+
+- Empty
+- Loading
+- Updating
+- Quantity
+- Remove
+- Price Change
+- Out of Stock
+- Recommendations
+- Complete Setup
+- Bundle
+- Error
+- Recovery
+
+---
+
+# PHASE 26 — Wishlist
+
+### هدف
+
+ساخت Wishlist کامل.
+
+### شامل
+
+- Empty
+- Loading
+- Remove
+- Add
+- Price Drop
+- Back-in-Stock
+- Product State
+- Error
+
+---
+
+# PHASE 27 — Checkout
+
+### هدف
+
+ساخت امن‌ترین و ساده‌ترین Flow خرید.
+
+```text
+Cart
+↓
+Address
+↓
+Shipping
+↓
+Review
+↓
+Payment
+```
+
+---
+
+# PHASE 28 — Payment Experience
+
+### شامل
+
+- Processing
+- Success
+- Failed
+- Cancelled
+- Timeout
+- Retry
+- Recovery
+- Order Result
+
+---
+
+# PHASE 29 — Authentication
+
+### شامل
+
+- Login
+- Register
+- Forgot Password
+- Reset Password
+- Verify Email
+- Validation
+- Loading
+- Success
+- Error
+- Session Expired
+
+---
+
+# PHASE 30 — Account Experience
+
+### شامل
+
+- Dashboard
+- Profile
+- Addresses
+- Orders
+- Order Detail
+- Reviews
+- Returns
+- Notifications
+- Wishlist
+- Security
+
+---
+
+# PHASE 31 — Content & Support
+
+### صفحات
+
+- About
+- Contact
+- FAQ
+- Privacy
+- Terms
+- Shipping
+- Returns
+- Buying Guide
+
+---
+
+# PHASE 32 — Cross-Page Smart State
+
+### هدف
+
+اتصال تمام قابلیت‌های هوشمند.
+
+```text
+Landing
+↓
+Search
+↓
+Listing
+↓
+Product
+↓
+Compatibility
+↓
+Setup
+↓
+Cart
+↓
+Checkout
+↓
+Account
+```
+
+Context کاربر نباید بدون دلیل از بین برود.
+
+---
+
+# PHASE 33 — Media Experience
+
+### شامل
+
+- Product Images
+- Gallery
+- Thumbnail
+- Lazy Loading
+- Placeholder
+- Broken Image
+- Avatar
+- Responsive Images
+- Loading
+- Failure
+
+---
+
+# PHASE 34 — Frontend JavaScript Integrity
+
+### بررسی
+
+- Modules
+- Imports
+- Exports
+- Events
+- DOM
+- State
+- LocalStorage
+- Error Handling
+- Race Conditions
+- Duplicate Listeners
+
+---
+
+# PHASE 35 — Route & Link Integrity
+
+بررسی تمام:
+
+- Links
+- CTA
+- Forms
+- Routes
+- Redirects
+- Back Navigation
+- Broken Routes
+- Unauthorized Routes
+
+---
+
+# PHASE 36 — Admin Design System
+
+### هدف
+
+ساخت Design System مخصوص Admin با همان DNA بصری Nivad.
+
+پشتیبانی از:
+
+```text
+Light
+Dark
+Responsive
+Accessibility
+```
+
+---
+
+# PHASE 37 — Admin Dashboard
+
+### شامل
+
+- Metrics
+- Charts
+- Cards
+- Tables
+- Activity
+- Alerts
+- Empty
+- Loading
+- Error
+- Responsive
+
+---
+
+# PHASE 38 — Admin Data Experience
+
+### شامل
+
+- Tables
+- Filters
+- Search
+- Pagination
+- Forms
+- Bulk Actions
+- Empty
+- Loading
+- Error
+- Permissions
+
+---
+
+# PHASE 39 — Responsive Master Audit
+
+بررسی کامل:
+
+```text
+Mobile ≤600
+Tablet 601–1009
+Desktop ≥1010
+```
+
+هیچ صفحه‌ای خارج از این Audit باقی نمی‌ماند.
+
+---
+
+# PHASE 40 — Accessibility Master Audit
+
+بر اساس استاندارد Accessibility پروژه:
+
+- Keyboard
+- Focus
+- Focus Visible
+- Screen Reader
+- ARIA
+- Contrast
+- Touch Target
+- Modal Focus
+- Escape
+- Reduced Motion
+- Error Announcement
+- Loading Announcement
+
+---
+
+# PHASE 41 — Motion & Interaction Audit
+
+### هدف
+
+بررسی کیفیت تعاملات از قبل طراحی‌شده.
+
+### شامل
+
+- Hover
+- Focus
+- Press
+- Transition
+- Enter
+- Exit
+- Drawer
+- Modal
+- Toast
+- Dropdown
+- Accordion
+- Skeleton
+- Reduced Motion
+
+بدون اضافه کردن افکت غیرضروری.
+
+---
+
+# PHASE 42 — Performance UX
+
+### شامل
+
+- Images
+- Fonts
+- CSS
+- JS
+- Lazy Loading
+- Skeleton
+- Loading Strategy
+- Perceived Performance
+- Mobile Performance
+- Interaction Performance
+
+---
+
+# PHASE 43 — Offline / Network / Recovery
+
+### شامل
+
+- Offline
+- Online Recovery
+- Timeout
+- Retry
+- API Failure
+- Server Unavailable
+- Partial Failure
+- Session Recovery
+
+---
+
+# PHASE 44 — Placeholder & Hardcoded Content Cleanup
+
+حذف و اصلاح:
+
+- Fake Content
+- Placeholder
+- Dummy Links
+- Unfinished CTA
+- Hardcoded UI Content غیرمجاز
+- Test Text
+
+---
+
+# PHASE 45 — E2E Customer Journey
+
+```text
+Landing
+→ Search
+→ Listing
+→ Product
+→ Compatibility
+→ Setup
+→ Cart
+→ Checkout
+→ Payment
+```
+
+---
+
+# PHASE 46 — E2E Account Journey
+
+```text
+Register
+→ Login
+→ Account
+→ Orders
+→ Order Detail
+→ Review
+→ Return
+→ Notification
+```
+
+---
+
+# PHASE 47 — Smart Commerce Regression
+
+تمام قابلیت‌های Smart Commerce با یکدیگر تست می‌شوند.
+
+---
+
+# PHASE 48 — Full Frontend Integration Audit
+
+بررسی ارتباط کامل:
+
+```text
+CSS
+JS
+HTML
+Routes
+Components
+Pages
+States
+Commerce
+Smart Features
+Themes
+Responsive
+```
+
+---
+
+# PHASE 49 — Pre-Production SEO & Security Audit
+
+در این Phase فقط Frontend/Production Audit انجام می‌شود.
+
+Backend همچنان Freeze است.
+
+---
+
+# PHASE 50 — Production Hardening
+
+### شامل
+
+- Asset Integrity
+- Error Handling
+- Performance
+- Responsive
+- Theme
+- Accessibility
+- Production Configuration
+- Final UI Stability
+
+---
+
+# PHASE 51 — Final UI/UX Gate
+
+تمام سایت بر اساس UI/UX Standard پروژه بررسی می‌شود.
+
+تمرکز:
+
+```text
+Clarity
+Consistency
+Hierarchy
+Trust
+Usability
+Accessibility
+Recovery
+Feedback
+Performance
+```
+
+---
+
+# PHASE 52 — Future Capability Foundation
+
+آماده‌سازی معماری Frontend برای:
+
+- AI Shopping Assistant
+- Visual Search
+- Community Setups
+- Smart Upgrade
+- Conversational Shopping
+- Buy Again
+- Shareable Setup
+- User-created Setups
+
+این قابلیت‌ها فعلاً جزء Launch Scope نیستند.
+
+---
+
+# PHASE 53 — Final Regression
+
+Regression کامل تمام Frontend.
+
+---
+
+# PHASE 54 — Final Frontend Audit
+
+Audit نهایی تمام صفحات، Components، States، Themes و Features.
+
+---
+
+# PHASE 55 — Launch Readiness
+
+بررسی نهایی:
+
+- UI
+- UX
+- Light Theme
+- Dark Theme
+- Responsive
+- Accessibility
+- Performance
+- Routes
+- States
+- Commerce
+- Smart Features
+- Error Handling
+- Recovery
+- Content
+
+---
+
+# PHASE 56 — FINAL FRONTEND PASS / LOCK
+
+اگر تمام مراحل PASS باشند:
+
+```text
+FINAL FRONTEND PASS
+FINAL FRONTEND LOCK
+```
+
+---
+
+# قانون نهایی Nivad Frontend
+
+```text
+Design Right First.
+Build Right Once.
+Test Everything.
+Lock What Is Correct.
+```
+
+هیچ Feature بدون Audit وارد پروژه نمی‌شود.
+
+هیچ Design بدون Design System ساخته نمی‌شود.
+
+هیچ Page بدون Light/Dark بررسی نمی‌شود.
+
+هیچ Section بدون Responsive بررسی نمی‌شود.
+
+هیچ Interaction بدون Stateهای لازم طراحی نمی‌شود.
+
+هیچ Phaseای با Polish جداگانه تکرار نمی‌شود.
+
+و هیچ چیزی که در پروژه واقعی اثبات نشده باشد، حدس زده نمی‌شود.

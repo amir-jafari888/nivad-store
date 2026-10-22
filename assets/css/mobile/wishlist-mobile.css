@@ -1,0 +1,91 @@
+.customer-shop[data-customer-page="wishlist"] {
+  width: 100%;
+  padding: var(--spacing-6) var(--spacing-4);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__head {
+  margin-bottom: var(--spacing-5);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__head h1 {
+  color: var(--wishlist-title-color);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__list {
+  display: grid;
+  gap: var(--wishlist-item-gap);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__item {
+  display: grid;
+  gap: var(--spacing-3);
+  padding: var(--wishlist-item-padding);
+  border: 1px solid var(--wishlist-item-border);
+  border-radius: var(--wishlist-item-radius);
+  background: var(--wishlist-item-background);
+  transition:
+    background-color var(--wishlist-transition),
+    border-color var(--wishlist-transition);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__item-content {
+  min-width: 0;
+}
+
+.customer-shop[data-customer-page="wishlist"]
+  .customer-shop__item-content
+  strong {
+  display: block;
+  color: var(--wishlist-title-color);
+}
+
+.customer-shop[data-customer-page="wishlist"]
+  .customer-shop__item-content
+  small {
+  display: block;
+  margin-top: var(--spacing-1);
+  color: var(--wishlist-meta-color);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__item-content p {
+  margin-top: var(--spacing-2);
+  color: var(--wishlist-meta-color);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__item-price {
+  color: var(--wishlist-price-color);
+  font-weight: var(--font-weight-bold);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__link,
+.customer-shop[data-customer-page="wishlist"] .customer-shop__remove {
+  min-height: var(--wishlist-action-height);
+  border-radius: var(--wishlist-action-radius);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__remove {
+  border: 1px solid var(--wishlist-danger-color);
+  color: var(--wishlist-danger-color);
+}
+
+.customer-shop[data-customer-page="wishlist"] .customer-shop__empty {
+  padding: var(--wishlist-empty-padding);
+  text-align: center;
+  border: 1px dashed var(--wishlist-item-border);
+  border-radius: var(--wishlist-item-radius);
+  color: var(--wishlist-meta-color);
+}
+
+.customer-shop[data-customer-page="wishlist"]
+  [data-wishlist-remove]:focus-visible,
+.customer-shop[data-customer-page="wishlist"]
+  .customer-shop__link:focus-visible {
+  outline: 2px solid var(--wishlist-focus-color);
+  outline-offset: 2px;
+}

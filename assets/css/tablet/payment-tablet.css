@@ -1,0 +1,16 @@
+.payment-result {
+  padding: var(--spacing-10) var(--spacing-6);
+}
+
+.payment-result__state {
+  width: 72px;
+  height: 72px;
+}
+
+.payment-result__title {
+  font-size: 1.75rem;
+}
+
+.payment-result__message {
+  max-width: 42rem;
+}

@@ -1,0 +1,28 @@
+.product-alternative {
+  gap: var(--spacing-6);
+  margin-top: var(--alternative-page-gap);
+  padding: var(--spacing-6);
+}
+
+.product-alternative__list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-5);
+}
+
+.product-alternative-card {
+  grid-template-columns: 1fr;
+}
+
+.product-alternative-card__media,
+.product-alternative-card__media img {
+  min-height: 180px;
+  height: 180px;
+}
+
+.product-alternative-card__actions {
+  grid-template-columns: 1fr 1fr;
+}
+
+.product-alternative-card__body {
+  min-width: 0;
+}

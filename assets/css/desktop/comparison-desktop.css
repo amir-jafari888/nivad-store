@@ -1,0 +1,42 @@
+.comparison-page {
+  padding: var(--spacing-10) var(--spacing-6);
+}
+
+.comparison-header {
+  flex-direction: row;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.comparison-header h1 {
+  font-size: var(--font-size-3xl);
+}
+
+.comparison-products {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.comparison-product-card {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.comparison-product-card__media {
+  min-height: 220px;
+}
+
+.comparison-compatibility-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.comparison-table {
+  min-width: 100%;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: var(--spacing-4);
+}

@@ -1,0 +1,28 @@
+.budget-optimizer {
+  padding-block: var(--budget-optimizer-page-padding-tablet);
+}
+
+.budget-optimizer__form {
+  grid-template-columns: 1fr 1fr auto;
+  align-items: end;
+  padding: var(--spacing-5);
+}
+
+.budget-optimizer__submit {
+  width: auto;
+  padding-inline: var(--spacing-6);
+}
+
+.budget-optimizer__summary {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.budget-optimizer__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.budget-optimizer__cart,
+.budget-optimizer__reset {
+  width: auto;
+}

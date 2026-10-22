@@ -1,0 +1,370 @@
+# ============================================================
+# NIVAD — SECURITY-FIRST GIT IGNORE
+# Root: project root, beside index.php
+# Goal: prevent secrets/private data from entering GitHub
+# ============================================================
+
+
+# ============================================================
+# 01. ENVIRONMENT FILES
+# ============================================================
+
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+# Local environment overrides
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+
+# ============================================================
+# 02. DATABASE CONFIGURATION — NIVAD
+# ============================================================
+
+# Actual local database configuration
+/config/database.php
+
+# Local-only database overrides
+/config/database.local.php
+/config/database.production.php
+/config/database.staging.php
+/config/database.development.php
+
+# Database dumps and exports
+*.dump
+*.dump.gz
+*.dump.zip
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+*.db
+*.db3
+*.mdb
+
+# Database backup directories
+/database/dumps/
+/database/backups/
+/database/exports/
+/db-dumps/
+/db-backups/
+
+
+# ============================================================
+# 03. PRIVATE KEYS AND CREDENTIAL FILES
+# ============================================================
+
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.ppk
+
+# SSH private keys
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+id_xmss
+
+# Credential files
+/credentials.json
+/credentials.yaml
+/credentials.yml
+/credentials.xml
+/client-secret.json
+/client_secret.json
+/secrets.json
+/secrets.yaml
+/secrets.yml
+
+# Cloud/service-account credentials
+service-account*.json
+service_account*.json
+*-service-account.json
+*-service_account.json
+google-credentials*.json
+google_credentials*.json
+firebase-adminsdk*.json
+*-firebase-adminsdk*.json
+
+# Private credential directories
+/secrets/
+/secret/
+/private-keys/
+/private/
+/certs-private/
+
+
+# ============================================================
+# 04. LOCAL / SECRET CONFIGURATION OVERRIDES
+# ============================================================
+
+# Explicit secret/credential configuration files
+/config/*secret*.php
+/config/*secret*.json
+/config/*secret*.yaml
+/config/*secret*.yml
+
+/config/*credential*.php
+/config/*credential*.json
+/config/*credential*.yaml
+/config/*credential*.yml
+
+/config/*credentials*.php
+/config/*credentials*.json
+/config/*credentials*.yaml
+/config/*credentials*.yml
+
+# Local-only configuration files
+/config/*.local.php
+/config/*.local.json
+/config/*.local.yaml
+/config/*.local.yml
+
+# Local override suffixes
+*.local.php
+*.local.json
+*.local.yaml
+*.local.yml
+
+
+# ============================================================
+# 05. KNOWN NIVAD TEST / TEMPORARY FILES
+# ============================================================
+
+# Contains hard-coded test credentials
+/create-test-user.php
+
+# Temporary user/admin creation scripts
+/create-user.php
+/create-admin.php
+/seed.php
+/seeder.php
+
+# Temporary phase test artifacts at project root
+/test-phase*.php
+/test-phase*.html
+/test-phase*.js
+
+# Root-level scratch/debug scripts
+/debug.php
+/test.php
+/temp.php
+/tmp.php
+
+# Exact known phase backup
+/routes/api.php.phase14-backup-20261018-155134
+
+# Phase backup artifacts
+*.phase*-backup*
+*.phase*-backup-*
+
+
+# ============================================================
+# 06. BACKUPS AND TEMPORARY COPIES
+# ============================================================
+
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+*.tmp
+*.temp
+*.swp
+*.swo
+*.rej
+
+# Backup/snapshot directories
+/backups/
+/backup/
+/snapshots/
+/snapshot/
+
+
+# ============================================================
+# 07. RUNTIME / SESSION / CACHE / LOG DATA
+# ============================================================
+
+/runtime/
+/cache/
+/tmp/
+/temp/
+/logs/
+/sessions/
+
+*.log
+*.log.*
+*.pid
+*.pid.lock
+
+# PHP/session error artifacts
+sess_*
+php_errors.log
+error_log
+
+
+# ============================================================
+# 08. USER UPLOADS AND PRIVATE GENERATED DATA
+# ============================================================
+
+/uploads/
+/upload/
+
+/storage/uploads/
+/storage/private/
+/storage/runtime/
+/storage/sessions/
+/storage/cache/
+/storage/logs/
+
+
+# ============================================================
+# 09. DEPENDENCIES
+# ============================================================
+
+# Node.js installed dependencies
+/node_modules/
+
+# Composer installed dependencies
+/vendor/
+
+# Package-manager caches
+/.npm/
+/.pnpm-store/
+/.yarn/cache/
+
+# Composer executable
+/composer.phar
+
+
+# ============================================================
+# 10. BUILD / GENERATED OUTPUT
+# ============================================================
+
+/dist/
+/build/
+/out/
+/coverage/
+
+# NOTE:
+# Do not globally ignore *.map.
+# Nivad contains Swiper assets/source maps that may be required.
+
+
+# ============================================================
+# 11. EDITOR / IDE FILES
+# ============================================================
+
+/.vscode/
+/.idea/
+
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+.project
+.classpath
+.settings/
+
+
+# ============================================================
+# 12. OPERATING SYSTEM FILES
+# ============================================================
+
+.DS_Store
+.DS_Store?
+._*
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+$RECYCLE.BIN/
+
+
+# ============================================================
+# 13. LOCAL XAMPP / DEVELOPMENT ARTIFACTS
+# ============================================================
+
+*.stackdump
+
+# Local server/database logs
+/apache/logs/
+/mysql/log/
+/php/logs/
+
+
+# ============================================================
+# 14. ARCHIVES AND EXPORTED PROJECT COPIES
+# ============================================================
+
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+
+
+# ============================================================
+# 15. TEST / TOOL CACHE FILES
+# ============================================================
+
+.phpunit.result.cache
+.phpunit.cache
+.php-cs-fixer.cache
+
+
+# ============================================================
+# 16. LOCAL DEPLOYMENT OVERRIDES
+# ============================================================
+
+/.deploy/
+/deployment-local/
+/deploy-local/
+
+deploy.local.*
+deployment.local.*
+
+
+# ============================================================
+# 17. IMPORTANT — KEEP VALID NIVAD SOURCE TRACKABLE
+# ============================================================
+
+# Do NOT globally ignore:
+#
+# app/
+# admin/
+# api/
+# assets/
+# config/
+# customer/
+# pages/
+# partials/
+# routes/
+# swiper/
+#
+# Do NOT globally ignore:
+#
+# *.php
+# *.js
+# *.css
+# *.json
+# *token*
+# *auth*
+# *security*
+# *session*
+#
+# package.json and package-lock.json must remain trackable.
+# Application security/authentication source code must remain
+# trackable unless a specific file contains actual secret data.

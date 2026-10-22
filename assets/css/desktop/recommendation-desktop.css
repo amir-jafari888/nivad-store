@@ -1,0 +1,10 @@
+[data-recommendation] {
+  gap: var(--spacing-6);
+}
+[data-recommendation] .recommendation__summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.recommendation__alternative {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}

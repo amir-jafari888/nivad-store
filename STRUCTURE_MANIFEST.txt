@@ -1,0 +1,5 @@
+NIVAD CLEAN PROJECT SKELETON
+
+Existing frontend preserved from the uploaded project.
+All newly created PHP files are intentionally empty placeholders.
+Fill them only according to BACKEND_ROADMAP.md.
