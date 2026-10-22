@@ -10,7 +10,7 @@ include_once __DIR__ . '/../../partials/header.php';
   </header>
   <section class="auth-card" aria-labelledby="auth-forgot-title">
     <h2 id="auth-forgot-title" class="auth-card__title">درخواست بازیابی</h2>
-    <form class="auth-form" data-auth-forgot-form novalidate>
+    <form class="auth-form" data-auth-forgot-form>
       <label for="auth-forgot-email">ایمیل
         <input id="auth-forgot-email" type="email" name="email" autocomplete="email" maxlength="255" required>
       </label>
