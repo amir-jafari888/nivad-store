@@ -289,7 +289,7 @@ const cart = () => {
           await apiRequest(`/cart-items/${serverItem.id}`, {
             method: "PUT",
             body: JSON.stringify({
-              quantity: Number(localItem.quantity),
+              quantity: Math.max(Number(serverItem.quantity || 1), Number(localItem.quantity || 1)),
             }),
           });
 
@@ -307,24 +307,7 @@ const cart = () => {
         });
       }
 
-      for (const serverItem of serverItems) {
-        const variantId = Number(
-          serverItem.variant_id ??
-            serverItem.variantId ??
-            serverItem.variant?.id ??
-            0,
-        );
-
-        const exists = localItems.some(
-          (item) => Number(item.variantId) === variantId,
-        );
-
-        if (!exists) {
-          await apiRequest(`/cart-items/${serverItem.id}`, {
-            method: "DELETE",
-          });
-        }
-      }
+      // Keep server-only items. A local cache may be empty or stale and must not delete a customer cart.
 
       const refreshed = await apiRequest("/cart");
 

@@ -86,6 +86,8 @@ $add('Setup Builder revalidates selected product and variant IDs against live ca
 $add('Setup Builder uses deployment base URL and is safe on unrelated pages', str_contains($setupJs, 'window.NIVAD_BASE_URL || ""') && preg_match('/if \(!root\)\s*\{\s*return;/', $setupJs) === 1);
 $add('Setup Builder exports an initializer compatible with main.js', str_contains($setupJs, 'const setupBuilder = () => {') && str_contains($setupJs, 'export default setupBuilder;'));
 $add('Cart sync updates server item through CSRF-aware API helper without undefined variables', str_contains($cartJs, 'apiRequest(`/cart-items/${serverItem.id}`') && !str_contains($cartJs, 'csrfToken') && !str_contains($cartJs, '`/cart-items/${item.id}`'));
+$add('Cart reconciliation never deletes server-only items from a stale local cache', str_contains($cartJs, 'Keep server-only items') && !str_contains($cartJs, 'await apiRequest(`/cart-items/${serverItem.id}`, {\n            method: "DELETE"'));
+$add('Cart reconciliation preserves the greater server/local quantity', str_contains($cartJs, 'Math.max(Number(serverItem.quantity || 1), Number(localItem.quantity || 1))'));
 $add('Product Detail imports shared context helper', str_contains($productJs, 'from "./commerce-context.js"'));
 $add('Product and selected variant IDs are recorded', str_contains($productJs, 'id: Number(product.id || productId)') && str_contains($productJs, 'variantId: Number(selectedVariant?.id || 0)'));
 $add('Compatibility stores selected device ID, not a result assertion', str_contains($productJs, 'compatibility: { deviceId }'));
