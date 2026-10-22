@@ -1,3 +1,5 @@
+import { updateCommerceContext } from "./commerce-context.js";
+
 const API_BASE = "/nivad-store-/api/index.php?path=";
 
 const STEPS = Object.freeze([
@@ -197,12 +199,24 @@ function getItems(payload) {
   return [];
 }
 
+function persistSetupContext() {
+  updateCommerceContext({ setup: {
+    step: state.currentStep,
+    deviceId: Number(state.device?.id || 0),
+    needs: state.needs,
+    selectedProductIds: state.selectedProducts.map((product) => Number(product.id || 0)),
+    selectedVariantIds: state.selectedProducts.map((product) => Number(product.variantId || 0)),
+    budget: state.budget,
+  } });
+}
+
 function setStep(step) {
   if (!STEPS.includes(step)) {
     return;
   }
 
   state.currentStep = step;
+  persistSetupContext();
 
   root.querySelectorAll("[data-setup-panel]").forEach((panel) => {
     panel.hidden = panel.dataset.setupPanel !== step;
@@ -370,6 +384,7 @@ function toggleNeed(needId) {
   renderProducts();
 
   updateNavigation();
+  persistSetupContext();
 }
 
 async function selectDevice(device) {
@@ -404,6 +419,7 @@ async function selectDevice(device) {
   renderComposition();
 
   updateNavigation();
+  persistSetupContext();
 
   if (changed) {
     await loadProducts();
@@ -616,6 +632,7 @@ function toggleProduct(product) {
   renderProducts();
   renderComposition();
   updateNavigation();
+  persistSetupContext();
 }
 
 function removeProduct(productId) {
@@ -626,6 +643,7 @@ function removeProduct(productId) {
   renderProducts();
   renderComposition();
   updateNavigation();
+  persistSetupContext();
 }
 
 function replaceProduct(productId, replacement) {
@@ -636,6 +654,7 @@ function replaceProduct(productId, replacement) {
   renderProducts();
   renderComposition();
   updateNavigation();
+  persistSetupContext();
 }
 
 function isSetupComplete() {
@@ -926,6 +945,7 @@ budgetInput?.addEventListener("input", () => {
   const value = numberOf(budgetInput.value);
 
   state.budget = value !== null && value >= 0 ? value : null;
+  persistSetupContext();
 
   renderBudget();
 });

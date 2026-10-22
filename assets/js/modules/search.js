@@ -1,3 +1,5 @@
+import { updateCommerceContext } from "./commerce-context.js";
+
 const search = () => {
   const form = document.querySelector("[data-search-form]");
   const input = document.querySelector("[data-search-input]");
@@ -465,6 +467,8 @@ const search = () => {
     }
 
     saveRecentSearch(value);
+
+    updateCommerceContext({ search: { query: value, returnPath: `${window.location.pathname}${window.location.search}` } });
 
     close();
 
