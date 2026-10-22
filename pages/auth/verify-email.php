@@ -10,7 +10,7 @@ include_once __DIR__ . '/../../partials/header.php';
   </header>
   <section class="auth-card" aria-labelledby="auth-verify-title">
     <h2 id="auth-verify-title" class="auth-card__title">تأیید ایمیل</h2>
-    <form class="auth-form" data-auth-verify-form novalidate>
+    <form class="auth-form" data-auth-verify-form>
       <label for="auth-verify-token">توکن تأیید
         <input id="auth-verify-token" type="text" name="token" autocomplete="off" required>
       </label>
@@ -18,7 +18,7 @@ include_once __DIR__ . '/../../partials/header.php';
       <p class="auth-message" data-auth-message aria-live="polite" role="status"></p>
     </form>
     <div class="auth-divider" aria-hidden="true"></div>
-    <form class="auth-form" data-auth-resend-form novalidate>
+    <form class="auth-form" data-auth-resend-form>
       <label for="auth-resend-email">ایمیل برای ارسال مجدد
         <input id="auth-resend-email" type="email" name="email" autocomplete="email" maxlength="190" required>
       </label>
