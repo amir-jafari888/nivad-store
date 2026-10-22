@@ -124,162 +124,89 @@ const customerCommerce = () => {
 
   const initNotifications = () => {
     const wrapper = document.querySelector("[data-account-notifications]");
-
     if (!wrapper) return;
-
     const list = wrapper.querySelector("[data-notifications-list]");
-
+    if (!list) return;
     const load = async () => {
-      const result = await request("/notifications");
-
-      const items = result?.data?.items || [];
-
-      list.innerHTML = items.length
-        ? items
-            .map(
-              (item) => `
-                  <article
-                    class="account-notification"
-                    data-notification-id="${escape(item.id)}"
-                  >
-                    <strong>
-                      ${escape(item.title)}
-                    </strong>
-
-                    <p>
-                      ${escape(item.body)}
-                    </p>
-
-                    <span>
-                      ${escape(item.createdAt)}
-                    </span>
-
-                    ${
-                      item.isRead
-                        ? ""
-                        : `
-                          <button
-                            type="button"
-                            data-notification-read="${escape(item.id)}"
-                          >
-                            خوانده شد
-                          </button>
-                        `
-                    }
-                  </article>
-                `,
-            )
-            .join("")
-        : "<p>اعلانی وجود ندارد.</p>";
+      list.setAttribute("aria-busy", "true");
+      list.textContent = "در حال دریافت اعلان‌ها...";
+      try {
+        const result = await request("/notifications");
+        const items = Array.isArray(result?.data?.items) ? result.data.items : [];
+        list.innerHTML = items.length ? items.map((item) => `
+          <article class="account-notification" data-notification-id="${escape(item.id)}">
+            <strong>${escape(item.title || "اعلان")}</strong>
+            <p>${escape(item.body || item.message || "")}</p>
+            <time datetime="${escape(item.createdAt || item.created_at || "")}">${escape(item.createdAt || item.created_at || "")}</time>
+            ${(item.isRead ?? item.is_read) ? "" : `<button type="button" data-notification-read="${escape(item.id)}">خوانده شد</button>`}
+          </article>`).join("") : "<p>اعلانی وجود ندارد.</p>";
+      } catch (error) { list.textContent = error.message || "دریافت اعلان‌ها ناموفق بود."; }
+      finally { list.removeAttribute("aria-busy"); }
     };
-
     wrapper.addEventListener("click", async (event) => {
-      const button = event.target.closest("[data-notification-read]");
-
-      if (!button) return;
-
+      const target = event.target instanceof Element ? event.target : null;
+      const button = target?.closest("[data-notification-read]");
+      if (!button || button.disabled) return;
       const id = Number(button.dataset.notificationRead);
-
-      if (!id) return;
-
-      await request(`/notifications/${id}/read`, {
-        method: "PATCH",
-        body: JSON.stringify({}),
-      });
-
-      await load();
+      if (!Number.isSafeInteger(id) || id <= 0) return;
+      button.disabled = true;
+      try { await request(`/notifications/${id}/read`, { method: "PATCH", body: JSON.stringify({}) }); await load(); }
+      catch (error) { button.disabled = false; list.textContent = error.message || "به‌روزرسانی اعلان ناموفق بود."; }
     });
-
-    const readAllButton = wrapper.querySelector(
-      "[data-notifications-read-all]",
-    );
-
-    readAllButton?.addEventListener("click", async () => {
-      await request("/notifications/read-all", {
-        method: "PATCH",
-        body: JSON.stringify({}),
-      });
-
-      await load();
+    wrapper.querySelector("[data-notifications-read-all]")?.addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      if (button.disabled) return;
+      button.disabled = true;
+      try { await request("/notifications/read-all", { method: "PATCH", body: JSON.stringify({}) }); await load(); }
+      catch (error) { list.textContent = error.message || "به‌روزرسانی اعلان‌ها ناموفق بود."; }
+      finally { button.disabled = false; }
     });
-
     load();
   };
 
   const initReviews = () => {
     const wrapper = document.querySelector("[data-account-reviews]");
-
     const form = document.querySelector("[data-account-review-form]");
-
     if (!wrapper) return;
-
+    const feedback = form?.querySelector("[data-review-message]");
     const load = async () => {
-      const result = await request("/reviews/mine");
-
-      const items = result?.data?.items || [];
-
-      wrapper.innerHTML = items.length
-        ? items
-            .map(
-              (item) => `
-                  <article class="account-review">
-                    <h2>
-                      ${escape(item.title || "دیدگاه")}
-                    </h2>
-
-                    <p>
-                      ${escape(item.body)}
-                    </p>
-
-                    <span>
-                      امتیاز:
-                      ${escape(item.rating)}
-                    </span>
-
-                    <span>
-                      وضعیت:
-                      ${escape(item.status)}
-                    </span>
-                  </article>
-                `,
-            )
-            .join("")
-        : "<p>هنوز دیدگاهی ثبت نکرده‌اید.</p>";
+      wrapper.setAttribute("aria-busy", "true");
+      wrapper.textContent = "در حال دریافت دیدگاه‌ها...";
+      try {
+        const result = await request("/reviews/mine");
+        const items = Array.isArray(result?.data?.items) ? result.data.items : [];
+        wrapper.innerHTML = items.length ? items.map((item) => `
+          <article class="account-review"><h2>${escape(item.title || "دیدگاه")}</h2><p>${escape(item.body || "")}</p>
+          <span>امتیاز: ${escape(item.rating ?? "—")}</span><span>وضعیت: ${escape(item.status || "در انتظار بررسی")}</span></article>`).join("") : "<p>هنوز دیدگاهی ثبت نکرده‌اید.</p>";
+      } catch (error) { wrapper.textContent = error.message || "دریافت دیدگاه‌ها ناموفق بود."; }
+      finally { wrapper.removeAttribute("aria-busy"); }
     };
-
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
-
-      const productId = Number(form.elements.productId.value);
-
-      const rating = Number(form.elements.rating.value);
-
-      const title = form.elements.title.value;
-
-      const body = form.elements.body.value;
-
-      const result = await request("/reviews", {
-        method: "POST",
-        body: JSON.stringify({
-          productId,
-          rating,
-          title,
-          body,
-        }),
-      });
-
-      const message = form.querySelector("[data-review-message]");
-
-      if (message) {
-        message.textContent = result?.message || "عملیات انجام شد.";
+      if (!form.reportValidity() || form.dataset.busy === "true") return;
+      const productId = Number(form.elements.productId.value), rating = Number(form.elements.rating.value);
+      if (!Number.isSafeInteger(productId) || productId < 1 || !Number.isInteger(rating) || rating < 1 || rating > 5) {
+        if (feedback) feedback.textContent = "شناسه محصول و امتیاز را بررسی کنید.";
+        return;
       }
-
-      if (result?.data?.review) {
+      form.dataset.busy = "true";
+      const submit = form.querySelector('button[type="submit"]');
+      if (submit) { submit.disabled = true; submit.setAttribute("aria-busy", "true"); }
+      try {
+        const result = await request("/reviews", { method: "POST", body: JSON.stringify({
+          productId, rating, title: form.elements.title.value.trim(), body: form.elements.body.value.trim(),
+        }) });
+        if (!result?.data?.review) throw new Error(result?.message || "ثبت دیدگاه تأیید نشد.");
         form.reset();
+        if (feedback) { feedback.textContent = result.message || "دیدگاه ثبت شد."; feedback.setAttribute("role", "status"); }
         await load();
+      } catch (error) {
+        if (feedback) { feedback.textContent = error.message || "ثبت دیدگاه ناموفق بود."; feedback.setAttribute("role", "alert"); }
+      } finally {
+        form.dataset.busy = "false";
+        if (submit) { submit.disabled = false; submit.removeAttribute("aria-busy"); }
       }
     });
-
     load();
   };
 
