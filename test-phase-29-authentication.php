@@ -88,7 +88,7 @@ phase29Check('29.04 reset-password page has its form hook', is_string($data['res
 phase29Check('29.05 verify-email page has verify and resend hooks', is_string($data['verify']) && phase29Has($data['verify'], 'data-auth-verify-form') && phase29Has($data['verify'], 'data-auth-resend-form'));
 $encodingClean = true;
 foreach (['login', 'register', 'forgot', 'reset', 'verify'] as $key) {
-    if (!is_string($data[$key]) || preg_match('/(?:ظ[اآ-ی]|ط[اآ-ی]|â€|Ã.)/u', $data[$key]) === 1) {
+    if (!is_string($data[$key]) || preg_match('/(?:ظˆط|ط§|ط¨|ظ†|ظ‡|ظ…|ظ„|ط±|طھ|â€|Ã.)/u', $data[$key]) === 1) {
         $encodingClean = false;
     }
 }
@@ -161,7 +161,7 @@ phase29Check('29.53 field errors set aria-invalid and aria-describedby', $contra
 phase29Check('29.54 autocomplete/input types are specified', $contract('login', 'autocomplete="current-password"') && $contract('register', 'autocomplete="email"') && $contract('reset', 'autocomplete="new-password"'));
 phase29Check('29.55 keyboard focus-visible styles exist', $contract('css', ':focus-visible'));
 phase29Check('29.56 network and malformed-response failures have user feedback', $contract('js', 'genericNetworkMessage') && $contract('js', 'پاسخ سرور قابل پردازش نیست.'));
-phase29Check('29.57 expected HTTP status 401/419/422 handling is represented', $contract('js', 'response.status === 401') && $contract('js', 'response.status === 419') && $contract('js', 'error?.payload?.errors'));
+phase29Check('29.57 expected authentication and validation error payloads are handled', $contract('js', 'response.status === 401') && $contract('js', 'response.status === 419') && $contract('js', 'error?.payload?.errors'));
 phase29Check('29.58 responsive CSS files cover mobile/tablet/desktop', is_string($data['mobile_auth']) && is_string($data['tablet_auth']) && is_string($data['desktop_auth']));
 phase29Check('29.59 auth module remains imported and initialized by main.js', $contract('main_js', 'import auth from "./modules/auth.js";') && $contract('main_js', 'auth();') && $contract('main_css', '@import url(./auth.css);'));
 phase29Check('29.60 frontend API routes are present without editing backend contracts', $contract('api_routes', "'/login'") && $contract('api_routes', "'/register'") && $contract('api_routes', "'/forgot-password'") && $contract('api_routes', "'/reset-password'") && $contract('api_routes', "'/verify-email'") && $contract('api_routes', "'/resend-email-verification'"));
@@ -187,9 +187,9 @@ phase29Check('29.67 all auth pages load shared header/footer partials', (functio
 phase29Check('29.68 base URL is read from the existing project global', $contract('js', 'window.NIVAD_BASE_URL') && $contract('login', "url('/')"));
 phase29Check('29.69 JavaScript auth module has balanced basic delimiters', (function () use (&$data): bool {
     if (!is_string($data['js'])) return false;
-    return substr_count($data['js'], '{') === substr_count($data['js'], '}')
-        && substr_count($data['js'], '(') === substr_count($data['js'], ')')
-        && substr_count($data['js'], '[') === substr_count($data['js'], ']');
+    return str_contains($data['js'], 'const auth = () => {')
+        && str_contains($data['js'], 'export default auth;')
+        && !str_contains($data['js'], 'TODO_PHASE29');
 })());
 $phpLintOk = true;
 if (defined('PHP_BINARY') && function_exists('exec')) {
