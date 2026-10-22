@@ -1,0 +1,10 @@
+/* Phase 30 — Account mobile */
+@media (max-width: 600px) {
+  .account-grid, .account-form__grid, .account-password-form { grid-template-columns: minmax(0, 1fr); }
+  .account-page { padding-inline: var(--spacing-4); }
+  .account-page .customer-shop__panel, .account-address, .account-order, .account-return, .account-notification, .account-review, .account-session { padding: var(--spacing-4); }
+  .account-section-head { align-items: stretch; flex-direction: column; }
+  .account-navigation { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .account-navigation a, .account-form button, .account-password-form button { min-height: 48px; width: 100%; }
+  .account-address__actions { display: grid; grid-template-columns: 1fr; }
+}
