@@ -18,7 +18,7 @@
 .account-form {
   padding: 24px;
   border-radius: 16px;
-  background: #fff;
+  background: var(--color-surface);
 }
 
 .account-form__grid {
@@ -42,7 +42,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
 }
 
@@ -51,9 +51,9 @@
 .account-return {
   padding: 20px;
   margin-bottom: 16px;
-  border: 1px solid #eee;
+  border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: #fff;
+  background: var(--color-surface);
 }
 
 @media (max-width: 600px) {
