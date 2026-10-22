@@ -83,7 +83,7 @@ $add('Finder restores only allowlisted intent and budget', str_contains($finderJ
 $add('Finder persists choices and clears them on reset', str_contains($finderJs, 'updateCommerceContext({ finder:') && str_contains($finderJs, 'clearCommerceContext("finder")'));
 $add('Setup Builder restores only a device returned by live API', str_contains($setupJs, 'state.devices.find((item) => Number(item.id) === Number(initialSetupContext.deviceId))'));
 $add('Setup Builder revalidates selected product and variant IDs against live candidates', str_contains($setupJs, 'state.candidates.find((item) => Number(item.id) === Number(productId) && variantId > 0 && Number(item.variantId) === variantId && item.price !== null)'));
-$add('Setup Builder uses deployment base URL and is safe on unrelated pages', str_contains($setupJs, 'window.NIVAD_BASE_URL || ""') && str_contains($setupJs, 'if (!root) {\n  return;'));
+$add('Setup Builder uses deployment base URL and is safe on unrelated pages', str_contains($setupJs, 'window.NIVAD_BASE_URL || ""') && preg_match('/if \(!root\)\s*\{\s*return;/', $setupJs) === 1);
 $add('Setup Builder exports an initializer compatible with main.js', str_contains($setupJs, 'const setupBuilder = () => {') && str_contains($setupJs, 'export default setupBuilder;'));
 $add('Cart sync updates server item through CSRF-aware API helper without undefined variables', str_contains($cartJs, 'apiRequest(`/cart-items/${serverItem.id}`') && !str_contains($cartJs, 'csrfToken') && !str_contains($cartJs, '`/cart-items/${item.id}`'));
 $add('Product Detail imports shared context helper', str_contains($productJs, 'from "./commerce-context.js"'));

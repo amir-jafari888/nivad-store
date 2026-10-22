@@ -15,7 +15,7 @@ Add a narrow, versioned, tab-scoped context for non-sensitive storefront intent 
 | 02 | 32.11–32.20 | Landing/Search/Finder continuity and URL state | PARTIAL |
 | 03 | 32.21–32.30 | Search result ↔ Product Detail continuity | PARTIAL |
 | 04 | 32.31–32.40 | Product ↔ Compatibility device context | PARTIAL |
-| 05 | 32.41–32.50 | Setup Builder context | PARTIAL |
+| 05 | 32.41–32.50 | Setup Builder context | PARTIAL — runtime restoration proof pending |
 | 06 | 32.51–32.60 | Cart and drawer consistency | AUDIT REQUIRED |
 | 07 | 32.61–32.70 | Guest/authenticated cart sync and Checkout handoff | RUNTIME/BACKEND CONTRACT PROOF REQUIRED |
 | 08 | 32.71–32.80 | Syntax, E2E regression and lock gate | IN PROGRESS |
@@ -58,7 +58,6 @@ Add a narrow, versioned, tab-scoped context for non-sensitive storefront intent 
 - Search returnPath now points to the generated result URL; preservation of filters/sort/page is still pending because the current search submit flow redirects to `/search?q=...` and does not expose a verified filter contract here.
 - Cart sync existing-item update now uses the shared API helper and no longer references undefined `item.id` or `csrfToken`; guest/authenticated merge semantics, Checkout, CSRF, price/stock and browser-history scenarios still need XAMPP/browser proof.
 - Setup Builder API base now honors the existing `window.NIVAD_BASE_URL` deployment base and its module initializer is compatible with the main entry point. Verify under XAMPP.
-- Setup Builder API base is still hard-coded and requires deployment verification.
 - No backend API/schema, payment, price, stock, or authentication behavior is changed.
 - Previously reported login/register GET-query-string issue remains a separate unresolved security regression.
 
