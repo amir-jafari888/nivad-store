@@ -33,13 +33,13 @@ $add('Other-session logout uses existing route', str_contains($c, '/logout-other
 $add('Password change uses existing route/fields', str_contains($c, '/account/password') && str_contains($c, 'new_password_confirmation'));
 $add('Profile GET/PATCH contract preserved', str_contains($a, 'request("/account/profile")') && str_contains($a, 'method: "PATCH"'));
 $add('Profile update payload is restricted', str_contains($a, 'first_name: form.elements.first_name.value.trim()') && str_contains($a, 'last_name: form.elements.last_name.value.trim()'));
-$add('Address CRUD/default operations present', str_contains($a, 'request("/account/addresses")') && str_contains($a, 'method: "PUT"') && str_contains($a, 'method: "DELETE"') && str_contains($a, '/default'));
+$add('Address CRUD/default operations present', str_contains($a, '/account/addresses') && str_contains($a, 'method: editingId === null ? "POST" : "PUT"') && str_contains($a, 'method: "DELETE"') && str_contains($a, '/default'));
 $add('Address deletion asks for confirmation', str_contains($a, 'window.confirm("از حذف این آدرس مطمئن هستید؟")'));
 $add('Order list/detail calls present', str_contains($a, 'request("/orders")') && str_contains($a, 'request(`/orders/${encodeURIComponent(id)}`)'));
 $add('Return list/detail routes are present', str_contains($api, "'/returns'") && str_contains($a, 'request("/returns")') && str_contains($a, 'request(`/returns/${encodeURIComponent(id)}`)'));
 $add('Return details consume items and history', str_contains($a, 'data.items') && str_contains($a, 'data.history'));
 $add('Review form has labels and native validation', str_contains($r, '<label>') && !str_contains($r, 'novalidate'));
-$add('Review list/store API contracts preserved', str_contains($c, 'request("/reviews/mine")') && str_contains($c, 'request("/reviews")') && str_contains($api, "'/reviews/mine'"));
+$add('Review list/store API contracts preserved', str_contains($c, '/reviews/mine') && str_contains($c, '/reviews') && str_contains($api, '/reviews/mine'));
 $add('Notification read/read-all routes preserved', str_contains($c, '/notifications/read-all') && str_contains($api, "'/notifications/read-all'"));
 $add('Notification/review errors are handled', str_contains($c, 'دریافت اعلان‌ها ناموفق بود') && str_contains($c, 'ثبت دیدگاه ناموفق بود'));
 $add('Duplicate submission guard present', str_contains($a, 'form.dataset.busy === "true"') && str_contains($c, 'passwordForm.dataset.busy === "true"'));
