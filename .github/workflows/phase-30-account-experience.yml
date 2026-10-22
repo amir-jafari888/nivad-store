@@ -1,0 +1,28 @@
+name: Phase 30 Account Experience
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+jobs:
+  account-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: PHP syntax checks
+        run: |
+          php -l pages/account/index.php
+          php -l pages/account/profile.php
+          php -l pages/account/addresses.php
+          php -l pages/account/orders/index.php
+          php -l pages/account/orders/show.php
+          php -l pages/account/returns/index.php
+          php -l pages/account/returns/show.php
+          php -l pages/account/reviews.php
+          php -l pages/account/notifications.php
+          php -l test-phase-30-account-experience.php
+      - name: Run read-only contract tests
+        run: php test-phase-30-account-experience.php
