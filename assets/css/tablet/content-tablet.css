@@ -1,0 +1,6 @@
+.content-page {
+  width: min(calc(100% - (var(--spacing-6) * 2)), 960px);
+  padding-block: var(--spacing-8) var(--spacing-10);
+}
+.content-page__section { padding: var(--spacing-5); }
+.content-page__faq { gap: var(--spacing-4); }

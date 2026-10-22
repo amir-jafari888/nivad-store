@@ -1,36 +1,32 @@
-﻿<?php
+<?php
+declare(strict_types=1);
 
-$pageTitle = 'طھظ…ط§ط³ ط¨ط§ ظ…ط§ | ط¯غŒط¬غŒâ€Œط§ط³طھظˆط±';
-$metaDescription = 'ط±ط§ظ‡â€Œظ‡ط§غŒ ط§ط±طھط¨ط§ط· ط¨ط§ ط¯غŒط¬غŒâ€Œط§ط³طھظˆط± ظˆ ط¯ط±غŒط§ظپطھ ظ¾ط´طھغŒط¨ط§ظ†غŒ.';
-
-
+$pageTitle = 'تماس با ما | نیواد';
+$metaDescription = 'راهنماهای ارتباط با نیواد برای پرسش‌های مربوط به محصولات، سفارش‌ها و خدمات فروشگاه.';
 include_once __DIR__ . '/../../partials/header.php';
 ?>
 
-<main class="content-page">
+<main class="content-page" id="main-content">
     <header class="content-page__head">
-        <span class="content-page__eyebrow">ط§ط±طھط¨ط§ط· ط¨ط§ ظ…ط§</span>
-        <h1>طھظ…ط§ط³ ط¨ط§ ظ…ط§</h1>
-        <p>
-            ط¨ط±ط§غŒ ط¯ط±غŒط§ظپطھ ط±ط§ظ‡ظ†ظ…ط§غŒغŒ ظˆ ظ¾ط´طھغŒط¨ط§ظ†غŒ ظ…غŒâ€Œطھظˆط§ظ†غŒط¯ ط¨ط§ ط¯غŒط¬غŒâ€Œط§ط³طھظˆط± ط¯ط± ط§ط±طھط¨ط§ط· ط¨ط§ط´غŒط¯.
-        </p>
+        <span class="content-page__eyebrow">پشتیبانی مشتریان</span>
+        <h1>تماس با ما</h1>
+        <p>اگر درباره محصول یا سفارش خود پرسشی دارید، ابتدا راهنمای مرتبط را بررسی کنید. اطلاعات تماس مستقیم تنها زمانی نمایش داده می‌شود که مسیر رسمی و تأییدشده‌ای برای آن در پروژه تعریف شده باشد.</p>
     </header>
-
-    <section class="content-page__section">
-        <h2>ظ¾ط´طھغŒط¨ط§ظ†غŒ</h2>
-        <p>
-            ط¯ط± طµظˆط±طھ ظˆط¬ظˆط¯ ط³ط¤ط§ظ„ ط¯ط±ط¨ط§ط±ظ‡ ظ…ط­طµظˆظ„ط§طھطŒ ط³ظپط§ط±ط´ غŒط§ ط®ط¯ظ…ط§طھ ظپط±ظˆط´ع¯ط§ظ‡طŒ
-            ط§ط² ظ…ط³غŒط±ظ‡ط§غŒ ط§ط±طھط¨ط§ط·غŒ ط±ط³ظ…غŒ ظپط±ظˆط´ع¯ط§ظ‡ ط§ط³طھظپط§ط¯ظ‡ ع©ظ†غŒط¯.
-        </p>
+    <section class="content-page__section" aria-labelledby="contact-orders">
+        <h2 id="contact-orders">پرسش درباره سفارش</h2>
+        <p>برای بررسی سفارش‌های ثبت‌شده، از <a href="<?= e(url('/pages/account/orders/index.php')) ?>">بخش سفارش‌های حساب کاربری</a> استفاده کنید. مشاهده این بخش به ورود به حساب نیاز دارد.</p>
     </section>
 
-    <section class="content-page__section">
-        <h2>ظ¾ط§ط³ط®â€Œع¯ظˆغŒغŒ</h2>
-        <p>
-            ط¯ط±ط®ظˆط§ط³طھâ€Œظ‡ط§غŒ ظ¾ط´طھغŒط¨ط§ظ†غŒ ظ¾ط³ ط§ط² ط¯ط±غŒط§ظپطھ ط¨ط±ط±ط³غŒ ظ…غŒâ€Œط´ظˆظ†ط¯ ظˆ ظ¾ط§ط³ط® ظ…ظ†ط§ط³ط¨
-            ط¯ط± ط§ط®طھغŒط§ط± ط´ظ…ط§ ظ‚ط±ط§ط± ط®ظˆط§ظ‡ط¯ ع¯ط±ظپطھ.
-        </p>
+    <section class="content-page__section" aria-labelledby="contact-returns">
+        <h2 id="contact-returns">درخواست مرجوعی</h2>
+        <p>برای سفارش واجد شرایط، جزئیات و وضعیت درخواست را از <a href="<?= e(url('/pages/account/returns/index.php')) ?>">بخش مرجوعی حساب کاربری</a> پیگیری کنید. ثبت درخواست به معنی تأیید خودکار آن نیست.</p>
     </section>
+
+    <section class="content-page__section" aria-labelledby="contact-help">
+        <h2 id="contact-help">راهنماهای خودیاری</h2>
+        <p>پاسخ پرسش‌های رایج را در <a href="<?= e(url('/pages/content/faq.php')) ?>">سؤالات متداول</a> و اطلاعات ارسال را در <a href="<?= e(url('/pages/content/shipping.php')) ?>">راهنمای ارسال سفارش</a> بخوانید.</p>
+    </section>
+
 </main>
 
 <?php include_once __DIR__ . '/../../partials/footer.php'; ?>

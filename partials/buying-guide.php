@@ -9,7 +9,7 @@
               </div>
 
               <div class="guide-list">
-                  <a href="#" class="guide-item">
+                  <a href="<?= e(url('/pages/content/buying-guide.php#charger')) ?>" class="guide-item">
                       <span class="guide-number">01</span>
 
                       <div class="guide-content">
@@ -24,7 +24,7 @@
                       </svg>
                   </a>
 
-                  <a href="#" class="guide-item">
+                  <a href="<?= e(url('/pages/content/buying-guide.php#usb-c-thunderbolt')) ?>" class="guide-item">
                       <span class="guide-number">02</span>
 
                       <div class="guide-content">
@@ -39,7 +39,7 @@
                       </svg>
                   </a>
 
-                  <a href="#" class="guide-item">
+                  <a href="<?= e(url('/pages/content/buying-guide.php#hdmi')) ?>" class="guide-item">
                       <span class="guide-number">03</span>
 
                       <div class="guide-content">
@@ -55,7 +55,7 @@
                   </a>
               </div>
 
-              <a href="#" class="buying-guide-more">
+              <a href="<?= e(url('/pages/content/buying-guide.php')) ?>" class="buying-guide-more">
                   مشاهده همه راهنماها
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M5 12h14" />

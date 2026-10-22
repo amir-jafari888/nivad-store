@@ -1,0 +1,27 @@
+name: Phase 31 Content Support
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+jobs:
+  content-support-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: PHP syntax checks
+        run: |
+          php -l pages/content/about.php
+          php -l pages/content/contact.php
+          php -l pages/content/faq.php
+          php -l pages/content/privacy.php
+          php -l pages/content/terms.php
+          php -l pages/content/shipping.php
+          php -l pages/content/returns.php
+          php -l pages/content/buying-guide.php
+          php -l test-phase-31-content-support.php
+      - name: Run read-only contract tests
+        run: php test-phase-31-content-support.php
