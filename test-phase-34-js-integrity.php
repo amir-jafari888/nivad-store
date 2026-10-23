@@ -89,7 +89,7 @@ $add('34.12 Header uses optional DOM access and drawer exits when required marku
 $add('34.13 Wishlist and cart expose explicit data-attribute contracts', str_contains($wishlist, '[data-wishlist]') && str_contains($cart, '[data-cart]'));
 $add('34.14 Cart update event carries a detail payload', str_contains($cart, 'new CustomEvent("cart:updated"') && str_contains($cart, 'detail:'));
 $add('34.15 Wishlist update and sync-error events are consistently named', str_contains($wishlist, 'wishlist:updated') && str_contains($wishlist, 'wishlist:sync-error'));
-$add('34.16 Main entry point contains one initializer call per imported default module', (function () use ($imports, $main): bool {
+$add('34.16 Main entry point initializes each module once and Catalog registers one popstate listener', (function () use ($imports, $main, $catalog): bool { foreach ($imports as $import) { if (preg_match('/^\\s*([A-Za-z_$][\\w$]*)\\s+from\\s+/', $import['statement'], $m) && substr_count($main, $m[1] . '();') !== 1) return false; } return substr_count($catalog, 'addEventListener("popstate"') === 1; })());
     foreach ($imports as $import) {
         if (preg_match('/^\\s*([A-Za-z_$][\\w$]*)\\s+from\\s+/', $import['statement'], $m) && substr_count($main, $m[1] . '();') !== 1) return false;
     }
