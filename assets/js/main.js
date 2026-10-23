@@ -32,6 +32,7 @@ import payment from "./modules/payment.js";
 import performance from "./modules/performance.js";
 import networkRecovery from "./modules/network-recovery.js";
 
+networkRecovery();
 header();
 hero();
 search();
@@ -64,4 +65,3 @@ initializeRecentDevice();
 checkout();
 payment();
 performance();
-networkRecovery();
