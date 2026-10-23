@@ -47,7 +47,7 @@ $add('34.02 Every main.js relative import resolves', count($imports) > 0 && (fun
     }
     return true;
 })());
-$add('34.03 Module imports use explicit relative paths for internal modules', !preg_match("~from\\s+[\\"'](?!\\.\\.?/)[^\\"']+\\.js[\\"']~", $main));
+$add('34.03 Module imports use explicit relative paths for internal modules', !preg_match('/from\\s+"(?!\\.\\.?\\/)[^"]+\\.js"/', $main));
 $add('34.04 Main default imports are paired with default exports', count($imports) > 0 && (function () use ($imports, $root): bool {
     foreach ($imports as $import) {
         if (!preg_match('/^\\s*([A-Za-z_$][\\w$]*)\\s+from\\s+/', $import['statement'])) continue;
