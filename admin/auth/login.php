@@ -90,6 +90,9 @@ if (Request::isPost()) {
         ورود مدیر | نیواد
     </title>
 
+
+    <link rel="stylesheet" href="<?= e(url('/assets/css/admin/admin.css')) ?>">
+    <script defer src="<?= e(url('/assets/js/admin-theme.js')) ?>"></script>
 </head>
 
 <body>
