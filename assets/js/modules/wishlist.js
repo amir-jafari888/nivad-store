@@ -1,6 +1,9 @@
 const wishlist = () => {
   const storageKey = "digital-store-wishlist";
   const variantStorageKey = "digital-store-wishlist-variants";
+  let localMutationVersion = 0;
+  let syncPromise = null;
+  let syncRequestedAgain = false;
 
   const baseUrl = window.NIVAD_BASE_URL || "";
 
@@ -52,6 +55,7 @@ const wishlist = () => {
       return false;
     }
 
+    localMutationVersion += 1;
     updateUI();
 
     window.dispatchEvent(
@@ -230,7 +234,7 @@ const wishlist = () => {
     return wishlist;
   };
 
-  const sync = async () => {
+  const syncOnce = async () => {
     try {
       const auth = await request("/auth/status");
 
@@ -251,7 +255,7 @@ const wishlist = () => {
         : [];
 
       const localItems = getWishlist();
-
+      const syncVersion = localMutationVersion;
       const localVariants = getVariants();
 
       const validLocalItems = localItems.filter(
@@ -317,6 +321,10 @@ const wishlist = () => {
        * only when Local has a complete
        * variant identity contract.
        */
+      if (syncVersion !== localMutationVersion) {
+        return;
+      }
+
       for (const serverItem of serverItems) {
         const serverVariantId = Number(serverItem.variant_id);
 
@@ -343,6 +351,10 @@ const wishlist = () => {
         ? refreshed.data.items
         : [];
 
+      if (syncVersion !== localMutationVersion) {
+        return;
+      }
+
       if (refreshedItems.length > 0) {
         if (!writeServerItemsToLocal(refreshedItems)) {
           return;
@@ -363,6 +375,24 @@ const wishlist = () => {
        * Local Wishlist remains usable.
        */
     }
+  };
+
+  const sync = () => {
+    if (syncPromise) {
+      syncRequestedAgain = true;
+      return syncPromise;
+    }
+
+    syncPromise = (async () => {
+      do {
+        syncRequestedAgain = false;
+        await syncOnce();
+      } while (syncRequestedAgain);
+    })().finally(() => {
+      syncPromise = null;
+    });
+
+    return syncPromise;
   };
 
   document.addEventListener("click", (event) => {
