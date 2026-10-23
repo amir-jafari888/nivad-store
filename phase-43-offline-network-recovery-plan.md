@@ -10,7 +10,8 @@ Offline state, online recovery, request timeout, safe retry, API failure, server
 - Request timeout: 15 seconds. One retry maximum for GET/HEAD only, limited to network failures, timeout and HTTP 502/503/504. POST/PUT/PATCH/DELETE are never retried automatically.
 - Offline/online/server/timeout/session feedback is announced via one reusable status notice, with responsive CSS in the existing Mobile/Tablet/Desktop architecture and tokens from `assets/css/setting.css`.
 - Events emitted: `nivad:network-state`, `nivad:network-error`, `nivad:request-timeout`, `nivad:api-failure`, `nivad:server-unavailable`, `nivad:session-expired`.
-- Runtime tests, full request inventory, route-by-route partial-failure audit and browser checks are not claimed as complete.
+- Account dashboard audit found a `Promise.all` all-or-nothing failure path; it now uses `Promise.allSettled`, keeps successful sections available, marks failed sections, and avoids showing unavailable order/notification metrics as zero.
+- Runtime tests, full request inventory, other route-by-route partial-failure audits and browser checks are not claimed as complete.
 
 ## Batch statuses
 - **Batch 43.01 — Network State Foundation:** PARTIAL — event listeners, network state events, singleton guards implemented; browser verification pending.
