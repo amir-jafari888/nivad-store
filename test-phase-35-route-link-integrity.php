@@ -100,6 +100,9 @@ foreach ($imports as $path) {
 $add('35.11 Main JavaScript entry imports resolve to existing modules', $importsValid);
 
 $add('35.12 Customer-facing cart, wishlist and checkout page files exist', $exists('pages/shop/cart.php') && $exists('pages/shop/wishlist.php') && $exists('pages/shop/checkout.php'));
+$payment = $read('assets/js/modules/payment.js');
+$add('35.13 Payment success order-history link targets the existing orders page', str_contains($payment, '/pages/account/orders/index.php') && $exists('pages/account/orders/index.php'));
+$add('35.14 Payment module no longer uses the unsupported homepage page-query link', !str_contains($payment, '/?page=account/orders/index'));
 
 $failed = 0;
 foreach ($checks as [$label, $passed]) {
