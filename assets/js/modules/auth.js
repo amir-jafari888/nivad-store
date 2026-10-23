@@ -34,7 +34,9 @@ const auth = () => {
         payload = await response.json().catch(() => null);
       } else {
         const raw = await response.text().catch(() => "");
-        payload = raw ? { message: "پاسخ سرور قابل پردازش نیست." } : null;
+        payload = !response.ok && raw
+          ? { message: "پاسخ سرور قابل پردازش نیست." }
+          : null;
       }
 
       if (!response.ok || payload?.success === false) {
