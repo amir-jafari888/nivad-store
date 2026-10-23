@@ -97,7 +97,7 @@ $adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
             </div>
         </aside>
 
-        <main class="admin-dashboard-main">
+        <main id="main-content" tabindex="-1" class="admin-dashboard-main">
             <header class="admin-dashboard-page-heading">
                 <div>
                     <p class="admin-dashboard-eyebrow">مرکز کنترل فروشگاه</p>
