@@ -121,6 +121,9 @@ const adminDataExperience = () => {
 
     const apply = () => {
       realRows = Array.from(body.rows).filter((row) => !isPlaceholder(row));
+      for (const row of selected) {
+        if (!realRows.includes(row)) selected.delete(row);
+      }
       refreshFilterOptions();
       const query = normalize(search.value);
       const statusValue = statusFilter ? statusFilter.value : "";
@@ -254,9 +257,27 @@ const adminDataExperience = () => {
     });
   };
 
+  const enhanceFeedback = () => {
+    document.querySelectorAll(".message, #message, [data-admin-message]").forEach((node) => {
+      if (!node.hasAttribute("role")) node.setAttribute("role", "status");
+      if (!node.hasAttribute("aria-live")) node.setAttribute("aria-live", "polite");
+      const announce = () => {
+        const text = normalize(node.textContent);
+        if (/خطا|ناموفق|مجاز نیست|error|failed/.test(text)) node.setAttribute("role", "alert");
+        else if (node.getAttribute("role") === "alert") node.setAttribute("role", "status");
+      };
+      announce();
+      if (node.dataset.adminFeedbackObserved !== "true") {
+        node.dataset.adminFeedbackObserved = "true";
+        new MutationObserver(announce).observe(node, { childList: true, characterData: true, subtree: true });
+      }
+    });
+  };
+
   const mount = () => {
     document.querySelectorAll("table").forEach((table, index) => enhanceTable(table, index));
     enhanceForms();
+    enhanceFeedback();
   };
 
   if (document.readyState === "loading") {
