@@ -44,6 +44,7 @@ $basePath = app_base_path();
 </head>
 
 <body>
+    <a class="skip-link" href="#main-content">رفتن به محتوای اصلی</a>
     <button id="backToTop" class="back-to-top" type="button" aria-label="بازگشت به بالا">
         <svg class="progress-ring" width="60" height="60" aria-hidden="true">
             <circle class="progress-ring__circle" stroke="currentColor" stroke-width="3" fill="transparent" r="27" cx="30" cy="30"></circle>
