@@ -94,7 +94,7 @@ const customerCommerce = () => {
           if (!securityResult) {
             show(security, "اطلاعات امنیت حساب فعلاً دریافت نشد. سایر بخش‌های حساب همچنان در دسترس هستند.", true);
           } else {
-            security.innerHTML = `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? sessions.length ?? 0)}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`;
+            security.innerHTML = `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? (sessionsResult ? sessions.length : "نامشخص"))}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`;
           }
         }
 
