@@ -125,6 +125,9 @@ const fetchWithTimeout = async (input, init, details, attempt) => {
   try {
     const response = await originalFetch(input, { ...init, signal: controller.signal });
     dispatchResponseState(response, details);
+    if (response.ok && notice?.dataset.state === "server") {
+      showNotice("online", "ارتباط با سرور برقرار شد. می‌توانید دوباره تلاش کنید.");
+    }
 
     if (RETRYABLE_STATUS.has(response.status) && isSafeToRetry(details, attempt, externalSignal)) {
       await new Promise((resolve) => window.setTimeout(resolve, 350));
@@ -133,6 +136,11 @@ const fetchWithTimeout = async (input, init, details, attempt) => {
     return response;
   } catch (error) {
     if (externalSignal?.aborted) throw error;
+
+    if (timedOut && isSafeToRetry(details, attempt, externalSignal)) {
+      await new Promise((resolve) => window.setTimeout(resolve, 350));
+      return fetchWithTimeout(input, init, details, attempt + 1);
+    }
 
     if (timedOut) {
       const timeoutError = new DOMException("The request exceeded the configured timeout.", "TimeoutError");
