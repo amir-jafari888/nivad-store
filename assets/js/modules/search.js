@@ -116,8 +116,6 @@ const search = () => {
 
     suggestionBox.id = "search-suggestions-panel";
 
-    suggestionBox.id = "search-suggestions";
-
     form.appendChild(suggestionBox);
 
     return suggestionBox;
