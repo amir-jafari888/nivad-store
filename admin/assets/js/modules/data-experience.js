@@ -111,7 +111,8 @@ const adminDataExperience = () => {
       all.value = "";
       statusFilter.append(all);
       values.forEach((value) => {
-        const original = realRows.find((row) => normalize(dataCell(row, statusColumn)?.textContent) === value) ? dataCell(realRows.find((row) => normalize(dataCell(row, statusColumn)?.textContent) === value), statusColumn)?.textContent.trim() ?? value;
+        const matchingRow = realRows.find((row) => normalize(dataCell(row, statusColumn)?.textContent) === value);
+        const original = dataCell(matchingRow, statusColumn)?.textContent.trim() ?? value;
         const option = make("option", "", original);
         option.value = value;
         statusFilter.append(option);
