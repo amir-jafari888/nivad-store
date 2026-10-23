@@ -23,6 +23,7 @@ $id =
         name="viewport"
         content="width=device-width,initial-scale=1">
     <title>ویرایش اسلایدر | نیواد</title>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -139,6 +140,7 @@ $id =
         );
     </script>
 
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>
