@@ -87,6 +87,9 @@ $add('40.28 Admin dashboard main landmark has a skip target', str_contains($read
 $add('40.29 legacy Admin navigation has an accessible name', str_contains($read('admin/index.php'), '<nav aria-label="ناوبری مدیریت">'));
 $add('40.30 Admin and storefront token namespaces are distinct', str_contains($adminTokens, '--admin-color-bg:') && !str_contains($adminTokens, '--color-primary:'));
 $add('40.31 shared footer provides a fallback skip target when main ID is absent', str_contains($footer, 'document.getElementById("main-content")') && str_contains($footer, 'main.before(target)'));
+$add('40.32 cart drawer declares modal dialog semantics', str_contains($footer, 'role="dialog"') && str_contains($footer, 'aria-modal="true"') && str_contains($footer, 'aria-labelledby="cart-drawer-title"'));
+$add('40.33 cart drawer closes on Escape and traps Tab navigation', str_contains($cartDrawer, 'event.key === "Escape"') && str_contains($cartDrawer, 'event.key !== "Tab"') && str_contains($cartDrawer, 'last.focus()') && str_contains($cartDrawer, 'first.focus()'));
+$add('40.34 cart drawer restores focus after closing', str_contains($cartDrawer, 'lastFocusedElement.focus()') && str_contains($cartDrawer, 'closeButton?.focus()'));
 
 $failed = 0;
 foreach ($checks as [$name, $passed, $detail]) {
