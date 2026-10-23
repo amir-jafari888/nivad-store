@@ -25,6 +25,7 @@ $exists = static function (string $relative) use ($root): bool {
 };
 
 $header = $read('partials/header.php');
+$footer = $read('partials/footer.php');
 $storeTokens = $read('assets/css/setting.css');
 $adminTokens = $read('admin/assets/css/setting.css');
 $search = $read('assets/js/modules/search.js');
@@ -85,6 +86,7 @@ $add('40.27 product detail main landmark has a skip target', str_contains($read(
 $add('40.28 Admin dashboard main landmark has a skip target', str_contains($read('pages/admin/dashboard.php'), 'id="main-content"'));
 $add('40.29 legacy Admin navigation has an accessible name', str_contains($read('admin/index.php'), '<nav aria-label="ناوبری مدیریت">'));
 $add('40.30 Admin and storefront token namespaces are distinct', str_contains($adminTokens, '--admin-color-bg:') && !str_contains($adminTokens, '--color-primary:'));
+$add('40.31 shared footer provides a fallback skip target when main ID is absent', str_contains($footer, 'document.getElementById("main-content")') && str_contains($footer, 'main.before(target)'));
 
 $failed = 0;
 foreach ($checks as [$name, $passed, $detail]) {
