@@ -49,10 +49,10 @@
 | 40.12 | Verify logical Tab and Shift+Tab order follows the interface and reading order. | NOT STARTED — AUDIT REQUIRED |
 | 40.13 | Detect positive `tabindex` values or scripted focus order that may disrupt natural navigation. | NOT STARTED — AUDIT REQUIRED |
 | 40.14 | Verify no keyboard trap exists in page content, navigation, menus, or overlays. | NOT STARTED — AUDIT REQUIRED |
-| 40.15 | Verify visible skip navigation is available where repeated navigation makes it useful. | NOT STARTED — AUDIT REQUIRED |
+| 40.15 | Verify visible skip navigation is available where repeated navigation makes it useful. | PARTIAL — shared storefront/Admin skip links added; target coverage remains incomplete across all pages. |
 | 40.16 | Verify menus, dropdowns, tabs, accordions, and disclosure controls support their expected keyboard interaction. | NOT STARTED — AUDIT REQUIRED |
 | 40.17 | Verify native buttons activate with Enter/Space and links activate with Enter without custom-key conflicts. | NOT STARTED — AUDIT REQUIRED |
-| 40.18 | Verify keyboard users can reach and operate search suggestions and clear/submit controls. | NOT STARTED — AUDIT REQUIRED |
+| 40.18 | Verify keyboard users can reach and operate search suggestions and clear/submit controls. | PARTIAL — combobox/listbox semantics and arrow/Escape handling audited in source; manual keyboard verification pending. |
 | 40.19 | Verify keyboard access to product actions, filters, sort, pagination, wishlist, and cart controls. | NOT STARTED — AUDIT REQUIRED |
 | 40.20 | Verify Admin navigation, data-table tools, row selection, and action menus are keyboard operable. | NOT STARTED — AUDIT REQUIRED |
 
@@ -60,8 +60,8 @@
 
 | Step | Contract | Initial Status |
 |---|---|---|
-| 40.21 | Audit global storefront focus indicators against existing focus tokens and actual component styles. | NOT STARTED — AUDIT REQUIRED |
-| 40.22 | Audit Admin focus indicators against Admin-owned tokens without leaking storefront styles. | NOT STARTED — AUDIT REQUIRED |
+| 40.21 | Audit global storefront focus indicators against existing focus tokens and actual component styles. | PARTIAL — existing global focus-visible rule verified; computed contrast/obscuring checks pending. |
+| 40.22 | Audit Admin focus indicators against Admin-owned tokens without leaking storefront styles. | PARTIAL — Admin-owned focus-visible rule added; rendered verification pending. |
 | 40.23 | Verify `:focus-visible` is not removed without an accessible replacement. | NOT STARTED — AUDIT REQUIRED |
 | 40.24 | Verify focused controls remain visible and are not obscured by sticky headers, drawers, or floating UI. | NOT STARTED — AUDIT REQUIRED |
 | 40.25 | Verify opening a modal or drawer moves focus into the active overlay according to its interaction contract. | NOT STARTED — AUDIT REQUIRED |
@@ -173,16 +173,16 @@
 | 40.96 | Verify reflow at narrow widths without two-dimensional scrolling except for content that genuinely requires it. | NOT STARTED — AUDIT REQUIRED |
 | 40.97 | Verify Light/Dark theme token combinations preserve text, control, focus, and status contrast. | NOT STARTED — AUDIT REQUIRED |
 | 40.98 | Verify RTL layout, mixed Persian/English text, numbers, and directional icons do not create accessibility ambiguity. | NOT STARTED — AUDIT REQUIRED |
-| 40.99 | Verify reduced-motion preference is respected for non-essential transitions and animated states where motion exists. | NOT STARTED — AUDIT REQUIRED |
+| 40.99 | Verify reduced-motion preference is respected for non-essential transitions and animated states where motion exists. | PARTIAL — storefront and Admin token styles include reduced-motion rules; animated component audit pending. |
 | 40.100 | Verify accessible behavior and content remain consistent across mobile, tablet, desktop, Light, and Dark contexts. | NOT STARTED — AUDIT REQUIRED |
 
 ### Batch 11 — Automated Checks, Regression & Evidence
 
 | Step | Contract | Initial Status |
 |---|---|---|
-| 40.101 | Build a read-only static accessibility test using actual files, selectors, and contracts confirmed during audit. | NOT STARTED — AUDIT REQUIRED |
+| 40.101 | Build a read-only static accessibility test using actual files, selectors, and contracts confirmed during audit. | PARTIAL — read-only static test added; execution/lint pending. |
 | 40.102 | Verify the static test reports individual PASS/FAIL results and a truthful summary without fake passes. | NOT STARTED — AUDIT REQUIRED |
-| 40.103 | Include checks for document language/direction, landmarks, headings, labels, image alternatives, and button/link semantics where reliably testable. | NOT STARTED — AUDIT REQUIRED |
+| 40.103 | Include checks for document language/direction, landmarks, headings, labels, image alternatives, and button/link semantics where reliably testable. | PARTIAL — initial checks cover language/direction, selected landmarks, labels, and interaction semantics; full page coverage pending. |
 | 40.104 | Include checks for keyboard/focus hooks, dialog state, live regions, and ARIA state synchronization where statically provable. | NOT STARTED — AUDIT REQUIRED |
 | 40.105 | Include checks for contrast/token declarations and responsive viewport coverage without claiming computed contrast from token names alone. | NOT STARTED — AUDIT REQUIRED |
 | 40.106 | Run available source-level JS/PHP/CSS checks and record unexecuted environment-dependent checks separately. | NOT STARTED — AUDIT REQUIRED |
@@ -199,3 +199,18 @@
 - Do not add ARIA mechanically. Prefer native semantic HTML and only add ARIA when its role/state/name is verified against the actual interaction.
 - Do not modify backend files or invent API-backed states. Document backend-dependent accessibility gaps as dependencies.
 - Phase 40 status at extraction: `PLANNED — NOT STARTED`; `PASS = NO`; `LOCK = NO`.
+
+
+## 5. Implementation Checkpoint — 2026-10-23
+
+Source-level changes currently present on `phase-40-accessibility-master-audit`:
+
+1. Added keyboard skip-navigation links to the shared storefront header and selected storefront/Admin pages.
+2. Added a token-based storefront skip-link focus style; added Admin-owned skip-link, global `:focus-visible`, and `prefers-reduced-motion` styles.
+3. Added `id="main-content"` and programmatic focus targets to the audited cart, checkout, auth, search, product-detail, and selected Admin pages.
+4. Improved storefront search suggestions with explicit combobox/listbox relationships, selected-option state, and non-interactive option elements compatible with the existing active-descendant keyboard flow.
+5. Added a read-only static test file, `test-phase-40-accessibility-master-audit.php`, with initial assertions for these source contracts.
+
+These changes are **partial implementation, not completion of all 110 contracts**. The static test has not yet been executed or PHP-linted in the target XAMPP environment. Search interaction changes have not been browser-tested. Skip-target coverage has not been proven for every page. Contrast calculations, 200% zoom/reflow, modal focus trapping/restoration, touch target measurement, and screen-reader verification remain pending. Backend Freeze remains unchanged.
+
+Current truthful phase status: `IN PROGRESS`; `PASS = NO`; `LOCK = NO`.
