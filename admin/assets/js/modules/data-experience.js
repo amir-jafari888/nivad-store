@@ -92,7 +92,8 @@ const adminDataExperience = () => {
     const isPlaceholder = (row) => row.cells.length === 1 && row.cells[0].hasAttribute("colspan");
 
     const refreshFilterOptions = () => {
-      if (!statusFilter || statusFilter.dataset.ready === "true") return;
+      if (!statusFilter) return;
+      const previousValue = statusFilter.value;
       const values = [...new Set(realRows.map((row) => normalize(row.cells[statusColumn]?.textContent)).filter(Boolean))].sort();
       statusFilter.replaceChildren();
       const all = make("option", "", "همه وضعیت‌ها");
@@ -104,7 +105,7 @@ const adminDataExperience = () => {
         option.value = value;
         statusFilter.append(option);
       });
-      statusFilter.dataset.ready = "true";
+      if (values.includes(previousValue)) statusFilter.value = previousValue;
     };
 
     const refreshSelection = () => {
@@ -222,11 +223,8 @@ const adminDataExperience = () => {
     });
 
     const observer = new MutationObserver(() => {
-      const nextRows = Array.from(body.rows).filter((row) => !isPlaceholder(row));
-      if (nextRows.some((row) => !row.querySelector("[data-admin-row-select]")) || nextRows.length !== realRows.length) {
-        page = 1;
-        apply();
-      }
+      page = 1;
+      apply();
     });
     observer.observe(body, { childList: true, subtree: true });
     apply();
