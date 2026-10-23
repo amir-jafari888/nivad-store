@@ -309,7 +309,11 @@ $footerTermsUrl = url(
 
 <script>
     (() => {
-        if (document.getElementById("main-content")) return;
+        const existingTarget = document.getElementById("main-content");
+        if (existingTarget) {
+            if (!existingTarget.hasAttribute("tabindex")) existingTarget.tabIndex = -1;
+            return;
+        }
 
         const main = document.querySelector("main, [role='main']");
         if (!main) return;
