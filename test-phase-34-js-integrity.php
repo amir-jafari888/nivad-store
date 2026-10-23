@@ -97,7 +97,7 @@ $add('34.16 Main entry point contains one initializer call per imported default 
 $add('34.17 Cart uses delegated click handling for dynamic add-to-cart buttons', str_contains($cart, 'document.addEventListener("click"') && str_contains($cart, 'event.target.closest("[data-cart]")'));
 $add('34.18 Cart drawer updates from the shared cart event/API', str_contains($drawer, 'cart:updated') || str_contains($drawer, 'window.digitalStoreCart'));
 $add('34.19 Cart and wishlist asynchronous sync failures are caught and surfaced as events', str_contains($cart, 'cart:sync-error') && str_contains($wishlist, 'wishlist:sync-error'));
-$add('34.20 Interactive cart and wishlist buttons expose accessible labels/states', str_contains($cart, 'setAttribute("aria-label"') && str_contains($wishlist, 'setAttribute("aria-pressed"'));
+$add('34.20 Interactive cart and wishlist buttons expose accessible labels/states', preg_match('/setAttribute\\(\\s*"aria-label"/', $cart) === 1 && str_contains($wishlist, 'setAttribute("aria-pressed"'));
 
 $add('34.21 Cart validates and normalizes item state before use', str_contains($cart, 'Number.isFinite(price)') && str_contains($cart, 'Number.isFinite(quantity)') && str_contains($cart, 'normalizeCart'));
 $add('34.22 Server data is normalized before being written into local cart state', str_contains($cart, 'serverItemToLocal') && str_contains($cart, 'normalizeCart('));
