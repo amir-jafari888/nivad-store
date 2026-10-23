@@ -1,6 +1,6 @@
 # NivAD — Phase 33: Media Experience
 
-Status: IMPLEMENTATION COMPLETE — LOCK=NO until CI and browser/XAMPP media regression evidence is complete.
+Status: LOCKED BY EXPLICIT USER DECISION — CI contract suite passed; browser/XAMPP manual regression evidence was not supplied and remains an explicitly documented residual risk.
 
 ## Batch 01 — Media Experience — 10 contracts
 
@@ -25,10 +25,9 @@ Status: IMPLEMENTATION COMPLETE — LOCK=NO until CI and browser/XAMPP media reg
 - `test-phase-31-content-support.php`
 - `.github/workflows/phase-33-media-experience.yml`
 
-## Lock gate
+## Lock record
 
-LOCK remains **NO** until:
-1. GitHub Actions syntax + canonical contract suite passes.
-2. Product Detail is checked in XAMPP/browser at mobile, tablet, and desktop widths.
-3. Primary media, thumbnail selection, lazy loading, placeholder, broken-image fallback, loading/failure states, and responsive behavior are manually verified.
-4. Existing product-detail/cart/wishlist/compatibility behavior remains intact.
+- **LOCK: YES — explicitly authorized by the user on 2026-10-23.**
+- GitHub Actions syntax and static contract suites passed before merge.
+- Browser/XAMPP manual regression evidence was not supplied in this conversation; this is not represented as tested or passed.
+- Residual risk accepted for this phase by explicit user direction: runtime behavior at mobile/tablet/desktop and product-detail/cart/wishlist/compatibility regression still require verification during subsequent regression work.
