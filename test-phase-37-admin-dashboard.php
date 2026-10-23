@@ -78,7 +78,7 @@ phase37Check(str_contains($view, 'admin-dashboard-kpi-value') && str_contains($v
 phase37Check(str_contains($view, 'admin-dashboard-chart-grid'), '37.21 Chart area is implemented');
 phase37Check(str_contains($view, 'sales_by_period') && str_contains($view, 'net_sales'), '37.22 Sales chart consumes the existing sales field contract when provided');
 phase37Check(str_contains($view, 'total_orders') && str_contains($view, 'admin-dashboard-chart-bar-secondary'), '37.23 Orders trend consumes the existing total-orders field contract when provided');
-phase37Check(str_contains($view, '۱۴ روز اخیر') && str_contains($view, 'GROUP_DAY'), '37.24 Dashboard declares the intended trend window and daily grouping contract');
+phase37Check(str_contains($view, '۱۴ روز اخیر') && str_contains($contract, 'GROUP_DAY'), '37.24 Dashboard declares the intended trend window and daily grouping contract');
 phase37Check(str_contains($view, 'role="img"') && str_contains($view, 'aria-label="نمودار'), '37.25 Charts have accessible names');
 phase37Check(str_contains($view, 'admin-dashboard-table') && str_contains($view, 'scope="col"'), '37.26 Period summary table uses semantic headers');
 phase37Check(str_contains($view, 'قرارداد تأییدشده‌ای برای Activity Feed') || str_contains($view, 'قرارداد داده نیاز دارد'), '37.27 Activity Feed dependency is explicit; no fake activity is rendered');
