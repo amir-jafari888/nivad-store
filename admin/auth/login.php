@@ -91,8 +91,8 @@ if (Request::isPost()) {
     </title>
 
 
-    <link rel="stylesheet" href="<?= e(url('/assets/css/admin/admin.css')) ?>">
-    <script defer src="<?= e(url('/assets/js/admin-theme.js')) ?>"></script>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
+    <script defer src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </head>
 
 <body>
