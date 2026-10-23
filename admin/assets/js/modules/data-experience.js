@@ -58,6 +58,16 @@ const adminDataExperience = () => {
     });
     pageSizeLabel.append(pageSize);
     toolbar.append(pageSizeLabel);
+    const clearFilters = make("button", "admin-data-button admin-data-button-secondary", "پاک‌کردن فیلترها");
+    clearFilters.type = "button";
+    clearFilters.addEventListener("click", () => {
+      search.value = "";
+      if (statusFilter) statusFilter.value = "";
+      pageSize.value = "10";
+      page = 1;
+      apply();
+    });
+    toolbar.append(clearFilters);
 
     const bulk = make("div", "admin-data-bulk");
     const selectAllLabel = make("label", "admin-data-select-all");
