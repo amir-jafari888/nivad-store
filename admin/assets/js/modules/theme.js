@@ -36,6 +36,8 @@ const adminTheme = () => {
     }
 
     applyTheme(root.dataset.adminTheme || readTheme(), button);
+    if (button.dataset.adminThemeBound === "true") return;
+    button.dataset.adminThemeBound = "true";
     button.addEventListener("click", () => {
       const next = root.dataset.adminTheme === "dark" ? "light" : "dark";
       try {
