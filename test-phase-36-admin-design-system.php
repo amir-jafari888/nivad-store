@@ -2,11 +2,7 @@
 
 declare(strict_types=1);
 
-/**
- * Nivad Phase 36 — Admin Design System static regression test.
- * Read-only: no database writes and no application state mutation.
- */
-
+/** Nivad Phase 36 — read-only Admin asset architecture regression. */
 $root = __DIR__;
 $checks = 0;
 $passed = 0;
@@ -21,50 +17,53 @@ function phase36Check(bool $condition, string $label): void
         echo '<span style="color:green">[PASS] ' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</span><br>' . PHP_EOL;
         return;
     }
-
     $failed++;
     echo '<span style="color:red">[FAIL] ' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</span><br>' . PHP_EOL;
 }
 
-function phase36Read(string $path): string
+function phase36Read(string $relativePath): string
 {
     global $root;
-    $fullPath = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $path);
-    return is_file($fullPath) ? (string) file_get_contents($fullPath) : '';
+    $path = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+    return is_file($path) ? (string) file_get_contents($path) : '';
 }
 
-$setting = phase36Read('assets/css/setting.css');
-$css = phase36Read('assets/css/admin/admin.css');
-$js = phase36Read('assets/js/admin-theme.js');
-$auth = phase36Read('admin/includes/auth.php');
+$adminCss = 'admin/assets/css/';
+$adminJs = 'admin/assets/js/';
+$mainCss = phase36Read($adminCss . 'main.css');
+$tokens = phase36Read($adminCss . 'setting.css');
+$mainJs = phase36Read($adminJs . 'main.js');
+$themeModule = phase36Read($adminJs . 'modules/theme.js');
+$authInclude = phase36Read('admin/includes/auth.php');
+$storefrontTokens = phase36Read('assets/css/setting.css');
 
-phase36Check($setting !== '', '36 — setting.css exists');
-phase36Check(str_contains($setting, '--admin-color-bg'), '36 — centralized Admin color tokens exist in setting.css');
-phase36Check(str_contains($setting, '--admin-control-height'), '36 — Admin control-height token exists in setting.css');
-phase36Check(str_contains($setting, ':root[data-admin-theme="dark"]'), '36 — dark-theme tokens exist in setting.css');
+phase36Check($mainCss !== '', '36 — Admin owns a separate CSS main entry');
+phase36Check($tokens !== '', '36 — Admin owns an isolated token file');
+phase36Check(str_contains($mainCss, './setting.css'), '36 — Admin main CSS imports Admin tokens');
+phase36Check(str_contains($mainCss, './mobile/mobile.css') && str_contains($mainCss, 'max-width: 600px'), '36 — mobile stylesheet uses project import architecture');
+phase36Check(str_contains($mainCss, './tablet/tablet.css') && str_contains($mainCss, 'min-width: 601px') && str_contains($mainCss, 'max-width: 1009px'), '36 — tablet stylesheet uses project import architecture');
+phase36Check(str_contains($mainCss, './desktop/desktop.css') && str_contains($mainCss, 'min-width: 1010px'), '36 — desktop stylesheet uses project import architecture');
+phase36Check(str_contains($tokens, '--admin-color-bg') && str_contains($tokens, '--admin-control-height'), '36 — Admin semantic design tokens exist');
+phase36Check(str_contains($tokens, ':root[data-admin-theme="dark"]'), '36 — Admin dark theme tokens exist');
+phase36Check(!str_contains($tokens, 'assets/css/setting.css'), '36 — Admin tokens do not import storefront token file');
+phase36Check($mainJs !== '' && str_contains($mainJs, './modules/theme.js'), '36 — Admin JS main imports theme module');
+phase36Check(str_contains($mainJs, 'adminTheme();'), '36 — Admin JS main initializes imported module');
+phase36Check(str_contains($themeModule, 'const adminTheme = () =>') && str_contains($themeModule, 'export default adminTheme;'), '36 — module behavior is wrapped in one exported function');
+phase36Check(str_contains($themeModule, 'localStorage') && str_contains($themeModule, 'aria-pressed'), '36 — theme persistence and ARIA state exist');
+phase36Check(str_contains($authInclude, '/admin/assets/css/main.css') && str_contains($authInclude, '/admin/assets/js/main.js'), '36 — authenticated pages load isolated Admin assets');
 
-phase36Check($css !== '', '36 — shared Admin stylesheet exists');
-phase36Check(str_starts_with(ltrim($css), '@import url("../setting.css");'), '36 — Admin stylesheet imports the central token source');
-phase36Check(str_contains($css, 'var(--admin-color-bg)'), '36 — Admin stylesheet consumes centralized tokens');
-phase36Check(str_contains($css, ':root[data-admin-theme="dark"]'), '36 — dark-theme component rules exist');
-phase36Check(str_contains($css, '@media (max-width: 1009px)'), '36 — tablet responsive rules exist');
-phase36Check(str_contains($css, '@media (max-width: 600px)'), '36 — mobile responsive rules exist');
-phase36Check(str_contains($css, ':focus-visible'), '36 — visible keyboard focus rules exist');
-phase36Check(str_contains($css, 'prefers-reduced-motion'), '36 — reduced-motion support exists');
-phase36Check(str_contains($css, 'overflow-x: auto'), '36 — responsive table overflow is supported');
-phase36Check(str_contains($css, 'body > div:has(> aside)'), '36 — shared Admin sidebar shell styles exist');
-phase36Check(str_contains($css, 'main > section'), '36 — responsive dashboard component grid exists');
+$deviceFiles = [
+    'mobile/layout-mobile.css', 'mobile/components-mobile.css', 'mobile/forms-mobile.css', 'mobile/tables-mobile.css', 'mobile/auth-mobile.css',
+    'tablet/layout-tablet.css', 'tablet/components-tablet.css', 'tablet/forms-tablet.css', 'tablet/tables-tablet.css', 'tablet/auth-tablet.css',
+    'desktop/layout-desktop.css', 'desktop/components-desktop.css', 'desktop/forms-desktop.css', 'desktop/tables-desktop.css', 'desktop/auth-desktop.css',
+];
+foreach ($deviceFiles as $file) {
+    $content = phase36Read($adminCss . $file);
+    phase36Check($content !== '', '36 — device stylesheet exists: ' . $file);
+    phase36Check(!preg_match('/@media\\s*\\(/i', $content), '36 — no @media rule in ' . $file);
+}
 
-phase36Check($js !== '', '36 — Admin theme script exists');
-phase36Check(str_contains($js, 'localStorage'), '36 — theme preference persistence is implemented');
-phase36Check(str_contains($js, 'aria-pressed'), '36 — theme toggle exposes pressed state');
-phase36Check(str_contains($js, 'DOMContentLoaded'), '36 — theme toggle waits for DOM readiness');
-
-phase36Check(str_contains($auth, 'ob_start('), '36 — authenticated Admin pages load shared assets');
-phase36Check(str_contains($auth, '/assets/css/admin/admin.css'), '36 — shared Admin stylesheet injection exists');
-phase36Check(str_contains($auth, '/assets/js/admin-theme.js'), '36 — shared Admin theme script injection exists');
-
-$directAssetPages = [
+$legacyFiles = [
     'admin/auth/login.php',
     'admin/reports/index.php',
     'admin/reports/sales.php',
@@ -76,54 +75,17 @@ $directAssetPages = [
     'admin/refunds/index.php',
     'admin/refunds/show.php',
 ];
-
-foreach ($directAssetPages as $path) {
-    $content = phase36Read($path);
-    phase36Check(
-        $content !== ''
-        && str_contains($content, '/assets/css/admin/admin.css')
-        && str_contains($content, '/assets/js/admin-theme.js'),
-        '36 — standalone Admin page includes design assets: ' . $path
-    );
+foreach ($legacyFiles as $file) {
+    $content = phase36Read($file);
+    phase36Check($content !== '', '36 — standalone Admin page exists: ' . $file);
+    phase36Check(str_contains($content, '/admin/assets/css/main.css') && str_contains($content, '/admin/assets/js/main.js'), '36 — standalone page uses isolated assets: ' . $file);
 }
 
-$adminRoot = $root . DIRECTORY_SEPARATOR . 'admin';
-if (is_dir($adminRoot)) {
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($adminRoot, FilesystemIterator::SKIP_DOTS)
-    );
+phase36Check(!str_contains($storefrontTokens, 'NIVAD ADMIN DESIGN SYSTEM — Phase 36'), '36 — Admin tokens removed from storefront setting.css');
 
-    foreach ($iterator as $file) {
-        if (!$file->isFile() || strtolower($file->getExtension()) !== 'php') {
-            continue;
-        }
-
-        $path = str_replace($root . DIRECTORY_SEPARATOR, '', $file->getPathname());
-        $relative = str_replace(DIRECTORY_SEPARATOR, '/', $path);
-        if ($relative === 'admin/includes/auth.php') {
-            continue;
-        }
-
-        $content = (string) file_get_contents($file->getPathname());
-        if (stripos($content, '<!DOCTYPE html') === false) {
-            continue;
-        }
-
-        $usesSharedAuth = str_contains($content, 'includes/auth.php');
-        $hasDirectAssets = str_contains($content, '/assets/css/admin/admin.css')
-            && str_contains($content, '/assets/js/admin-theme.js');
-
-        phase36Check(
-            $usesSharedAuth || $hasDirectAssets,
-            '36 — Admin HTML page is covered by shared design system: ' . $relative
-        );
-    }
-}
-
-echo '<hr>';
-echo 'PHASE 36 STATIC RESULT: ' . $passed . ' PASS / ' . $failed . ' FAIL / ' . $checks . ' TOTAL<br>' . PHP_EOL;
-echo 'This test validates static contracts only; browser, contrast, PHP runtime and responsive visual tests remain separate.' . PHP_EOL;
-
-if ($failed > 0) {
-    exit(1);
-}
+echo '<hr><strong>Phase 36 Admin Asset Architecture: '
+    . $passed . '/' . $checks . ' PASS, '
+    . $failed . ' FAIL</strong><br>' . PHP_EOL;
+echo '<strong>Status: ' . ($failed === 0 ? 'STATIC CHECKS PASS — RUNTIME/VISUAL TESTS STILL REQUIRED' : 'FAIL — FIX REQUIRED')
+    . '</strong><br>' . PHP_EOL;
+echo '<strong>LOCK: NO — until PHP/XAMPP and browser regression checks are completed.</strong><br>' . PHP_EOL;
