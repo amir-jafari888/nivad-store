@@ -409,7 +409,7 @@ const search = () => {
   input.setAttribute("role", "combobox");
   input.setAttribute("aria-autocomplete", "list");
 
-  input.setAttribute("aria-controls", "search-suggestions");
+  input.setAttribute("aria-controls", "search-suggestions-panel");
 
   input.setAttribute("aria-expanded", "false");
 
