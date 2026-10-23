@@ -30,6 +30,7 @@ import initializeRecentDevice from "./modules/recent-device-ui.js";
 import checkout from "./modules/checkout.js";
 import payment from "./modules/payment.js";
 import performance from "./modules/performance.js";
+import networkRecovery from "./modules/network-recovery.js";
 
 header();
 hero();
@@ -63,3 +64,4 @@ initializeRecentDevice();
 checkout();
 payment();
 performance();
+networkRecovery();
