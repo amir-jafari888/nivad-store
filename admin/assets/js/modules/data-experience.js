@@ -237,11 +237,12 @@ const adminDataExperience = () => {
     document.querySelectorAll("form:not([data-admin-form-ready])").forEach((form) => {
       form.dataset.adminFormReady = "true";
       form.addEventListener("submit", (event) => {
+        if (event.defaultPrevented) return;
         if (form.dataset.submitting === "true") {
           event.preventDefault();
           return;
         }
-        if (!form.checkValidity()) {
+        if (!form.noValidate && !form.checkValidity()) {
           form.reportValidity();
           return;
         }
@@ -254,6 +255,30 @@ const adminDataExperience = () => {
           else button.value = "در حال ارسال…";
         });
       });
+    });
+  };
+
+  const enforceDeclaredPermissions = () => {
+    const root = document.documentElement;
+    let permissions = [];
+    try {
+      const raw = root.dataset.adminPermissions;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) permissions = parsed.filter((item) => typeof item === "string");
+      }
+    } catch (_) {
+      permissions = [];
+    }
+
+    document.querySelectorAll("[data-admin-permission]").forEach((control) => {
+      const required = control.dataset.adminPermission;
+      if (!required || permissions.includes(required)) return;
+      if ("disabled" in control) control.disabled = true;
+      control.setAttribute("aria-disabled", "true");
+      if (!control.hasAttribute("title")) {
+        control.title = "مجوز این عملیات از قرارداد فعلی صفحه تأیید نشده است.";
+      }
     });
   };
 
@@ -278,6 +303,7 @@ const adminDataExperience = () => {
     document.querySelectorAll("table").forEach((table, index) => enhanceTable(table, index));
     enhanceForms();
     enhanceFeedback();
+    enforceDeclaredPermissions();
   };
 
   if (document.readyState === "loading") {
