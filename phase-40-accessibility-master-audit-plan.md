@@ -64,9 +64,9 @@
 | 40.22 | Audit Admin focus indicators against Admin-owned tokens without leaking storefront styles. | PARTIAL — Admin-owned focus-visible rule added; rendered verification pending. |
 | 40.23 | Verify `:focus-visible` is not removed without an accessible replacement. | NOT STARTED — AUDIT REQUIRED |
 | 40.24 | Verify focused controls remain visible and are not obscured by sticky headers, drawers, or floating UI. | NOT STARTED — AUDIT REQUIRED |
-| 40.25 | Verify opening a modal or drawer moves focus into the active overlay according to its interaction contract. | NOT STARTED — AUDIT REQUIRED |
+| 40.25 | Verify opening a modal or drawer moves focus into the active overlay according to its interaction contract. | PARTIAL — cart drawer source focuses its close control; browser focus behavior pending. |
 | 40.26 | Verify closing an overlay returns focus to the invoking control when it still exists. | NOT STARTED — AUDIT REQUIRED |
-| 40.27 | Verify overlay focus remains contained where modal semantics require it. | NOT STARTED — AUDIT REQUIRED |
+| 40.27 | Verify overlay focus remains contained where modal semantics require it. | PARTIAL — cart drawer source traps Tab/Shift+Tab; runtime verification pending. |
 | 40.28 | Verify dynamically hidden or removed elements do not retain focus or leave focus in an invalid location. | NOT STARTED — AUDIT REQUIRED |
 | 40.29 | Verify route/page transitions and validation failures provide a predictable focus destination where needed. | NOT STARTED — AUDIT REQUIRED |
 | 40.30 | Verify focus remains visible and usable in Light and Dark themes and across viewport layouts. | NOT STARTED — AUDIT REQUIRED |
@@ -105,11 +105,11 @@
 
 | Step | Contract | Initial Status |
 |---|---|---|
-| 40.51 | Audit cart drawer semantics, accessible name, open/close state, and keyboard behavior. | NOT STARTED — AUDIT REQUIRED |
+| 40.51 | Audit cart drawer semantics, accessible name, open/close state, and keyboard behavior. | PARTIAL — dialog name/modal state, Escape handling, focus entry/return and keyboard trap found in source; browser verification pending. |
 | 40.52 | Audit modal/dialog semantics and accessible names for existing confirmation or form dialogs. | NOT STARTED — AUDIT REQUIRED |
-| 40.53 | Verify Escape closes dismissible overlays and does not silently discard critical user input. | NOT STARTED — AUDIT REQUIRED |
+| 40.53 | Verify Escape closes dismissible overlays and does not silently discard critical user input. | PARTIAL — cart drawer Escape handler exists; other overlays and unsaved-input behavior pending. |
 | 40.54 | Verify close controls are keyboard accessible and have meaningful accessible names. | NOT STARTED — AUDIT REQUIRED |
-| 40.55 | Verify background content is not interactable by keyboard when a true modal is open. | NOT STARTED — AUDIT REQUIRED |
+| 40.55 | Verify background content is not interactable by keyboard when a true modal is open. | PARTIAL — cart drawer traps sequential keyboard focus and declares aria-modal; background inertness and assistive-technology verification pending. |
 | 40.56 | Verify dropdowns and menus expose expanded/collapsed state and support expected keyboard behavior. | NOT STARTED — AUDIT REQUIRED |
 | 40.57 | Verify tabs expose selected state and keyboard navigation consistent with their actual interaction pattern. | NOT STARTED — AUDIT REQUIRED |
 | 40.58 | Verify accordions expose expanded state and control their corresponding panels correctly. | NOT STARTED — AUDIT REQUIRED |
