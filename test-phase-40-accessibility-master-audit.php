@@ -33,7 +33,11 @@ $storeMain = $read('assets/css/main.css');
 $adminMain = $read('admin/assets/css/main.css');
 
 $add('40.01 phase plan exists', $exists('phase-40-accessibility-master-audit-plan.md'));
-$add('40.02 test is read-only and contains no DB bootstrap', !str_contains($read(__FILE__ === '' ? '' : basename(__FILE__)), 'PDO('));
+$testSource = $read('test-phase-40-accessibility-master-audit.php');
+$add('40.02 test is read-only and contains no database connection or mutation calls',
+    !str_contains($testSource, 'new ' . 'PDO(')
+    && !str_contains($testSource, 'mysqli_' . 'connect(')
+    && !preg_match('~\\b(?:INSERT|UPDATE|DELETE)\\s+INTO?\\b~i', $testSource));
 $add('40.03 storefront shared header declares Persian RTL', str_contains($header, '<html lang="fa" dir="rtl">'));
 $add('40.04 storefront shared header includes skip navigation', str_contains($header, 'class="skip-link" href="#main-content"'));
 $add('40.05 storefront token file styles skip navigation', str_contains($storeTokens, '.skip-link:focus-visible'));
