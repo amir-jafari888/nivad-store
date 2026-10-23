@@ -25,6 +25,7 @@ $catalog = $read('assets/js/modules/catalog.js');
 $finder = $read('assets/js/modules/finder.js');
 $setup = $read('assets/js/modules/setup-builder.js');
 $product = $read('assets/js/modules/product-detail.js');
+$compatibility = $read('assets/js/modules/compatibility.js');
 $media = $read('assets/js/modules/product-media.js');
 $checkout = $read('assets/js/modules/checkout.js');
 $payment = $read('assets/js/modules/payment.js');
@@ -111,7 +112,7 @@ $add('34.29 Async request modules have explicit error boundaries', str_contains(
 $add('34.30 Cart and wishlist synchronization retain the established storage/event contracts', str_contains($cart, 'cart:updated') && str_contains($wishlist, 'wishlist:updated'));
 
 $add('34.31 Request helpers check HTTP/API failure responses', str_contains($cart, '!response.ok') && str_contains($wishlist, '!response.ok'));
-$add('34.32 Cart, wishlist, search, finder and catalog reject malformed/non-object JSON responses', str_contains($cart, 'response.json().catch(() => null)') && str_contains($cart, 'Array.isArray(payload)') && str_contains($wishlist, 'response.json().catch(() => null)') && str_contains($wishlist, 'Array.isArray(payload)') && str_contains($search, 'response.json().catch(() => null)') && str_contains($finder, 'response.json().catch(() => null)') && str_contains($catalog, 'typeof payload !== "object"'));
+$add('34.32 Commerce/auth/product/compatibility/payment helpers reject malformed JSON or non-object payloads', str_contains($cart, 'response.json().catch(() => null)') && str_contains($cart, 'Array.isArray(payload)') && str_contains($wishlist, 'response.json().catch(() => null)') && str_contains($wishlist, 'Array.isArray(payload)') && str_contains($search, 'response.json().catch(() => null)') && str_contains($finder, 'response.json().catch(() => null)') && str_contains($catalog, 'typeof payload !== "object"') && str_contains($product, 'Array.isArray(payload)') && str_contains($compatibility, 'Array.isArray(payload)') && str_contains($auth, 'Array.isArray(payload)') && str_contains($payment, 'Array.isArray(result)'));
 $add('34.33 Mutating cart/wishlist requests request CSRF token using existing endpoint', str_contains($cart, '"/auth/csrf"') && str_contains($wishlist, '"/auth/csrf"') && str_contains($cart, '"X-CSRF-TOKEN"'));
 $add('34.34 Checkout/payment modules exist and contain explicit request/state handling', $checkout !== '' && $payment !== '' && str_contains($checkout, 'loadCheckout'));
 $add('34.35 Modules initialize behind page-specific DOM checks where applicable', str_contains($checkout, 'data-customer-checkout') && str_contains($payment, 'data-'));
