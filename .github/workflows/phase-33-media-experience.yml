@@ -23,10 +23,11 @@ jobs:
           php-version: '8.3'
 
       - name: JavaScript syntax
+        shell: bash
         run: |
-          node --experimental-default-type=module --check assets/js/main.js
-          node --experimental-default-type=module --check assets/js/modules/product-detail.js
-          node --experimental-default-type=module --check assets/js/modules/product-media.js
+          node --input-type=module --check < assets/js/main.js
+          node --input-type=module --check < assets/js/modules/product-detail.js
+          node --input-type=module --check < assets/js/modules/product-media.js
 
       - name: PHP syntax
         run: php -l test-phase-31-content-support.php
