@@ -34,7 +34,7 @@ $add('34.01 Main entry point exists and is readable', $main !== '');
 $imports = [];
 preg_match_all('/^import\\s+([\\s\\S]*?);\\s*$/m', $main, $importLines, PREG_SET_ORDER);
 foreach ($importLines as $line) {
-    if (preg_match("~from\\s+[\\"']([^\\"']+)[\\"']~", $line[1], $match)) {
+    if (preg_match('/from\\s+"([^"]+)"/', $line[1], $match)) {
         $imports[] = ['statement' => $line[1], 'path' => $match[1]];
     }
 }
