@@ -101,6 +101,7 @@ $csrfToken = Csrf::token();
             text-decoration: none
         }
     </style>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -208,6 +209,7 @@ $csrfToken = Csrf::token();
         loadOrders();
     </script>
 
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>
