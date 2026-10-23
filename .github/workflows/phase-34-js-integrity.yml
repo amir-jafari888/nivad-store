@@ -1,0 +1,48 @@
+name: Phase 34 JavaScript Integrity
+
+on:
+  push:
+    branches:
+      - phase-34-js-integrity
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: JavaScript syntax — all source modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            node --input-type=module --check < "$file"
+          done < <(find assets/js -type f -name '*.js' -print0)
+          node --input-type=module --check < assets/js/main.js
+
+      - name: PHP syntax
+        run: |
+          php -l test-phase-31-content-support.php
+          php -l test-phase-33-media-experience.php
+          php -l test-phase-34-js-integrity.php
+
+      - name: Canonical Phase 31 + 32 contract suite
+        run: php test-phase-31-content-support.php
+
+      - name: Phase 33 media contract suite
+        run: php test-phase-33-media-experience.php
+
+      - name: Phase 34 static contract suite
+        run: php test-phase-34-js-integrity.php
