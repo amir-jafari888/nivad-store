@@ -27,6 +27,7 @@ require_once __DIR__ . '/includes/auth.php';
 </head>
 
 <body>
+    <a class="admin-skip-link" href="#main-content">رفتن به محتوای اصلی</a>
     <header>
         <div>
             <a
@@ -63,7 +64,7 @@ require_once __DIR__ . '/includes/auth.php';
     </header>
     <div>
         <aside>
-            <nav>
+            <nav aria-label="ناوبری مدیریت">
                 <a
                     href="<?= e(url('/admin')) ?>">
                     داشبورد
@@ -98,7 +99,7 @@ require_once __DIR__ . '/includes/auth.php';
                 </a>
             </nav>
         </aside>
-        <main>
+        <main id="main-content" tabindex="-1">
             <header>
                 <h1>
                     داشبورد مدیریت
