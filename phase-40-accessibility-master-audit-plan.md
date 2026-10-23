@@ -49,7 +49,7 @@
 | 40.12 | Verify logical Tab and Shift+Tab order follows the interface and reading order. | NOT STARTED — AUDIT REQUIRED |
 | 40.13 | Detect positive `tabindex` values or scripted focus order that may disrupt natural navigation. | NOT STARTED — AUDIT REQUIRED |
 | 40.14 | Verify no keyboard trap exists in page content, navigation, menus, or overlays. | NOT STARTED — AUDIT REQUIRED |
-| 40.15 | Verify visible skip navigation is available where repeated navigation makes it useful. | PARTIAL — shared storefront/Admin skip links added; target coverage remains incomplete across all pages. |
+| 40.15 | Verify visible skip navigation is available where repeated navigation makes it useful. | PARTIAL — shared footer fallback supplies a target for storefront pages with a main landmark; no-JS coverage and runtime verification remain pending. |
 | 40.16 | Verify menus, dropdowns, tabs, accordions, and disclosure controls support their expected keyboard interaction. | NOT STARTED — AUDIT REQUIRED |
 | 40.17 | Verify native buttons activate with Enter/Space and links activate with Enter without custom-key conflicts. | NOT STARTED — AUDIT REQUIRED |
 | 40.18 | Verify keyboard users can reach and operate search suggestions and clear/submit controls. | PARTIAL — combobox/listbox semantics and arrow/Escape handling audited in source; manual keyboard verification pending. |
@@ -205,7 +205,7 @@
 
 Source-level changes currently present on `phase-40-accessibility-master-audit`:
 
-1. Added keyboard skip-navigation links to the shared storefront header and selected storefront/Admin pages.
+1. Added keyboard skip-navigation links to the shared storefront header and selected storefront/Admin pages; the shared footer supplies a labelled fallback target when the page main landmark has no existing target ID.
 2. Added a token-based storefront skip-link focus style; added Admin-owned skip-link, global `:focus-visible`, and `prefers-reduced-motion` styles.
 3. Added `id="main-content"` and programmatic focus targets to the audited cart, checkout, auth, search, product-detail, and selected Admin pages.
 4. Improved storefront search suggestions with explicit combobox/listbox relationships, selected-option state, and non-interactive option elements compatible with the existing active-descendant keyboard flow.
