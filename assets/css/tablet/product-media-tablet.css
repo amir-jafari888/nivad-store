@@ -1,0 +1,42 @@
+.product-detail-gallery__main[data-media-state="loading"]::after,
+.product-detail-gallery__thumb[data-media-state="loading"]::after {
+  content: "در حال بارگذاری تصویر...";
+  position: absolute;
+  inset-inline: var(--spacing-4);
+  bottom: var(--spacing-4);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.product-detail-gallery__main,
+.product-detail-gallery__thumb {
+  position: relative;
+}
+
+.product-detail-gallery__main[data-media-state="failure"],
+.product-detail-gallery__thumb[data-media-state="failure"] {
+  background: var(--product-detail-media-background);
+}
+
+.product-detail-gallery__main[data-media-state="failure"]::after,
+.product-detail-gallery__thumb[data-media-state="failure"]::after {
+  content: "تصویر در دسترس نیست";
+  position: absolute;
+  inset-inline: var(--spacing-3);
+  bottom: var(--spacing-3);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+
+.product-detail-gallery__main img[data-media-placeholder="true"],
+.product-detail-gallery__thumb img[data-media-placeholder="true"] {
+  opacity: 0.8;
+}
