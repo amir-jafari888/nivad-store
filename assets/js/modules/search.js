@@ -117,6 +117,7 @@ const search = () => {
     suggestionBox.id = "search-suggestions";
 
     suggestionBox.setAttribute("role", "listbox");
+    suggestionBox.id = "search-suggestions";
 
     suggestionBox.setAttribute("aria-label", "پیشنهادهای جستجو");
 
@@ -310,12 +311,12 @@ const search = () => {
       list.innerHTML = items
         .map(
           (item, index) => `
-            <button
+            <div
               id="search-option-${index}"
               class="search-suggestion"
-              type="button"
               role="option"
               aria-selected="false"
+              tabindex="-1"
               data-search-value="${escapeHTML(item.value)}">
 
               <span class="search-suggestion-icon">
@@ -335,7 +336,7 @@ const search = () => {
               <span class="search-suggestion-type">
                 ${escapeHTML(item.type)}
               </span>
-            </button>
+            </div>
           `,
         )
         .join("");
@@ -402,6 +403,7 @@ const search = () => {
 
   input.setAttribute("autocomplete", "off");
 
+  input.setAttribute("role", "combobox");
   input.setAttribute("aria-autocomplete", "list");
 
   input.setAttribute("aria-controls", "search-suggestions");
