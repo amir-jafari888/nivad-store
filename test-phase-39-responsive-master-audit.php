@@ -72,7 +72,7 @@ foreach ([
     $add('39.30 Admin ' . $label . ' breakpoint contract', str_contains($adminMain, $rule));
 }
 $add('39.31 Storefront tokens define Light/default root', str_contains($storeTokens, ':root'));
-$add('39.32 Storefront tokens define dark theme', preg_match('~\[data-theme=["\\']dark["\\']\]|\.dark-theme|\.theme-dark~i', $storeTokens) === 1);
+$add('39.32 Storefront tokens define dark theme', str_contains($storeTokens, '[data-theme="dark"]'));
 $add('39.33 Admin tokens define dark theme', str_contains($adminTokens, 'data-admin-theme="dark"'));
 $add('39.34 Admin token namespace is isolated', str_contains($adminTokens, '--admin-color-bg:') && !str_contains($adminTokens, '--color-primary:'));
 $add('39.35 Storefront entrypoint does not import Admin CSS', !str_contains($storeMain, 'admin/assets/css'));
