@@ -24,9 +24,9 @@ jobs:
 
       - name: JavaScript syntax
         run: |
-          node --check assets/js/main.js
-          node --check assets/js/modules/product-detail.js
-          node --check assets/js/modules/product-media.js
+          node --experimental-default-type=module --check assets/js/main.js
+          node --experimental-default-type=module --check assets/js/modules/product-detail.js
+          node --experimental-default-type=module --check assets/js/modules/product-media.js
 
       - name: PHP syntax
         run: php -l test-phase-31-content-support.php
