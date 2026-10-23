@@ -306,10 +306,21 @@ const adminDataExperience = () => {
     enforceDeclaredPermissions();
   };
 
+  const observeDynamicContent = () => {
+    const observer = new MutationObserver((records) => {
+      if (records.some((record) => record.addedNodes.length > 0)) mount();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  };
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount, { once: true });
+    document.addEventListener("DOMContentLoaded", () => {
+      mount();
+      observeDynamicContent();
+    }, { once: true });
   } else {
     mount();
+    observeDynamicContent();
   }
 };
 
