@@ -71,6 +71,9 @@ declare(strict_types=1);
             color: #b91c1c;
         }
     </style>
+
+    <link rel="stylesheet" href="<?= e(url('/assets/css/admin/admin.css')) ?>">
+    <script defer src="<?= e(url('/assets/js/admin-theme.js')) ?>"></script>
 </head>
 
 <body>
