@@ -59,6 +59,9 @@ declare(strict_types=1);
             margin-top: 0;
         }
     </style>
+
+    <link rel="stylesheet" href="<?= e(url('/assets/css/admin/admin.css')) ?>">
+    <script defer src="<?= e(url('/assets/js/admin-theme.js')) ?>"></script>
 </head>
 
 <body>
