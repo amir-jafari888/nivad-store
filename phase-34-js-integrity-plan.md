@@ -16,7 +16,9 @@ Audit and validate module imports/exports, initialization, DOM/event contracts, 
 - Read `assets/js/modules/commerce-context.js`: versioned session storage, normalization, allowlisted setup steps/needs, and safe failure returns exist. Consumer behavior still needs regression coverage.
 - Read `header.js`, `cart-drawer.js`, `search.js`, `catalog.js`, `finder.js`, `setup-builder.js`, `product-detail.js`, `product-media.js`, `auth.js`, `checkout.js`, `payment.js`, `account.js`, `customer-commerce.js`, `discovery.js`, `compatibility.js`, and `storefront.js` from the current master snapshot for initial module inventory. This is not a claim that every event path or API schema has been exhaustively runtime-verified.
 - Catalog now rejects valid JSON that is not an object (for example `null`, arrays, or scalars), instead of silently returning empty data.
-- Cart, wishlist, search suggestions, and Finder now reject malformed JSON/non-object payloads on successful HTTP responses rather than interpreting the fallback `{}` as success. Existing HTTP/API failure handling remains in place.
+- Cart, wishlist, search suggestions, Finder, product detail, compatibility, authentication, and payment now reject malformed JSON/non-object payloads on successful HTTP responses rather than interpreting fallback `{}` as success. Existing HTTP/API failure handling remains in place.
+- Payment CSRF retrieval now requires an HTTP-successful, object-shaped response containing a token; it no longer proceeds with a missing token as if CSRF retrieval succeeded.
+- Catalog’s request-token guards and Search’s request-token guards were verified in source to suppress stale responses. Finder currently prevents concurrent runs by disabling form controls and guarding `run()` while loading; this is not an AbortController-based cancellation contract.
 - Initial Phase 34 CI run: JavaScript syntax, PHP syntax, Phase 31+32 suite, and Phase 33 suite passed. The new 40-contract suite reported 39 PASS / 1 FAIL due to a test assertion incorrectly expecting Finder to use the variable name `root`; actual Finder uses `page` and has the required early DOM guard. The assertion was corrected; rerun is required.
 - Existing keys retained: `digital-store-cart`, `digital-store-wishlist`, `digital-store-wishlist-variants`, and `nivad-commerce-context`.
 - Existing events retained: `cart:updated`, `wishlist:updated`, and the established sync-error events.
@@ -29,7 +31,7 @@ Audit and validate module imports/exports, initialization, DOM/event contracts, 
 
 ## Contract status
 
-The 40 checks are encoded in `test-phase-34-js-integrity.php`. A check only counts as PASS after the workflow/test output confirms it. Static checks cannot prove browser runtime, live API behavior, assistive-technology behavior, or absence of every race condition.
+The 40 checks are encoded in `test-phase-34-js-integrity.php`. The first run passed 39/40; the only failure was a test assertion using the wrong DOM variable name, corrected to the actual `page` guard. A later run after the correction has not yet been confirmed. Static checks cannot prove browser runtime, live API behavior, assistive-technology behavior, or absence of every race condition.
 
 ## Required remaining work before lock
 
