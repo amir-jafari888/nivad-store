@@ -85,6 +85,7 @@ $csrfToken = Csrf::token();
             margin: 0
         }
     </style>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -160,6 +161,7 @@ $csrfToken = Csrf::token();
         );
     </script>
 
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>
