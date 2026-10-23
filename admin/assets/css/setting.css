@@ -33,6 +33,10 @@
   --admin-control-height: 44px;
   --admin-content-width: 1440px;
   --admin-transition: 160ms ease;
+  --admin-transition-fast: 120ms ease;
+  --admin-transition-normal: 160ms ease;
+  --admin-transition-slow: 240ms ease;
+  --admin-motion-press-y: 1px;
   --admin-focus-ring: 0 0 0 3px rgba(37, 99, 235, .2);
   --admin-z-floating: 1000;
 }
@@ -82,6 +86,13 @@
   outline-offset: 3px;
   box-shadow: var(--admin-focus-ring);
 }
+
+/* Explicit press feedback for existing Admin controls; no layout-changing scale. */
+:where(button, a, [role="button"], input[type="submit"], input[type="button"]):active:not(:disabled) {
+  transform: translateY(var(--admin-motion-press-y));
+  transition: transform var(--admin-transition-fast);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
