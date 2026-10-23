@@ -93,6 +93,7 @@ check('44.T47 test is read-only and contains no SQL writes', !preg_match('/\b(IN
 check('44.T48 changed storefront module retains same-origin credentials', str_contains($storefront, 'credentials: "same-origin"'));
 check('44.T49 category and product API calls remain distinct', str_contains($storefront, 'api("/storefront/categories")') && str_contains($storefront, 'api("/storefront/products")'));
 check('44.T50 phase plan marks incomplete contracts pending', str_contains($plan, 'full source/runtime evidence not established'));
+check('44.T51 busy state clears for loaded and fallback content', str_contains($storefront, 'container.setAttribute("aria-busy", "false")') && str_contains($storefront, 'productsContainer.setAttribute("aria-busy", "false")'));
 
 $total = $pass + $fail;
 echo '<hr>' . PHP_EOL;
