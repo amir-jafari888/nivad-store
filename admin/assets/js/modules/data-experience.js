@@ -99,18 +99,19 @@ const adminDataExperience = () => {
     const selected = new Set();
 
     const rowText = (row) => Array.from(row.cells).map((cell) => cell.textContent ?? "").join(" ");
+    const dataCell = (row, index) => row.cells[index + (row.querySelector("[data-admin-row-select]") ? 1 : 0)];
     const isPlaceholder = (row) => row.cells.length === 1 && row.cells[0].hasAttribute("colspan");
 
     const refreshFilterOptions = () => {
       if (!statusFilter) return;
       const previousValue = statusFilter.value;
-      const values = [...new Set(realRows.map((row) => normalize(row.cells[statusColumn]?.textContent)).filter(Boolean))].sort();
+      const values = [...new Set(realRows.map((row) => normalize(dataCell(row, statusColumn)?.textContent)).filter(Boolean))].sort();
       statusFilter.replaceChildren();
       const all = make("option", "", "همه وضعیت‌ها");
       all.value = "";
       statusFilter.append(all);
       values.forEach((value) => {
-        const original = realRows.find((row) => normalize(row.cells[statusColumn]?.textContent) === value)?.cells[statusColumn]?.textContent.trim() ?? value;
+        const original = realRows.find((row) => normalize(dataCell(row, statusColumn)?.textContent) === value) ? dataCell(realRows.find((row) => normalize(dataCell(row, statusColumn)?.textContent) === value), statusColumn)?.textContent.trim() ?? value;
         const option = make("option", "", original);
         option.value = value;
         statusFilter.append(option);
@@ -139,7 +140,7 @@ const adminDataExperience = () => {
       const statusValue = statusFilter ? statusFilter.value : "";
       visibleRows = realRows.filter((row) => {
         const matchesQuery = !query || normalize(rowText(row)).includes(query);
-        const matchesStatus = !statusValue || normalize(row.cells[statusColumn]?.textContent) === statusValue;
+        const matchesStatus = !statusValue || normalize(dataCell(row, statusColumn)?.textContent) === statusValue;
         return matchesQuery && matchesStatus;
       });
 
