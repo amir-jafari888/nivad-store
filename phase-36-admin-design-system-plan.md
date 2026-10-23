@@ -2,36 +2,38 @@
 
 ## Source of truth
 - `front-roadmap.txt` — Phase 36 title and scope.
-- `uiuxrules.md` — Admin UX, Dashboard UX, Responsive Admin, RTL, Persian Typography and WCAG 2.2 AA requirements.
-- Actual Admin PHP templates and `assets/css/setting.css`.
+- `uiuxrules.md` — Admin UX, Responsive Admin, RTL, Persian Typography and WCAG 2.2 AA requirements.
+- Existing storefront CSS import architecture was inspected in `assets/css/main.css`, `assets/css/mobile/mobile.css`, `assets/css/tablet/tablet.css`, and `assets/css/desktop/desktop.css`.
 
-## Scope
-Build an Admin-specific design system aligned with the existing Nivad brand tokens, supporting Light, Dark, Responsive and Accessibility without changing backend contracts or business logic.
+## Admin asset isolation implemented on branch
+All Admin design assets now live under `admin/assets/`; Admin pages no longer load the shared storefront design tokens or storefront Admin stylesheet/script paths.
 
-## Implemented on branch
-- Extended `assets/css/setting.css` with centralized Admin semantic tokens for colors, typography, spacing, controls, shadows, radius, transition, focus and z-index.
-- Added `assets/css/admin/admin.css` for shared Admin surfaces, typography, controls, tables, forms, feedback panels, responsive behavior, RTL-compatible logical properties, keyboard focus and reduced motion.
-- Added `assets/js/admin-theme.js` for an accessible Light/Dark toggle with localStorage persistence and ARIA state.
-- Updated `admin/includes/auth.php` to inject shared assets after legacy inline page styles, preserving existing templates.
-- Added direct shared-asset loading to standalone Admin login, report, return and refund pages that do not use the shared Admin auth include.
-- Added `test-phase-36-admin-design-system.php` as a read-only static contract/regression test.
+- `admin/assets/css/setting.css`: Admin-owned semantic tokens and Light/Dark values.
+- `admin/assets/css/main.css`: imports Admin tokens and the three viewport-specific entry files using the existing project's CSS import convention.
+- `admin/assets/css/mobile/mobile.css`, `tablet/tablet.css`, `desktop/desktop.css`: import section-level files for their own breakpoint.
+- Each breakpoint has separate layout, component, form, table, and authentication stylesheets. Responsive styling is authored in the corresponding device files; there are no `@media` blocks inside those section files.
+- `admin/assets/js/main.js`: imports and initializes Admin modules.
+- `admin/assets/js/modules/theme.js`: wraps theme behavior in one function and exports that function as the default export; includes localStorage persistence and ARIA toggle state.
+- `admin/includes/auth.php` injects the isolated Admin CSS/JS into authenticated pages. Standalone login, report, return and refund pages load `/admin/assets/css/main.css` and `/admin/assets/js/main.js` directly.
+- Admin-only tokens were removed from storefront `assets/css/setting.css`.
+- Removed the previous shared-path Admin stylesheet/script after updating consumers.
 
 ## Contract mapping
-- 36.01–36.10: Admin Foundation and centralized tokens.
-- 36.11–36.20: shared layout/component styling across existing Admin templates.
-- 36.21–36.30: Light/Dark theme, three responsive breakpoints and RTL-safe layout rules.
-- 36.31–36.40: semantic controls, keyboard focus, ARIA toggle state, reduced motion and static integration regression.
+- 36.01–36.10: Admin Foundation and isolated design tokens.
+- 36.11–36.20: shared Admin layout/components/forms/tables.
+- 36.21–36.30: Light/Dark theme, dedicated mobile/tablet/desktop styles, RTL-compatible logical properties.
+- 36.31–36.40: accessible focus states, ARIA theme toggle, asset-link integrity and static regression.
 
 This mapping is an execution breakdown, not literal numbered entries from `front-roadmap.txt`.
 
 ## Verification status
-- Implementation: IN PROGRESS / initial shared-system rollout committed to this branch.
-- Static test: CREATED, NOT EXECUTED in PHP/XAMPP.
-- Browser visual review, keyboard walkthrough, real contrast measurement and PHP runtime checks: NOT VERIFIED.
+- Asset separation and file architecture: IMPLEMENTED on branch.
+- Static test: updated, NOT EXECUTED in PHP/XAMPP.
+- Browser visual review, keyboard walkthrough, real contrast measurement, PHP runtime checks and full Admin regression: NOT VERIFIED.
 - PASS: NOT GRANTED.
 - LOCK: NO.
 
 ## Risks / follow-up
-- Existing inline page styles may still override the shared system when selectors are more specific; visual review is required.
-- Some legacy pages may contain bespoke components requiring page-specific token adoption after regression.
-- The standalone static test must be run from the repository root in PHP/XAMPP and all failures resolved before claiming PASS.
+- Legacy inline styles can override the new design system where selectors are more specific.
+- Responsive CSS import qualifiers intentionally follow the existing project convention; individual device stylesheets contain no `@media` rules.
+- Run `test-phase-36-admin-design-system.php` from the project root in PHP/XAMPP, fix failures, then perform visual and keyboard regression before requesting PASS/LOCK.
