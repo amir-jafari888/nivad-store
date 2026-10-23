@@ -10,7 +10,7 @@ $payments = is_array($metrics['payments'] ?? null) ? $metrics['payments'] : [];
 $orderItems = is_array($metrics['order_items'] ?? null) ? $metrics['order_items'] : [];
 $inventory = is_array($metrics['inventory'] ?? null) ? $metrics['inventory'] : [];
 $salesByPeriod = is_array($metrics['sales_by_period'] ?? null) ? $metrics['sales_by_period'] : [];
-$salesByPeriodStatus = (string)($metrics['sales_by_period_status'] ?? 'unknown');
+$salesByPeriodStatus = (string)($metrics['sales_by_period_status'] ?? 'dependency');
 
 $formatNumber = static function (mixed $value): string {
     if (!is_numeric($value)) {
@@ -148,9 +148,9 @@ $adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
                             <strong>داده‌های نمودار در دسترس نیست.</strong>
                             <span>دریافت روند فروش با خطا مواجه شد؛ سایر شاخص‌ها جداگانه نمایش داده می‌شوند.</span>
                         </div>
-                    <?php } elseif ($salesByPeriod === []) { ?>
+                    <?php } elseif ($salesByPeriodStatus !== 'ready' || $salesByPeriod === []) { ?>
                         <div class="admin-dashboard-state" role="status">
-                            <strong>هنوز داده‌ای برای این بازه وجود ندارد.</strong>
+                            <strong>اتصال داده‌های دوره‌ای به View هنوز تأیید نشده یا برای این بازه داده‌ای وجود ندارد.</strong>
                             <span>با ثبت سفارش‌های جدید، روند فروش در این بخش نمایش داده می‌شود.</span>
                         </div>
                     <?php } else { ?>
@@ -182,9 +182,9 @@ $adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
                             <strong>داده‌های نمودار در دسترس نیست.</strong>
                             <span>برای جلوگیری از نمایش اطلاعات نادرست، نمودار سفارش‌ها موقتاً نمایش داده نمی‌شود.</span>
                         </div>
-                    <?php } elseif ($salesByPeriod === []) { ?>
+                    <?php } elseif ($salesByPeriodStatus !== 'ready' || $salesByPeriod === []) { ?>
                         <div class="admin-dashboard-state" role="status">
-                            <strong>سفارشی در این بازه ثبت نشده است.</strong>
+                            <strong>اتصال داده‌های دوره‌ای تأیید نشده یا سفارشی در این بازه ثبت نشده است.</strong>
                             <span>با ثبت سفارش، روند روزانه در این قسمت ظاهر می‌شود.</span>
                         </div>
                     <?php } else { ?>
@@ -214,8 +214,8 @@ $adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
                     </div>
                     <?php if ($salesByPeriodStatus === 'error') { ?>
                         <div class="admin-dashboard-state admin-dashboard-state-error" role="status"><strong>گزارش دوره‌ای در دسترس نیست.</strong><span>بعداً دوباره تلاش کنید.</span></div>
-                    <?php } elseif ($salesByPeriod === []) { ?>
-                        <div class="admin-dashboard-state" role="status"><strong>داده‌ای برای نمایش وجود ندارد.</strong><span>در این بازه هنوز سفارشی ثبت نشده است.</span></div>
+                    <?php } elseif ($salesByPeriodStatus !== 'ready' || $salesByPeriod === []) { ?>
+                        <div class="admin-dashboard-state" role="status"><strong>اتصال داده‌های دوره‌ای به View تأیید نشده یا داده‌ای برای نمایش وجود ندارد.</strong><span>در این بازه هنوز سفارشی ثبت نشده است.</span></div>
                     <?php } else { ?>
                         <div class="admin-dashboard-table-wrap" tabindex="0" aria-label="جدول خلاصه دوره‌ای، برای مشاهده افقی قابل پیمایش است">
                             <table class="admin-dashboard-table">
