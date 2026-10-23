@@ -67,7 +67,7 @@ $add('38.34 error feedback can be announced as alert', str_contains($module, 'no
 $add('38.35 existing Admin theme module remains registered', str_contains($mainJs, './modules/theme.js'));
 $add('38.36 Admin authentication middleware exists', $exists('app/Middleware/AdminAuthMiddleware.php') && str_contains($authMiddleware, 'admin.access'));
 $add('38.37 CSRF middleware exists and verifies tokens', $exists('app/Middleware/CsrfMiddleware.php') && str_contains($csrfMiddleware, 'Csrf::verify'));
-$add('38.38 roadmap contains Phase 38 scope', str_contains($roadmap, '# PHASE 38 — Admin Data Experience'));
+$add('38.38 declared permission controls use a fail-closed hook', str_contains($module, 'enforceDeclaredPermissions') && str_contains($module, 'data-admin-permission'));
 $add('38.39 product list is connected to Admin CSS', str_contains($read('admin/products/index.php'), '/admin/assets/css/main.css'));
 $add('38.40 product list is connected to Admin JS', str_contains($read('admin/products/index.php'), '/admin/assets/js/main.js'));
 
