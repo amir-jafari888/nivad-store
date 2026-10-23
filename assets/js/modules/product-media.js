@@ -36,6 +36,14 @@ const setPlaceholder = (image, alt = "تصویر محصول در دسترس نی
   image.alt = alt;
   image.dataset.mediaState = "failure";
   image.dataset.mediaPlaceholder = "true";
+
+  const frame = image.closest(
+    ".product-detail-gallery__main, .product-detail-gallery__thumb",
+  );
+
+  if (frame) {
+    frame.dataset.mediaState = "failure";
+  }
 };
 
 const setMediaState = (image, state) => {
@@ -69,13 +77,15 @@ const applyResponsiveSource = (image) => {
 };
 
 const wireImage = (image, fallbackAlt) => {
-  if (!(image instanceof HTMLImageElement) || image.dataset.mediaEnhanced === "true") {
+  if (
+    !(image instanceof HTMLImageElement) ||
+    image.dataset.mediaEnhanced === "true"
+  ) {
     return;
   }
 
   image.dataset.mediaEnhanced = "true";
   image.decoding = "async";
-
   applyResponsiveSource(image);
 
   image.addEventListener("load", () => {
@@ -109,19 +119,21 @@ const wireImage = (image, fallbackAlt) => {
 const enhanceGallery = (root) => {
   const mainImage = root.querySelector("[data-product-main-image]");
   const gallery = root.querySelector("[data-product-gallery]");
+  const avatars = root.querySelectorAll("[data-media-avatar] img");
 
   if (mainImage) {
     mainImage.loading = "eager";
     wireImage(mainImage, mainImage.alt || "تصویر محصول");
   }
 
-  if (!gallery) {
-    return;
-  }
-
-  gallery.querySelectorAll("img").forEach((image) => {
+  gallery?.querySelectorAll("img").forEach((image) => {
     image.loading = "lazy";
     wireImage(image, image.alt || "تصویر محصول");
+  });
+
+  avatars.forEach((image) => {
+    image.loading = "lazy";
+    wireImage(image, image.alt || "تصویر کاربر");
   });
 };
 
@@ -135,7 +147,6 @@ const productMedia = () => {
   enhanceGallery(root);
 
   const observer = new MutationObserver(() => enhanceGallery(root));
-
   const gallery = root.querySelector("[data-product-gallery]");
 
   if (gallery) {
