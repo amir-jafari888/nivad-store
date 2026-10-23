@@ -88,10 +88,14 @@ const search = () => {
       },
     });
 
-    const payload = await response.json().catch(() => ({}));
+    const payload = await response.json().catch(() => null);
 
     if (!response.ok || payload?.success === false) {
       throw new Error(payload?.message || "Search suggestion request failed.");
+    }
+
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      throw new Error("Search suggestion response is invalid.");
     }
 
     return payload?.data ?? [];
