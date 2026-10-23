@@ -23,8 +23,8 @@
 |---|---|---|
 | 41.01 | Inventory all existing CSS transition, animation, transform, opacity, keyframe and motion-related declarations in storefront and Admin assets. | NOT STARTED — AUDIT REQUIRED |
 | 41.02 | Map each motion declaration to its actual page, component, viewport stylesheet and interaction trigger where provable. | NOT STARTED — AUDIT REQUIRED |
-| 41.03 | Audit storefront duration, easing and delay tokens in `assets/css/setting.css`; identify missing tokens only from observed usage. | NOT STARTED — AUDIT REQUIRED |
-| 41.04 | Audit Admin motion tokens in `admin/assets/css/setting.css` and verify Admin motion does not depend on storefront tokens. | NOT STARTED — AUDIT REQUIRED |
+| 41.03 | Audit storefront duration, easing and delay tokens in `assets/css/setting.css`; identify missing tokens only from observed usage. | PARTIAL — existing fast/normal/slow tokens confirmed; full usage inventory pending |
+| 41.04 | Audit Admin motion tokens in `admin/assets/css/setting.css` and verify Admin motion does not depend on storefront tokens. | PARTIAL — Admin-owned transition token and reduced-motion rule confirmed; full usage inventory pending |
 | 41.05 | Detect hard-coded motion durations/easing values and classify only confirmed tokenization defects. | NOT STARTED — AUDIT REQUIRED |
 | 41.06 | Detect duplicated or conflicting transition declarations for the same component/state across viewport styles. | NOT STARTED — AUDIT REQUIRED |
 | 41.07 | Inventory JavaScript class/style changes that trigger visual transitions or animations. | NOT STARTED — AUDIT REQUIRED |
@@ -81,16 +81,16 @@
 
 | Step | Contract | Initial Status |
 |---|---|---|
-| 41.41 | Audit cart drawer open-state synchronization between trigger, overlay, panel and JavaScript state classes. | NOT STARTED — AUDIT REQUIRED |
-| 41.42 | Verify cart drawer entry/exit transforms and opacity resolve correctly at mobile, tablet and desktop breakpoints. | NOT STARTED — AUDIT REQUIRED |
-| 41.43 | Verify overlay and panel transitions remain visually coordinated and do not expose intermediate click-through states. | NOT STARTED — AUDIT REQUIRED |
-| 41.44 | Verify closing by close control, overlay and Escape follows the same final visual and interaction state where those paths exist. | NOT STARTED — AUDIT REQUIRED |
+| 41.41 | Audit cart drawer open-state synchronization between trigger, overlay, panel and JavaScript state classes. | PARTIAL — source reviewed; exit lifecycle fix applied, runtime check pending |
+| 41.42 | Verify cart drawer entry/exit transforms and opacity resolve correctly at mobile, tablet and desktop breakpoints. | PARTIAL — closing-state CSS added to all three viewport stylesheets; browser verification pending |
+| 41.43 | Verify overlay and panel transitions remain visually coordinated and do not expose intermediate click-through states. | PARTIAL — closing state disables pointer interaction; browser verification pending |
+| 41.44 | Verify closing by close control, overlay and Escape follows the same final visual and interaction state where those paths exist. | PARTIAL — all source paths call shared close handler; runtime verification pending |
 | 41.45 | Check scroll locking/overscroll behavior during drawer open/close and after interrupted transitions. | NOT STARTED — AUDIT REQUIRED |
 | 41.46 | Verify drawer content can scroll independently without moving or trapping the page after close. | NOT STARTED — AUDIT REQUIRED |
 | 41.47 | Verify cart updates, empty state and loading/error states do not conflict with drawer transitions. | NOT STARTED — AUDIT REQUIRED |
-| 41.48 | Audit responsive width, height, transform direction and reduced-motion handling of the cart drawer. | NOT STARTED — AUDIT REQUIRED |
+| 41.48 | Audit responsive width, height, transform direction and reduced-motion handling of the cart drawer. | PARTIAL — responsive exit lifecycle and global reduced-motion rules reviewed; viewport runtime checks pending |
 | 41.49 | Audit other drawer implementations only if confirmed in actual source; do not create a new drawer abstraction for this audit. | NOT STARTED — AUDIT REQUIRED |
-| 41.50 | Verify drawer focus management and accessible open/close behavior remain intact after any motion fixes; coordinate with Phase 40 contracts. | NOT STARTED — AUDIT REQUIRED |
+| 41.50 | Verify drawer focus management and accessible open/close behavior remain intact after any motion fixes; coordinate with Phase 40 contracts. | PARTIAL — existing focus return and trap retained; runtime keyboard verification pending |
 
 ### Batch 06 — Modal, Toast & Temporary Feedback
 
@@ -141,13 +141,13 @@
 
 | Step | Contract | Initial Status |
 |---|---|---|
-| 41.81 | Audit storefront `prefers-reduced-motion: reduce` coverage against all observed transitions, keyframes, transforms and smooth scrolling. | NOT STARTED — AUDIT REQUIRED |
-| 41.82 | Audit Admin reduced-motion coverage separately without leaking storefront selectors or tokens. | NOT STARTED — AUDIT REQUIRED |
+| 41.81 | Audit storefront `prefers-reduced-motion: reduce` coverage against all observed transitions, keyframes, transforms and smooth scrolling. | PARTIAL — global duration/iteration and scroll-behavior rules confirmed; full declaration inventory pending |
+| 41.82 | Audit Admin reduced-motion coverage separately without leaking storefront selectors or tokens. | PARTIAL — Admin-owned reduced-motion rule confirmed; full declaration inventory pending |
 | 41.83 | Ensure nonessential movement is removed or minimized under reduced motion while state changes remain understandable. | NOT STARTED — AUDIT REQUIRED |
 | 41.84 | Verify reduced motion does not leave hidden elements, stuck states or broken JS lifecycle assumptions. | NOT STARTED — AUDIT REQUIRED |
 | 41.85 | Detect infinite, looping or auto-starting animations and confirm whether each is necessary, stoppable and safe. | NOT STARTED — AUDIT REQUIRED |
 | 41.86 | Check flashing, rapid oscillation, parallax and large spatial movement if any such effects are found in source. | NOT STARTED — AUDIT REQUIRED |
-| 41.87 | Verify smooth scrolling and scroll-triggered effects respect reduced-motion preference. | NOT STARTED — AUDIT REQUIRED |
+| 41.87 | Verify smooth scrolling and scroll-triggered effects respect reduced-motion preference. | PARTIAL — both settings files set scroll-behavior:auto under reduced motion; runtime verification pending |
 | 41.88 | Verify user preference changes do not require a page reload where the browser updates media-query matching dynamically. | NOT STARTED — AUDIT REQUIRED |
 | 41.89 | Check reduced-motion and normal-motion behavior in both themes and each applicable viewport stylesheet. | NOT STARTED — AUDIT REQUIRED |
 | 41.90 | Record untestable OS/browser preference checks as pending runtime evidence rather than PASS. | NOT STARTED — AUDIT REQUIRED |
@@ -172,8 +172,8 @@
 | Step | Contract | Initial Status |
 |---|---|---|
 | 41.101 | Inventory existing tests and scripts that cover motion/interaction behavior before adding or changing tests. | NOT STARTED — AUDIT REQUIRED |
-| 41.102 | Define read-only source assertions for token usage, reduced-motion rules and prohibited duplicate/conflicting declarations. | NOT STARTED — AUDIT REQUIRED |
-| 41.103 | Add source assertions for verified component state selectors and JS/CSS state synchronization without assuming runtime success. | NOT STARTED — AUDIT REQUIRED |
+| 41.102 | Define read-only source assertions for token usage, reduced-motion rules and prohibited duplicate/conflicting declarations. | PARTIAL — read-only PHP source test created; execution/lint pending |
+| 41.103 | Add source assertions for verified component state selectors and JS/CSS state synchronization without assuming runtime success. | PARTIAL — drawer lifecycle and responsive selectors covered by source test; execution pending |
 | 41.104 | Ensure test assertions tolerate explicitly absent components while failing on broken references to components proven to exist. | NOT STARTED — AUDIT REQUIRED |
 | 41.105 | Run available syntax/static checks when tooling is available and report each actual command/result. | NOT STARTED — AUDIT REQUIRED |
 | 41.106 | Record browser interaction tests for hover, focus, press, enter/exit and repeated rapid input as pending or executed with evidence. | NOT STARTED — AUDIT REQUIRED |
@@ -193,3 +193,21 @@
 - Source-level work may continue while XAMPP/browser tooling is unavailable. Runtime-dependent results remain pending.
 - Preserve Phase 40's unmerged draft state; do not merge either phase without user approval.
 - Backend Freeze: **PRESERVED**.
+
+## 4. Implementation Checkpoint — 2026-10-23
+
+### Source changes applied on `phase-41-motion-interaction-audit`
+
+- Fixed a confirmed cart drawer exit-lifecycle defect: removing `is-open` previously hid the drawer before the panel transform could complete. The JS now enters `is-closing`, waits for the panel transform `transitionend`, and uses a 350 ms cleanup fallback for reduced-motion or missing events.
+- Reopening the drawer cancels pending close cleanup. Existing Escape handling, focus trap and focus restoration were retained.
+- Added responsive `.cart-drawer.is-closing` rules in mobile, tablet and desktop styles so the panel/overlay can exit while pointer interaction is disabled.
+- Added `test-phase-41-motion-interaction-audit.php`, a read-only 25-assertion source check for motion tokens, reduced-motion rules, responsive drawer close state and storefront/Admin asset separation.
+- Existing storefront and Admin reduced-motion rules and existing motion tokens were confirmed in source; no redundant generic CSS abstraction was added.
+
+### Validation limits
+
+- The PHP test has **not** been executed or linted in XAMPP in this workflow. Its assertions are not a PASS result.
+- Browser checks for normal/reduced motion, rapid open-close-open, Escape, overlay click, keyboard focus, theme and all breakpoints remain pending.
+- The remaining contracts still require full source inventory and/or runtime evidence. This is a partial implementation checkpoint, not completion of all 110 contracts.
+
+**Current status:** `IN PROGRESS`; `PASS = NO`; `LOCK = NO`. Backend Freeze preserved.
