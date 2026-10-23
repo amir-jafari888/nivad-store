@@ -1,11 +1,13 @@
 .network-recovery-notice {
   position: fixed;
   inset-block-start: var(--spacing-3);
-  inset-inline: var(--spacing-3);
-  z-index: 10000;
+  inset-inline-start: 50%;
+  z-index: var(--z-index-network-notice);
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
+  inline-size: min(900px, calc(100vw - var(--spacing-10)));
+  transform: translateX(50%);
   padding: var(--spacing-3) var(--spacing-4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -25,8 +27,3 @@
 .network-recovery-notice[data-state="connection"] { border-inline-start: 4px solid var(--color-error); }
 .network-recovery-notice[data-state="online"] { border-inline-start: 4px solid var(--color-success); }
 .network-recovery-notice :is(a, button):focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-ring-offset); }
-@media (prefers-reduced-motion: reduce) { .network-recovery-notice, .network-recovery-notice * { animation: none !important; transition: none !important; } }
-
-@media screen and (min-width: 1010px) {
-  .network-recovery-notice { inset-inline-start: 50%; inset-inline-end: auto; inline-size: min(900px, calc(100vw - var(--spacing-10))); transform: translateX(50%); }
-}
