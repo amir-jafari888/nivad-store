@@ -1,0 +1,35 @@
+name: Phase 33 Media Experience
+
+on:
+  push:
+    branches:
+      - phase-33-media-experience
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: JavaScript syntax
+        run: |
+          node --check assets/js/main.js
+          node --check assets/js/modules/product-detail.js
+          node --check assets/js/modules/product-media.js
+
+      - name: PHP syntax
+        run: php -l test-phase-31-content-support.php
+
+      - name: Canonical contract suite
+        run: php test-phase-31-content-support.php
