@@ -45,6 +45,7 @@ $groups = $service->findAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>گروه مشخصات | نیواد</title>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -86,6 +87,7 @@ $groups = $service->findAll();
             </tbody>
         </table>
     </main>
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>
