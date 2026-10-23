@@ -29,6 +29,11 @@ const apiPathFromUrl = (url) => {
 };
 
 const dispatchResponseState = (response, details) => {
+  if (!response.ok) {
+    const category = response.status >= 500 ? "server" : response.status >= 400 ? "client" : "unknown";
+    emit("nivad:api-failure", { status: response.status, category, path: apiPathFromUrl(details.url) });
+  }
+
   if (response.status === 401 || response.status === 419) {
     const apiPath = apiPathFromUrl(details.url);
     const isLoginEndpoint = /\/auth\/(login|register|forgot-password|reset-password)(\/|$)/i.test(apiPath);
