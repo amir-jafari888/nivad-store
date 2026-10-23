@@ -435,6 +435,7 @@ const wishlist = () => {
 
   window.addEventListener("storage", (event) => {
     if (event.key === storageKey || event.key === variantStorageKey) {
+      localMutationVersion += 1;
       updateUI();
     }
   });
