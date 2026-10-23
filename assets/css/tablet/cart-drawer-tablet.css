@@ -430,3 +430,9 @@
   background: var(--color-background);
   color: var(--color-text);
 }
+/* Keep the overlay/panel renderable for their exit transitions. */
+.cart-drawer.is-closing {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: none;
+}
