@@ -25,5 +25,8 @@ jobs:
       - name: PHP syntax check
         run: php -l test-phase-44-placeholder-hardcoded-content-cleanup.php
 
+      - name: JavaScript module syntax check
+        run: node --input-type=module --check < assets/js/modules/storefront.js
+
       - name: Run read-only source contract checks
         run: php test-phase-44-placeholder-hardcoded-content-cleanup.php
