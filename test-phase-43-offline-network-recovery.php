@@ -58,6 +58,7 @@ check('43.T16 automatic retry is restricted to GET/HEAD', str_contains($runtime,
 check('43.T17 non-idempotent requests are not eligible for automatic retry', str_contains($runtime, '(details.method === "GET" || details.method === "HEAD")') && str_contains($runtime, 'attempt < MAX_SAFE_RETRIES'));
 check('43.T18 retryable server status list is bounded', str_contains($runtime, 'new Set([502, 503, 504])'));
 check('43.T19 HTTP server failures emit a dedicated event', str_contains($runtime, 'nivad:server-unavailable'));
+check('43.T20 API failures distinguish client and server HTTP status classes', str_contains($runtime, 'nivad:api-failure') && str_contains($runtime, 'response.status >= 500') && str_contains($runtime, 'response.status >= 400'));
 check('43.T20 session recovery event is scoped and explicit', str_contains($runtime, 'nivad:session-expired'));
 check('43.T21 login/register failure paths are excluded from generic session banner', str_contains($runtime, 'isLoginEndpoint'));
 check('43.T22 user is not automatically redirected on session event', !str_contains($runtime, 'window.location.href ='));
