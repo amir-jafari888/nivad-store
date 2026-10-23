@@ -116,10 +116,7 @@ const search = () => {
 
     suggestionBox.id = "search-suggestions";
 
-    suggestionBox.setAttribute("role", "listbox");
     suggestionBox.id = "search-suggestions";
-
-    suggestionBox.setAttribute("aria-label", "پیشنهادهای جستجو");
 
     form.appendChild(suggestionBox);
 
@@ -195,7 +192,7 @@ const search = () => {
     const box = createBox();
 
     box.innerHTML = `
-    <div class="search-empty">
+    <div class="search-empty" role="status" aria-live="polite" aria-atomic="true">
       <strong>در حال جستجو...</strong>
       <small>پیشنهادهای مرتبط در حال دریافت هستند.</small>
     </div>
@@ -210,7 +207,7 @@ const search = () => {
     const box = createBox();
 
     box.innerHTML = `
-    <div class="search-empty">
+    <div class="search-empty" role="alert" aria-live="assertive" aria-atomic="true">
       <strong>دریافت پیشنهادها ناموفق بود.</strong>
       <small>می‌توانید جستجو را مستقیم ارسال کنید.</small>
     </div>
@@ -290,13 +287,19 @@ const search = () => {
         </span>
       </div>
 
-      <div class="search-suggestions__list"></div>
+      <div
+        class="search-suggestions__list"
+        id="search-suggestions-list"
+        role="listbox"
+        aria-label="پیشنهادهای جستجو"></div>
+      <div class="search-suggestions__feedback" role="status" aria-live="polite" aria-atomic="true"></div>
     `;
 
     const list = box.querySelector(".search-suggestions__list");
+    const feedback = box.querySelector(".search-suggestions__feedback");
 
     if (!items.length) {
-      list.innerHTML = `
+      feedback.innerHTML = `
         <div class="search-empty">
           <strong>
             نتیجه‌ای پیدا نشد
