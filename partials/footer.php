@@ -307,6 +307,27 @@ $footerTermsUrl = url(
     </aside>
 </div>
 
+<script>
+    (() => {
+        if (document.getElementById("main-content")) return;
+
+        const main = document.querySelector("main, [role='main']");
+        if (!main) return;
+
+        if (!main.id) {
+            main.id = "main-content";
+            if (!main.hasAttribute("tabindex")) main.tabIndex = -1;
+            return;
+        }
+
+        const target = document.createElement("span");
+        target.id = "main-content";
+        target.tabIndex = -1;
+        target.className = "sr-only";
+        main.before(target);
+    })();
+</script>
+
 <script
     type="module"
     src="<?= e(asset('js/main.js')) ?>"></script>
