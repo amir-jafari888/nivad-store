@@ -15,6 +15,7 @@ Audit and validate module imports/exports, initialization, DOM/event contracts, 
 - Read `assets/js/modules/wishlist.js`: `saveLocal()` and server-to-local restoration previously wrote two localStorage keys without catching storage exceptions. **Fixed in this phase:** both write paths now catch failures, emit `wishlist:storage-error`, and avoid announcing a successful UI update when persistence fails.
 - Read `assets/js/modules/commerce-context.js`: versioned session storage, normalization, allowlisted setup steps/needs, and safe failure returns exist. Consumer behavior still needs regression coverage.
 - Read `header.js`, `cart-drawer.js`, `search.js`, `catalog.js`, `finder.js`, `setup-builder.js`, `product-detail.js`, `product-media.js`, `auth.js`, `checkout.js`, `payment.js`, `account.js`, `customer-commerce.js`, `discovery.js`, `compatibility.js`, and `storefront.js` from the current master snapshot for initial module inventory. This is not a claim that every event path or API schema has been exhaustively runtime-verified.
+- Found and fixed a confirmed duplicate listener in `assets/js/modules/catalog.js`: two `popstate` handlers could trigger duplicate catalog loads for one browser-history change. They are consolidated into one handler that hydrates URL filters and loads the URL page once. Added a static regression assertion.
 - Catalog now rejects valid JSON that is not an object (for example `null`, arrays, or scalars), instead of silently returning empty data.
 - Cart, wishlist, search suggestions, Finder, product detail, compatibility, authentication, and payment now reject malformed JSON/non-object payloads on successful HTTP responses rather than interpreting fallback `{}` as success. Existing HTTP/API failure handling remains in place.
 - Payment CSRF retrieval now requires an HTTP-successful, object-shaped response containing a token; it no longer proceeds with a missing token as if CSRF retrieval succeeded.
@@ -31,7 +32,7 @@ Audit and validate module imports/exports, initialization, DOM/event contracts, 
 
 ## Contract status
 
-The 40 checks are encoded in `test-phase-34-js-integrity.php`. The first run passed 39/40; the only failure was a test assertion using the wrong DOM variable name, corrected to the actual `page` guard. A later run after the correction has not yet been confirmed. Static checks cannot prove browser runtime, live API behavior, assistive-technology behavior, or absence of every race condition.
+The 40 checks are encoded in `test-phase-34-js-integrity.php`. The first run passed 39/40; the only failure was a test assertion using the wrong DOM variable name, corrected to the actual `page` guard. After correcting the DOM guard assertion, GitHub Actions reported **40 PASS / 0 FAIL** for the Phase 34 suite; JavaScript syntax, PHP syntax, and the Phase 31+32 and Phase 33 suites also passed. Subsequent race/schema/listener fixes were committed afterward, so a fresh run on the latest head is still required. Static checks cannot prove browser runtime, live API behavior, assistive-technology behavior, or absence of every race condition.
 
 ## Required remaining work before lock
 
