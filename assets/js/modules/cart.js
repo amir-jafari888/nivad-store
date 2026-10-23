@@ -286,21 +286,10 @@ const cart = () => {
         const serverItem = serverByVariant.get(variantId);
 
         if (serverItem) {
-          const serverPrice = Number(
-            serverItem?.variant?.price ??
-              serverItem?.unit_price ??
-              localItem.price,
-          );
-
-          await fetch(`/cart-items/${item.id}`, {
+          await apiRequest(`/cart-items/${serverItem.id}`, {
             method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRF-Token": csrfToken,
-            },
             body: JSON.stringify({
-              quantity: Number(localItem.quantity),
-              unit_price: Number(localItem.price),
+              quantity: Math.max(Number(serverItem.quantity || 1), Number(localItem.quantity || 1)),
             }),
           });
 
@@ -318,24 +307,7 @@ const cart = () => {
         });
       }
 
-      for (const serverItem of serverItems) {
-        const variantId = Number(
-          serverItem.variant_id ??
-            serverItem.variantId ??
-            serverItem.variant?.id ??
-            0,
-        );
-
-        const exists = localItems.some(
-          (item) => Number(item.variantId) === variantId,
-        );
-
-        if (!exists) {
-          await apiRequest(`/cart-items/${serverItem.id}`, {
-            method: "DELETE",
-          });
-        }
-      }
+      // Keep server-only items. A local cache may be empty or stale and must not delete a customer cart.
 
       const refreshed = await apiRequest("/cart");
 

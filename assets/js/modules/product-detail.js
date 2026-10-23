@@ -1,3 +1,5 @@
+import { updateCommerceContext } from "./commerce-context.js";
+
 const productDetail = () => {
   const root = document.querySelector("[data-product-detail]");
 
@@ -368,6 +370,7 @@ const productDetail = () => {
   };
 
   const renderSelectedVariant = () => {
+    if (product) updateCommerceContext({ product: { id: Number(product.id || productId), slug, variantId: Number(selectedVariant?.id || 0) } });
     if (!selectedVariant) {
       if (price) {
         price.textContent = "قیمت نامشخص";
@@ -608,6 +611,8 @@ const productDetail = () => {
 
           return;
         }
+
+        updateCommerceContext({ compatibility: { deviceId } });
 
         check.disabled = true;
 
