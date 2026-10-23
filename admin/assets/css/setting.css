@@ -1,0 +1,57 @@
+/* NIVAD Admin-only Design Tokens — isolated from customer storefront assets. */
+:root {
+  color-scheme: light;
+  --admin-color-bg: #f7f8fa;
+  --admin-color-surface: #ffffff;
+  --admin-color-surface-raised: #ffffff;
+  --admin-color-text: #111827;
+  --admin-color-text-muted: #6b7280;
+  --admin-color-border: #e5e7eb;
+  --admin-color-primary: #2563eb;
+  --admin-color-primary-hover: #1d4ed8;
+  --admin-color-primary-soft: #eff6ff;
+  --admin-color-success: #16a34a;
+  --admin-color-warning: #d97706;
+  --admin-color-error: #dc2626;
+  --admin-color-info: #2563eb;
+  --admin-shadow-card: 0 1px 3px rgba(15, 23, 42, .06);
+  --admin-shadow-floating: 0 8px 24px rgba(15, 23, 42, .12);
+  --admin-radius-sm: 6px;
+  --admin-radius-md: 10px;
+  --admin-radius-lg: 14px;
+  --admin-space-1: 4px;
+  --admin-space-2: 8px;
+  --admin-space-3: 12px;
+  --admin-space-4: 16px;
+  --admin-space-5: 20px;
+  --admin-space-6: 24px;
+  --admin-space-8: 32px;
+  --admin-font-family: "Vazirmatn", Tahoma, sans-serif;
+  --admin-font-size-sm: 14px;
+  --admin-font-size-md: 16px;
+  --admin-font-size-lg: 18px;
+  --admin-control-height: 44px;
+  --admin-content-width: 1440px;
+  --admin-transition: 160ms ease;
+  --admin-focus-ring: 0 0 0 3px rgba(37, 99, 235, .2);
+  --admin-z-floating: 1000;
+}
+:root[data-admin-theme="dark"] {
+  color-scheme: dark;
+  --admin-color-bg: #111827;
+  --admin-color-surface: #1f2937;
+  --admin-color-surface-raised: #273449;
+  --admin-color-text: #f3f4f6;
+  --admin-color-text-muted: #c0cad8;
+  --admin-color-border: #3b4759;
+  --admin-color-primary: #93c5fd;
+  --admin-color-primary-hover: #bfdbfe;
+  --admin-color-primary-soft: #263b56;
+  --admin-color-success: #86efac;
+  --admin-color-warning: #fcd34d;
+  --admin-color-error: #fca5a5;
+  --admin-color-info: #93c5fd;
+  --admin-shadow-card: 0 1px 3px rgba(0, 0, 0, .22);
+  --admin-shadow-floating: 0 12px 28px rgba(0, 0, 0, .32);
+  --admin-focus-ring: 0 0 0 3px rgba(147, 197, 253, .32);
+}
