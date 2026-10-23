@@ -35,13 +35,13 @@ if ($currentAdmin === null) {
 ob_start(static function (string $html): string {
     if (
         stripos($html, '</head>') === false
-        || stripos($html, '/assets/css/admin/admin.css') !== false
+        || stripos($html, '/admin/assets/css/main.css') !== false
     ) {
         return $html;
     }
 
-    $stylesheet = e(url('/assets/css/admin/admin.css'));
-    $script = e(url('/assets/js/admin-theme.js'));
+    $stylesheet = e(url('/admin/assets/css/main.css'));
+    $script = e(url('/admin/assets/js/main.js'));
     $assets = "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">"
         . "\n<script defer src=\"{$script}\"></script>\n";
 
