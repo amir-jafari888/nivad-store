@@ -52,4 +52,3 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-dashboard-table tbody tr:last-child td{border-bottom:0}
 .admin-dashboard-table tbody tr:hover{background:var(--admin-color-bg)}
 .admin-dashboard-page :where(a,button,[tabindex]):focus-visible{outline:2px solid var(--admin-color-primary);outline-offset:3px;box-shadow:var(--admin-focus-ring)}
-@media (prefers-reduced-motion:reduce){.admin-dashboard-page *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
