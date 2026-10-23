@@ -9,7 +9,7 @@ Offline state, online recovery, request timeout, safe retry, API failure, server
 - Central runtime: `assets/js/modules/network-recovery.js`, initialized by `assets/js/main.js`.
 - Request timeout: 15 seconds. One retry maximum for GET/HEAD only, limited to network failures, timeout and HTTP 502/503/504. POST/PUT/PATCH/DELETE are never retried automatically.
 - Offline/online/server/timeout/session feedback is announced via one reusable status notice, with responsive CSS in the existing Mobile/Tablet/Desktop architecture and tokens from `assets/css/setting.css`.
-- Events emitted: `nivad:network-state`, `nivad:network-error`, `nivad:request-timeout`, `nivad:server-unavailable`, `nivad:session-expired`.
+- Events emitted: `nivad:network-state`, `nivad:network-error`, `nivad:request-timeout`, `nivad:api-failure`, `nivad:server-unavailable`, `nivad:session-expired`.
 - Runtime tests, full request inventory, route-by-route partial-failure audit and browser checks are not claimed as complete.
 
 ## Batch statuses
