@@ -52,6 +52,8 @@ phase36Check(str_contains($css, '@media (max-width: 600px)'), '36 — mobile res
 phase36Check(str_contains($css, ':focus-visible'), '36 — visible keyboard focus rules exist');
 phase36Check(str_contains($css, 'prefers-reduced-motion'), '36 — reduced-motion support exists');
 phase36Check(str_contains($css, 'overflow-x: auto'), '36 — responsive table overflow is supported');
+phase36Check(str_contains($css, 'body > div:has(> aside)'), '36 — shared Admin sidebar shell styles exist');
+phase36Check(str_contains($css, 'main > section'), '36 — responsive dashboard component grid exists');
 
 phase36Check($js !== '', '36 — Admin theme script exists');
 phase36Check(str_contains($js, 'localStorage'), '36 — theme preference persistence is implemented');
