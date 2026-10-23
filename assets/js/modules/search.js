@@ -114,7 +114,7 @@ const search = () => {
 
     suggestionBox.className = "search-suggestions";
 
-    suggestionBox.id = "search-suggestions";
+    suggestionBox.id = "search-suggestions-panel";
 
     suggestionBox.id = "search-suggestions";
 
@@ -158,8 +158,10 @@ const search = () => {
   };
 
   const open = () => {
-    createBox().classList.add("is-visible");
-
+    const box = createBox();
+    box.classList.add("is-visible");
+    const listbox = box.querySelector('[role="listbox"]');
+    input.setAttribute("aria-controls", listbox?.id || box.id);
     input.setAttribute("aria-expanded", "true");
   };
 
@@ -289,7 +291,7 @@ const search = () => {
 
       <div
         class="search-suggestions__list"
-        id="search-suggestions-list"
+        id="search-suggestions"
         role="listbox"
         aria-label="پیشنهادهای جستجو"></div>
       <div class="search-suggestions__feedback" role="status" aria-live="polite" aria-atomic="true"></div>
