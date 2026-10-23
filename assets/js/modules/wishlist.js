@@ -127,7 +127,7 @@ const wishlist = () => {
       },
     );
 
-    const payload = await response.json().catch(() => ({}));
+    const payload = await response.json().catch(() => null);
 
     if (!response.ok || payload?.success === false) {
       const error = new Error(
@@ -137,6 +137,13 @@ const wishlist = () => {
       error.status = response.status;
       error.payload = payload;
 
+      throw error;
+    }
+
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      const error = new Error("پاسخ معتبر از سرور Wishlist دریافت نشد.");
+      error.status = response.status;
+      error.payload = payload;
       throw error;
     }
 
