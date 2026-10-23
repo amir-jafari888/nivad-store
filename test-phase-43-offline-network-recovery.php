@@ -55,7 +55,7 @@ check('43.T13 timeout uses AbortController', str_contains($runtime, 'new AbortCo
 check('43.T14 timeout is distinguished from network error', str_contains($runtime, 'nivad:request-timeout') && str_contains($runtime, 'nivad:network-error'));
 check('43.T15 retry maximum is explicitly bounded', str_contains($runtime, 'MAX_SAFE_RETRIES = 1'));
 check('43.T16 automatic retry is restricted to GET/HEAD', str_contains($runtime, 'details.method === "GET" || details.method === "HEAD"'));
-check('43.T17 non-idempotent requests are not eligible for automatic retry', str_contains($runtime, '!externalSignal?.aborted'));
+check('43.T17 non-idempotent requests are not eligible for automatic retry', str_contains($runtime, '(details.method === "GET" || details.method === "HEAD")') && str_contains($runtime, 'attempt < MAX_SAFE_RETRIES'));
 check('43.T18 retryable server status list is bounded', str_contains($runtime, 'new Set([502, 503, 504])'));
 check('43.T19 HTTP server failures emit a dedicated event', str_contains($runtime, 'nivad:server-unavailable'));
 check('43.T20 session recovery event is scoped and explicit', str_contains($runtime, 'nivad:session-expired'));
