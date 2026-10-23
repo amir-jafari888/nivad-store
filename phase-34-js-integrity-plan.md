@@ -1,0 +1,44 @@
+# NivAD — Phase 34: JavaScript Integrity
+
+Status: IMPLEMENTATION IN PROGRESS — NOT LOCKED.
+
+## Scope
+
+Audit and validate module imports/exports, initialization, DOM/event contracts, local/session storage, asynchronous request handling, error paths, and cross-module regression. Existing API, CSRF, route, storage-key, and event contracts must be preserved unless repository evidence proves a required correction.
+
+## Audit / implementation log
+
+### Audit 34-A — Entry point and key commerce modules
+
+- Read `assets/js/main.js`: it imports 30 default initializers and invokes each in the entry point. Static check will verify imported relative paths, default exports, duplicate paths, and one initializer call per imported module.
+- Read `assets/js/modules/cart.js`: cart normalization validates product identifiers, price and quantity; storage reads and writes are guarded; API helper checks HTTP/API failure and uses same-origin credentials and existing CSRF endpoint. `catalog.js` has `requestToken` state; race safety across all async modules is not yet proven.
+- Read `assets/js/modules/wishlist.js`: `saveLocal()` and server-to-local restoration previously wrote two localStorage keys without catching storage exceptions. **Fixed in this phase:** both write paths now catch failures, emit `wishlist:storage-error`, and avoid announcing a successful UI update when persistence fails.
+- Read `assets/js/modules/commerce-context.js`: versioned session storage, normalization, allowlisted setup steps/needs, and safe failure returns exist. Consumer behavior still needs regression coverage.
+- Read `header.js`, `cart-drawer.js`, `search.js`, `catalog.js`, `finder.js`, `setup-builder.js`, `product-detail.js`, `product-media.js`, `auth.js`, `checkout.js`, `payment.js`, `account.js`, `customer-commerce.js`, `discovery.js`, `compatibility.js`, and `storefront.js` from the current master snapshot for initial module inventory. This is not a claim that every event path or API schema has been exhaustively runtime-verified.
+- Existing keys retained: `digital-store-cart`, `digital-store-wishlist`, `digital-store-wishlist-variants`, and `nivad-commerce-context`.
+- Existing events retained: `cart:updated`, `wishlist:updated`, and the established sync-error events.
+- No backend/API schema was changed or invented.
+
+### Added validation
+
+- `test-phase-34-js-integrity.php`: 40 read-only static contract checks.
+- `.github/workflows/phase-34-js-integrity.yml`: Node.js ES module syntax checks across `assets/js/**/*.js`, PHP syntax checks, and execution of Phase 31, 33, and 34 static suites.
+
+## Contract status
+
+The 40 checks are encoded in `test-phase-34-js-integrity.php`. A check only counts as PASS after the workflow/test output confirms it. Static checks cannot prove browser runtime, live API behavior, assistive-technology behavior, or absence of every race condition.
+
+## Required remaining work before lock
+
+1. Get the Phase 34 CI workflow green and fix every real failure.
+2. Review the full 40-contract output; do not waive false failures without evidence.
+3. Audit request sequencing/race handling in search, catalog, finder, product detail, setup builder, cart, and wishlist against the actual code.
+4. Review event producers/consumers, repeated initialization, and DOM data attributes across relevant pages.
+5. Run browser/XAMPP runtime regression for desktop/tablet/mobile, keyboard/focus, header/menu, search, cart, wishlist, product detail/media, auth, checkout/payment, and storage blocked/invalid scenarios.
+6. Report PASS/FAIL/BLOCKED evidence. Keep `LOCK=NO` until tests and runtime requirements are resolved or the user explicitly accepts a documented residual risk.
+
+## Lock record
+
+- LOCK: NO.
+- Browser/XAMPP runtime regression: NOT VERIFIED.
+- Race-condition audit across every module: IN PROGRESS.
