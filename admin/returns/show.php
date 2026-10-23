@@ -40,7 +40,7 @@ $refunds =
     <title>جزئیات مرجوعی</title>
 
     <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
-    <script defer src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </head>
 
 <body>
