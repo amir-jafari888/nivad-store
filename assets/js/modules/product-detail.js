@@ -117,19 +117,25 @@ const productDetail = () => {
       credentials: "same-origin",
     });
 
-    const payload = await response.json().catch(() => ({}));
+    const payload = await response.json().catch(() => null);
 
     if (!response.ok || payload?.success === false) {
       const error = new Error(payload?.message || "دریافت اطلاعات ناموفق بود.");
 
       error.status = response.status;
-
       error.payload = payload;
 
       throw error;
     }
 
-    return payload?.data ?? {};
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      const error = new Error("پاسخ معتبر از سرور دریافت نشد.");
+      error.status = response.status;
+      error.payload = payload;
+      throw error;
+    }
+
+    return payload.data ?? {};
   };
 
   const csrf = async () => {
