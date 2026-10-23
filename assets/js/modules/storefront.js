@@ -32,6 +32,21 @@ const storefront = () => {
     return result.data;
   };
 
+  const showState = (container, message) => {
+    if (!container) {
+      return;
+    }
+
+    container.replaceChildren();
+
+    const state = document.createElement("p");
+    state.className = "catalog-state";
+    state.setAttribute("role", "status");
+    state.setAttribute("aria-live", "polite");
+    state.textContent = message;
+    container.appendChild(state);
+  };
+
   const renderCategories = (items) => {
     if (!categoriesContainer) {
       return;
@@ -41,6 +56,11 @@ const storefront = () => {
       categoriesSection?.dataset.categoryBase || "/categories";
 
     categoriesContainer.replaceChildren();
+
+    if (!items.length) {
+      showState(categoriesContainer, "در حال حاضر دسته‌بندی فعالی برای نمایش وجود ندارد.");
+      return;
+    }
 
     items.forEach((category) => {
       if (!category || !category.slug || !category.name) {
@@ -111,6 +131,11 @@ const storefront = () => {
     }
 
     productsContainer.replaceChildren();
+
+    if (!items.length) {
+      showState(productsContainer, "در حال حاضر محصول فعالی برای نمایش وجود ندارد.");
+      return;
+    }
 
     items.forEach((product) => {
       const article = document.createElement("article");
@@ -233,17 +258,27 @@ const storefront = () => {
 
     if (categoriesContainer) {
       requests.push(
-        api("/storefront/categories").then((data) => {
-          renderCategories(Array.isArray(data?.items) ? data.items : []);
-        }),
+        api("/storefront/categories")
+          .then((data) => {
+            renderCategories(Array.isArray(data?.items) ? data.items : []);
+          })
+          .catch((error) => {
+            showState(categoriesContainer, "دریافت دسته‌بندی‌ها ممکن نشد. لطفاً بعداً دوباره تلاش کنید.");
+            console.error("Storefront categories failed:", error);
+          }),
       );
     }
 
     if (productsContainer) {
       requests.push(
-        api("/storefront/products").then((data) => {
-          renderProducts(Array.isArray(data?.items) ? data.items : []);
-        }),
+        api("/storefront/products")
+          .then((data) => {
+            renderProducts(Array.isArray(data?.items) ? data.items : []);
+          })
+          .catch((error) => {
+            showState(productsContainer, "دریافت محصولات ممکن نشد. لطفاً بعداً دوباره تلاش کنید.");
+            console.error("Storefront products failed:", error);
+          }),
       );
     }
 
@@ -251,7 +286,7 @@ const storefront = () => {
   };
 
   load().catch((error) => {
-    console.error(error);
+    console.error("Storefront initialization failed:", error);
   });
 };
 
