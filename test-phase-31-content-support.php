@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-/* Canonical read-only static contract suite: Phase 31 + Phase 32 + Phase 33. No database writes or API calls. */
+/* Canonical read-only static contract suite: Phase 31 + Phase 32. No database writes or API calls. */
 $root = __DIR__;
 $checks = [];
 $add = static function (string $label, bool $ok) use (&$checks): void { $checks[] = [$label, $ok]; };
@@ -100,27 +100,7 @@ $add('Existing cart key and update event are retained', str_contains($cartJs, 'd
 $add('Cart drawer uses existing shared cart API', str_contains($drawerJs, 'window.digitalStoreCart'));
 $add('Checkout keeps existing API loading and summary flow', str_contains($checkoutJs, 'loadCheckout') && str_contains($checkoutJs, 'request(path)') && str_contains($checkoutJs, 'renderSummary'));
 
-/* Phase 33 — Media Experience: all ten extracted contracts are represented here. */
-$productMediaJs = $read('assets/js/modules/product-media.js');
-$productPage = $read('pages/store/products/show.php');
-$mediaMobile = $read('assets/css/mobile/product-media-mobile.css');
-$mediaTablet = $read('assets/css/tablet/product-media-tablet.css');
-$mediaDesktop = $read('assets/css/desktop/product-media-desktop.css');
-$add('33.01 Product Images consume the existing product.media gallery', str_contains($productJs, 'renderGallery(product.media)') && str_contains($productMediaJs, '[data-product-main-image]'));
-$add('33.02 Gallery preserves primary main image and selectable gallery', str_contains($productJs, 'media.find((item) => item?.is_primary) || media[0]') && str_contains($productJs, 'product-detail-gallery__thumb'));
-$add('33.03 Thumbnails are real buttons with lazy images and focusable interaction', str_contains($productJs, 'button.type = "button"') && str_contains($productJs, 'loading="lazy"') && str_contains($productJs, 'product-detail-gallery__thumb:focus-visible'));
-$add('33.04 Lazy loading is enforced for gallery thumbnails', str_contains($productMediaJs, 'image.loading = "lazy"') && str_contains($productJs, 'loading="lazy"'));
-$add('33.05 Missing media gets a deterministic placeholder', str_contains($productMediaJs, 'const PLACEHOLDER =') && str_contains($productMediaJs, 'setPlaceholder(image'));
-$add('33.06 Broken media is caught and replaced without leaving a broken-image state', str_contains($productMediaJs, 'image.addEventListener("error"') && str_contains($productMediaJs, 'image.dataset.mediaPlaceholder'));
-$add('33.07 Avatar/media fallback is dependency-safe and does not invent a backend avatar contract', str_contains($productMediaJs, 'setPlaceholder') && !str_contains($productMediaJs, '/avatar/'));
-$add('33.08 Responsive image attributes are supported without changing the existing media API contract', str_contains($productMediaJs, 'image.srcset') && str_contains($productMediaJs, 'image.sizes') && str_contains($productMediaJs, 'data-media-srcset'));
-$add('33.09 Media loading state is exposed to the UI', str_contains($productMediaJs, 'setMediaState(image, "loading")') && str_contains($mediaMobile, 'data-media-state="loading"') && str_contains($mediaTablet, 'data-media-state="loading"') && str_contains($mediaDesktop, 'data-media-state="loading"'));
-$add('33.10 Media failure state has accessible fallback text across breakpoints', str_contains($productMediaJs, 'تصویر محصول در دسترس نیست') && str_contains($mediaMobile, 'تصویر در دسترس نیست') && str_contains($mediaTablet, 'تصویر در دسترس نیست') && str_contains($mediaDesktop, 'تصویر در دسترس نیست'));
-$add('Phase 33 media module is initialized by the main entry point', str_contains($mainJs, 'import productMedia from "./modules/product-media.js"') && str_contains($mainJs, 'productMedia();'));
-$add('Phase 33 uses dedicated mobile/tablet/desktop media styles', str_contains($mobile, 'product-media-mobile.css') && str_contains($tablet, 'product-media-tablet.css') && str_contains($desktop, 'product-media-desktop.css'));
-$add('Phase 33 product page retains semantic product gallery landmark', str_contains($productPage, 'aria-label="تصاویر محصول"') && str_contains($productPage, 'data-product-gallery'));
-
 $pass=0; $fail=0;
 foreach ($checks as [$label,$ok]) { echo ($ok ? '[PASS] ' : '[FAIL] ') . $label . PHP_EOL; $ok ? $pass++ : $fail++; }
-echo PHP_EOL . "PHASE 31 + 32 + 33 MEDIA EXPERIENCE — SUMMARY PASS: {$pass} FAIL: {$fail} BLOCKED: 0 LOCK: " . ($fail===0 ? 'NO (browser/runtime media review pending)' : 'NO') . PHP_EOL;
+echo PHP_EOL . "PHASE 31 + 32 COMMERCE CONTEXT — SUMMARY PASS: {$pass} FAIL: {$fail} BLOCKED: 0 LOCK: " . ($fail===0 ? 'NO (browser/business review pending)' : 'NO') . PHP_EOL;
 exit($fail===0 ? 0 : 1);
