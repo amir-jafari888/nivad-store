@@ -71,7 +71,7 @@ foreach ([
 $add('40.14 Admin login errors use assertive live feedback', str_contains($read('admin/auth/login.php'), 'role="alert" aria-live="assertive"'));
 $add('40.15 storefront search input has a visible programmatic label', str_contains($header, '<label class="sr-only" for="search-input">') && str_contains($header, 'id="search-input"'));
 $add('40.16 search suggestions expose combobox semantics', str_contains($search, 'setAttribute("role", "combobox")') && str_contains($search, 'setAttribute("aria-autocomplete", "list")'));
-$add('40.17 search combobox references the suggestions listbox', str_contains($search, 'setAttribute("aria-controls", "search-suggestions")') && str_contains($search, 'suggestionBox.id = "search-suggestions"'));
+$add('40.17 search combobox controls the active popup/listbox', str_contains($search, 'suggestionBox.id = "search-suggestions-panel"') && str_contains($search, 'id="search-suggestions"') && str_contains($search, 'role="listbox"') && str_contains($search, 'setAttribute("aria-controls", listbox?.id || box.id)'));
 $add('40.18 search options expose selected state and active descendant', str_contains($search, 'role="option"') && str_contains($search, 'aria-selected') && str_contains($search, 'aria-activedescendant'));
 $add('40.19 search supports Escape and arrow-key navigation', str_contains($search, 'event.key === "Escape"') && str_contains($search, 'event.key === "ArrowDown"') && str_contains($search, 'event.key === "ArrowUp"'));
 $add('40.20 search suggestions are not nested interactive buttons in listbox options', !preg_match('~<button[^>]+role="option"~', $search));
