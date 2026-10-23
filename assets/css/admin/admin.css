@@ -154,3 +154,50 @@ hr { border: 0; border-top: 1px solid var(--admin-color-border); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Admin shell, navigation and dashboard component contracts */
+body > div:has(> aside) {
+  display: grid;
+  grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
+  gap: var(--admin-space-6);
+  align-items: start;
+  padding: var(--admin-space-5);
+}
+body > div:has(> aside) > aside {
+  position: sticky;
+  top: var(--admin-space-4);
+  min-width: 0;
+  padding: var(--admin-space-4);
+  background: var(--admin-color-surface);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-lg);
+  box-shadow: var(--admin-shadow-card);
+}
+body > div:has(> aside) > aside nav {
+  display: grid;
+  gap: var(--admin-space-1);
+}
+body > div:has(> aside) > aside nav a {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: var(--admin-space-2) var(--admin-space-3);
+  border-radius: var(--admin-radius-md);
+  color: var(--admin-color-text);
+  text-decoration: none;
+}
+body > div:has(> aside) > aside nav a:hover,
+body > div:has(> aside) > aside nav a:focus-visible {
+  background: var(--admin-color-primary-soft);
+  color: var(--admin-color-primary);
+}
+body > div:has(> aside) > main { width: 100%; min-width: 0; padding-block: 0; }
+main > section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: var(--admin-space-4);
+}
+main > section > article { min-width: 0; }
+main > header { margin-bottom: var(--admin-space-5); }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; }
+fieldset { min-width: 0; }
