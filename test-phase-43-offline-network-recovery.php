@@ -76,15 +76,16 @@ check('43.T34 responsive notice uses setting.css z-index token', str_contains($t
 check('43.T35 notice uses theme-aware surface/text/border tokens', str_contains($mobileCss, 'var(--color-surface)') && str_contains($mobileCss, 'var(--color-text)') && str_contains($mobileCss, 'var(--color-border)'));
 check('43.T36 focus-visible support exists', str_contains($mobileCss, ':focus-visible') && str_contains($tabletCss, ':focus-visible') && str_contains($desktopCss, ':focus-visible'));
 check('43.T37 notice avoids section-local media-query duplication', !str_contains($mobileCss, '@media') && !str_contains($tabletCss, '@media') && !str_contains($desktopCss, '@media'));
-check('43.T38 contract plan exists', $plan !== '');
+check('43.T38 account dashboard isolates partial request failures', str_contains(source('assets/js/modules/customer-commerce.js'), 'Promise.allSettled') && str_contains(source('assets/js/modules/customer-commerce.js'), 'failedCount > 0'));
+check('43.T39 contract plan exists', $plan !== '');
 preg_match_all('/^\\| (43\\.\\d{2}\\.\\d{2}) \\|/m', $plan, $matches);
 $ids = $matches[1] ?? [];
-check('43.T39 plan contains exactly 100 contract rows', count($ids) === 100);
-check('43.T40 all 100 contract IDs are unique', count(array_unique($ids)) === 100);
-check('43.T41 plan contains ten batches', substr_count($plan, '**Batch 43.') === 10);
-check('43.T42 plan keeps phase PASS/LOCK unclaimed', str_contains($plan, 'PASS = NO') && str_contains($plan, 'LOCK = NO'));
-check('43.T43 plan documents Backend Freeze', str_contains($plan, 'Backend Freeze remains active'));
-check('43.T44 test is read-only and does not issue SQL writes', !preg_match('/\\b(INSERT\\s+INTO|UPDATE\\s+\\w+\\s+SET|DELETE\\s+FROM|DROP\\s+TABLE)\\b/i', file_get_contents(__FILE__) ?: ''));
+check('43.T40 plan contains exactly 100 contract rows', count($ids) === 100);
+check('43.T41 all 100 contract IDs are unique', count(array_unique($ids)) === 100);
+check('43.T42 plan contains ten batches', substr_count($plan, '**Batch 43.') === 10);
+check('43.T43 plan keeps phase PASS/LOCK unclaimed', str_contains($plan, 'PASS = NO') && str_contains($plan, 'LOCK = NO'));
+check('43.T44 plan documents Backend Freeze', str_contains($plan, 'Backend Freeze remains active'));
+check('43.T45 test is read-only and does not issue SQL writes', !preg_match('/\\b(INSERT\\s+INTO|UPDATE\\s+\\w+\\s+SET|DELETE\\s+FROM|DROP\\s+TABLE)\\b/i', file_get_contents(__FILE__) ?: ''));
 
 $total = $pass + $fail;
 echo '<hr>' . PHP_EOL;
