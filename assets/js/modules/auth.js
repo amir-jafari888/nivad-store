@@ -28,13 +28,13 @@ const auth = () => {
         signal: options.signal || controller.signal,
       });
       const contentType = response.headers.get("content-type") || "";
-      let payload = {};
+      let payload = null;
 
       if (contentType.includes("application/json")) {
-        payload = await response.json().catch(() => ({}));
+        payload = await response.json().catch(() => null);
       } else {
         const raw = await response.text().catch(() => "");
-        payload = raw ? { message: "پاسخ سرور قابل پردازش نیست." } : {};
+        payload = raw ? { message: "پاسخ سرور قابل پردازش نیست." } : null;
       }
 
       if (!response.ok || payload?.success === false) {
@@ -50,7 +50,11 @@ const auth = () => {
         throw error;
       }
 
-      return payload?.data ?? payload ?? {};
+      if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+        throw new Error("پاسخ معتبر از سرور دریافت نشد.");
+      }
+
+      return payload.data ?? payload;
     } catch (error) {
       if (error?.name === "AbortError") {
         const timeoutError = new Error("زمان پاسخ‌گویی سرور به پایان رسید. دوباره تلاش کنید.");
