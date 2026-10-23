@@ -1834,13 +1834,8 @@ const catalog = () => {
    */
 
   window.addEventListener("popstate", () => {
-    const page = getPageFromUrl();
-
-    if (page === currentPage) {
-      return;
-    }
-
-    load(page);
+    hydrateFiltersFromUrl();
+    load(getPageFromUrl());
   });
 
   /*
@@ -1848,11 +1843,6 @@ const catalog = () => {
    * INIT
    * =========================================================
    */
-
-  window.addEventListener("popstate", () => {
-    hydrateFiltersFromUrl();
-    load(getPageFromUrl());
-  });
 
   const initializeCatalog = async () => {
     bindFilterGroupEvents();
