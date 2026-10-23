@@ -201,3 +201,20 @@ main > section > article { min-width: 0; }
 main > header { margin-bottom: var(--admin-space-5); }
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; }
 fieldset { min-width: 0; }
+
+@media (max-width: 1009px) {
+  body > div:has(> aside) {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--admin-space-4);
+  }
+  body > div:has(> aside) > aside { position: static; }
+  body > div:has(> aside) > aside nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 600px) {
+  body > div:has(> aside) { padding: var(--admin-space-3); gap: var(--admin-space-3); }
+  body > div:has(> aside) > aside nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body > div:has(> aside) > aside nav a { justify-content: center; text-align: center; }
+}
