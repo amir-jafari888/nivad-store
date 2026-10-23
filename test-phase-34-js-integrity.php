@@ -80,7 +80,7 @@ $add('34.08 Imported main initializers are invoked once each', (function () use 
     }
     return true;
 })());
-$add('34.09 Page-specific modules guard absent target DOM before work', preg_match('/if\\s*\\(!root\\)\\s*\\{\\s*return;\\s*\\}/', $catalog) === 1 && preg_match('/if\\s*\\(!root\\)\\s*\\{\\s*return;\\s*\\}/', $finder) === 1);
+$add('34.09 Page-specific modules guard absent target DOM before work', preg_match('/if\\s*\\(!root\\)\\s*\\{\\s*return;/', $catalog) === 1 && preg_match('/if\\s*\\(!page\\)\\s*\\{\\s*return;/', $finder) === 1);
 $add('34.10 Phase 34 workflow syntax-checks the JavaScript tree', $read('.github/workflows/phase-34-js-integrity.yml') !== '' && str_contains($read('.github/workflows/phase-34-js-integrity.yml'), 'node --input-type=module --check'));
 
 $add('34.11 Core modules use DOM selectors rather than assumed global element variables', str_contains($header, 'document.querySelector') && str_contains($drawer, 'document.querySelector'));
