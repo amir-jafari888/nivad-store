@@ -9,7 +9,7 @@ include_once __DIR__ . '/../../partials/header.php';
     data-customer-page="checkout"
     data-customer-checkout
     data-api-base="<?= htmlspecialchars($baseUrl . '/api/index.php', ENT_QUOTES, 'UTF-8') ?>"
-    data-login-url="<?= htmlspecialchars($baseUrl . '/auth/login.php', ENT_QUOTES, 'UTF-8') ?>">
+    data-login-url="<?= htmlspecialchars($baseUrl . '/pages/auth/login.php', ENT_QUOTES, 'UTF-8') ?>">
 
     <header class="checkout-page__head">
         <span class="checkout-page__eyebrow">خرید امن</span>
