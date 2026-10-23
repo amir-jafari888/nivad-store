@@ -39,9 +39,18 @@ const wishlist = () => {
   };
 
   const saveLocal = (items, variants, shouldSync = true) => {
-    localStorage.setItem(storageKey, JSON.stringify(items));
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(items));
+      localStorage.setItem(variantStorageKey, JSON.stringify(variants));
+    } catch (error) {
+      window.dispatchEvent(
+        new CustomEvent("wishlist:storage-error", {
+          detail: { error },
+        }),
+      );
 
-    localStorage.setItem(variantStorageKey, JSON.stringify(variants));
+      return false;
+    }
 
     updateUI();
 
@@ -57,6 +66,8 @@ const wishlist = () => {
     if (shouldSync) {
       void sync();
     }
+
+    return true;
   };
 
   const updateUI = () => {
@@ -172,9 +183,19 @@ const wishlist = () => {
       variants[local.id] = local.variantId;
     }
 
-    localStorage.setItem(storageKey, JSON.stringify(items));
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(items));
+      localStorage.setItem(variantStorageKey, JSON.stringify(variants));
+      return true;
+    } catch (error) {
+      window.dispatchEvent(
+        new CustomEvent("wishlist:storage-error", {
+          detail: { error },
+        }),
+      );
 
-    localStorage.setItem(variantStorageKey, JSON.stringify(variants));
+      return false;
+    }
   };
 
   const getDefaultWishlist = async () => {
@@ -235,7 +256,9 @@ const wishlist = () => {
        * recover from authenticated Server.
        */
       if (localItems.length === 0 && serverItems.length > 0) {
-        writeServerItemsToLocal(serverItems);
+        if (!writeServerItemsToLocal(serverItems)) {
+          return;
+        }
 
         updateUI();
 
@@ -314,7 +337,9 @@ const wishlist = () => {
         : [];
 
       if (refreshedItems.length > 0) {
-        writeServerItemsToLocal(refreshedItems);
+        if (!writeServerItemsToLocal(refreshedItems)) {
+          return;
+        }
 
         updateUI();
 
