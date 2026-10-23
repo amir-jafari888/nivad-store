@@ -55,3 +55,23 @@
   --admin-shadow-floating: 0 12px 28px rgba(0, 0, 0, .32);
   --admin-focus-ring: 0 0 0 3px rgba(147, 197, 253, .32);
 }
+
+/* Keyboard-accessible skip navigation. */
+.admin-skip-link {
+  position: fixed;
+  z-index: var(--admin-z-floating);
+  inset-block-start: var(--admin-space-3);
+  inset-inline-start: var(--admin-space-3);
+  padding: var(--admin-space-3) var(--admin-space-4);
+  border: 2px solid var(--admin-color-primary);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+  color: var(--admin-color-text);
+  font-weight: 700;
+  transform: translateY(calc(-100% - var(--admin-space-4)));
+}
+.admin-skip-link:focus-visible {
+  outline: 3px solid var(--admin-color-primary);
+  outline-offset: 3px;
+  transform: translateY(0);
+}
