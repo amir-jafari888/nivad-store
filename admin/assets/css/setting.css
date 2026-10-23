@@ -39,6 +39,8 @@
   --admin-motion-press-y: 1px;
   --admin-focus-ring: 0 0 0 3px rgba(37, 99, 235, .2);
   --admin-z-floating: 1000;
+  --admin-performance-content-visibility: auto;
+  --admin-performance-image-root-margin: 400px;
 }
 :root[data-admin-theme="dark"] {
   color-scheme: dark;
