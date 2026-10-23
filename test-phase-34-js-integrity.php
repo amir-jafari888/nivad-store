@@ -71,7 +71,7 @@ $add('34.09 Page-specific modules guard absent target DOM before work', preg_mat
 $add('34.10 Phase 34 workflow syntax-checks the JavaScript tree', $read('.github/workflows/phase-34-js-integrity.yml') !== '' && str_contains($read('.github/workflows/phase-34-js-integrity.yml'), 'node --input-type=module --check'));
 
 $add('34.11 Core modules use DOM selectors rather than assumed global element variables', str_contains($header, 'document.querySelector') && str_contains($drawer, 'document.querySelector'));
-$add('34.12 Header and drawer guard missing page-specific elements', preg_match('/if\\s*\\(![^)]*\\)\\s*\\{\\s*return;/', $header) === 1 && preg_match('/if\\s*\\(![^)]*\\)\\s*\\{\\s*return;/', $drawer) === 1);
+$add('34.12 Header uses optional DOM access and drawer exits when required markup is absent', str_contains($header, 'menuButton?.addEventListener') && preg_match('/if\\s*\\(\\s*!drawer\\s*\\|\\|/', $drawer) === 1);
 $add('34.13 Wishlist and cart expose explicit data-attribute contracts', str_contains($wishlist, '[data-wishlist]') && str_contains($cart, '[data-cart]'));
 $add('34.14 Cart update event carries a detail payload', str_contains($cart, 'new CustomEvent("cart:updated"') && str_contains($cart, 'detail:'));
 $add('34.15 Wishlist update and sync-error events are consistently named', str_contains($wishlist, 'wishlist:updated') && str_contains($wishlist, 'wishlist:sync-error'));
