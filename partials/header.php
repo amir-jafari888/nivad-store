@@ -97,7 +97,7 @@ $basePath = app_base_path();
                             enterkeyhint="search"
                             aria-haspopup="listbox"
                             aria-expanded="false"
-                            aria-controls="search-suggestions"
+                            aria-controls="search-suggestions-panel"
                             data-search-input>
                         <button class="header-search__submit" type="submit" aria-label="جستجو">
                             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
