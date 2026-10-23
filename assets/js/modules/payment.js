@@ -55,10 +55,14 @@ const payment = () => {
       },
     );
 
-    const result = await response.json().catch(() => ({}));
+    const result = await response.json().catch(() => null);
 
     if (!response.ok) {
       throw new Error(result?.message || "درخواست با خطا مواجه شد.");
+    }
+
+    if (!result || typeof result !== "object" || Array.isArray(result)) {
+      throw new Error("پاسخ معتبر از سرور دریافت نشد.");
     }
 
     return result;
