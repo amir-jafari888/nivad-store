@@ -32,7 +32,7 @@ $resolveImport = static function (string $from, string $import) use ($root): boo
     return is_file($candidate);
 };
 $imports = static function (string $content): array {
-    preg_match_all('~@import\\s+(?:url\\(\\s*)?[\\\"\\']?([^\\\"\\'\\)\\s;]+)[\\\"\\']?\\s*\\)?~i', $content, $matches);
+    preg_match_all('~@import\\s+url\\(([^)]+)\\)~i', $content, $matches);
     return $matches[1] ?? [];
 };
 
