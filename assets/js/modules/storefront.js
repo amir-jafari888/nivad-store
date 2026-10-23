@@ -43,6 +43,7 @@ const storefront = () => {
     state.className = "catalog-state";
     state.setAttribute("role", "status");
     state.setAttribute("aria-live", "polite");
+    container.setAttribute("aria-busy", "false");
     state.textContent = message;
     container.appendChild(state);
   };
@@ -56,6 +57,7 @@ const storefront = () => {
       categoriesSection?.dataset.categoryBase || "/categories";
 
     categoriesContainer.replaceChildren();
+    categoriesContainer.setAttribute("aria-busy", "false");
 
     if (!items.length) {
       showState(categoriesContainer, "در حال حاضر دسته‌بندی فعالی برای نمایش وجود ندارد.");
@@ -131,6 +133,7 @@ const storefront = () => {
     }
 
     productsContainer.replaceChildren();
+    productsContainer.setAttribute("aria-busy", "false");
 
     if (!items.length) {
       showState(productsContainer, "در حال حاضر محصول فعالی برای نمایش وجود ندارد.");
