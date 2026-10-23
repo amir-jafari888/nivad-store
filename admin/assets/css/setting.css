@@ -75,3 +75,19 @@
   outline-offset: 3px;
   transform: translateY(0);
 }
+
+/* Admin-wide keyboard focus and motion preferences. */
+:focus-visible {
+  outline: 2px solid var(--admin-color-primary);
+  outline-offset: 3px;
+  box-shadow: var(--admin-focus-ring);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
