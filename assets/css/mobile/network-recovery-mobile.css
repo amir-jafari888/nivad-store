@@ -25,4 +25,4 @@
 .network-recovery-notice[data-state="timeout"], .network-recovery-notice[data-state="session"] { border-inline-start: 4px solid var(--color-warning); }
 .network-recovery-notice[data-state="connection"] { border-inline-start: 4px solid var(--color-error); }
 .network-recovery-notice[data-state="online"] { border-inline-start: 4px solid var(--color-success); }
-.network-recovery-notice :is(a, button):focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-ring-offset); }
+.network-recovery-notice :is(a, button):focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); }
