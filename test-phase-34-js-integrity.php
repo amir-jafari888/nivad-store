@@ -90,11 +90,6 @@ $add('34.13 Wishlist and cart expose explicit data-attribute contracts', str_con
 $add('34.14 Cart update event carries a detail payload', str_contains($cart, 'new CustomEvent("cart:updated"') && str_contains($cart, 'detail:'));
 $add('34.15 Wishlist update and sync-error events are consistently named', str_contains($wishlist, 'wishlist:updated') && str_contains($wishlist, 'wishlist:sync-error'));
 $add('34.16 Main entry point initializes each module once and Catalog registers one popstate listener', (function () use ($imports, $main, $catalog): bool { foreach ($imports as $import) { if (preg_match('/^\\s*([A-Za-z_$][\\w$]*)\\s+from\\s+/', $import['statement'], $m) && substr_count($main, $m[1] . '();') !== 1) return false; } return substr_count($catalog, 'addEventListener("popstate"') === 1; })());
-    foreach ($imports as $import) {
-        if (preg_match('/^\\s*([A-Za-z_$][\\w$]*)\\s+from\\s+/', $import['statement'], $m) && substr_count($main, $m[1] . '();') !== 1) return false;
-    }
-    return true;
-})());
 $add('34.17 Cart uses delegated click handling for dynamic add-to-cart buttons', str_contains($cart, 'document.addEventListener("click"') && str_contains($cart, 'event.target.closest("[data-cart]")'));
 $add('34.18 Cart drawer updates from the shared cart event/API', str_contains($drawer, 'cart:updated') || str_contains($drawer, 'window.digitalStoreCart'));
 $add('34.19 Cart and wishlist asynchronous sync failures are caught and surfaced as events', str_contains($cart, 'cart:sync-error') && str_contains($wishlist, 'wishlist:sync-error'));
