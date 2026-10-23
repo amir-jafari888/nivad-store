@@ -44,6 +44,7 @@ phase36Check(str_contains($setting, '--admin-control-height'), '36 — Admin con
 phase36Check(str_contains($setting, ':root[data-admin-theme="dark"]'), '36 — dark-theme tokens exist in setting.css');
 
 phase36Check($css !== '', '36 — shared Admin stylesheet exists');
+phase36Check(str_starts_with(ltrim($css), '@import url("../setting.css");'), '36 — Admin stylesheet imports the central token source');
 phase36Check(str_contains($css, 'var(--admin-color-bg)'), '36 — Admin stylesheet consumes centralized tokens');
 phase36Check(str_contains($css, ':root[data-admin-theme="dark"]'), '36 — dark-theme component rules exist');
 phase36Check(str_contains($css, '@media (max-width: 1009px)'), '36 — tablet responsive rules exist');
