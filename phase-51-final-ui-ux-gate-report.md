@@ -28,3 +28,11 @@
 
 ## Limitations
 This repository audit cannot prove WCAG conformance, responsive rendering, Core Web Vitals, browser console cleanliness, runtime route behavior, production headers, or end-to-end purchase/authentication flows. Those require browser and/or deployment evidence.
+
+
+## Implementation update (2026-10-24)
+- Removed UTF-8 BOM from `pages/shop/cart.php` and `pages/shop/checkout.php` to avoid output before PHP response headers.
+- Added explicit initial busy/status semantics to the cart's loading status/list and checkout's initial status and dynamic address/shipping/review regions.
+- These are targeted source-level accessibility and response-integrity improvements; they do not prove the full 100 contracts pass.
+- Browser verification, live interaction behavior, contrast measurements, assistive-technology testing, responsive visual checks, and performance measurements remain BLOCKED.
+- Phase status remains PARTIAL; LOCK=NO.
