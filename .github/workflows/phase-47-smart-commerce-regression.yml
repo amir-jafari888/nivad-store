@@ -1,0 +1,55 @@
+name: Phase 47 — Smart Commerce Regression
+
+on:
+  push:
+    branches:
+      - phase-47-smart-commerce-regression
+  pull_request:
+    branches:
+      - phase-46-e2e-account-journey
+      - master
+
+jobs:
+  static-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+          coverage: none
+
+      - name: Lint Phase 47 PHP files
+        run: |
+          php -l routes/api.php
+          php -l app/Controllers/SmartBundleController.php
+          php -l app/Services/SmartBundleService.php
+          php -l app/Controllers/BudgetOptimizerController.php
+          php -l test-phase-47-smart-commerce-regression.php
+
+      - name: Check Smart Commerce JavaScript syntax
+        run: |
+          node --check --input-type=module < assets/js/main.js
+          node --check --input-type=module < assets/js/modules/commerce-context.js
+          node --check --input-type=module < assets/js/modules/finder.js
+          node --check --input-type=module < assets/js/modules/finder-engine.js
+          node --check --input-type=module < assets/js/modules/compatibility.js
+          node --check --input-type=module < assets/js/modules/compatibility-engine.js
+          node --check --input-type=module < assets/js/modules/setup-builder.js
+          node --check --input-type=module < assets/js/modules/complete-your-setup.js
+          node --check --input-type=module < assets/js/modules/comparison.js
+          node --check --input-type=module < assets/js/modules/alternative.js
+          node --check --input-type=module < assets/js/modules/budget-optimizer.js
+          node --check --input-type=module < assets/js/modules/smart-bundle.js
+          node --check --input-type=module < assets/js/modules/price-stock-watch-ui.js
+          node --check --input-type=module < assets/js/modules/price-watch.js
+          node --check --input-type=module < assets/js/modules/stock-watch.js
+          node --check --input-type=module < assets/js/modules/recent-device-ui.js
+          node --check --input-type=module < assets/js/modules/recent-device.js
+
+      - name: Run read-only Phase 47 contract checks
+        run: php test-phase-47-smart-commerce-regression.php
