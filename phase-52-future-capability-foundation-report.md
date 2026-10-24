@@ -2,9 +2,11 @@
 
 ## Status
 - Plan: 8 batches / 80 contracts.
-- Implementation scope: verified frontend foundations and contract documentation only.
+- Implementation scope: contract inventory, static audit harness, and one verified frontend state-preservation fix.
 - Backend Freeze: preserved.
-- Runtime/browser/API verification: not performed in this commit.
+- Source change: Setup Builder now initializes its default UI step without persisting it before saved setup restoration succeeds; this prevents a failed initial API request from overwriting the previously saved setup context.
+- Static audit harness: added checks for the guarded initialization and conditional step persistence.
+- Runtime/browser/API verification: not performed; the PHP audit script has not yet been executed in a PHP runtime.
 - Phase status: PARTIAL.
 - PASS: not issued for the full phase.
 - LOCK: NO.
@@ -50,4 +52,4 @@ The 80 identifiers are this phase's execution contract map, not a claim that the
 5. Record actual PASS/FAIL/BLOCKED results before considering any batch for LOCK.
 
 ## Current decision
-The foundation inventory and test harness are committed. Feature implementation remains intentionally gated on verified requirements and backend dependencies. Overall phase remains PARTIAL; LOCK=NO.
+The foundation inventory, audit harness, and verified Setup Builder persistence fix are committed to the phase branch. AI shopping, visual search, community publishing, shareable setup persistence, and Buy Again remain blocked because their real API/data/permission contracts are not verified; implementing them now would require inventing behavior. Overall phase remains PARTIAL; LOCK=NO.
