@@ -83,6 +83,8 @@ $checks = [
     ['52.S18', 'Commerce context normalizes stored values', str_contains(p52Read('assets/js/modules/commerce-context.js'), 'normalize')],
     ['52.S19', 'Search recent history handles storage exceptions', str_contains(p52Read('assets/js/modules/search.js'), 'localStorage')],
     ['52.S20', 'No production AI/visual-search/community/order-history behavior is claimed by this static test', true],
+    ['52.S21', 'Setup Builder initialization does not persist the default step before restore', str_contains(p52Read('assets/js/modules/setup-builder.js'), 'setStep("device", { persist: false })')],
+    ['52.S22', 'Setup Builder persists step changes only when requested', str_contains(p52Read('assets/js/modules/setup-builder.js'), 'if (persist) {')],
 ];
 foreach ($checks as [$id, $label, $result]) {
     p52Check($id, $label, $result);
