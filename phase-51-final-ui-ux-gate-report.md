@@ -36,3 +36,9 @@ This repository audit cannot prove WCAG conformance, responsive rendering, Core 
 - These are targeted source-level accessibility and response-integrity improvements; they do not prove the full 100 contracts pass.
 - Browser verification, live interaction behavior, contrast measurements, assistive-technology testing, responsive visual checks, and performance measurements remain BLOCKED.
 - Phase status remains PARTIAL; LOCK=NO.
+
+
+## Follow-up implementation update
+- Updated `assets/js/modules/customer-shop.js` to clear initial `aria-busy` states after cart/wishlist loading completes or fails.
+- Updated `assets/js/modules/checkout.js` to clear initial busy states from checkout status, address, shipping, and review regions on success or failure.
+- These changes keep loading announcements from remaining stuck after completion. They are source changes, not browser-certified accessibility results.
