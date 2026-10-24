@@ -10,6 +10,10 @@
 
 The roadmap defines the Phase 55 goal, not an official numbered 100-contract list. IDs 55.01–55.100 are a documented execution decomposition for traceability.
 
+## Blocker tracking
+- Added `open-dependencies-blocked-items.md` as the persistent Open Dependencies / Blocked Items register.
+- Added `BL-56`: Phase 56 is BLOCKED until Phase 55 blockers are evidenced and Phase 55 receives an explicit PASS/LOCK decision. Existing dependency blockers were preserved in the register.
+
 ## Changes made
 - Added `test-phase-55-launch-readiness.php`: 100 contracts split into 10 batches, read-only static source checks plus explicit runtime blockers.
 - Added `phase-55-contract-inventory.md`: contract names and evidence required for each of the 100 checks.
