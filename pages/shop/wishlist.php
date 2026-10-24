@@ -17,7 +17,7 @@ include_once __DIR__ . '/../../partials/header.php';
                         'UTF-8'
                     ) ?>"
     data-login-url="<?= htmlspecialchars(
-                        $baseUrl . '/auth/login.php',
+                        $baseUrl . '/pages/auth/login.php',
                         ENT_QUOTES,
                         'UTF-8'
                     ) ?>">

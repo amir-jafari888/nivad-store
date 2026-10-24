@@ -178,7 +178,7 @@ const payment = () => {
 
         <a
           class="payment-result__action"
-          href="${escape(`${baseUrl}/?page=account/orders/index`)}">
+          href="${escape(`${baseUrl}/pages/account/orders/index.php`)}">
           مشاهده سفارش‌ها
         </a>
       </div>
