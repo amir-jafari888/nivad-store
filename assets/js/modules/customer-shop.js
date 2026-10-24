@@ -59,9 +59,19 @@ const customerShop = () => {
       ...options,
     };
 
-    const response = await fetch(url.toString(), config);
+    let response;
 
-    const payload = await response.json().catch(() => ({}));
+    try {
+      response = await fetch(url.toString(), config);
+    } catch {
+      throw new Error("ارتباط با سرور برقرار نشد. اتصال را بررسی کنید.");
+    }
+
+    const payload = await response.json().catch(() => null);
+
+    if (!payload || typeof payload !== "object") {
+      throw new Error("پاسخ سرور قابل پردازش نیست.");
+    }
 
     if (!response.ok || payload?.success === false) {
       const error = new Error(payload?.message || "عملیات ناموفق بود.");
@@ -78,8 +88,13 @@ const customerShop = () => {
 
   const csrf = async () => {
     const data = await request("/auth/csrf");
+    const token = data?.token;
 
-    return String(data?.token || "");
+    if (typeof token !== "string" || token.length === 0) {
+      throw new Error("دریافت توکن امنیتی انجام نشد. صفحه را تازه‌سازی کنید.");
+    }
+
+    return token;
   };
 
   const formBody = async (values) => {

@@ -1,0 +1,48 @@
+name: Phase 46 — Account Journey
+
+on:
+  push:
+    branches:
+      - phase-46-e2e-account-journey
+  pull_request:
+    branches:
+      - master
+      - phase-45-e2e-customer-journey
+
+jobs:
+  static-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+          coverage: none
+
+      - name: Lint Phase 46 PHP files
+        run: |
+          php -l pages/auth/login.php
+          php -l pages/auth/register.php
+          php -l pages/account/index.php
+          php -l pages/account/orders/index.php
+          php -l pages/account/orders/show.php
+          php -l pages/account/reviews.php
+          php -l pages/account/returns/index.php
+          php -l pages/account/returns/show.php
+          php -l pages/account/notifications.php
+          php -l test-phase-46-account-journey.php
+
+      - name: Check modified JavaScript module syntax
+        run: |
+          node --check --input-type=module < assets/js/modules/account.js
+          node --check --input-type=module < assets/js/modules/customer-shop.js
+          node --check --input-type=module < assets/js/modules/customer-commerce.js
+          node --check --input-type=module < assets/js/modules/notification.js
+          node --check --input-type=module < assets/js/main.js
+
+      - name: Run read-only Phase 46 static contract test
+        run: php test-phase-46-account-journey.php
