@@ -37,3 +37,11 @@ All 80 contract IDs are represented by the executable read-only audit. Static ch
 
 ## Release gate
 A source-level PASS does not establish production readiness. Phase status must remain PARTIAL and `LOCK=NO` while any required runtime checks are blocked. No backend controllers, services, repositories, middleware logic, routes, or database schema were intentionally changed.
+
+
+## CI result (latest verified)
+- Workflow run: [40094322547](https://github.com/amir-jafari888/nivad-store/actions/runs/40094322547)
+- PHP lint for the audit and audited PHP files: PASS.
+- Contract audit: 21 PASS, 0 FAIL, 59 BLOCKED.
+- Overall: PARTIAL, `LOCK=NO`.
+- The 59 blocked contracts need browser, runtime, deployment, or operator evidence; they are not being counted as passed.
