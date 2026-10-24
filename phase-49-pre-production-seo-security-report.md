@@ -36,3 +36,14 @@
 
 ## Release gate
 Static checks are read-only and do not replace HTTP/browser/security testing. Phase status must remain `PARTIAL` and `LOCK=NO` while runtime blockers remain. No backend routes, controllers, middleware or database schema are changed by this phase.
+
+
+## Latest CI result
+- Workflow run: [40093351996](https://github.com/amir-jafari888/nivad-store/actions/runs/40093351996)
+- PHP syntax checks: PASS for the audit and audited PHP source files.
+- Static audit: 87 PASS, 0 FAIL.
+- Blocked contract/runtime verifications: 18 (13 numbered contracts whose correctness cannot be proven statically, plus 5 runtime gate items).
+- Overall: PARTIAL, `LOCK=NO`.
+
+## Additional confirmed fix
+- Removed a UTF-8 BOM before the PHP opening tag in `pages/shop/wishlist.php`; it caused PHP to reject the `declare(strict_types=1)` statement. The workflow now lints this file successfully.
