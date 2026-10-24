@@ -1,4 +1,5 @@
 name: Phase 48 — Full Frontend Integration Audit
+# Phase 48 integration CI
 
 on:
   push:
