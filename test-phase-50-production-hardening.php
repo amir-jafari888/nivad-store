@@ -43,7 +43,7 @@ $headers=p50Read('app/Middleware/SecurityHeadersMiddleware.php'); $bootstrap=p50
 $checkout=p50Read('pages/shop/checkout.php'); $cart=p50Read('pages/shop/cart.php');
 $wishlist=p50Read('pages/shop/wishlist.php'); $product=p50Read('pages/store/products/show.php');
 $authLogin=p50Read('pages/auth/login.php'); $authRegister=p50Read('pages/auth/register.php');
-$cssPattern='/@import\\s+url\\(["\\']?([^"\\')]+)["\\']?\\)/';
+$cssPattern='/@import\\s+url\\(["]?([^")]+)["]?\\)/';
 
 /* Batch 01 — Asset Integrity */
 p50Check('50.01','main.css exists',p50Exists('assets/css/main.css'));
