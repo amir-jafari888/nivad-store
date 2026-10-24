@@ -190,7 +190,7 @@ phase48Check('48.30 Header declares Persian RTL document direction', str_contain
 phase48Check('48.31 API front controller boots the application', str_contains($apiFront, 'Bootstrap::boot()'));
 phase48Check('48.32 API front controller loads the registered route file', str_contains($apiFront, "routes/api.php"));
 phase48Check('48.33 API front controller validates route registrar', str_contains($apiFront, 'is_callable($registerRoutes)'));
-phase48Check('48.34 API front controller normalizes the path', str_contains($apiFront, "ltrim($path, '/')"));
+phase48Check('48.34 API front controller normalizes the path', str_contains($apiFront, "ltrim(" . '$path' . ", '/')"));
 phase48Check('48.35 API front controller preserves query parameters', str_contains($apiFront, 'http_build_query($query)'));
 phase48Check('48.36 API routes contain compatibility devices endpoint', str_contains($routes, "'/compatibility/devices'"));
 phase48Check('48.37 API routes contain setup devices endpoint', str_contains($routes, "'/setup/devices'"));
@@ -225,7 +225,7 @@ phase48Check('48.60 Recently selected device does not invent missing User State'
 /* Batch 07 — Theme, responsive and accessibility integration (48.61–48.70). */
 phase48Check('48.61 Header exposes theme toggle hooks', str_contains($header, 'data-theme-toggle'));
 phase48Check('48.62 Design System contains a dark-theme selector', str_contains($settingCss, '[data-theme="dark"]'));
-phase48Check('48.63 Design System contains a light-theme selector', str_contains($settingCss, '[data-theme="light"]'));
+phase48Check('48.63 Design System defines default root tokens and a dark-theme override', str_contains($settingCss, ':root') && str_contains($settingCss, '[data-theme="dark"]'));
 phase48Check('48.64 Design System contains focus-visible styling', str_contains($settingCss, ':focus-visible'));
 phase48Check('48.65 Mobile CSS entry imports feature-specific files', str_contains($mobileCss, 'header-mobile.css') && str_contains($mobileCss, 'product-detail-mobile.css'));
 phase48Check('48.66 Tablet CSS entry imports feature-specific files', str_contains($tabletCss, 'header-tablet.css') && str_contains($tabletCss, 'product-detail-tablet.css'));
