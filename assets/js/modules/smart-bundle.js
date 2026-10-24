@@ -18,9 +18,17 @@ const smartBundle = () => {
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
 
-  const api = async (path) => {
+  const api = async (path, params = {}) => {
+    const url = new URL(`${baseUrl}/api/index.php`, window.location.origin);
+    url.searchParams.set("path", path);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && String(value) !== "") {
+        url.searchParams.set(key, String(value));
+      }
+    });
+
     const response = await fetch(
-      `${baseUrl}/api/index.php?path=${encodeURIComponent(path)}`,
+      url.toString(),
       {
         method: "GET",
         credentials: "same-origin",
@@ -34,7 +42,18 @@ const smartBundle = () => {
       throw new Error(`HTTP_${response.status}`);
     }
 
-    return response.json();
+    let payload;
+    try {
+      payload = await response.json();
+    } catch {
+      throw new Error("INVALID_JSON");
+    }
+
+    if (!payload || payload.success === false) {
+      throw new Error(payload?.message || "INVALID_API_RESPONSE");
+    }
+
+    return payload;
   };
 
   const setLoading = (message) => {
@@ -183,13 +202,9 @@ const smartBundle = () => {
     setLoading("در حال ساخت ست پیشنهادی...");
 
     try {
-      const path = productId
-        ? `/storefront/smart-bundles&product_id=${encodeURIComponent(
-            productId,
-          )}`
-        : "/storefront/smart-bundles";
-
-      const response = await api(path);
+      const response = await api("/storefront/smart-bundles", {
+        product_id: productId,
+      });
 
       render(response?.data?.bundle || null);
     } catch (requestError) {
