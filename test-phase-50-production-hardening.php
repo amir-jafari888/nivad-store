@@ -129,5 +129,12 @@ p50Check('50.78','theme and responsive regression requires browser coverage',nul
 p50Check('50.79','links/forms/modules require full route/browser regression',null);
 p50Check('50.80','final release gate remains blocked until runtime evidence is supplied',null);
 
-echo 'Phase 50 audit summary';
+$total = $passed + $failed + $blocked;
+$status = 'PASS';
+if ($failed > 0) { $status = 'FAIL'; }
+elseif ($blocked > 0) { $status = 'PARTIAL'; }
+$lock = ($failed === 0 && $blocked === 0 && $total === 80) ? 'YES' : 'NO';
+echo 'Phase 50 result: ' . $total . ' contracts; ' . $passed . ' PASS, ' . $failed . ' FAIL, ' . $blocked . ' BLOCKED.' . PHP_EOL;
+echo 'Phase status: ' . $status . PHP_EOL;
+echo 'LOCK=' . $lock . PHP_EOL;
 exit($failed > 0 ? 1 : 0);
