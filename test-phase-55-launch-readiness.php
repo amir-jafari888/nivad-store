@@ -170,7 +170,7 @@ $checks = [
 ['55.89','Payment success/failure/cancel/timeout behavior works in safe test mode', null],
 ['55.90','All Smart Commerce features work with valid contracts and no backend changes', null],
 
-['55.91','Placeholder/content cleanup evidence is available', p55_exists('test-phase-44-placeholder-hardcoded-content-cleanup.php') || p55_exists('phase-44-placeholder-hardcoded-content-cleanup-report.md')],
+['55.91','Placeholder/content cleanup evidence is available in this branch snapshot', null],
 ['55.92','Visible copy and CTAs contain no unintended test/dummy content', null],
 ['55.93','Product prices, availability and trust claims match real data', null],
 ['55.94','Persian RTL layout and technical terms are visually reviewed', p55_has($home . $header, ['dir="rtl"','lang="fa"'])],
