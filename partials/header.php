@@ -15,12 +15,12 @@ $discoverUrl = url('/discover');
 $compatibilityUrl = url('/pages/store/compatibility.php');
 $buyingGuideUrl = url('/pages/content/faq.php');
 $supportUrl = url('/pages/content/contact.php');
+$basePath = app_base_path();
 $aboutUrl = url('/pages/content/about.php');
 $loginUrl = url('/pages/auth/login.php');
 $registerUrl = url('/pages/auth/register.php');
 $cartUrl = url('/pages/shop/cart.php');
 $wishlistUrl = url('/pages/shop/wishlist.php');
-$basePath = app_base_path();
 ?>
 <!doctype html>
 <html lang="fa" dir="rtl">
@@ -35,12 +35,23 @@ $basePath = app_base_path();
     <meta name="robots" content="<?= htmlspecialchars($seoRobots, ENT_QUOTES, 'UTF-8') ?>">
     <?php if ($seoCanonical !== null): ?>
         <link rel="canonical" href="<?= htmlspecialchars($seoCanonical, ENT_QUOTES, 'UTF-8') ?>">
+        <meta property="og:url" content="<?= htmlspecialchars($seoCanonical, ENT_QUOTES, 'UTF-8') ?>">
+    <?php endif; ?>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="نیواد">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8') ?>">
+    <?php if ($seoDescription !== ''): ?>
+        <meta property="og:description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES, 'UTF-8') ?>">
+    <?php endif; ?>
+    <meta property="og:image" content="<?= e(asset('images/brand/nivad-mark.png')) ?>">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8') ?>">
+    <?php if ($seoDescription !== ''): ?>
+        <meta name="twitter:description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES, 'UTF-8') ?>">
     <?php endif; ?>
     <link rel="stylesheet" href="<?= e(asset('css/main.css')) ?>">
     <link rel="stylesheet" href="<?= e('/swiper/swiper-bundle.min.css') ?>">
-    <script>
-        window.NIVAD_BASE_URL = <?= json_encode($basePath, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
-    </script>
 </head>
 
 <body>
