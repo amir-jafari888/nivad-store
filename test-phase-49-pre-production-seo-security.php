@@ -104,7 +104,7 @@ phase49Check('49.16', 'Product detail uses explicit robots policy', str_contains
 phase49Check('49.17', 'Shared header has a default robots policy', str_contains($header, "'index,follow'"));
 phase49Check('49.18', 'Unknown product does not receive a product canonical', str_contains($product, '$canonicalUrl = null'));
 phase49Check('49.19', 'Canonical URL values are escaped before HTML output', str_contains($header, 'htmlspecialchars($seoCanonical'));
-phase49Check('49.20', 'Indexation consistency across public and private pages requires live verification', true);
+phase49Blocked('49.20', 'Indexation consistency across public and private pages needs deployed HTTP verification.');
 
 /* Batch 03 — Robots & Sitemap: 49.21–49.30 */
 phase49Check('49.21', 'Rewrite exposes robots.txt through the API front controller', str_contains($rewrites, 'RewriteRule ^robots\\.txt$ api/index.php?path=/seo/robots'));
@@ -116,19 +116,19 @@ phase49Check('49.26', 'Sitemap response sets XML content type', str_contains($se
 phase49Check('49.27', 'Sitemap builds URL nodes from the configured base origin', str_contains($seo, 'urlNode(') && str_contains($seo, 'rtrim('));
 phase49Check('49.28', 'Sitemap queries active products and categories', str_contains($seo, '->findActive()') && str_contains($seo, 'ProductService') && str_contains($seo, 'CategoryService'));
 phase49Check('49.29', 'Sitemap escapes URL nodes for XML context', str_contains($seo, 'ENT_XML1') && str_contains($seo, 'htmlspecialchars'));
-phase49Check('49.30', 'Sitemap URL coverage and XML validity require runtime verification', true);
+phase49Blocked('49.30', 'Sitemap URL coverage, status code and XML validity need runtime verification.');
 
 /* Batch 04 — Structured Data & Social Metadata: 49.31–49.40 */
 phase49Check('49.31', 'Product detail source is available for structured-data audit', phase49Exists('pages/store/products/show.php'));
 phase49Check('49.32', 'Product detail exposes real product identity fields', str_contains($product, 'data-product-id') && str_contains($product, 'data-product-slug'));
 phase49Check('49.33', 'Product detail exposes price and availability DOM hooks', str_contains($product, 'data-product-price') && str_contains($product, 'data-product-availability'));
 phase49Check('49.34', 'Product detail exposes gallery and image hooks', str_contains($product, 'data-product-main-image') && str_contains($product, 'data-product-gallery'));
-phase49Check('49.35', 'Organization structured data is not fabricated by this audit', true);
+phase49Blocked('49.35', 'Organization/product structured-data contract is not established; no schema is invented.');
 phase49Check('49.36', 'Open Graph title and type metadata are emitted', str_contains($header, 'property="og:title"') && str_contains($header, 'property="og:type"'));
 phase49Check('49.37', 'Twitter Card metadata is emitted', str_contains($header, 'name="twitter:card"') && str_contains($header, 'name="twitter:title"'));
-phase49Check('49.38', 'Structured data and social preview correctness require rendered-page verification', true);
+phase49Blocked('49.38', 'Social preview rendering and URL/image availability need browser verification.');
 phase49Check('49.39', 'XML output uses XML-specific escaping', str_contains($seo, 'ENT_XML1'));
-phase49Check('49.40', 'Structured-data completeness remains a manual/runtime verification item', true);
+phase49Blocked('49.40', 'Structured-data completeness cannot be confirmed from current source evidence.');
 
 /* Batch 05 — URL, Routing & Redirect Integrity: 49.41–49.50 */
 phase49Check('49.41', 'Product listing rewrite exists', str_contains($rewrites, 'RewriteRule ^products/?$ pages/store/products/index.php'));
@@ -140,7 +140,7 @@ phase49Check('49.46', 'HTTPS redirect implementation validates request host', st
 phase49Check('49.47', 'URL helper resolves configured base path', str_contains($urlHelper, 'app_base_path()') && str_contains($urlHelper, 'base_path'));
 phase49Check('49.48', 'URL helper normalizes path separators and uses the configured base path', str_contains($urlHelper, 'ltrim(') && str_contains($urlHelper, 'app_base_path()'));
 phase49Check('49.49', 'URL helper validates host before composing fallback origin', str_contains($urlHelper, 'HTTP_HOST') && str_contains($urlHelper, 'FILTER_VALIDATE_URL') === false);
-phase49Check('49.50', 'Redirect status and actual URL outcomes require HTTP verification', true);
+phase49Blocked('49.50', 'Redirect status, canonical host and actual URL outcomes need HTTP verification.');
 
 /* Batch 06 — HTTPS & Security Headers: 49.51–49.60 */
 phase49Check('49.51', 'HTTPS-only security configuration is enabled', str_contains($securityConfig, "'https_only' => true"));
@@ -152,7 +152,7 @@ phase49Check('49.56', 'Referrer-Policy header is configured', str_contains($head
 phase49Check('49.57', 'Permissions-Policy header is configured', str_contains($headers, 'Permissions-Policy:'));
 phase49Check('49.58', 'Content-Security-Policy header is configured', str_contains($headers, 'Content-Security-Policy:'));
 phase49Check('49.59', 'HSTS is conditionally sent on HTTPS requests', str_contains($headers, 'Strict-Transport-Security:') && str_contains($headers, 'isset($_SERVER'));
-phase49Check('49.60', 'Actual response headers and redirect chain require a deployed HTTP environment', true);
+phase49Blocked('49.60', 'Actual response headers and redirect chain need a deployed HTTP environment.');
 
 /* Batch 07 — Output Encoding & XSS Surface: 49.61–49.70 */
 phase49Check('49.61', 'Shared HTML escape helper uses ENT_QUOTES and UTF-8', str_contains($escape, 'ENT_QUOTES') && str_contains($escape, "'UTF-8'"));
@@ -164,7 +164,7 @@ phase49Check('49.66', 'Main JavaScript module entry exists', phase49Exists('asse
 phase49Check('49.67', 'Product detail uses escaped data attributes', str_contains($product, 'e(') && str_contains($product, 'data-product-slug'));
 phase49Check('49.68', 'Sitemap encodes XML node values safely', str_contains($seo, 'htmlspecialchars'));
 phase49Check('49.69', 'Login page escapes redirect attribute', str_contains($login, 'e(url('));
-phase49Check('49.70', 'Comprehensive DOM-XSS scanning requires browser/runtime tooling', true);
+phase49Blocked('49.70', 'Comprehensive DOM-XSS scanning requires browser/runtime tooling.');
 
 /* Batch 08 — Session, CSRF & Form Security Integration: 49.71–49.80 */
 phase49Check('49.71', 'Session cookie secure flag is enabled in security configuration', str_contains($securityConfig, "'secure' => true"));
@@ -176,7 +176,7 @@ phase49Check('49.76', 'Authentication form has required fields and autocomplete 
 phase49Check('49.77', 'Registration page exists for auth form review', phase49Exists('pages/auth/register.php'));
 phase49Check('49.78', 'Checkout form integration source exists', phase49Exists('pages/shop/checkout.php'));
 phase49Check('49.79', 'Cart and wishlist pages expose API integration hooks', str_contains($cart, 'data-api-base') && str_contains($wishlist, 'data-api-base'));
-phase49Check('49.80', 'Authenticated CSRF rejection and session expiry require API runtime tests', true);
+phase49Blocked('49.80', 'Authenticated CSRF rejection and session expiry require API runtime tests.');
 
 /* Batch 09 — Asset Security & CSP Compatibility: 49.81–49.90 */
 phase49Check('49.81', 'Shared header references main stylesheet through asset helper', str_contains($header, "asset('css/main.css')"));
@@ -187,8 +187,8 @@ phase49Check('49.85', 'Shared header does not rely on an inline script blocked b
 phase49Check('49.86', 'API requests are represented in customer page DOM contracts', str_contains($checkout, 'data-api-base') && str_contains($cart, 'data-api-base'));
 phase49Check('49.87', 'Local CSS and JS asset trees exist', is_dir(__DIR__ . '/assets/css') && is_dir(__DIR__ . '/assets/js'));
 phase49Check('49.88', 'Third-party resource references are discoverable in shared shell', str_contains($footer, 'swiper-bundle.min.js') && str_contains($header, 'swiper-bundle.min.css'));
-phase49Check('49.89', 'CSP console violations require browser execution', true);
-phase49Check('49.90', 'Admin asset CSP compatibility requires authenticated browser verification', true);
+phase49Blocked('49.89', 'CSP console violations require browser execution.');
+phase49Blocked('49.90', 'Admin asset CSP compatibility requires authenticated browser verification.');
 
 /* Batch 10 — Pre-Production Regression & Release Gate: 49.91–49.100 */
 phase49Check('49.91', 'Core SEO pages are available for final regression', phase49Exists('index.php') && phase49Exists('pages/store/products/show.php') && phase49Exists('pages/store/category/show.php'));
@@ -199,8 +199,8 @@ phase49Check('49.95', 'HTML and XML output escaping primitives exist', str_conta
 phase49Check('49.96', 'Session and CSRF configuration is present', str_contains($securityConfig, "'session' => [") && str_contains($securityConfig, "'csrf' => ["));
 phase49Check('49.97', 'Primary public routes have rewrite declarations', str_contains($rewrites, '^products') && str_contains($rewrites, '^categories') && str_contains($rewrites, '^search'));
 phase49Check('49.98', 'PHP test and audited source files are available for CI lint', phase49Exists('test-phase-49-pre-production-seo-security.php'));
-phase49Check('49.99', 'Release blockers are not silently marked PASS by this static audit', true);
-phase49Check('49.100', 'Phase lock is prohibited while runtime verification remains blocked', true);
+phase49Blocked('49.99', 'Release blockers must be reconciled after runtime verification.');
+phase49Blocked('49.100', 'Phase lock is blocked until runtime contracts are verified.');
 
 /* Runtime-only verification must remain explicit and visible. */
 phase49Blocked('RUNTIME.01', 'Live HTTP status, redirect chain, robots.txt and sitemap.xml response validation.');
