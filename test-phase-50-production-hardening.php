@@ -110,7 +110,7 @@ p50Check('50.61','config/app.php currently uses development default; effective p
 p50Check('50.62','config/app.php currently enables debug by default; effective production override is unverified',null);
 p50Check('50.63','production URL/base path and environment overrides require deployment evidence',null);
 p50Check('50.64','development-only dependency/configuration leakage requires environment audit',null);
-p50Check('50.65','HTTPS enforcement is enabled in security config',str_contains($securityConfig,"'https_only' => true));
+p50Check('50.65','HTTPS enforcement is enabled in security config',str_contains($securityConfig,"'https_only' => true"));
 p50Check('50.66','CSP header is configured but compatibility requires browser evidence',str_contains($headers,'Content-Security-Policy:') ? null : false);
 p50Check('50.67','actual security response headers require deployed HTTP verification',null);
 p50Check('50.68','third-party asset availability/trust requires network verification',null);
