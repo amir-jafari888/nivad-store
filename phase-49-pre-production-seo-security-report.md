@@ -24,13 +24,13 @@
 - Robots and sitemap have rewrite rules and API routes; Sitemap includes active products and categories.
 - HTTPS enforcement and baseline security headers are present in source.
 - Session cookie and CSRF configuration are present in the security configuration.
-- The shared header contains an inline script while the CSP shown in `SecurityHeadersMiddleware` sets `default-src 'self'` without a nonce or inline-script allowance. This is a confirmed source-level CSP compatibility risk; verify browser console and resolve within frontend freeze constraints before production.
+- The shared header previously contained an inline script while the CSP set `default-src 'self'`. The inline script was removed because repository code search did not establish a consumer for `window.NIVAD_BASE_URL`; the shared `$basePath` variable remains available to PHP templates. The header now emits Open Graph and Twitter Card title/description metadata, and Open Graph URL when a canonical URL exists. Browser console verification remains required.
 - Open Graph/Twitter metadata presence and full structured-data coverage are not established by source inspection alone; do not invent them.
 
 ## Runtime blockers
 1. Live HTTP responses, redirect chains, and content types for `robots.txt` and `sitemap.xml`.
 2. Browser-rendered canonical/robots/social/structured-data validation.
-3. CSP console verification and confirmation of required inline script behavior.
+3. CSP console verification for inline styles/scripts and all required external assets.
 4. Authenticated session/CSRF/API and checkout/cart flow tests.
 5. Full DOM-XSS, Admin and external-asset regression in a running browser/application environment.
 
