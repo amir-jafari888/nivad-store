@@ -1,0 +1,32 @@
+name: Phase 44 — Placeholder & Hardcoded Content Cleanup
+
+on:
+  push:
+    branches:
+      - phase-44-placeholder-hardcoded-content-cleanup
+  pull_request:
+    branches:
+      - phase-43-offline-network-recovery
+
+jobs:
+  source-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+          coverage: none
+
+      - name: PHP syntax check
+        run: php -l test-phase-44-placeholder-hardcoded-content-cleanup.php
+
+      - name: JavaScript module syntax check
+        run: node --input-type=module --check < assets/js/modules/storefront.js
+
+      - name: Run read-only source contract checks
+        run: php test-phase-44-placeholder-hardcoded-content-cleanup.php
