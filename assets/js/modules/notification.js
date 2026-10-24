@@ -32,7 +32,7 @@ function normalizeNotification(value) {
       typeof value.type === "string" ? value.type : NOTIFICATION_TYPES.UNKNOWN,
     title: typeof value.title === "string" ? value.title : "",
     message: typeof value.message === "string" ? value.message : "",
-    read: Boolean(value.read),
+    read: Boolean(value.isRead ?? value.is_read ?? value.read),
     createdAt: value.created_at ?? value.createdAt ?? null,
     raw: value,
   };
