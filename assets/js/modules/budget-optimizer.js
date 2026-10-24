@@ -242,7 +242,7 @@ const budgetOptimizer = () => {
     if (
       budget === "" ||
       !Number.isFinite(Number(budget)) ||
-      Number(budget) <= 0
+      Number(budget) < 0
     ) {
       setState("بودجه معتبر وارد کنید.", "error");
 
