@@ -22,9 +22,13 @@ const payment = () => {
       },
     );
 
-    const result = await response.json().catch(() => ({}));
+    const result = await response.json().catch(() => null);
 
-    return result?.data?.token || "";
+    if (!response.ok || !result || typeof result !== "object" || Array.isArray(result) || !result?.data?.token) {
+      throw new Error(result?.message || "دریافت توکن امنیتی انجام نشد.");
+    }
+
+    return String(result.data.token);
   };
 
   const request = async (path, options = {}) => {
@@ -55,10 +59,14 @@ const payment = () => {
       },
     );
 
-    const result = await response.json().catch(() => ({}));
+    const result = await response.json().catch(() => null);
 
     if (!response.ok) {
       throw new Error(result?.message || "درخواست با خطا مواجه شد.");
+    }
+
+    if (!result || typeof result !== "object" || Array.isArray(result)) {
+      throw new Error("پاسخ معتبر از سرور دریافت نشد.");
     }
 
     return result;

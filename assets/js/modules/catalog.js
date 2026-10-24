@@ -101,11 +101,15 @@ const catalog = () => {
 
     const payload = await response.json();
 
-    if (!response.ok || payload?.success === false) {
-      throw new Error(payload?.message || "خطا در دریافت اطلاعات.");
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      throw new Error("پاسخ معتبر از سرور دریافت نشد.");
     }
 
-    return payload?.data ?? {};
+    if (!response.ok || payload.success === false) {
+      throw new Error(payload.message || "خطا در دریافت اطلاعات.");
+    }
+
+    return payload.data ?? {};
   };
 
   /*
@@ -1830,13 +1834,8 @@ const catalog = () => {
    */
 
   window.addEventListener("popstate", () => {
-    const page = getPageFromUrl();
-
-    if (page === currentPage) {
-      return;
-    }
-
-    load(page);
+    hydrateFiltersFromUrl();
+    load(getPageFromUrl());
   });
 
   /*
@@ -1844,11 +1843,6 @@ const catalog = () => {
    * INIT
    * =========================================================
    */
-
-  window.addEventListener("popstate", () => {
-    hydrateFiltersFromUrl();
-    load(getPageFromUrl());
-  });
 
   const initializeCatalog = async () => {
     bindFilterGroupEvents();
