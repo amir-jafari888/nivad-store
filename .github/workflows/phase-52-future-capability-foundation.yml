@@ -37,5 +37,5 @@ jobs:
 
       - name: Validate changed JavaScript modules
         run: |
-          node --check assets/js/modules/commerce-context.js
-          node --check assets/js/modules/setup-builder.js
+          node --input-type=module --check < assets/js/modules/commerce-context.js
+          node --input-type=module --check < assets/js/modules/setup-builder.js
