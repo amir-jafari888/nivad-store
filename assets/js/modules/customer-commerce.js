@@ -79,23 +79,52 @@ const customerCommerce = () => {
     const load = async () => {
       show(state, "در حال دریافت اطلاعات حساب...");
       try {
-        const [securityResult, verificationResult, sessionsResult, notificationsResult, ordersResult] = await Promise.all([
-          request("/account/security"), request("/account/verification-status"), request("/account/sessions"),
-          request("/notifications/count"), request("/orders"),
+        const results = await Promise.allSettled([
+          request("/account/security"),
+          request("/account/verification-status"),
+          request("/account/sessions"),
+          request("/notifications/count"),
+          request("/orders"),
         ]);
+        const value = (index) => results[index].status === "fulfilled" ? results[index].value : null;
+        const securityResult = value(0);
+        const verificationResult = value(1);
+        const sessionsResult = value(2);
+        const notificationsResult = value(3);
+        const ordersResult = value(4);
         const sessions = Array.isArray(sessionsResult?.data) ? sessionsResult.data : (Array.isArray(sessionsResult?.data?.sessions) ? sessionsResult.data.sessions : []);
         const orders = Array.isArray(ordersResult?.data?.orders) ? ordersResult.data.orders : [];
-        if (security) security.innerHTML = `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? sessions.length)}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`;
-        if (verification) {
-          const verified = Boolean(verificationResult?.data?.fully_verified);
-          verification.innerHTML = `<h2>تأیید حساب</h2><p>${verified ? "ایمیل تأیید شده است." : "ایمیل هنوز تأیید نشده یا وضعیت آن نامشخص است."}</p>`;
+
+        if (security) {
+          security.innerHTML = securityResult
+            ? `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? sessions.length)}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`
+            : "<h2>امنیت حساب</h2><p role=\"alert\">دریافت اطلاعات امنیتی انجام نشد.</p>";
         }
-        if (sessionsNode) sessionsNode.innerHTML = sessions.length ? sessions.map((item) => `<article class="account-session"><strong>${escape(item.user_agent || "دستگاه نامشخص")}</strong><p>IP: <span dir="ltr">${escape(item.ip_address || "نامشخص")}</span></p><p>آخرین فعالیت: ${escape(item.updated_at || "نامشخص")}</p><button type="button" data-revoke-session="${escape(item.id)}">بستن این نشست</button></article>`).join("") : "<p>نشست فعال دیگری وجود ندارد.</p>";
+        if (verification) {
+          verification.innerHTML = verificationResult
+            ? `<h2>تأیید حساب</h2><p>${verificationResult?.data?.fully_verified ? "ایمیل تأیید شده است." : "ایمیل هنوز تأیید نشده یا وضعیت آن نامشخص است."}</p>`
+            : "<h2>تأیید حساب</h2><p role=\"alert\">دریافت وضعیت تأیید انجام نشد.</p>";
+        }
+        if (sessionsNode) {
+          sessionsNode.innerHTML = sessionsResult
+            ? (sessions.length ? sessions.map((item) => `<article class="account-session"><strong>${escape(item.user_agent || "دستگاه نامشخص")}</strong><p>IP: <span dir="ltr">${escape(item.ip_address || "نامشخص")}</span></p><p>آخرین فعالیت: ${escape(item.updated_at || "نامشخص")}</p><button type="button" data-revoke-session="${escape(item.id)}">بستن این نشست</button></article>`).join("") : "<p>نشست فعال دیگری وجود ندارد.</p>")
+            : "<p role=\"alert\">دریافت نشست‌ها انجام نشد.</p>";
+        }
         wrapper.querySelectorAll("[data-account-metric]").forEach((node) => {
-          if (node.dataset.accountMetric === "notifications") node.textContent = String(notificationsResult?.data?.count ?? 0);
-          if (node.dataset.accountMetric === "orders") node.textContent = String(orders.length);
+          if (node.dataset.accountMetric === "notifications") node.textContent = notificationsResult ? String(notificationsResult?.data?.count ?? 0) : "—";
+          if (node.dataset.accountMetric === "orders") node.textContent = ordersResult ? String(orders.length) : "—";
         });
-        show(state, "اطلاعات حساب دریافت شد.");
+
+        const failed = results.some((result) => result.status === "rejected");
+        show(state, failed ? "بخشی از اطلاعات حساب دریافت نشد." : "اطلاعات حساب دریافت شد.", failed);
+        if (failed && state && !state.querySelector("[data-account-retry]")) {
+          const retry = document.createElement("button");
+          retry.type = "button";
+          retry.dataset.accountRetry = "true";
+          retry.textContent = "تلاش دوباره";
+          retry.addEventListener("click", load, { once: true });
+          state.append(retry);
+        }
       } catch (error) {
         show(state, error.message || "دریافت اطلاعات حساب انجام نشد.", true);
         [security, verification, sessionsNode].forEach((node) => show(node, error.message || "دریافت اطلاعات ناموفق بود.", true));
