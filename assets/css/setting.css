@@ -13,6 +13,8 @@
   font-display: swap;
 }
 :root {
+  color-scheme: light;
+
   /* 01. Brand, semantic colors and overlays */
   --background-color: var(--color-background);
   --border-color: var(--color-border);
@@ -25,7 +27,7 @@
   --color-border-strong: var(--color-border-hover);
   --color-danger: var(--color-error);
   --color-danger-surface: rgba(220, 38, 38, 0.08);
-  --color-error: #dc2626;
+  --color-error: #b91c1c;
   --color-on-primary: #ffffff;
   --color-primary: #2563eb;
   --color-primary-contrast: var(--color-on-primary);
@@ -33,17 +35,17 @@
   --color-primary-focus: rgba(37, 99, 235, 0.08);
   --color-primary-hover: #1d4ed8;
   --color-primary-light: #eff6ff;
-  --color-success: #16a34a;
+  --color-success: #15803d;
   --color-success-surface: rgba(22, 163, 74, 0.08);
   --color-surface: #ffffff;
   --color-surface-alt: var(--color-border-light);
   --color-surface-glass: rgba(255, 255, 255, 0.96);
   --color-text: #111827;
   --color-text-dark-secondary: #374151;
-  --color-text-muted: #9ca3af;
+  --color-text-muted: #6b7280;
   --color-text-on-primary: var(--color-on-primary);
-  --color-text-secondary: #6b7280;
-  --color-warning: #d97706;
+  --color-text-secondary: #4b5563;
+  --color-warning: #b45309;
   --color-warning-surface: rgba(217, 119, 6, 0.10);
   --danger-color: var(--color-error);
   --error-color: var(--color-error);
@@ -116,6 +118,7 @@
   --focus-ring: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
   --focus-ring-color: var(--color-primary-focus);
   --focus-ring-offset: 2px;
+  --focus-ring-outline-color: var(--color-primary);
   --focus-ring-width: 3px;
   --motion-fast: 150ms;
   --motion-hover-translate-y: -2px;
@@ -964,6 +967,8 @@ table {
    ----------------------------------------- */
 
 :root[data-theme="dark"] {
+  color-scheme: dark;
+
   /* 01. Brand, semantic colors and overlays */
   --color-background: #20252c;
   --color-border: #3d444d;
@@ -993,6 +998,7 @@ table {
   --color-warning-surface: rgba(210, 153, 34, 0.14);
 
   /* 04. Shape, shadow, motion and focus */
+  --focus-ring-outline-color: var(--color-primary);
   --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.28);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.20);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.14);
