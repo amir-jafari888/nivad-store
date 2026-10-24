@@ -33,7 +33,15 @@ const budgetOptimizer = () => {
     busy: false,
   };
 
-  const apiUrl = "/storefront/budget-optimizer";
+  const apiBase = `${window.NIVAD_BASE_URL || ""}/api/index.php`;
+  const apiUrl = (path, params = {}) => {
+    const url = new URL(apiBase, window.location.origin);
+    url.searchParams.set("path", path);
+    Object.entries(params).forEach(([key, value]) => {
+      url.searchParams.set(key, String(value));
+    });
+    return url.toString();
+  };
 
   const escapeHtml = (value) =>
     String(value ?? "")
@@ -69,7 +77,7 @@ const budgetOptimizer = () => {
 
   const loadDevices = async () => {
     try {
-      const response = await fetch("/storefront/compatibility/devices", {
+      const response = await fetch(apiUrl("/compatibility/devices"), {
         headers: {
           Accept: "application/json",
         },
@@ -80,6 +88,10 @@ const budgetOptimizer = () => {
       }
 
       const payload = await response.json();
+
+      if (!payload || payload.success === false) {
+        throw new Error(payload?.message || "پاسخ دریافت دستگاه‌ها معتبر نیست.");
+      }
 
       const devices = Array.isArray(payload?.items)
         ? payload.items
@@ -230,7 +242,7 @@ const budgetOptimizer = () => {
     if (
       budget === "" ||
       !Number.isFinite(Number(budget)) ||
-      Number(budget) < 0
+      Number(budget) <= 0
     ) {
       setState("بودجه معتبر وارد کنید.", "error");
 
@@ -246,9 +258,10 @@ const budgetOptimizer = () => {
     setState("در حال بررسی گزینه‌های سازگار…", "loading", true);
 
     try {
-      const url = `${apiUrl}?device_id=${encodeURIComponent(
-        deviceId,
-      )}&budget=${encodeURIComponent(budget)}`;
+      const url = apiUrl("/storefront/budget-optimizer", {
+        device_id: deviceId,
+        budget,
+      });
 
       const response = await fetch(url, {
         headers: {
@@ -256,9 +269,14 @@ const budgetOptimizer = () => {
         },
       });
 
-      const payload = await response.json();
+      let payload;
+      try {
+        payload = await response.json();
+      } catch {
+        throw new Error("پاسخ سرور قابل پردازش نیست.");
+      }
 
-      if (!response.ok || !payload?.success) {
+      if (!response.ok || payload?.success !== true) {
         throw new Error(payload?.message || "بهینه‌سازی بودجه انجام نشد.");
       }
 
