@@ -11,8 +11,11 @@ const account = (() => {
   const csrf = async () => {
     const response = await fetch(apiUrl("/auth/csrf"), { credentials: "same-origin", headers: { Accept: "application/json" } });
     const payload = await response.json().catch(() => null);
-    if (!response.ok || !payload?.data?.token) throw new Error(payload?.message || "دریافت توکن امنیتی انجام نشد.");
-    return String(payload.data.token);
+    const token = payload?.data?.token;
+    if (!response.ok || typeof token !== "string" || token.length === 0) {
+      throw new Error(payload?.message || "دریافت توکن امنیتی انجام نشد.");
+    }
+    return token;
   };
   const request = async (path, options = {}) => {
     const method = String(options.method || "GET").toUpperCase();
