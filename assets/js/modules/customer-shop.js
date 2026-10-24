@@ -863,6 +863,9 @@ const customerShop = () => {
       setState("");
     } catch (error) {
       setState(error.message || "دریافت اطلاعات ناموفق بود.");
+    } finally {
+      state?.removeAttribute("aria-busy");
+      list?.removeAttribute("aria-busy");
     }
   };
 
