@@ -75,13 +75,17 @@ const checkout = () => {
       );
 
     if (!response.ok) {
-      return "";
+      throw new Error("دریافت توکن امنیتی Checkout ناموفق بود.");
     }
 
-    const result =
-      await response.json();
+    const result = await response.json().catch(() => ({}));
+    const token = result?.data?.token;
 
-    return result?.data?.token || "";
+    if (result?.success === false || typeof token !== "string" || !token.trim()) {
+      throw new Error("توکن امنیتی Checkout معتبر نیست.");
+    }
+
+    return token;
   };
 
   const request = async (
@@ -129,7 +133,7 @@ const checkout = () => {
         .json()
         .catch(() => ({}));
 
-    if (!response.ok) {
+    if (!response.ok || data?.success === false) {
       throw new Error(
         data?.message ||
           "درخواست با خطا مواجه شد.",
