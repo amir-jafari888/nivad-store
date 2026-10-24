@@ -1,0 +1,44 @@
+name: Phase 48 — Full Frontend Integration Audit
+# Phase 48 integration CI — final read-only contract gate
+
+on:
+  push:
+    branches:
+      - phase-48-full-frontend-integration
+  pull_request:
+    branches:
+      - phase-47-smart-commerce-regression
+      - master
+
+jobs:
+  frontend-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+          coverage: none
+
+      - name: Lint Phase 48 integration test
+        run: php -l test-phase-48-full-frontend-integration.php
+
+      - name: Check all frontend JavaScript modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            node --check --input-type=module < "$file"
+          done < <(find assets/js -type f -name '*.js' -print0)
+
+      - name: Lint API front controller and route registry
+        run: |
+          php -l api/index.php
+          php -l routes/api.php
+
+      - name: Run Phase 48 read-only integration contracts
+        run: php test-phase-48-full-frontend-integration.php
