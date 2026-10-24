@@ -3,7 +3,7 @@ declare(strict_types=1);
 $pageTitle = 'ورود | نیواد';
 include_once __DIR__ . '/../../partials/header.php';
 ?>
-<main class="auth-page" data-auth-page data-redirect="<?= e(url('/')) ?>">
+<main class="auth-page" data-auth-page data-redirect="<?= e(url('/pages/account/index.php')) ?>">
   <header class="auth-page__head">
     <h1>ورود به حساب</h1>
     <p>برای ادامه، وارد حساب کاربری خود شوید.</p>
