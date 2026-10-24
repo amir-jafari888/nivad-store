@@ -29,6 +29,7 @@ import initializePriceStockWatch from "./modules/price-stock-watch-ui.js";
 import initializeRecentDevice from "./modules/recent-device-ui.js";
 import checkout from "./modules/checkout.js";
 import payment from "./modules/payment.js";
+import initializeNotifications from "./modules/notification.js";
 
 header();
 hero();
@@ -61,3 +62,4 @@ initializePriceStockWatch();
 initializeRecentDevice();
 checkout();
 payment();
+initializeNotifications();
