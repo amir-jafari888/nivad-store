@@ -212,13 +212,15 @@ function persistSetupContext() {
   } });
 }
 
-function setStep(step) {
+function setStep(step, { persist = true } = {}) {
   if (!STEPS.includes(step)) {
     return;
   }
 
   state.currentStep = step;
-  persistSetupContext();
+  if (persist) {
+    persistSetupContext();
+  }
 
   root.querySelectorAll("[data-setup-panel]").forEach((panel) => {
     panel.hidden = panel.dataset.setupPanel !== step;
@@ -987,7 +989,8 @@ root.querySelectorAll("[data-setup-step]").forEach((button) => {
   button.addEventListener("click", () => setStep(button.dataset.setupStep));
 });
 
-setStep("device");
+// Initialize the UI without overwriting a saved setup before restoration succeeds.
+setStep("device", { persist: false });
 
 loadDevices();
 
