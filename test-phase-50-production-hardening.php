@@ -129,8 +129,10 @@ p50Check('50.78','theme and responsive regression requires browser coverage',nul
 p50Check('50.79','links/forms/modules require full route/browser regression',null);
 p50Check('50.80','final release gate remains blocked until runtime evidence is supplied',null);
 
-$total=$passed+$failed+$blocked;
-echo '<hr><strong>Phase 50 result: '.$total.' contracts; '.$passed.' PASS, '.$failed.' FAIL, '.$blocked.' BLOCKED.</strong><br>'."\n";
-echo '<strong>Phase status: '.($failed>0?'FAIL':($blocked>0?'PARTIAL':'PASS')).'</strong><br>'."\n";
-echo '<strong>LOCK='.(($failed===0 && $blocked===0 && $total===80)?'YES':'NO').'</strong><br>'."\n";
-exit($failed>0?1:0);
+$total = $passed + $failed + $blocked;
+$phaseStatus = $failed > 0 ? 'FAIL' : ($blocked > 0 ? 'PARTIAL' : 'PASS');
+$lockStatus = ($failed === 0 && $blocked === 0 && $total === 80) ? 'YES' : 'NO';
+echo "Phase 50 result: {$total} contracts; {$passed} PASS, {$failed} FAIL, {$blocked} BLOCKED.<br>\\n";
+echo "Phase status: {$phaseStatus}<br>\\n";
+echo "LOCK={$lockStatus}<br>\\n";
+exit($failed > 0 ? 1 : 0);
