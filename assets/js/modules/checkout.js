@@ -816,6 +816,15 @@ const checkout = () => {
       );
 
       setError(error.message);
+    } finally {
+      [
+        "[data-checkout-state]",
+        "[data-checkout-address]",
+        "[data-checkout-shipping]",
+        "[data-checkout-review]",
+      ].forEach((selector) => {
+        qs(selector)?.removeAttribute("aria-busy");
+      });
     }
   };
 

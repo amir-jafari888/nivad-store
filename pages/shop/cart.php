@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 $pageTitle = 'سبد خرید | نیواد';
 
@@ -36,6 +36,7 @@ $loginUrl = $baseUrl . '/pages/auth/login.php';
             data-customer-state
             role="status"
             aria-live="polite"
+            aria-busy="true"
             aria-atomic="true">
             در حال دریافت اطلاعات...
         </p>
@@ -50,7 +51,8 @@ $loginUrl = $baseUrl . '/pages/auth/login.php';
         class="customer-shop__list cart-page__list"
         data-customer-list
         aria-label="اقلام سبد خرید"
-        aria-live="polite">
+        aria-live="polite"
+        aria-busy="true">
     </section>
 
     <div
