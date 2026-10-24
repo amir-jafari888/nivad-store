@@ -23,8 +23,13 @@ const payment = () => {
     );
 
     const result = await response.json().catch(() => ({}));
+    const token = result?.data?.token;
 
-    return result?.data?.token || "";
+    if (!response.ok || result?.success === false || typeof token !== "string" || !token.trim()) {
+      throw new Error("دریافت توکن امنیتی پرداخت ناموفق بود.");
+    }
+
+    return token;
   };
 
   const request = async (path, options = {}) => {
@@ -57,7 +62,7 @@ const payment = () => {
 
     const result = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
+    if (!response.ok || result?.success === false) {
       throw new Error(result?.message || "درخواست با خطا مواجه شد.");
     }
 
