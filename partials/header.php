@@ -15,6 +15,7 @@ $discoverUrl = url('/discover');
 $compatibilityUrl = url('/pages/store/compatibility.php');
 $buyingGuideUrl = url('/pages/content/faq.php');
 $supportUrl = url('/pages/content/contact.php');
+$basePath = app_base_path();
 $aboutUrl = url('/pages/content/about.php');
 $loginUrl = url('/pages/auth/login.php');
 $registerUrl = url('/pages/auth/register.php');
