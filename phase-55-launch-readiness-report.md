@@ -38,7 +38,7 @@ GitHub Actions additionally syntax-checks every `assets/js/**/*.js` file as an E
 - Static PASS does not prove that the UI renders or behaves correctly in a browser.
 
 ## Known blockers
-Until an actual browser/E2E environment and suitable safe test data are available, rendered UI/UX, theme switching, responsive viewport behavior, keyboard/screen-reader behavior, contrast, Core Web Vitals, route reachability, network recovery, real-session commerce, and payment outcomes remain blocked. Any absent backend contract remains a documented dependency, not permission to change backend.
+Until an actual browser/E2E environment and suitable safe test data are available, rendered UI/UX, theme switching, responsive viewport behavior, keyboard/screen-reader behavior, contrast, Core Web Vitals, route reachability, network recovery, real-session commerce, and payment outcomes remain blocked. The current branch snapshot also lacks Phase 44 cleanup artifacts, so contract 55.91 is BLOCKED/UNKNOWN rather than treated as a proven defect; verify the original Phase 44 PR/artifacts before closing it. Any absent backend contract remains a documented dependency, not permission to change backend.
 
 ## Gate
 Phase 55 cannot be marked PASS or LOCK while any required contract is FAIL or BLOCKED. Phase 56 Final Frontend Pass/Lock must not be inferred from a successful static CI run.
