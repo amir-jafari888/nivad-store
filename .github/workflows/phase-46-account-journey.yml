@@ -36,5 +36,13 @@ jobs:
           php -l pages/account/notifications.php
           php -l test-phase-46-account-journey.php
 
+      - name: Check modified JavaScript module syntax
+        run: |
+          node --check --input-type=module < assets/js/modules/account.js
+          node --check --input-type=module < assets/js/modules/customer-shop.js
+          node --check --input-type=module < assets/js/modules/customer-commerce.js
+          node --check --input-type=module < assets/js/modules/notification.js
+          node --check --input-type=module < assets/js/main.js
+
       - name: Run read-only Phase 46 static contract test
         run: php test-phase-46-account-journey.php
