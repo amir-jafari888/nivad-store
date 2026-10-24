@@ -1,0 +1,44 @@
+name: Phase 55 — Launch Readiness
+
+on:
+  push:
+    branches:
+      - phase-55-launch-readiness
+  pull_request:
+    branches:
+      - phase-54-final-frontend-audit
+
+permissions:
+  contents: read
+
+jobs:
+  launch-readiness-source-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: none
+
+      - name: Validate Phase 55 audit syntax
+        run: php -l test-phase-55-launch-readiness.php
+
+      - name: Run read-only Phase 55 source audit
+        run: php test-phase-55-launch-readiness.php
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Syntax-check all JavaScript files as ES modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r file; do
+            node --input-type=module --check < "$file"
+          done < <(find assets/js -type f -name '*.js' -print | sort)
