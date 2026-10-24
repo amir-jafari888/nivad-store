@@ -94,6 +94,7 @@ require_once __DIR__ . '/../includes/auth.php';
             color: #6b7280;
         }
     </style>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -635,6 +636,7 @@ try {
     )();
     </script>
 
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>

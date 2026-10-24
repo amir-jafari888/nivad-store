@@ -45,6 +45,7 @@ require_once __DIR__ . '/../includes/auth.php';
             margin: 5px
         }
     </style>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -60,6 +61,7 @@ require_once __DIR__ . '/../includes/auth.php';
 
     </main>
 
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>

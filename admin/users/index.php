@@ -80,6 +80,7 @@ $csrfToken = Csrf::token();
             border-radius: 8px
         }
     </style>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -267,6 +268,7 @@ $csrfToken = Csrf::token();
         loadUsers();
     </script>
 
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>

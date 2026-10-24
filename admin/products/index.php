@@ -15,6 +15,7 @@ $products = $productService->adminFindAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>محصولات | نیواد</title>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -52,6 +53,7 @@ $products = $productService->adminFindAll();
             </table>
         <?php endif; ?>
     </main>
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>

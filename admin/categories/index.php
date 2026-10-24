@@ -14,6 +14,7 @@ $categories = $service->findAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>دسته‌بندی‌ها | نیواد</title>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -44,6 +45,7 @@ $categories = $service->findAll();
                 </tbody>
             </table><?php endif; ?>
     </main>
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>

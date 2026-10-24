@@ -90,6 +90,7 @@ $csrfToken = Csrf::token();
             background: #f3f4f6
         }
     </style>
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
 </head>
 
 <body>
@@ -213,6 +214,7 @@ $csrfToken = Csrf::token();
         loadZones();
     </script>
 
+    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </body>
 
 </html>
