@@ -139,7 +139,7 @@ phase49Check('49.45', 'Collection slug rewrite exists', str_contains($rewrites, 
 phase49Check('49.46', 'HTTPS redirect implementation validates request host', str_contains($security, 'Invalid application host') && str_contains($security, 'HTTP_HOST'));
 phase49Check('49.47', 'URL helper resolves configured base path', str_contains($urlHelper, 'app_base_path()') && str_contains($urlHelper, 'base_path'));
 phase49Check('49.48', 'URL helper normalizes path separators and uses the configured base path', str_contains($urlHelper, 'ltrim(') && str_contains($urlHelper, 'app_base_path()'));
-phase49Check('49.49', 'URL helper validates host before composing fallback origin', str_contains($urlHelper, 'HTTP_HOST') && str_contains($urlHelper, 'FILTER_VALIDATE_URL') === false);
+phase49Check('49.49', 'URL helper validates the fallback host with a restrictive pattern', str_contains($urlHelper, 'HTTP_HOST') && str_contains($urlHelper, 'preg_match'));
 phase49Blocked('49.50', 'Redirect status, canonical host and actual URL outcomes need HTTP verification.');
 
 /* Batch 06 — HTTPS & Security Headers: 49.51–49.60 */
@@ -205,7 +205,7 @@ phase49Blocked('49.100', 'Phase lock is blocked until runtime contracts are veri
 /* Runtime-only verification must remain explicit and visible. */
 phase49Blocked('RUNTIME.01', 'Live HTTP status, redirect chain, robots.txt and sitemap.xml response validation.');
 phase49Blocked('RUNTIME.02', 'Browser-rendered metadata, canonical URL, social previews and structured-data validation.');
-phase49Blocked('RUNTIME.03', 'CSP console audit: inline script in shared header conflicts with restrictive script-src/default-src policy unless explicitly permitted.');
+phase49Blocked('RUNTIME.03', 'CSP console audit for remaining inline styles/scripts and external asset compatibility.');
 phase49Blocked('RUNTIME.04', 'Authenticated CSRF/session rejection and checkout/cart API flow tests.');
 phase49Blocked('RUNTIME.05', 'Full DOM-XSS, external asset and Admin CSP regression requires a running browser/application environment.');
 
