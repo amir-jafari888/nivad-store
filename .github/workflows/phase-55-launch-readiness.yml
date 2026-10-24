@@ -31,11 +31,13 @@ jobs:
         run: php test-phase-55-launch-readiness.php
 
       - name: Set up Node.js
+        if: always()
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
       - name: Syntax-check all JavaScript files as ES modules
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
