@@ -2,16 +2,28 @@ const customerCommerce = () => {
   const baseUrl = window.NIVAD_BASE_URL || "";
 
   const csrf = async () => {
-    const response = await fetch(
-      `${baseUrl}/api/index.php?path=${encodeURIComponent("/auth/csrf")}`,
-      {
-        credentials: "same-origin",
-      },
-    );
+    let response;
 
-    const result = await response.json();
+    try {
+      response = await fetch(
+        `${baseUrl}/api/index.php?path=${encodeURIComponent("/auth/csrf")}`,
+        {
+          credentials: "same-origin",
+          headers: { Accept: "application/json" },
+        },
+      );
+    } catch {
+      throw new Error("دریافت توکن امنیتی ممکن نشد؛ اتصال را بررسی کنید.");
+    }
 
-    return result?.data?.token || "";
+    const result = await response.json().catch(() => null);
+    const token = result?.data?.token;
+
+    if (!response.ok || typeof token !== "string" || token.length === 0) {
+      throw new Error(result?.message || "دریافت توکن امنیتی انجام نشد. صفحه را تازه‌سازی کنید.");
+    }
+
+    return token;
   };
 
   const request = async (path, options = {}) => {
@@ -26,11 +38,8 @@ const customerCommerce = () => {
       headers["Content-Type"] = options.body instanceof URLSearchParams ? "application/x-www-form-urlencoded;charset=UTF-8" : "application/json";
 
       const token = await csrf();
-
-      if (token) {
-        headers["X-CSRF-TOKEN"] = token;
-        if (options.body instanceof URLSearchParams) options.body.set("csrf_token", token);
-      }
+      headers["X-CSRF-TOKEN"] = token;
+      if (options.body instanceof URLSearchParams) options.body.set("csrf_token", token);
     }
 
     let response;
@@ -76,7 +85,7 @@ const customerCommerce = () => {
         ]);
         const sessions = Array.isArray(sessionsResult?.data) ? sessionsResult.data : (Array.isArray(sessionsResult?.data?.sessions) ? sessionsResult.data.sessions : []);
         const orders = Array.isArray(ordersResult?.data?.orders) ? ordersResult.data.orders : [];
-        if (security) security.innerHTML = `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? sessions?.data?.length ?? 0)}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`;
+        if (security) security.innerHTML = `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? sessions.length)}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`;
         if (verification) {
           const verified = Boolean(verificationResult?.data?.fully_verified);
           verification.innerHTML = `<h2>تأیید حساب</h2><p>${verified ? "ایمیل تأیید شده است." : "ایمیل هنوز تأیید نشده یا وضعیت آن نامشخص است."}</p>`;
