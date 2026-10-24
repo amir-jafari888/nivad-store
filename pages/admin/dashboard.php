@@ -64,6 +64,7 @@ $adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
     <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </head>
 <body class="admin-dashboard-page">
+    <a class="admin-skip-link" href="#main-content">رفتن به محتوای اصلی</a>
     <header class="admin-dashboard-topbar">
         <a class="admin-dashboard-brand" href="<?= e(url('/admin')) ?>" aria-label="نیواد، صفحه داشبورد">
             <span class="admin-dashboard-brand-mark" aria-hidden="true">N</span>
@@ -97,7 +98,7 @@ $adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
             </div>
         </aside>
 
-        <main class="admin-dashboard-main">
+        <main id="main-content" tabindex="-1" class="admin-dashboard-main">
             <header class="admin-dashboard-page-heading">
                 <div>
                     <p class="admin-dashboard-eyebrow">مرکز کنترل فروشگاه</p>

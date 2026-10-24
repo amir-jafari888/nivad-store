@@ -114,11 +114,7 @@ const search = () => {
 
     suggestionBox.className = "search-suggestions";
 
-    suggestionBox.id = "search-suggestions";
-
-    suggestionBox.setAttribute("role", "listbox");
-
-    suggestionBox.setAttribute("aria-label", "پیشنهادهای جستجو");
+    suggestionBox.id = "search-suggestions-panel";
 
     form.appendChild(suggestionBox);
 
@@ -160,8 +156,10 @@ const search = () => {
   };
 
   const open = () => {
-    createBox().classList.add("is-visible");
-
+    const box = createBox();
+    box.classList.add("is-visible");
+    const listbox = box.querySelector('[role="listbox"]');
+    input.setAttribute("aria-controls", listbox?.id || box.id);
     input.setAttribute("aria-expanded", "true");
   };
 
@@ -194,7 +192,7 @@ const search = () => {
     const box = createBox();
 
     box.innerHTML = `
-    <div class="search-empty">
+    <div class="search-empty" role="status" aria-live="polite" aria-atomic="true">
       <strong>در حال جستجو...</strong>
       <small>پیشنهادهای مرتبط در حال دریافت هستند.</small>
     </div>
@@ -209,7 +207,7 @@ const search = () => {
     const box = createBox();
 
     box.innerHTML = `
-    <div class="search-empty">
+    <div class="search-empty" role="alert" aria-live="assertive" aria-atomic="true">
       <strong>دریافت پیشنهادها ناموفق بود.</strong>
       <small>می‌توانید جستجو را مستقیم ارسال کنید.</small>
     </div>
@@ -289,13 +287,19 @@ const search = () => {
         </span>
       </div>
 
-      <div class="search-suggestions__list"></div>
+      <div
+        class="search-suggestions__list"
+        id="search-suggestions"
+        role="listbox"
+        aria-label="پیشنهادهای جستجو"></div>
+      <div class="search-suggestions__feedback" role="status" aria-live="polite" aria-atomic="true"></div>
     `;
 
     const list = box.querySelector(".search-suggestions__list");
+    const feedback = box.querySelector(".search-suggestions__feedback");
 
     if (!items.length) {
-      list.innerHTML = `
+      feedback.innerHTML = `
         <div class="search-empty">
           <strong>
             نتیجه‌ای پیدا نشد
@@ -310,12 +314,12 @@ const search = () => {
       list.innerHTML = items
         .map(
           (item, index) => `
-            <button
+            <div
               id="search-option-${index}"
               class="search-suggestion"
-              type="button"
               role="option"
               aria-selected="false"
+              tabindex="-1"
               data-search-value="${escapeHTML(item.value)}">
 
               <span class="search-suggestion-icon">
@@ -335,7 +339,7 @@ const search = () => {
               <span class="search-suggestion-type">
                 ${escapeHTML(item.type)}
               </span>
-            </button>
+            </div>
           `,
         )
         .join("");
@@ -402,9 +406,10 @@ const search = () => {
 
   input.setAttribute("autocomplete", "off");
 
+  input.setAttribute("role", "combobox");
   input.setAttribute("aria-autocomplete", "list");
 
-  input.setAttribute("aria-controls", "search-suggestions");
+  input.setAttribute("aria-controls", "search-suggestions-panel");
 
   input.setAttribute("aria-expanded", "false");
 

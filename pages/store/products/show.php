@@ -70,6 +70,8 @@ include_once __DIR__ .
 ?>
 
 <main
+    id="main-content"
+    tabindex="-1"
     class="product-detail-page"
     data-product-detail
     data-product-slug="<?= e(

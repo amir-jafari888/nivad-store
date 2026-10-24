@@ -96,8 +96,9 @@ if (Request::isPost()) {
 </head>
 
 <body>
+    <a class="admin-skip-link" href="#main-content">رفتن به محتوای اصلی</a>
 
-    <main>
+    <main id="main-content" tabindex="-1">
 
         <section>
 
@@ -107,7 +108,7 @@ if (Request::isPost()) {
 
             <?php if ($error !== null): ?>
 
-                <div role="alert">
+                <div role="alert" aria-live="assertive" aria-atomic="true">
                     <?= e($error) ?>
                 </div>
 
