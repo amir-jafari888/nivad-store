@@ -100,7 +100,7 @@ phase49Check('49.12', 'Category detail declares canonical URL', str_contains($ca
 phase49Check('49.13', 'Collection page declares canonical URL', str_contains($collection, '$canonicalUrl'));
 phase49Check('49.14', 'Search page declares canonical URL', str_contains($search, '$canonicalUrl'));
 phase49Check('49.15', 'Discovery page declares canonical URL', str_contains($discover, '$canonicalUrl'));
-phase49Check('49.16', 'Product detail uses explicit robots policy', str_contains($product, "$robots = 'index,follow'"));
+phase49Check('49.16', 'Product detail uses explicit robots policy', str_contains($product, "$" + "robots = 'index,follow'"));
 phase49Check('49.17', 'Shared header has a default robots policy', str_contains($header, "'index,follow'"));
 phase49Check('49.18', 'Unknown product does not receive a product canonical', str_contains($product, '$canonicalUrl = null'));
 phase49Check('49.19', 'Canonical URL values are escaped before HTML output', str_contains($header, 'htmlspecialchars($seoCanonical'));
@@ -113,7 +113,7 @@ phase49Check('49.23', 'Robots route is registered', str_contains($routes, "'/seo
 phase49Check('49.24', 'Sitemap route is registered', str_contains($routes, "'/seo/sitemap'") && str_contains($routes, "[SeoController::class, 'sitemap']"));
 phase49Check('49.25', 'Robots response sets text/plain content type', str_contains($seo, 'text/plain; charset=utf-8'));
 phase49Check('49.26', 'Sitemap response sets XML content type', str_contains($seo, 'application/xml; charset=utf-8'));
-phase49Check('49.27', 'Sitemap includes the root URL', str_contains($seo, "$baseUrl . '/'"));
+phase49Check('49.27', 'Sitemap includes the root URL', str_contains($seo, "$" + "baseUrl . '/'"));
 phase49Check('49.28', 'Sitemap queries active products and categories', str_contains($seo, '->findActive()') && str_contains($seo, 'ProductService') && str_contains($seo, 'CategoryService'));
 phase49Check('49.29', 'Sitemap escapes URL nodes for XML context', str_contains($seo, 'ENT_XML1') && str_contains($seo, 'htmlspecialchars'));
 phase49Check('49.30', 'Sitemap URL coverage and XML validity require runtime verification', true);
@@ -124,8 +124,8 @@ phase49Check('49.32', 'Product detail exposes real product identity fields', str
 phase49Check('49.33', 'Product detail exposes price and availability DOM hooks', str_contains($product, 'data-product-price') && str_contains($product, 'data-product-availability'));
 phase49Check('49.34', 'Product detail exposes gallery and image hooks', str_contains($product, 'data-product-main-image') && str_contains($product, 'data-product-gallery'));
 phase49Check('49.35', 'Organization structured data is not fabricated by this audit', true);
-phase49Check('49.36', 'Open Graph metadata presence is explicitly checked', phase49Count($header, '/property="og:/') >= 0);
-phase49Check('49.37', 'Twitter Card metadata presence is explicitly checked', phase49Count($header, '/name="twitter:/') >= 0);
+phase49Check('49.36', 'Open Graph title and type metadata are emitted', str_contains($header, 'property="og:title"') && str_contains($header, 'property="og:type"'));
+phase49Check('49.37', 'Twitter Card metadata is emitted', str_contains($header, 'name="twitter:card"') && str_contains($header, 'name="twitter:title"'));
 phase49Check('49.38', 'Structured data and social preview correctness require rendered-page verification', true);
 phase49Check('49.39', 'XML output uses XML-specific escaping', str_contains($seo, 'ENT_XML1'));
 phase49Check('49.40', 'Structured-data completeness remains a manual/runtime verification item', true);
@@ -138,7 +138,7 @@ phase49Check('49.44', 'Brand slug rewrite exists', str_contains($rewrites, 'Rewr
 phase49Check('49.45', 'Collection slug rewrite exists', str_contains($rewrites, 'RewriteRule ^collections/([^/]+)/?$ pages/store/collection/show.php?slug=$1'));
 phase49Check('49.46', 'HTTPS redirect implementation validates request host', str_contains($security, 'Invalid application host') && str_contains($security, 'HTTP_HOST'));
 phase49Check('49.47', 'URL helper resolves configured base path', str_contains($urlHelper, 'app_base_path()') && str_contains($urlHelper, 'base_path'));
-phase49Check('49.48', 'URL helper appends path without duplicate leading slash', str_contains($urlHelper, "ltrim(\n        $path,\n        '/'"));
+phase49Check('49.48', 'URL helper appends path without duplicate leading slash', str_contains($urlHelper, "ltrim(\n        $" + "path,\n        '/'"));
 phase49Check('49.49', 'URL helper validates host before composing fallback origin', str_contains($urlHelper, 'HTTP_HOST') && str_contains($urlHelper, 'FILTER_VALIDATE_URL') === false);
 phase49Check('49.50', 'Redirect status and actual URL outcomes require HTTP verification', true);
 
@@ -183,7 +183,7 @@ phase49Check('49.81', 'Shared header references main stylesheet through asset he
 phase49Check('49.82', 'Shared footer references the main JavaScript module', str_contains($footer, "asset('js/main.js')") && str_contains($footer, 'type="module"'));
 phase49Check('49.83', 'Swiper CSS asset reference exists', str_contains($header, 'swiper/swiper-bundle.min.css'));
 phase49Check('49.84', 'CSP default-src is restricted to self', str_contains($headers, "default-src 'self'"));
-phase49Check('49.85', 'Shared header contains inline script and CSP compatibility must be resolved', str_contains($header, '<script>') && !str_contains($headers, "'unsafe-inline'"));
+phase49Check('49.85', 'Shared header does not rely on an inline script blocked by the restrictive CSP', !str_contains($header, '<script>') || str_contains($headers, "'unsafe-inline'"));
 phase49Check('49.86', 'API requests are represented in customer page DOM contracts', str_contains($checkout, 'data-api-base') && str_contains($cart, 'data-api-base'));
 phase49Check('49.87', 'Local CSS and JS asset trees exist', is_dir(__DIR__ . '/assets/css') && is_dir(__DIR__ . '/assets/js'));
 phase49Check('49.88', 'Third-party resource references are discoverable in shared shell', str_contains($footer, 'swiper-bundle.min.js') && str_contains($header, 'swiper-bundle.min.css'));
