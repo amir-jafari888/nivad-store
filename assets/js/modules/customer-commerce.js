@@ -70,23 +70,69 @@ const customerCommerce = () => {
     const load = async () => {
       show(state, "در حال دریافت اطلاعات حساب...");
       try {
-        const [securityResult, verificationResult, sessionsResult, notificationsResult, ordersResult] = await Promise.all([
-          request("/account/security"), request("/account/verification-status"), request("/account/sessions"),
-          request("/notifications/count"), request("/orders"),
+        const settled = await Promise.allSettled([
+          request("/account/security"),
+          request("/account/verification-status"),
+          request("/account/sessions"),
+          request("/notifications/count"),
+          request("/orders"),
         ]);
-        const sessions = Array.isArray(sessionsResult?.data) ? sessionsResult.data : (Array.isArray(sessionsResult?.data?.sessions) ? sessionsResult.data.sessions : []);
+        const [securitySettled, verificationSettled, sessionsSettled, notificationsSettled, ordersSettled] = settled;
+        const unwrap = (result) => result.status === "fulfilled" ? result.value : null;
+        const securityResult = unwrap(securitySettled);
+        const verificationResult = unwrap(verificationSettled);
+        const sessionsResult = unwrap(sessionsSettled);
+        const notificationsResult = unwrap(notificationsSettled);
+        const ordersResult = unwrap(ordersSettled);
+        const failedCount = settled.filter((result) => result.status === "rejected").length;
+        const sessions = Array.isArray(sessionsResult?.data)
+          ? sessionsResult.data
+          : (Array.isArray(sessionsResult?.data?.sessions) ? sessionsResult.data.sessions : []);
         const orders = Array.isArray(ordersResult?.data?.orders) ? ordersResult.data.orders : [];
-        if (security) security.innerHTML = `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? sessions?.data?.length ?? 0)}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`;
-        if (verification) {
-          const verified = Boolean(verificationResult?.data?.fully_verified);
-          verification.innerHTML = `<h2>تأیید حساب</h2><p>${verified ? "ایمیل تأیید شده است." : "ایمیل هنوز تأیید نشده یا وضعیت آن نامشخص است."}</p>`;
+
+        if (security) {
+          if (!securityResult) {
+            show(security, "اطلاعات امنیت حساب فعلاً دریافت نشد. سایر بخش‌های حساب همچنان در دسترس هستند.", true);
+          } else {
+            security.innerHTML = `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? (sessionsResult ? sessions.length : "نامشخص"))}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`;
+          }
         }
-        if (sessionsNode) sessionsNode.innerHTML = sessions.length ? sessions.map((item) => `<article class="account-session"><strong>${escape(item.user_agent || "دستگاه نامشخص")}</strong><p>IP: <span dir="ltr">${escape(item.ip_address || "نامشخص")}</span></p><p>آخرین فعالیت: ${escape(item.updated_at || "نامشخص")}</p><button type="button" data-revoke-session="${escape(item.id)}">بستن این نشست</button></article>`).join("") : "<p>نشست فعال دیگری وجود ندارد.</p>";
+
+        if (verification) {
+          if (!verificationResult) {
+            show(verification, "وضعیت تأیید حساب فعلاً دریافت نشد.", true);
+          } else {
+            const verified = Boolean(verificationResult?.data?.fully_verified);
+            verification.innerHTML = `<h2>تأیید حساب</h2><p>${verified ? "ایمیل تأیید شده است." : "ایمیل هنوز تأیید نشده یا وضعیت آن نامشخص است."}</p>`;
+          }
+        }
+
+        if (sessionsNode) {
+          if (!sessionsResult) {
+            show(sessionsNode, "فهرست نشست‌ها فعلاً دریافت نشد.", true);
+          } else {
+            sessionsNode.innerHTML = sessions.length
+              ? sessions.map((item) => `<article class="account-session"><strong>${escape(item.user_agent || "دستگاه نامشخص")}</strong><p>IP: <span dir="ltr">${escape(item.ip_address || "نامشخص")}</span></p><p>آخرین فعالیت: ${escape(item.updated_at || "نامشخص")}</p><button type="button" data-revoke-session="${escape(item.id)}">بستن این نشست</button></article>`).join("")
+              : "<p>نشست فعالی برای نمایش وجود ندارد.</p>";
+          }
+        }
+
         wrapper.querySelectorAll("[data-account-metric]").forEach((node) => {
-          if (node.dataset.accountMetric === "notifications") node.textContent = String(notificationsResult?.data?.count ?? 0);
-          if (node.dataset.accountMetric === "orders") node.textContent = String(orders.length);
+          if (node.dataset.accountMetric === "notifications") {
+            node.textContent = notificationsResult ? String(notificationsResult?.data?.count ?? 0) : "—";
+          }
+          if (node.dataset.accountMetric === "orders") {
+            node.textContent = ordersResult ? String(orders.length) : "—";
+          }
         });
-        show(state, "اطلاعات حساب دریافت شد.");
+
+        show(
+          state,
+          failedCount
+            ? `بخشی از اطلاعات حساب دریافت نشد (${failedCount} بخش). سایر بخش‌های دریافت‌شده قابل استفاده هستند؛ دوباره تلاش کنید.`
+            : "اطلاعات حساب دریافت شد.",
+          failedCount > 0,
+        );
       } catch (error) {
         show(state, error.message || "دریافت اطلاعات حساب انجام نشد.", true);
         [security, verification, sessionsNode].forEach((node) => show(node, error.message || "دریافت اطلاعات ناموفق بود.", true));
