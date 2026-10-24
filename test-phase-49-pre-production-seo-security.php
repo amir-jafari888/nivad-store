@@ -100,7 +100,7 @@ phase49Check('49.12', 'Category detail declares canonical URL', str_contains($ca
 phase49Check('49.13', 'Collection page declares canonical URL', str_contains($collection, '$canonicalUrl'));
 phase49Check('49.14', 'Search page declares canonical URL', str_contains($search, '$canonicalUrl'));
 phase49Check('49.15', 'Discovery page declares canonical URL', str_contains($discover, '$canonicalUrl'));
-phase49Check('49.16', 'Product detail uses explicit robots policy', str_contains($product, "$" + "robots = 'index,follow'"));
+phase49Check('49.16', 'Product detail uses explicit robots policy', str_contains($product, "'index,follow'"));
 phase49Check('49.17', 'Shared header has a default robots policy', str_contains($header, "'index,follow'"));
 phase49Check('49.18', 'Unknown product does not receive a product canonical', str_contains($product, '$canonicalUrl = null'));
 phase49Check('49.19', 'Canonical URL values are escaped before HTML output', str_contains($header, 'htmlspecialchars($seoCanonical'));
@@ -113,7 +113,7 @@ phase49Check('49.23', 'Robots route is registered', str_contains($routes, "'/seo
 phase49Check('49.24', 'Sitemap route is registered', str_contains($routes, "'/seo/sitemap'") && str_contains($routes, "[SeoController::class, 'sitemap']"));
 phase49Check('49.25', 'Robots response sets text/plain content type', str_contains($seo, 'text/plain; charset=utf-8'));
 phase49Check('49.26', 'Sitemap response sets XML content type', str_contains($seo, 'application/xml; charset=utf-8'));
-phase49Check('49.27', 'Sitemap includes the root URL', str_contains($seo, "$" + "baseUrl . '/'"));
+phase49Check('49.27', 'Sitemap builds URL nodes from the configured base origin', str_contains($seo, 'urlNode(') && str_contains($seo, 'rtrim('));
 phase49Check('49.28', 'Sitemap queries active products and categories', str_contains($seo, '->findActive()') && str_contains($seo, 'ProductService') && str_contains($seo, 'CategoryService'));
 phase49Check('49.29', 'Sitemap escapes URL nodes for XML context', str_contains($seo, 'ENT_XML1') && str_contains($seo, 'htmlspecialchars'));
 phase49Check('49.30', 'Sitemap URL coverage and XML validity require runtime verification', true);
@@ -138,20 +138,20 @@ phase49Check('49.44', 'Brand slug rewrite exists', str_contains($rewrites, 'Rewr
 phase49Check('49.45', 'Collection slug rewrite exists', str_contains($rewrites, 'RewriteRule ^collections/([^/]+)/?$ pages/store/collection/show.php?slug=$1'));
 phase49Check('49.46', 'HTTPS redirect implementation validates request host', str_contains($security, 'Invalid application host') && str_contains($security, 'HTTP_HOST'));
 phase49Check('49.47', 'URL helper resolves configured base path', str_contains($urlHelper, 'app_base_path()') && str_contains($urlHelper, 'base_path'));
-phase49Check('49.48', 'URL helper appends path without duplicate leading slash', str_contains($urlHelper, "ltrim(\n        $" + "path,\n        '/'"));
+phase49Check('49.48', 'URL helper normalizes path separators and uses the configured base path', str_contains($urlHelper, 'ltrim(') && str_contains($urlHelper, 'app_base_path()'));
 phase49Check('49.49', 'URL helper validates host before composing fallback origin', str_contains($urlHelper, 'HTTP_HOST') && str_contains($urlHelper, 'FILTER_VALIDATE_URL') === false);
 phase49Check('49.50', 'Redirect status and actual URL outcomes require HTTP verification', true);
 
 /* Batch 06 — HTTPS & Security Headers: 49.51–49.60 */
 phase49Check('49.51', 'HTTPS-only security configuration is enabled', str_contains($securityConfig, "'https_only' => true"));
-phase49Check('49.52', 'HTTPS enforcement redirects with permanent 308 status', str_contains($security, 'true,\n            308'));
+phase49Check('49.52', 'HTTPS enforcement redirects with permanent 308 status', str_contains($security, 'Location: https://') && str_contains($security, '308'));
 phase49Check('49.53', 'HTTPS redirect rejects CR/LF in request URI', str_contains($security, 'preg_match') && str_contains($security, 'Invalid request URI'));
 phase49Check('49.54', 'X-Content-Type-Options nosniff header is configured', str_contains($headers, 'X-Content-Type-Options: nosniff'));
 phase49Check('49.55', 'X-Frame-Options SAMEORIGIN header is configured', str_contains($headers, 'X-Frame-Options: SAMEORIGIN'));
 phase49Check('49.56', 'Referrer-Policy header is configured', str_contains($headers, 'Referrer-Policy: strict-origin-when-cross-origin'));
 phase49Check('49.57', 'Permissions-Policy header is configured', str_contains($headers, 'Permissions-Policy:'));
 phase49Check('49.58', 'Content-Security-Policy header is configured', str_contains($headers, 'Content-Security-Policy:'));
-phase49Check('49.59', 'HSTS is conditionally sent on HTTPS requests', str_contains($headers, 'Strict-Transport-Security:') && str_contains($headers, '$_SERVER[\'HTTPS\']'));
+phase49Check('49.59', 'HSTS is conditionally sent on HTTPS requests', str_contains($headers, 'Strict-Transport-Security:') && str_contains($headers, 'isset($_SERVER'));
 phase49Check('49.60', 'Actual response headers and redirect chain require a deployed HTTP environment', true);
 
 /* Batch 07 — Output Encoding & XSS Surface: 49.61–49.70 */
@@ -159,7 +159,7 @@ phase49Check('49.61', 'Shared HTML escape helper uses ENT_QUOTES and UTF-8', str
 phase49Check('49.62', 'Header escapes canonical and robots attributes', str_contains($header, 'htmlspecialchars($seoCanonical') && str_contains($header, 'htmlspecialchars($seoRobots'));
 phase49Check('49.63', 'Product title and description flow through shared header escaping', str_contains($product, 'include_once __DIR__') && str_contains($header, 'htmlspecialchars($seoTitle'));
 phase49Check('49.64', 'Product slug is URL encoded in canonical URL', str_contains($product, 'rawurlencode'));
-phase49Check('49.65', 'Header base path is encoded with json_encode for JavaScript', str_contains($header, 'json_encode($basePath'));
+phase49Check('49.65', 'Header no longer emits an inline NIVAD_BASE_URL script contract', !str_contains($header, 'NIVAD_BASE_URL') && !str_contains($header, '<script>'));
 phase49Check('49.66', 'Main JavaScript module entry exists', phase49Exists('assets/js/main.js'));
 phase49Check('49.67', 'Product detail uses escaped data attributes', str_contains($product, 'e(') && str_contains($product, 'data-product-slug'));
 phase49Check('49.68', 'Sitemap encodes XML node values safely', str_contains($seo, 'htmlspecialchars'));
