@@ -57,6 +57,7 @@ $tokens = p55_read('assets/css/setting.css');
 $mainCss = p55_read('assets/css/main.css');
 $mainJs = p55_read('assets/js/main.js');
 $home = p55_read('index.php');
+$header = p55_read('partials/header.php');
 $cssFiles = p55_files('assets/css', ['css']);
 $jsFiles = p55_files('assets/js', ['js']);
 $pages = p55_files('pages', ['php']);
@@ -172,7 +173,7 @@ $checks = [
 ['55.91','Placeholder/content cleanup evidence is available', p55_exists('test-phase-44-placeholder-hardcoded-content-cleanup.php') || p55_exists('phase-44-placeholder-hardcoded-content-cleanup-report.md')],
 ['55.92','Visible copy and CTAs contain no unintended test/dummy content', null],
 ['55.93','Product prices, availability and trust claims match real data', null],
-['55.94','Persian RTL layout and technical terms are visually reviewed', p55_has($home, ['dir="rtl"','lang="fa"']) || p55_has($roadmap, ['RTL','Persian'])],
+['55.94','Persian RTL layout and technical terms are visually reviewed', p55_has($home . $header, ['dir="rtl"','lang="fa"'])],
 ['55.95','Metadata/content requirements are checked against actual rendered pages', null],
 ['55.96','Relevant prior regression harnesses execute without failure', null],
 ['55.97','Theme/responsive/accessibility/state cross-regression is executed', null],
@@ -182,7 +183,7 @@ $checks = [
 ];
 
 foreach ($checks as $check) {
-    p55_out($check[0], $check[1], $check[2], $check[2] === null ? 'requires browser, E2E, accessibility, performance, real data or production evidence' : '');
+    p55_out($check[0], $check[1], $check[2], $check[2] === null ? ($check[0] === '55.91' ? 'Phase 44 evidence is absent from this branch; verify original PR/artifacts' : 'requires browser, E2E, accessibility, performance, real data or production evidence') : '');
 }
 echo '<hr><strong>Inventory: pages=' . count($pages) . ' | partials=' . count($partials) . ' | CSS=' . count($cssFiles) . ' | JS=' . count($jsFiles) . "</strong><br>\n";
 echo '<strong>PASS: ' . $counts['PASS'] . ' | FAIL: ' . $counts['FAIL'] . ' | BLOCKED: ' . $counts['BLOCKED'] . "</strong><br>\n";
