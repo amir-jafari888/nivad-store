@@ -114,3 +114,6 @@ echo '<strong>PASS: ' . $counts['PASS'] . ' | FAIL: ' . $counts['FAIL'] . ' | BL
 $status = $counts['FAIL'] > 0 ? 'FAIL' : ($counts['BLOCKED'] > 0 ? 'PARTIAL' : 'PASS');
 echo '<strong>Phase status: ' . $status . ' | LOCK: NO</strong><br>\n';
 echo '<p>Static source checks do not prove rendered UX, route reachability, payment behavior, accessibility, or responsive behavior. No application files, backend logic, routes, or schema are modified by this audit.</p>';
+
+// Make source-contract regressions fail CI; expected runtime blockers remain PARTIAL, not a CI failure.
+if ($counts['FAIL'] > 0) { exit(1); }
