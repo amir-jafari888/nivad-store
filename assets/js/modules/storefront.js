@@ -76,14 +76,6 @@ const storefront = () => {
     });
   };
 
-  const escapeHTML = (value) =>
-    String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
   const formatPrice = (price, currency = "IRR") => {
     if (price === null || price === undefined) return "قیمت نامشخص";
 
