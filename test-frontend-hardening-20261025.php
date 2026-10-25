@@ -157,6 +157,9 @@ check(
 check(
     'Changed PHP files pass syntax validation',
     hasNoPhpSyntaxErrors($root, 'app/Models/Product.php') &&
+    hasNoPhpSyntaxErrors($root, 'partials/header.php') &&
+    hasNoPhpSyntaxErrors($root, 'pages/store/category/show.php') &&
+    hasNoPhpSyntaxErrors($root, 'pages/store/products/show.php') &&
     hasNoPhpSyntaxErrors($root, 'partials/product.php') &&
     hasNoPhpSyntaxErrors($root, 'partials/categories.php')
 );
@@ -164,8 +167,11 @@ check(
 check(
     'Changed JavaScript files pass Node syntax validation',
     hasNoJsSyntaxErrors($root, 'assets/js/main.js') &&
+    hasNoJsSyntaxErrors($root, 'assets/js/theme-init.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/header.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/theme.js') &&
+    hasNoJsSyntaxErrors($root, 'assets/js/modules/product-detail.js') &&
+    hasNoJsSyntaxErrors($root, 'assets/js/modules/price-stock-watch-ui.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/hero.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/storefront.js')
 );
@@ -187,7 +193,7 @@ $priceStockWatch = readProjectFile($root, 'assets/js/modules/price-stock-watch-u
 
 check(
     'Category route and Nivad brand are server-rendered',
-    str_contains($headerPhp, "$categoriesUrl = url('/categories');") &&
+    str_contains($headerPhp, '$categoriesUrl = url(\'/categories\');') &&
     str_contains($headerPhp, 'aria-label="نیواد - صفحه اصلی"') &&
     str_contains($headerPhp, '<span class="brand-logo__text">نیواد</span>') &&
     !str_contains($headerPhp, 'دیجی‌استور')
@@ -202,8 +208,8 @@ check(
 
 check(
     'Product price-watch markup uses object/variant contract',
-    !str_contains($productDetailPhp, "$product['variant_id']") &&
-    !str_contains($productDetailPhp, "$product['compare_at_price']") &&
+    !str_contains($productDetailPhp, '$product[\'variant_id\']') &&
+    !str_contains($productDetailPhp, '$product[\'compare_at_price\']') &&
     str_contains($productDetailPhp, '$watchVariant->price') &&
     str_contains($priceStockWatch, 'product-detail:variant-changed')
 );
