@@ -346,38 +346,6 @@ $wishlistUrl = url('/pages/shop/wishlist.php');
         data-mobile-bottom-nav>
 
         <a
-            href="<?= e($storeUrl) ?>"
-            class="mobile-bottom-nav__item"
-            data-nav-link="store"
-            aria-label="خانه">
-
-            <span class="mobile-bottom-nav__icon">
-                <svg
-                    class="icon"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true">
-                    <path
-                        d="M3 10.5 12 3l9 7.5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"></path>
-                    <path
-                        d="M5.5 9.5V21h13V9.5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linejoin="round"></path>
-                </svg>
-            </span>
-
-            <span class="mobile-bottom-nav__label">
-                خانه
-            </span>
-        </a>
-
-        <a
             href="<?= e($categoriesUrl) ?>"
             class="mobile-bottom-nav__item"
             data-nav-link="categories"
@@ -435,6 +403,7 @@ $wishlistUrl = url('/pages/shop/wishlist.php');
         <a
             href="<?= e($wishlistUrl) ?>"
             class="mobile-bottom-nav__item"
+            data-nav-link="wishlist"
             aria-label="علاقه‌مندی‌ها">
 
             <span class="mobile-bottom-nav__icon">
@@ -463,8 +432,41 @@ $wishlistUrl = url('/pages/shop/wishlist.php');
         </a>
 
         <a
+            href="<?= e($storeUrl) ?>"
+            class="mobile-bottom-nav__item"
+            data-nav-link="home"
+            aria-label="خانه">
+
+            <span class="mobile-bottom-nav__icon">
+                <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <path
+                        d="M3 10.5 12 3l9 7.5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                    <path
+                        d="M5.5 9.5V21h13V9.5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linejoin="round"></path>
+                </svg>
+            </span>
+
+            <span class="mobile-bottom-nav__label">
+                خانه
+            </span>
+        </a>
+
+        <a
             href="<?= e($cartUrl) ?>"
             class="mobile-bottom-nav__item"
+            data-nav-link="cart"
             aria-label="سبد خرید">
 
             <span class="mobile-bottom-nav__icon">
