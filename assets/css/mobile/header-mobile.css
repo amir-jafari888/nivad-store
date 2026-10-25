@@ -1338,3 +1338,116 @@ main {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Mobile header: one compact row with menu + search only. */
+.header-main {
+  grid-template-columns: var(--control-height-md) minmax(0, 1fr);
+  grid-template-rows: 56px;
+  column-gap: var(--spacing-2);
+  padding-inline: var(--spacing-3);
+}
+
+.header-main__start {
+  display: contents;
+}
+
+.menu-toggle {
+  grid-column: 1;
+  grid-row: 1;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+}
+
+.brand-logo,
+.header-actions {
+  display: none !important;
+}
+
+.header-search-wrap {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  padding: 0;
+}
+
+.header-search {
+  height: 40px;
+  min-width: 0;
+}
+
+.header-search input {
+  height: 38px;
+  font-size: var(--font-size-xs);
+}
+
+.header-search__submit {
+  flex-basis: 36px;
+  width: 36px;
+  height: 38px;
+}
+
+.search-suggestions {
+  max-height: min(55dvh, 360px);
+}
+
+.search-suggestions__list {
+  max-height: min(44dvh, 300px);
+}
+
+/* Keep the floating back-to-top control clear of the fixed bottom navigation. */
+.back-to-top {
+  --back-to-top-offset: 10px;
+  --back-to-top-size: 42px;
+  bottom: calc(68px + env(safe-area-inset-bottom) + 10px);
+  left: 10px;
+  width: var(--back-to-top-size);
+  height: var(--back-to-top-size);
+  z-index: calc(var(--z-bottom-nav) + 1);
+}
+
+.back-to-top .progress-ring {
+  width: 42px;
+  height: 42px;
+}
+
+.back-to-top .progress-ring__circle {
+  r: 18px;
+  cx: 21px;
+  cy: 21px;
+}
+
+.back-to-top i {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 380px) {
+  .header-main {
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: var(--spacing-1);
+    padding-inline: var(--spacing-2);
+  }
+
+  .menu-toggle {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+  }
+
+  .header-search__icon {
+    flex-basis: 16px;
+    width: 16px;
+    height: 16px;
+    margin-inline: 8px 2px;
+  }
+
+  .header-search__submit {
+    flex-basis: 32px;
+    width: 32px;
+  }
+
+  .back-to-top {
+    bottom: calc(64px + env(safe-area-inset-bottom) + 10px);
+  }
+}
