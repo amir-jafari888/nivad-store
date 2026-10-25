@@ -51,7 +51,7 @@ function hasNoJsSyntaxErrors(string $root, string $path): bool
 
     $output = [];
     $exitCode = 1;
-    exec('node --check ' . escapeshellarg($file) . ' 2>&1', $output, $exitCode);
+    exec('node --input-type=module --check < ' . escapeshellarg($file) . ' 2>&1', $output, $exitCode);
 
     return $exitCode === 0;
 }
