@@ -385,8 +385,11 @@ const productDetail = () => {
       document.dispatchEvent(
         new CustomEvent("product-detail:variant-changed", {
           detail: {
-            productId: Number(product?.id || 0),
-            variantId: Number(selectedVariant?.id || 0),
+            productId: Number(product?.id || productId || 0),
+            variantId: 0,
+            price: null,
+            compareAtPrice: null,
+            stockStatus: "unknown",
           },
         }),
       );
@@ -427,6 +430,18 @@ const productDetail = () => {
     }
 
     syncWishlistAttributes();
+
+    document.dispatchEvent(
+      new CustomEvent("product-detail:variant-changed", {
+        detail: {
+          productId: Number(product?.id || productId || 0),
+          variantId: Number(selectedVariant.id || 0),
+          price: selectedVariant.price ?? null,
+          compareAtPrice: selectedVariant.compare_at_price ?? null,
+          stockStatus: stock?.status || "unknown",
+        },
+      }),
+    );
   };
 
   const renderVariants = () => {

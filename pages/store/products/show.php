@@ -11,6 +11,11 @@ $product =
     ? (new ProductService())->findBySlug($slug)
     : null;
 
+$watchVariant =
+    $product instanceof Product && $product->status === 'active'
+        ? (new ProductVariantService())->findDefaultByProduct($product->id)
+        : null;
+
 if (
     $product instanceof Product &&
     $product->status === 'active'
@@ -596,40 +601,16 @@ include_once __DIR__ .
 
     </section>
 
-    <section
-        class="product-detail"
-        data-price-stock-watch
-        data-product-id="<?= htmlspecialchars(
-                                (string)($product['id'] ?? ''),
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>"
-        data-variant-id="<?= htmlspecialchars(
-                                (string)($product['variant_id'] ?? ''),
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>"
-        data-current-price="<?= htmlspecialchars(
-                                (string)($product['price'] ?? ''),
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>"
-        data-previous-price="<?= htmlspecialchars(
-                                    (string)($product['compare_at_price'] ?? ''),
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>"
-        data-stock-status="<?= htmlspecialchars(
-                                (string)($product['stock_status'] ?? ''),
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>">
-
 </main>
 
 <div
     class="product-watch-actions"
-    data-price-stock-watch>
+    data-price-stock-watch
+    data-product-id="<?= e($product instanceof Product ? (string)$product->id : '') ?>"
+    data-variant-id="<?= e($watchVariant instanceof ProductVariant ? (string)$watchVariant->id : '') ?>"
+    data-current-price="<?= e($watchVariant instanceof ProductVariant ? $watchVariant->price : '') ?>"
+    data-previous-price="<?= e($watchVariant instanceof ProductVariant && $watchVariant->compareAtPrice !== null ? $watchVariant->compareAtPrice : '') ?>"
+    data-stock-status="unknown">
     <button
         type="button"
         class="product-watch-actions__button"

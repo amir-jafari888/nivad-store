@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/**
+ * Product domain entity.
+ *
+ * Product-level data is intentionally kept separate from variant data.
+ * Price, compare-at price and stock status belong to the active variant/inventory
+ * contracts and must not be fabricated on the Product entity.
+ */
 final class Product
 {
     public int $id;

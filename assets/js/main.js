@@ -1,65 +1,113 @@
 import header from "./modules/header.js";
-import hero from "./modules/hero.js";
+import theme from "./modules/theme.js";
 import search from "./modules/search.js";
 import wishlist from "./modules/wishlist.js";
 import cart from "./modules/cart.js";
 import cartDrawer from "./modules/cart-drawer.js";
 import backToTopButton from "./modules/backtoup.js";
-import discovery from "./modules/discovery.js";
-import setupBuilder from "./modules/setup-builder.js";
-import compatibility from "./modules/compatibility.js";
-import newProduct from "./modules/new-product.js";
-import storefront from "./modules/storefront.js";
-import catalog from "./modules/catalog.js";
-import productDetail from "./modules/product-detail.js";
-import productMedia from "./modules/product-media.js";
-import customerShop from "./modules/customer-shop.js";
-import account from "./modules/account.js";
-import customerCommerce from "./modules/customer-commerce.js";
-import auth from "./modules/auth.js";
-import finder from "./modules/finder.js";
-import homeCommerce from "./modules/home-commerce.js";
-import collection from "./modules/collection.js";
-import completeYourSetup from "./modules/complete-your-setup.js";
-import comparison from "./modules/comparison.js";
-import alternative from "./modules/alternative.js";
-import budgetOptimizer from "./modules/budget-optimizer.js";
-import smartBundle from "./modules/smart-bundle.js";
-import initializePriceStockWatch from "./modules/price-stock-watch-ui.js";
-import initializeRecentDevice from "./modules/recent-device-ui.js";
-import checkout from "./modules/checkout.js";
-import payment from "./modules/payment.js";
-import initializeNotifications from "./modules/notification.js";
 
 header();
-hero();
+theme();
 search();
 wishlist();
 cart();
 cartDrawer();
 backToTopButton();
-discovery();
-setupBuilder();
-compatibility();
-newProduct();
-storefront();
-catalog();
-productDetail();
-productMedia();
-alternative();
-completeYourSetup();
-comparison();
-customerShop();
-account();
-customerCommerce();
-auth();
-finder();
-homeCommerce();
-collection();
-budgetOptimizer();
-smartBundle();
-initializePriceStockWatch();
-initializeRecentDevice();
-checkout();
-payment();
-initializeNotifications();
+
+const deferredModuleManifest = [
+  { path: "./modules/hero.js", aliases: ["hero"] },
+  { path: "./modules/discovery.js", aliases: ["discovery"] },
+  { path: "./modules/setup-builder.js", aliases: ["setup-builder"] },
+  { path: "./modules/compatibility.js", aliases: ["compatibility"] },
+  { path: "./modules/new-product.js", aliases: ["new-product"] },
+  {
+    path: "./modules/storefront.js",
+    selectors: ["[data-home-products]", "[data-categories-section]"],
+  },
+  { path: "./modules/catalog.js", aliases: ["catalog-page"] },
+  { path: "./modules/product-detail.js", aliases: ["product-detail"] },
+  { path: "./modules/product-media.js", aliases: ["product-media"] },
+  { path: "./modules/customer-shop.js", aliases: ["customer-shop"] },
+  { path: "./modules/account.js", aliases: ["account"] },
+  { path: "./modules/customer-commerce.js", aliases: ["customer-commerce"] },
+  { path: "./modules/auth.js", aliases: ["auth"] },
+  { path: "./modules/finder.js", aliases: ["finder"] },
+  {
+    path: "./modules/home-commerce.js",
+    selectors: ["[data-home-collections]", "[data-home-sliders]"],
+  },
+  { path: "./modules/collection.js", aliases: ["collection"] },
+  { path: "./modules/complete-your-setup.js", aliases: ["complete-setup"] },
+  { path: "./modules/comparison.js", aliases: ["comparison"] },
+  { path: "./modules/alternative.js", aliases: ["alternative"] },
+  { path: "./modules/budget-optimizer.js", aliases: ["budget-optimizer"] },
+  { path: "./modules/smart-bundle.js", aliases: ["smart-bundle"] },
+  { path: "./modules/price-stock-watch-ui.js", aliases: ["price-stock-watch"] },
+  { path: "./modules/recent-device-ui.js", aliases: ["recent-device"] },
+  { path: "./modules/checkout.js", aliases: ["checkout"] },
+  { path: "./modules/payment.js", aliases: ["payment"] },
+  { path: "./modules/notification.js", aliases: ["notification"] },
+];
+
+const pageCapabilities = () => {
+  const capabilities = new Set();
+
+  document.querySelectorAll("*").forEach((element) => {
+    for (const attribute of element.attributes) {
+      if (!attribute.name.startsWith("data-")) continue;
+
+      const name = attribute.name.slice(5);
+      capabilities.add(name);
+    }
+  });
+
+  return capabilities;
+};
+
+const shouldLoad = (entry, capabilities) => {
+  if (entry.selectors?.some((selector) => document.querySelector(selector))) {
+    return true;
+  }
+
+  return (entry.aliases || []).some((alias) =>
+    [...capabilities].some(
+      (capability) =>
+        capability === alias || capability.startsWith(`${alias}-`),
+    ),
+  );
+};
+
+const loadDeferredModules = async () => {
+  const capabilities = pageCapabilities();
+  const candidates = deferredModuleManifest.filter((entry) =>
+    shouldLoad(entry, capabilities),
+  );
+
+  if (!candidates.length) return;
+
+  const modules = await Promise.all(
+    candidates.map(({ path }) => import(path)),
+  );
+
+  modules
+    .map((module) => module.default)
+    .filter((initializer) => typeof initializer === "function")
+    .forEach((initializer) => initializer());
+};
+
+const scheduleDeferredModules = () => {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(loadDeferredModules, { timeout: 1200 });
+    return;
+  }
+
+  window.setTimeout(loadDeferredModules, 150);
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", scheduleDeferredModules, {
+    once: true,
+  });
+} else {
+  scheduleDeferredModules();
+}
