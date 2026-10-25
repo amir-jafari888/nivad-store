@@ -56,7 +56,7 @@ const search = () => {
 
   const baseUrl = searchPath.endsWith("/search")
     ? searchPath.slice(0, -"/search".length)
-    : "";
+    : (document.documentElement.dataset.basePath || "").replace(/\\/+$/, "");
 
   let requestToken = 0;
   let debounceTimer = null;
@@ -418,13 +418,21 @@ const search = () => {
   const selectItem = (item) => {
     if (!item) return;
 
-    input.value = item.dataset.searchValue || "";
+    const value = item.dataset.searchValue || "";
 
-    saveRecentSearch(input.value);
+    if (!value.trim()) return;
 
+    input.value = value;
+    saveRecentSearch(value);
     close();
 
-    input.focus();
+    // Complete the search when a suggestion is selected.
+    if (typeof form.requestSubmit === "function") {
+      form.requestSubmit();
+      return;
+    }
+
+    form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
   };
 
   createBox();
