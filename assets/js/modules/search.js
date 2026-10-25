@@ -56,7 +56,7 @@ const search = () => {
 
   const baseUrl = searchPath.endsWith("/search")
     ? searchPath.slice(0, -"/search".length)
-    : (document.documentElement.dataset.basePath || "").replace(/\\/+$/, "");
+    : (document.documentElement.dataset.basePath || "").replace(/\/+$/, "");
 
   let requestToken = 0;
   let debounceTimer = null;
