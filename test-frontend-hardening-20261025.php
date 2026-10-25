@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 $root = __DIR__;
-
 $pass = 0;
 $fail = 0;
 
@@ -35,9 +34,7 @@ function hasNoPhpSyntaxErrors(string $root, string $path): bool
 {
     $file = $root . DIRECTORY_SEPARATOR . $path;
 
-    if (!is_file($file)) {
-        return false;
-    }
+    if (!is_file($file)) return false;
 
     $output = [];
     $exitCode = 1;
@@ -50,9 +47,7 @@ function hasNoJsSyntaxErrors(string $root, string $path): bool
 {
     $file = $root . DIRECTORY_SEPARATOR . $path;
 
-    if (!is_file($file)) {
-        return false;
-    }
+    if (!is_file($file)) return false;
 
     $output = [];
     $exitCode = 1;
@@ -67,6 +62,7 @@ $productPartial = readProjectFile($root, 'partials/product.php');
 $categoryPartial = readProjectFile($root, 'partials/categories.php');
 $mainJs = readProjectFile($root, 'assets/js/main.js');
 $headerJs = readProjectFile($root, 'assets/js/modules/header.js');
+$themeJs = readProjectFile($root, 'assets/js/modules/theme.js');
 $heroJs = readProjectFile($root, 'assets/js/modules/hero.js');
 $storefrontJs = readProjectFile($root, 'assets/js/modules/storefront.js');
 $productModel = readProjectFile($root, 'app/Models/Product.php');
@@ -90,27 +86,34 @@ check(
 
 check(
     'Homepage product data uses real Storefront module contract',
-    $productPartial !== '' &&
-    str_contains($productPartial, 'data-home-products-grid')
+    $productPartial !== '' && str_contains($productPartial, 'data-home-products-grid')
 );
 
 check(
-    'Deferred JS loading is enabled',
-    str_contains($mainJs, 'requestIdleCallback') &&
-    str_contains($mainJs, 'import("./modules/catalog.js")')
+    'Deferred JS loading is capability-aware',
+    str_contains($mainJs, 'deferredModuleManifest') &&
+    str_contains($mainJs, 'pageCapabilities') &&
+    str_contains($mainJs, 'shouldLoad')
 );
 
 check(
     'Critical global modules remain eagerly initialized',
     str_contains($mainJs, 'header();') &&
+    str_contains($mainJs, 'theme();') &&
     str_contains($mainJs, 'search();') &&
     str_contains($mainJs, 'cartDrawer();')
 );
 
 check(
+    'Header is separated from theme state management',
+    !str_contains($headerJs, 'prefers-color-scheme') &&
+    !str_contains($headerJs, 'localStorage.getItem("digital-store-theme")') &&
+    !str_contains($headerJs, 'normalizeBrandAndRoutes')
+);
+
+check(
     'Mobile menu focus trap and focus restoration exist',
-    str_contains($headerJs, 'trapFocus') &&
-    str_contains($headerJs, 'lastMenuTrigger')
+    str_contains($headerJs, 'trapFocus') && str_contains($headerJs, 'lastMenuTrigger')
 );
 
 check(
@@ -120,8 +123,10 @@ check(
 );
 
 check(
-    'System theme preference is supported',
-    str_contains($headerJs, 'prefers-color-scheme')
+    'Theme module supports persisted and system preferences',
+    str_contains($themeJs, 'prefers-color-scheme') &&
+    str_contains($themeJs, 'localStorage') &&
+    str_contains($themeJs, 'addEventListener')
 );
 
 check(
@@ -137,15 +142,16 @@ check(
 );
 
 check(
-    'Product object/array compatibility contract prevents runtime offset fatal',
-    str_contains($productModel, 'implements ArrayAccess') &&
-    str_contains($productModel, 'function offsetGet')
+    'Product variant data is not fabricated on Product entity',
+    !str_contains($productModel, 'implements ArrayAccess') &&
+    !str_contains($productModel, "'variant_id'") &&
+    !str_contains($productModel, "'stock_status'")
 );
 
 check(
-    'Product model remains read-only through ArrayAccess',
-    str_contains($productModel, 'read-only domain entity') &&
-    str_contains($productModel, 'function offsetUnset')
+    'Product model remains a concrete domain entity',
+    str_contains($productModel, 'final class Product') &&
+    str_contains($productModel, 'public int $id')
 );
 
 check(
@@ -159,6 +165,7 @@ check(
     'Changed JavaScript files pass Node syntax validation',
     hasNoJsSyntaxErrors($root, 'assets/js/main.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/header.js') &&
+    hasNoJsSyntaxErrors($root, 'assets/js/modules/theme.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/hero.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/storefront.js')
 );
@@ -170,7 +177,6 @@ check(
 );
 
 echo '<br><strong>PASS: ' . $pass . ' | FAIL: ' . $fail . '</strong><br>' . PHP_EOL;
-
 echo $fail === 0
     ? '<strong>RESULT: PASS</strong><br>' . PHP_EOL
     : '<strong>RESULT: FAIL — review failed checks before lock.</strong><br>' . PHP_EOL;
