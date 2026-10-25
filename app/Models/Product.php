@@ -2,7 +2,13 @@
 
 declare(strict_types=1);
 
-final class Product
+/**
+ * Product domain entity.
+ *
+ * ArrayAccess is intentionally limited to the legacy storefront keys that
+ * still exist in presentation-layer contracts. New code must use properties.
+ */
+final class Product implements ArrayAccess
 {
     public int $id;
     public int $categoryId;
@@ -54,5 +60,65 @@ final class Product
         $this->deletedAt = $deletedAt;
         $this->metaTitle = $metaTitle;
         $this->metaDescription = $metaDescription;
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return in_array(
+            $offset,
+            [
+                'id',
+                'category_id',
+                'brand_id',
+                'name',
+                'slug',
+                'short_description',
+                'description',
+                'status',
+                'is_featured',
+                'meta_title',
+                'meta_description',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+                'variant_id',
+                'price',
+                'compare_at_price',
+                'stock_status',
+            ],
+            true
+        );
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return match ($offset) {
+            'id' => $this->id,
+            'category_id' => $this->categoryId,
+            'brand_id' => $this->brandId,
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'short_description' => $this->shortDescription,
+            'description' => $this->description,
+            'status' => $this->status,
+            'is_featured' => $this->isFeatured,
+            'meta_title' => $this->metaTitle,
+            'meta_description' => $this->metaDescription,
+            'created_at' => $this->createdAt,
+            'updated_at' => $this->updatedAt,
+            'deleted_at' => $this->deletedAt,
+            'variant_id', 'price', 'compare_at_price', 'stock_status' => null,
+            default => null,
+        };
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        throw new LogicException('Product is a read-only domain entity.');
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        throw new LogicException('Product is a read-only domain entity.');
     }
 }
