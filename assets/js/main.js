@@ -1,4 +1,5 @@
 import header from "./modules/header.js";
+import theme from "./modules/theme.js";
 import search from "./modules/search.js";
 import wishlist from "./modules/wishlist.js";
 import cart from "./modules/cart.js";
@@ -6,47 +7,63 @@ import cartDrawer from "./modules/cart-drawer.js";
 import backToTopButton from "./modules/backtoup.js";
 
 header();
+theme();
 search();
 wishlist();
 cart();
 cartDrawer();
 backToTopButton();
 
+const deferredModuleManifest = [
+  { path: "./modules/hero.js", selectors: ["[data-hero]"] },
+  { path: "./modules/discovery.js", selectors: ["[data-discovery]"] },
+  { path: "./modules/setup-builder.js", selectors: ["[data-setup-builder]"] },
+  { path: "./modules/compatibility.js", selectors: ["[data-compatibility]"] },
+  { path: "./modules/new-product.js", selectors: ["[data-new-product]"] },
+  {
+    path: "./modules/storefront.js",
+    selectors: ["[data-home-products]", "[data-categories-section]"],
+  },
+  { path: "./modules/catalog.js", selectors: ["[data-catalog-page]"] },
+  { path: "./modules/product-detail.js", selectors: ["[data-product-detail]"] },
+  { path: "./modules/product-media.js", selectors: ["[data-product-media]"] },
+  { path: "./modules/customer-shop.js", selectors: ["[data-customer-shop]"] },
+  { path: "./modules/account.js", selectors: ["[data-account]"] },
+  { path: "./modules/customer-commerce.js", selectors: ["[data-customer-commerce]"] },
+  { path: "./modules/auth.js", selectors: ["[data-auth]"] },
+  { path: "./modules/finder.js", selectors: ["[data-finder]"] },
+  { path: "./modules/home-commerce.js", selectors: ["[data-home-commerce]"] },
+  { path: "./modules/collection.js", selectors: ["[data-collection]"] },
+  { path: "./modules/complete-your-setup.js", selectors: ["[data-complete-setup]"] },
+  { path: "./modules/comparison.js", selectors: ["[data-comparison]"] },
+  { path: "./modules/alternative.js", selectors: ["[data-alternative]"] },
+  { path: "./modules/budget-optimizer.js", selectors: ["[data-budget-optimizer]"] },
+  { path: "./modules/smart-bundle.js", selectors: ["[data-smart-bundle]"] },
+  { path: "./modules/price-stock-watch-ui.js", selectors: ["[data-price-stock-watch]"] },
+  { path: "./modules/recent-device-ui.js", selectors: ["[data-recent-device]"] },
+  { path: "./modules/checkout.js", selectors: ["[data-checkout]"] },
+  { path: "./modules/payment.js", selectors: ["[data-payment]"] },
+  { path: "./modules/notification.js", selectors: ["[data-notification]"] },
+];
+
+const shouldLoad = (selectors) =>
+  selectors.some((selector) => document.querySelector(selector));
+
 const loadDeferredModules = async () => {
-  const modules = await Promise.all([
-    import("./modules/hero.js"),
-    import("./modules/discovery.js"),
-    import("./modules/setup-builder.js"),
-    import("./modules/compatibility.js"),
-    import("./modules/new-product.js"),
-    import("./modules/storefront.js"),
-    import("./modules/catalog.js"),
-    import("./modules/product-detail.js"),
-    import("./modules/product-media.js"),
-    import("./modules/customer-shop.js"),
-    import("./modules/account.js"),
-    import("./modules/customer-commerce.js"),
-    import("./modules/auth.js"),
-    import("./modules/finder.js"),
-    import("./modules/home-commerce.js"),
-    import("./modules/collection.js"),
-    import("./modules/complete-your-setup.js"),
-    import("./modules/comparison.js"),
-    import("./modules/alternative.js"),
-    import("./modules/budget-optimizer.js"),
-    import("./modules/smart-bundle.js"),
-    import("./modules/price-stock-watch-ui.js"),
-    import("./modules/recent-device-ui.js"),
-    import("./modules/checkout.js"),
-    import("./modules/payment.js"),
-    import("./modules/notification.js"),
-  ]);
+  const candidates = deferredModuleManifest.filter((entry) =>
+    shouldLoad(entry.selectors),
+  );
 
-  const initializers = modules
+  if (!candidates.length) return;
+
+  const modules = await Promise.all(
+    candidates.map(({ path }) => import(path)),
+  );
+
+  modules
     .map((module) => module.default)
-    .filter((initializer) => typeof initializer === "function");
-
-  initializers.forEach((initializer) => initializer());
+    .filter((initializer) => typeof initializer === "function")
+    .forEach((initializer) => initializer());
 };
 
 const scheduleDeferredModules = () => {
