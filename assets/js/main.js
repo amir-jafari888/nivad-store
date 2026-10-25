@@ -17,6 +17,7 @@ backToTopButton();
 const deferredModuleManifest = [
   { path: "./modules/hero.js", aliases: ["hero"] },
   { path: "./modules/discovery.js", aliases: ["discovery"] },
+  { path: "./modules/discovery-preview.js", aliases: ["discovery-preview"] },
   { path: "./modules/setup-builder.js", aliases: ["setup-builder"] },
   { path: "./modules/compatibility.js", aliases: ["compatibility"] },
   { path: "./modules/new-product.js", aliases: ["new-product"] },

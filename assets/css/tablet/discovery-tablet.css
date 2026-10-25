@@ -423,3 +423,19 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--grid-gap);
 }
+
+.home-discovery { padding: 28px; }
+.home-discovery__inner { grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); gap: 22px; }
+.home-discovery__copy h2 { font-size: clamp(28px, 3.5vw, 36px); }
+.home-discovery__description { font-size: 13px; }
+.home-discovery__benefits { gap: 6px; margin-block: 20px 24px; }
+.home-discovery__benefits li { font-size: 10px; }
+.home-discovery__benefit-icon { width: 46px; height: 46px; }
+.home-discovery__cta { min-height: 48px; padding-inline: 17px; font-size: 12px; }
+.home-discovery__showcase { padding: 18px; }
+.home-discovery__filter { min-width: 100px; min-height: 50px; gap: 6px; padding-inline: 9px; }
+.home-discovery__filter-nav { width: 30px; height: 30px; }
+.home-discovery__product-body { padding: 10px; }
+.home-discovery__product-body h5 { font-size: 11px; }
+.home-discovery__product-body strong { font-size: 11px; }
+.home-discovery__products-head h4 { font-size: 12px; }

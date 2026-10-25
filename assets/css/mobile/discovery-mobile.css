@@ -488,3 +488,44 @@
 .discovery-more:disabled {
   opacity: var(--opacity-disabled);
 }
+
+
+.home-discovery { padding: 25px 16px 18px; border-radius: 22px; }
+.home-discovery__inner { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.home-discovery__copy { padding: 0 2px; }
+.home-discovery__eyebrow { margin-bottom: 10px; font-size: 10px; }
+.home-discovery__copy h2 { max-width: 520px; font-size: clamp(27px, 7vw, 36px); line-height: 1.55; }
+.home-discovery__desktop-break { display: none; }
+.home-discovery__description { margin-top: 8px; font-size: 13px; }
+.home-discovery__benefits { gap: 8px; margin: 18px 0 20px; }
+.home-discovery__benefits li { gap: 6px; font-size: 10px; }
+.home-discovery__benefit-icon { width: 42px; height: 42px; }
+.home-discovery__benefit-icon svg { width: 21px; height: 21px; }
+.home-discovery__cta { display: flex; width: 100%; min-height: 48px; padding-inline: 12px; font-size: 13px; }
+.home-discovery__help { margin-top: 13px; }
+.home-discovery__showcase { padding: 16px 12px 14px; border-radius: 18px; }
+.home-discovery__showcase-top { align-items: center; gap: 8px; }
+.home-discovery__showcase-top h3 { font-size: 14px; }
+.home-discovery__showcase-kicker { font-size: 8px; }
+.home-discovery__result-count { font-size: 10px; }
+.home-discovery__filters-shell { gap: 5px; margin-top: 14px; }
+.home-discovery__filters { overflow: hidden; }
+.home-discovery__filter { min-width: 91px; min-height: 48px; gap: 5px; padding: 7px 9px; border-radius: 10px; }
+.home-discovery__filter svg { width: 18px; height: 18px; }
+.home-discovery__filter strong { font-size: 11px; }
+.home-discovery__filter small { font-size: 9px; }
+.home-discovery__filter-nav { width: 27px; height: 27px; }
+.home-discovery__products-head { margin-top: 20px; }
+.home-discovery__products-head h4 { font-size: 12px; }
+.home-discovery__products-head a { font-size: 10px; }
+.home-discovery__products { margin-top: 12px; }
+.home-discovery__product-media { aspect-ratio: 1.12 / 1; padding: 10px; }
+.home-discovery__product-body { padding: 10px; }
+.home-discovery__product-body h5 { min-height: 36px; font-size: 11px; }
+.home-discovery__product-body p { min-height: 26px; font-size: 9px; }
+.home-discovery__product-body strong { font-size: 11px; }
+.home-discovery__product-controls { margin-top: 10px; }
+.home-discovery__product-nav { width: 28px; height: 28px; }
+.home-discovery__mobile-cta { display: flex; width: 100%; min-height: 46px; margin-top: 16px; padding-inline: 12px; font-size: 12px; }
+.home-discovery__state { padding: 11px; font-size: 11px; }
+.home-discovery__skeleton { gap: 8px; padding: 9px; }
