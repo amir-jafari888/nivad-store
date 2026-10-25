@@ -1,9 +1,6 @@
 const wishlist = () => {
   const storageKey = "digital-store-wishlist";
   const variantStorageKey = "digital-store-wishlist-variants";
-  let localMutationVersion = 0;
-  let syncPromise = null;
-  let syncRequestedAgain = false;
 
   const baseUrl = window.NIVAD_BASE_URL || "";
 
@@ -42,20 +39,10 @@ const wishlist = () => {
   };
 
   const saveLocal = (items, variants, shouldSync = true) => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(items));
-      localStorage.setItem(variantStorageKey, JSON.stringify(variants));
-    } catch (error) {
-      window.dispatchEvent(
-        new CustomEvent("wishlist:storage-error", {
-          detail: { error },
-        }),
-      );
+    localStorage.setItem(storageKey, JSON.stringify(items));
 
-      return false;
-    }
+    localStorage.setItem(variantStorageKey, JSON.stringify(variants));
 
-    localMutationVersion += 1;
     updateUI();
 
     window.dispatchEvent(
@@ -70,8 +57,6 @@ const wishlist = () => {
     if (shouldSync) {
       void sync();
     }
-
-    return true;
   };
 
   const updateUI = () => {
@@ -131,7 +116,7 @@ const wishlist = () => {
       },
     );
 
-    const payload = await response.json().catch(() => null);
+    const payload = await response.json().catch(() => ({}));
 
     if (!response.ok || payload?.success === false) {
       const error = new Error(
@@ -141,13 +126,6 @@ const wishlist = () => {
       error.status = response.status;
       error.payload = payload;
 
-      throw error;
-    }
-
-    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-      const error = new Error("پاسخ معتبر از سرور Wishlist دریافت نشد.");
-      error.status = response.status;
-      error.payload = payload;
       throw error;
     }
 
@@ -194,19 +172,9 @@ const wishlist = () => {
       variants[local.id] = local.variantId;
     }
 
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(items));
-      localStorage.setItem(variantStorageKey, JSON.stringify(variants));
-      return true;
-    } catch (error) {
-      window.dispatchEvent(
-        new CustomEvent("wishlist:storage-error", {
-          detail: { error },
-        }),
-      );
+    localStorage.setItem(storageKey, JSON.stringify(items));
 
-      return false;
-    }
+    localStorage.setItem(variantStorageKey, JSON.stringify(variants));
   };
 
   const getDefaultWishlist = async () => {
@@ -234,7 +202,7 @@ const wishlist = () => {
     return wishlist;
   };
 
-  const syncOnce = async () => {
+  const sync = async () => {
     try {
       const auth = await request("/auth/status");
 
@@ -255,7 +223,7 @@ const wishlist = () => {
         : [];
 
       const localItems = getWishlist();
-      const syncVersion = localMutationVersion;
+
       const localVariants = getVariants();
 
       const validLocalItems = localItems.filter(
@@ -267,9 +235,7 @@ const wishlist = () => {
        * recover from authenticated Server.
        */
       if (localItems.length === 0 && serverItems.length > 0) {
-        if (!writeServerItemsToLocal(serverItems)) {
-          return;
-        }
+        writeServerItemsToLocal(serverItems);
 
         updateUI();
 
@@ -321,10 +287,6 @@ const wishlist = () => {
        * only when Local has a complete
        * variant identity contract.
        */
-      if (syncVersion !== localMutationVersion) {
-        return;
-      }
-
       for (const serverItem of serverItems) {
         const serverVariantId = Number(serverItem.variant_id);
 
@@ -351,14 +313,8 @@ const wishlist = () => {
         ? refreshed.data.items
         : [];
 
-      if (syncVersion !== localMutationVersion) {
-        return;
-      }
-
       if (refreshedItems.length > 0) {
-        if (!writeServerItemsToLocal(refreshedItems)) {
-          return;
-        }
+        writeServerItemsToLocal(refreshedItems);
 
         updateUI();
 
@@ -375,24 +331,6 @@ const wishlist = () => {
        * Local Wishlist remains usable.
        */
     }
-  };
-
-  const sync = () => {
-    if (syncPromise) {
-      syncRequestedAgain = true;
-      return syncPromise;
-    }
-
-    syncPromise = (async () => {
-      do {
-        syncRequestedAgain = false;
-        await syncOnce();
-      } while (syncRequestedAgain);
-    })().finally(() => {
-      syncPromise = null;
-    });
-
-    return syncPromise;
   };
 
   document.addEventListener("click", (event) => {
@@ -435,7 +373,6 @@ const wishlist = () => {
 
   window.addEventListener("storage", (event) => {
     if (event.key === storageKey || event.key === variantStorageKey) {
-      localMutationVersion += 1;
       updateUI();
     }
   });

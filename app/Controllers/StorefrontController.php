@@ -201,51 +201,6 @@ final class StorefrontController extends Controller
             ];
         }
 
-        $media = [];
-
-        foreach (
-            $this->media->findAllByProduct(
-                $product->id
-            ) as $item
-        ) {
-            if ($item->status !== 'active') {
-                continue;
-            }
-
-            $media[] = [
-                'id' =>
-                $item->id,
-
-                'product_id' =>
-                $item->productId,
-
-                'variant_id' =>
-                $item->variantId,
-
-                'media_type' =>
-                $item->mediaType,
-
-                'url' =>
-                $this->publicAssetPath(
-                    $item->filePath
-                ),
-
-                'thumbnail_url' =>
-                $this->publicAssetPath(
-                    $item->thumbnailPath
-                ),
-
-                'alt' =>
-                $item->altText,
-
-                'sort_order' =>
-                $item->sortOrder,
-
-                'is_primary' =>
-                $item->isPrimary,
-            ];
-        }
-
         $data =
             $this->productData(
                 $product
@@ -343,8 +298,6 @@ final class StorefrontController extends Controller
         $data['category'] = $category;
 
         $data['variants'] = $variants;
-
-        $data['media'] = $media;
 
         $data['availability'] =
             $defaultAvailability;
@@ -528,6 +481,39 @@ final class StorefrontController extends Controller
         );
     }
 
+    private function productMediaData(
+        Product $product
+    ): array {
+        $media = [];
+
+        foreach ($this->media->findAllByProduct($product->id) as $item) {
+            if ($item->status !== 'active' || $item->deletedAt !== null) {
+                continue;
+            }
+
+            $media[] = [
+                'id' => $item->id,
+                'product_id' => $item->productId,
+                'variant_id' => $item->variantId,
+                'media_type' => $item->mediaType,
+                'url' => $this->publicAssetPath($item->filePath),
+                'thumbnail_url' => $this->publicAssetPath($item->thumbnailPath),
+                'alt' => $item->altText,
+                'sort_order' => $item->sortOrder,
+                'is_primary' => $item->isPrimary,
+            ];
+        }
+
+        usort(
+            $media,
+            static fn(array $left, array $right): int =>
+                ((int) $right['is_primary'] <=> (int) $left['is_primary'])
+                ?: ((int) $left['sort_order'] <=> (int) $right['sort_order'])
+        );
+
+        return $media;
+    }
+
     private function productData(
         Product $product
     ): array {
@@ -565,6 +551,7 @@ final class StorefrontController extends Controller
                     'currency' =>
                     $variant->currency,
                 ],
+            'media' => $this->productMediaData($product),
         ];
     }
 

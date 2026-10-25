@@ -1,0 +1,41 @@
+name: Phase 52 — Future Capability Foundation
+
+on:
+  push:
+    branches:
+      - phase-52-future-capability-foundation
+  pull_request:
+    branches:
+      - phase-51-final-ui-ux-gate
+
+permissions:
+  contents: read
+
+jobs:
+  static-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: none
+
+      - name: Validate audit script syntax
+        run: php -l test-phase-52-future-capability-foundation.php
+
+      - name: Run Phase 52 static audit
+        run: php test-phase-52-future-capability-foundation.php
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate changed JavaScript modules
+        run: |
+          node --input-type=module --check < assets/js/modules/commerce-context.js
+          node --input-type=module --check < assets/js/modules/setup-builder.js

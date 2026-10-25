@@ -1,0 +1,48 @@
+name: Phase 53 — Final Regression
+
+on:
+  push:
+    branches:
+      - phase-53-final-regression
+  pull_request:
+    branches:
+      - phase-52-future-capability-foundation
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: none
+
+      - name: Validate Phase 53 audit syntax
+        run: php -l test-phase-53-final-regression.php
+
+      - name: Run Phase 53 static regression audit
+        run: php test-phase-53-final-regression.php
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate critical JavaScript modules as ES modules
+        run: |
+          node --input-type=module --check < assets/js/main.js
+          node --input-type=module --check < assets/js/modules/search.js
+          node --input-type=module --check < assets/js/modules/commerce-context.js
+          node --input-type=module --check < assets/js/modules/finder.js
+          node --input-type=module --check < assets/js/modules/finder-engine.js
+          node --input-type=module --check < assets/js/modules/setup-builder.js
+          node --input-type=module --check < assets/js/modules/comparison.js
+          node --input-type=module --check < assets/js/modules/alternative.js
+          node --input-type=module --check < assets/js/modules/budget-optimizer.js

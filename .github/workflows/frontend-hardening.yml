@@ -1,0 +1,33 @@
+name: Frontend Hardening Regression
+
+on:
+  push:
+    branches:
+      - frontend-hardening-2026-10-25
+  pull_request:
+    branches:
+      - phase-54-final-frontend-audit
+
+jobs:
+  frontend-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate regression test syntax
+        run: php -l test-frontend-hardening-20261025.php
+
+      - name: Run frontend hardening regression
+        run: php test-frontend-hardening-20261025.php

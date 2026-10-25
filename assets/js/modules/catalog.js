@@ -101,15 +101,11 @@ const catalog = () => {
 
     const payload = await response.json();
 
-    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-      throw new Error("پاسخ معتبر از سرور دریافت نشد.");
+    if (!response.ok || payload?.success === false) {
+      throw new Error(payload?.message || "خطا در دریافت اطلاعات.");
     }
 
-    if (!response.ok || payload.success === false) {
-      throw new Error(payload.message || "خطا در دریافت اطلاعات.");
-    }
-
-    return payload.data ?? {};
+    return payload?.data ?? {};
   };
 
   /*
@@ -194,6 +190,15 @@ const catalog = () => {
     list.innerHTML = items
       .map((item) => {
         const variant = item.variant || {};
+        const mediaItems = Array.isArray(item.media)
+          ? item.media.filter((media) => media && media.url)
+          : [];
+        const primaryMedia =
+          mediaItems.find((media) => media.is_primary) || mediaItems[0] || null;
+        const mediaUrl = primaryMedia?.thumbnail_url || primaryMedia?.url || "";
+        const mediaMarkup = mediaUrl
+          ? `<img class="catalog-card__image" src="${escapeHTML(mediaUrl)}" alt="${escapeHTML(primaryMedia?.alt || item.name || item.title || "")}" loading="lazy" decoding="async">`
+          : `<span class="catalog-card__placeholder">${escapeHTML(String(item.name || item.title || "").slice(0, 1))}</span>`;
 
         const slug = encodeURIComponent(item.slug || "");
 
@@ -268,16 +273,11 @@ const catalog = () => {
             href="${productUrl}"
             aria-label="مشاهده ${escapeHTML(name)}">
 
-            <div
-              class="catalog-card__media"
-              aria-hidden="true">
+            <div class="catalog-card__media">
 
               ${featuredBadge}
 
-              <span
-                class="catalog-card__placeholder">
-                ${escapeHTML(name.slice(0, 1))}
-              </span>
+              ${mediaMarkup}
             </div>
 
             <div class="catalog-card__body">
@@ -1834,8 +1834,13 @@ const catalog = () => {
    */
 
   window.addEventListener("popstate", () => {
-    hydrateFiltersFromUrl();
-    load(getPageFromUrl());
+    const page = getPageFromUrl();
+
+    if (page === currentPage) {
+      return;
+    }
+
+    load(page);
   });
 
   /*
@@ -1843,6 +1848,11 @@ const catalog = () => {
    * INIT
    * =========================================================
    */
+
+  window.addEventListener("popstate", () => {
+    hydrateFiltersFromUrl();
+    load(getPageFromUrl());
+  });
 
   const initializeCatalog = async () => {
     bindFilterGroupEvents();

@@ -1,0 +1,52 @@
+name: Phase 49 — Pre-Production SEO & Security Audit
+
+on:
+  push:
+    branches:
+      - phase-49-pre-production-seo-security
+  pull_request:
+    branches:
+      - phase-48-full-frontend-integration
+      - master
+
+jobs:
+  seo-security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+          coverage: none
+
+      - name: Lint Phase 49 audit
+        run: php -l test-phase-49-pre-production-seo-security.php
+
+      - name: Lint SEO and security source files
+        run: |
+          php -l app/Controllers/SeoController.php
+          php -l app/Core/Security.php
+          php -l app/Core/Bootstrap.php
+          php -l app/Middleware/SecurityHeadersMiddleware.php
+          php -l app/Helpers/url.php
+          php -l app/Helpers/escape.php
+          php -l partials/header.php
+          php -l partials/footer.php
+          php -l pages/store/products/show.php
+          php -l pages/store/category/show.php
+          php -l pages/store/brand/show.php
+          php -l pages/store/collection/show.php
+          php -l pages/store/search/index.php
+          php -l pages/store/discover/show.php
+          php -l pages/auth/login.php
+          php -l pages/auth/register.php
+          php -l pages/shop/checkout.php
+          php -l pages/shop/cart.php
+          php -l pages/shop/wishlist.php
+
+      - name: Run Phase 49 read-only contract audit
+        run: php test-phase-49-pre-production-seo-security.php

@@ -11,8 +11,11 @@ const account = (() => {
   const csrf = async () => {
     const response = await fetch(apiUrl("/auth/csrf"), { credentials: "same-origin", headers: { Accept: "application/json" } });
     const payload = await response.json().catch(() => null);
-    if (!response.ok || !payload?.data?.token) throw new Error(payload?.message || "دریافت توکن امنیتی انجام نشد.");
-    return String(payload.data.token);
+    const token = payload?.data?.token;
+    if (!response.ok || typeof token !== "string" || token.length === 0) {
+      throw new Error(payload?.message || "دریافت توکن امنیتی انجام نشد.");
+    }
+    return token;
   };
   const request = async (path, options = {}) => {
     const method = String(options.method || "GET").toUpperCase();
@@ -227,7 +230,91 @@ const account = (() => {
         ${history.length ? history.map((row) => `<p>${escapeHtml(row.status || "وضعیت")} — ${escapeHtml(row.created_at || row.createdAt || "")}</p>`).join("") : "<p>تاریخچه‌ای در پاسخ موجود نیست.</p>"}<a href="index.php">بازگشت به مرجوعی‌ها</a>`;
     }).catch((error) => { root.textContent = error.message; }).finally(() => root.removeAttribute("aria-busy"));
   };
-  const init = () => { initProfile(); initAddresses(); initOrders(); initOrderDetail(); initReturns(); initReturnDetail(); };
+  const initReviews = () => {
+    const list = document.querySelector("[data-account-reviews]");
+    const form = document.querySelector("[data-account-review-form]");
+    if (!list && !form) return;
+    const feedback = form?.querySelector("[data-review-message]");
+
+    const load = async () => {
+      if (!list) return;
+      list.setAttribute("aria-busy", "true");
+      list.textContent = "در حال دریافت دیدگاه‌ها...";
+      try {
+        const payload = await request("/reviews/mine");
+        const items = payload?.data?.items;
+        if (!Array.isArray(items)) throw new Error("ساختار پاسخ دیدگاه‌ها معتبر نیست.");
+        list.replaceChildren();
+        if (!items.length) {
+          list.textContent = "هنوز دیدگاهی ثبت نکرده‌اید.";
+          return;
+        }
+        items.forEach((item) => {
+          const article = document.createElement("article");
+          article.className = "account-review";
+          const title = document.createElement("h2");
+          title.textContent = item.title || "دیدگاه بدون عنوان";
+          const body = document.createElement("p");
+          body.textContent = item.body || "";
+          const rating = document.createElement("p");
+          rating.textContent = `امتیاز: ${Number(item.rating) || 0} از ۵`;
+          const status = document.createElement("p");
+          status.textContent = item.status ? `وضعیت: ${String(item.status)}` : "وضعیت بررسی در پاسخ موجود نیست.";
+          article.append(title, body, rating, status);
+          list.append(article);
+        });
+      } catch (error) {
+        list.replaceChildren();
+        const text = document.createElement("p");
+        text.textContent = error.message || "دریافت دیدگاه‌ها انجام نشد.";
+        const retry = document.createElement("button");
+        retry.type = "button";
+        retry.textContent = "تلاش دوباره";
+        retry.addEventListener("click", load, { once: true });
+        list.append(text, retry);
+        list.setAttribute("role", "alert");
+      } finally {
+        list.removeAttribute("aria-busy");
+      }
+    };
+
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity() || form.dataset.busy === "true") return;
+      const productId = Number(form.elements.productId.value);
+      const rating = Number(form.elements.rating.value);
+      if (!Number.isSafeInteger(productId) || productId <= 0 || !Number.isInteger(rating) || rating < 1 || rating > 5) {
+        message(feedback, "شناسه محصول و امتیاز باید معتبر باشند.", true);
+        return;
+      }
+      busy(form, true);
+      try {
+        const payload = await request("/reviews", {
+          method: "POST",
+          body: JSON.stringify({
+            productId,
+            rating,
+            title: form.elements.title.value.trim() || null,
+            body: form.elements.body.value.trim(),
+          }),
+        });
+        if (!payload?.success || !payload?.data?.review) {
+          throw new Error(payload?.message || "ثبت دیدگاه تأیید نشد.");
+        }
+        message(feedback, payload.message || "دیدگاه ثبت شد و در انتظار بررسی است.");
+        form.reset();
+        await load();
+      } catch (error) {
+        fieldErrors(form, error.payload?.errors || error.payload?.data?.errors);
+        message(feedback, error.message || "ثبت دیدگاه انجام نشد.", true);
+      } finally {
+        busy(form, false);
+      }
+    });
+
+    load();
+  };
+  const init = () => { initProfile(); initAddresses(); initOrders(); initOrderDetail(); initReturns(); initReturnDetail(); initReviews(); };
   return { init };
 })();
 export default account;

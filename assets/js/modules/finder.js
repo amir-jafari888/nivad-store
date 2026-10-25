@@ -80,14 +80,10 @@ const finder = () => {
       },
     });
 
-    const payload = await response.json().catch(() => null);
+    const payload = await response.json().catch(() => ({}));
 
     if (!response.ok || payload?.success === false) {
       throw new Error(payload?.message || "دریافت محصولات ناموفق بود.");
-    }
-
-    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-      throw new Error("پاسخ معتبر برای دریافت محصولات دریافت نشد.");
     }
 
     return Array.isArray(payload?.data?.items) ? payload.data.items : [];

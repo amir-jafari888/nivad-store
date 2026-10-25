@@ -117,25 +117,19 @@ const productDetail = () => {
       credentials: "same-origin",
     });
 
-    const payload = await response.json().catch(() => null);
+    const payload = await response.json().catch(() => ({}));
 
     if (!response.ok || payload?.success === false) {
       const error = new Error(payload?.message || "دریافت اطلاعات ناموفق بود.");
 
       error.status = response.status;
+
       error.payload = payload;
 
       throw error;
     }
 
-    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-      const error = new Error("پاسخ معتبر از سرور دریافت نشد.");
-      error.status = response.status;
-      error.payload = payload;
-      throw error;
-    }
-
-    return payload.data ?? {};
+    return payload?.data ?? {};
   };
 
   const csrf = async () => {
@@ -391,8 +385,11 @@ const productDetail = () => {
       document.dispatchEvent(
         new CustomEvent("product-detail:variant-changed", {
           detail: {
-            productId: Number(product?.id || 0),
-            variantId: Number(selectedVariant?.id || 0),
+            productId: Number(product?.id || productId || 0),
+            variantId: 0,
+            price: null,
+            compareAtPrice: null,
+            stockStatus: "unknown",
           },
         }),
       );
@@ -433,6 +430,18 @@ const productDetail = () => {
     }
 
     syncWishlistAttributes();
+
+    document.dispatchEvent(
+      new CustomEvent("product-detail:variant-changed", {
+        detail: {
+          productId: Number(product?.id || productId || 0),
+          variantId: Number(selectedVariant.id || 0),
+          price: selectedVariant.price ?? null,
+          compareAtPrice: selectedVariant.compare_at_price ?? null,
+          stockStatus: stock?.status || "unknown",
+        },
+      }),
+    );
   };
 
   const renderVariants = () => {

@@ -10,17 +10,17 @@ $seoCanonical = isset($canonicalUrl) && is_string($canonicalUrl) && trim($canoni
 $seoRobots = isset($robots) && is_string($robots) && trim($robots) !== '' ? trim($robots) : 'index,follow';
 $storeUrl = url('/');
 $productsUrl = url('/products');
-$categoriesUrl = url('/products');
+$categoriesUrl = url('/categories');
 $discoverUrl = url('/discover');
 $compatibilityUrl = url('/pages/store/compatibility.php');
 $buyingGuideUrl = url('/pages/content/faq.php');
 $supportUrl = url('/pages/content/contact.php');
+$basePath = app_base_path();
 $aboutUrl = url('/pages/content/about.php');
 $loginUrl = url('/pages/auth/login.php');
 $registerUrl = url('/pages/auth/register.php');
 $cartUrl = url('/pages/shop/cart.php');
 $wishlistUrl = url('/pages/shop/wishlist.php');
-$basePath = app_base_path();
 ?>
 <!doctype html>
 <html lang="fa" dir="rtl">
@@ -35,12 +35,24 @@ $basePath = app_base_path();
     <meta name="robots" content="<?= htmlspecialchars($seoRobots, ENT_QUOTES, 'UTF-8') ?>">
     <?php if ($seoCanonical !== null): ?>
         <link rel="canonical" href="<?= htmlspecialchars($seoCanonical, ENT_QUOTES, 'UTF-8') ?>">
+        <meta property="og:url" content="<?= htmlspecialchars($seoCanonical, ENT_QUOTES, 'UTF-8') ?>">
     <?php endif; ?>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="نیواد">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8') ?>">
+    <?php if ($seoDescription !== ''): ?>
+        <meta property="og:description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES, 'UTF-8') ?>">
+    <?php endif; ?>
+    <meta property="og:image" content="<?= e(asset('images/brand/nivad-mark.png')) ?>">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="<?= htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8') ?>">
+    <?php if ($seoDescription !== ''): ?>
+        <meta name="twitter:description" content="<?= htmlspecialchars($seoDescription, ENT_QUOTES, 'UTF-8') ?>">
+    <?php endif; ?>
+    <script src="<?= e(asset('js/theme-init.js')) ?>"></script>
     <link rel="stylesheet" href="<?= e(asset('css/main.css')) ?>">
     <link rel="stylesheet" href="<?= e('/swiper/swiper-bundle.min.css') ?>">
-    <script>
-        window.NIVAD_BASE_URL = <?= json_encode($basePath, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
-    </script>
 </head>
 
 <body>
@@ -62,7 +74,7 @@ $basePath = app_base_path();
                 <a
                     href="<?= e(url('/')) ?>"
                     class="brand-logo"
-                    aria-label="دیجی‌استور - صفحه اصلی">
+                    aria-label="نیواد - صفحه اصلی">
                     <span class="brand-logo__mark" aria-hidden="true">
                         <img
                             src="<?= e(asset('images/brand/nivad-mark.png')) ?>"
@@ -71,7 +83,7 @@ $basePath = app_base_path();
                             height="42"
                             decoding="async" />
                     </span>
-                    <span class="brand-logo__text">دیجی‌استور</span>
+                    <span class="brand-logo__text">نیواد</span>
                 </a>
             </div>
             <div class="header-search-wrap">
@@ -116,7 +128,7 @@ $basePath = app_base_path();
                     </span>
                     <span class="header-action__label">علاقه‌مندی</span>
                 </button>
-                <button class="header-action profile-button" type="button" aria-label="حساب کاربری" aria-expanded="false" aria-controls="profile-menu" data-profile-toggle>
+                <button class="header-action profile-button" type="button" aria-label="حساب کاربری" aria-expanded="false" aria-controls="profile-menu" aria-haspopup="true" data-profile-toggle>
                     <span class="header-action__icon">
                         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                             <circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
@@ -207,7 +219,7 @@ $basePath = app_base_path();
                 </div>
             </nav>
         </div>
-        <div id="profile-menu" class="profile-menu" data-profile-menu hidden>
+        <div id="profile-menu" class="profile-menu" data-profile-menu aria-label="منوی حساب کاربری" hidden>
             <div class="profile-menu__header">
                 <span class="profile-menu__eyebrow">حساب کاربری</span>
                 <strong>برای ادامه وارد حساب خود شوید</strong>

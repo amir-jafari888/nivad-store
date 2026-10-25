@@ -2618,6 +2618,16 @@ return static function (Router $router): void {
         'storefront.product.complete-setup'
     );
 
+    /*
+     * Smart Commerce — public product bundle suggestions.
+     */
+    $router->get(
+        '/storefront/smart-bundles',
+        [SmartBundleController::class, 'index'],
+        [],
+        'storefront.smart-bundles'
+    );
+
     $router->get(
         '/storefront/products/comparison',
         [ComparisonController::class, 'index'],

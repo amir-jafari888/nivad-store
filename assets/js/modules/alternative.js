@@ -311,7 +311,7 @@ export default function alternative() {
   };
 
   const load = async () => {
-    if (!productId || !apiBase) {
+    if (!Number.isSafeInteger(productId) || productId < 1 || !apiBase) {
       setState("اطلاعات لازم برای پیشنهاد جایگزین در دسترس نیست.");
 
       setRootState("unknown");

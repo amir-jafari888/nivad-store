@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 $pageTitle = 'تکمیل سفارش | نیواد';
 include_once __DIR__ . '/../../partials/header.php';
@@ -16,7 +16,9 @@ include_once __DIR__ . '/../../partials/header.php';
         <h1>تکمیل سفارش</h1>
         <p
             data-checkout-state
-            aria-live="polite">
+            role="status"
+            aria-live="polite"
+            aria-busy="true">
             در حال آماده‌سازی اطلاعات سفارش...
         </p>
     </header>
@@ -37,9 +39,15 @@ include_once __DIR__ . '/../../partials/header.php';
         <section
             class="checkout-page__main"
             aria-label="اطلاعات Checkout">
-            <div data-checkout-address></div>
-            <div data-checkout-shipping></div>
-            <div data-checkout-review></div>
+            <div data-checkout-address
+                aria-live="polite"
+                aria-busy="true"></div>
+            <div data-checkout-shipping
+                aria-live="polite"
+                aria-busy="true"></div>
+            <div data-checkout-review
+                aria-live="polite"
+                aria-busy="true"></div>
             <div
                 data-checkout-error
                 role="alert"
