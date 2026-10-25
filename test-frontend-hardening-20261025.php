@@ -157,6 +157,7 @@ check(
 check(
     'Changed PHP files pass syntax validation',
     hasNoPhpSyntaxErrors($root, 'app/Models/Product.php') &&
+    hasNoPhpSyntaxErrors($root, 'app/Controllers/StorefrontController.php') &&
     hasNoPhpSyntaxErrors($root, 'partials/header.php') &&
     hasNoPhpSyntaxErrors($root, 'pages/store/category/show.php') &&
     hasNoPhpSyntaxErrors($root, 'pages/store/products/show.php') &&
@@ -173,6 +174,7 @@ check(
     hasNoJsSyntaxErrors($root, 'assets/js/modules/product-detail.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/price-stock-watch-ui.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/hero.js') &&
+    hasNoJsSyntaxErrors($root, 'assets/js/modules/catalog.js') &&
     hasNoJsSyntaxErrors($root, 'assets/js/modules/storefront.js')
 );
 
@@ -190,6 +192,24 @@ $headerPhp = readProjectFile($root, 'partials/header.php');
 $themeInit = readProjectFile($root, 'assets/js/theme-init.js');
 $productDetailPhp = readProjectFile($root, 'pages/store/products/show.php');
 $priceStockWatch = readProjectFile($root, 'assets/js/modules/price-stock-watch-ui.js');
+$storefrontController = readProjectFile($root, 'app/Controllers/StorefrontController.php');
+$catalogJs = readProjectFile($root, 'assets/js/modules/catalog.js');
+
+check(
+    'Storefront API exposes active product media',
+    str_contains($storefrontController, 'private function productMediaData') &&
+    str_contains($storefrontController, "'media' => \$this->productMediaData(\$product)") &&
+    str_contains($storefrontController, "\$item->status !== 'active'") &&
+    str_contains($storefrontController, "'is_primary' => \$item->isPrimary")
+);
+
+check(
+    'Homepage and catalog render API product media',
+    str_contains($storefrontJs, 'product.media') &&
+    str_contains($storefrontJs, 'product-card-image__media') &&
+    str_contains($catalogJs, 'item.media') &&
+    str_contains($catalogJs, 'catalog-card__image')
+);
 
 check(
     'Category route and Nivad brand are server-rendered',
