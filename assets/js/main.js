@@ -1,65 +1,67 @@
 import header from "./modules/header.js";
-import hero from "./modules/hero.js";
 import search from "./modules/search.js";
 import wishlist from "./modules/wishlist.js";
 import cart from "./modules/cart.js";
 import cartDrawer from "./modules/cart-drawer.js";
 import backToTopButton from "./modules/backtoup.js";
-import discovery from "./modules/discovery.js";
-import setupBuilder from "./modules/setup-builder.js";
-import compatibility from "./modules/compatibility.js";
-import newProduct from "./modules/new-product.js";
-import storefront from "./modules/storefront.js";
-import catalog from "./modules/catalog.js";
-import productDetail from "./modules/product-detail.js";
-import productMedia from "./modules/product-media.js";
-import customerShop from "./modules/customer-shop.js";
-import account from "./modules/account.js";
-import customerCommerce from "./modules/customer-commerce.js";
-import auth from "./modules/auth.js";
-import finder from "./modules/finder.js";
-import homeCommerce from "./modules/home-commerce.js";
-import collection from "./modules/collection.js";
-import completeYourSetup from "./modules/complete-your-setup.js";
-import comparison from "./modules/comparison.js";
-import alternative from "./modules/alternative.js";
-import budgetOptimizer from "./modules/budget-optimizer.js";
-import smartBundle from "./modules/smart-bundle.js";
-import initializePriceStockWatch from "./modules/price-stock-watch-ui.js";
-import initializeRecentDevice from "./modules/recent-device-ui.js";
-import checkout from "./modules/checkout.js";
-import payment from "./modules/payment.js";
-import initializeNotifications from "./modules/notification.js";
 
 header();
-hero();
 search();
 wishlist();
 cart();
 cartDrawer();
 backToTopButton();
-discovery();
-setupBuilder();
-compatibility();
-newProduct();
-storefront();
-catalog();
-productDetail();
-productMedia();
-alternative();
-completeYourSetup();
-comparison();
-customerShop();
-account();
-customerCommerce();
-auth();
-finder();
-homeCommerce();
-collection();
-budgetOptimizer();
-smartBundle();
-initializePriceStockWatch();
-initializeRecentDevice();
-checkout();
-payment();
-initializeNotifications();
+
+const loadDeferredModules = async () => {
+  const modules = await Promise.all([
+    import("./modules/hero.js"),
+    import("./modules/discovery.js"),
+    import("./modules/setup-builder.js"),
+    import("./modules/compatibility.js"),
+    import("./modules/new-product.js"),
+    import("./modules/storefront.js"),
+    import("./modules/catalog.js"),
+    import("./modules/product-detail.js"),
+    import("./modules/product-media.js"),
+    import("./modules/customer-shop.js"),
+    import("./modules/account.js"),
+    import("./modules/customer-commerce.js"),
+    import("./modules/auth.js"),
+    import("./modules/finder.js"),
+    import("./modules/home-commerce.js"),
+    import("./modules/collection.js"),
+    import("./modules/complete-your-setup.js"),
+    import("./modules/comparison.js"),
+    import("./modules/alternative.js"),
+    import("./modules/budget-optimizer.js"),
+    import("./modules/smart-bundle.js"),
+    import("./modules/price-stock-watch-ui.js"),
+    import("./modules/recent-device-ui.js"),
+    import("./modules/checkout.js"),
+    import("./modules/payment.js"),
+    import("./modules/notification.js"),
+  ]);
+
+  const initializers = modules
+    .map((module) => module.default)
+    .filter((initializer) => typeof initializer === "function");
+
+  initializers.forEach((initializer) => initializer());
+};
+
+const scheduleDeferredModules = () => {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(loadDeferredModules, { timeout: 1200 });
+    return;
+  }
+
+  window.setTimeout(loadDeferredModules, 150);
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", scheduleDeferredModules, {
+    once: true,
+  });
+} else {
+  scheduleDeferredModules();
+}
