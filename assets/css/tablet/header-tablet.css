@@ -1294,3 +1294,95 @@ main {
     max-height: calc(100dvh - 76px);
   }
 }
+
+
+/* Preserve the five-item fixed bottom navigation on tablet as well. */
+@media (min-width: 601px) and (max-width: 1009px) {
+  .mobile-bottom-nav {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: var(--z-bottom-nav);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    min-height: 72px;
+    padding: 6px max(var(--spacing-4), env(safe-area-inset-right))
+      max(6px, env(safe-area-inset-bottom))
+      max(var(--spacing-4), env(safe-area-inset-left));
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-glass);
+    box-shadow: 0 -4px 18px rgba(17, 24, 39, 0.06);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .mobile-bottom-nav__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 58px;
+    gap: 4px;
+    padding: 4px 2px;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-family: var(--font-persian);
+    text-decoration: none;
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .mobile-bottom-nav__item.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+  }
+
+  .mobile-bottom-nav__icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-md);
+    color: currentColor;
+  }
+
+  .mobile-bottom-nav__item.is-active .mobile-bottom-nav__icon {
+    border-radius: var(--radius-circle);
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  .mobile-bottom-nav__icon .icon {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+  }
+
+  .mobile-bottom-nav__label {
+    max-width: 100%;
+    overflow: hidden;
+    color: currentColor;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  main {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  .back-to-top {
+    bottom: calc(72px + env(safe-area-inset-bottom) + 10px);
+  }
+}
