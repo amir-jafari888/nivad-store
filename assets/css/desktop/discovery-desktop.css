@@ -682,3 +682,10 @@
 @media (prefers-reduced-motion: reduce) {
   .home-discovery *, .home-discovery *::before, .home-discovery *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+
+.home-discovery__product-title-link { display: -webkit-box; min-height: 40px; margin: 5px 0; overflow: hidden; color: #12254c; font-size: 12px; font-weight: var(--font-weight-bold); line-height: 1.7; text-decoration: none; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.home-discovery__product-title-link:hover { color: var(--color-primary); }
+.home-discovery__product-title-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 3px; }
+.page-discovery__retry { min-height: 42px; margin-top: var(--spacing-3); padding: var(--spacing-2) var(--spacing-4); border: 1px solid var(--color-primary); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-primary); font: inherit; cursor: pointer; }
+.page-discovery__retry:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
