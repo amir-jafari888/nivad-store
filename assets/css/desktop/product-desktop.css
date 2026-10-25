@@ -47,6 +47,10 @@
     linear-gradient(145deg, var(--color-background), #eef2ff);
 }
 
+.product-card-image__media {
+  object-fit: contain;
+}
+
 .product-image-placeholder {
   position: relative;
   display: flex;

@@ -46,35 +46,64 @@ function initializePriceStockWatch() {
 
   const product = getProductContext(root);
 
-  const priceContext = createPriceDropContext({
-    id: product.id,
-    variantId: product.variantId,
-    price: product.price,
-    previousPrice: product.previousPrice,
-  });
-
-  const stockContext = createStockWatchContext({
-    id: product.id,
-    variantId: product.variantId,
-    stockStatus: product.stockStatus,
-  });
-
   const status = root.querySelector(SELECTORS.status);
 
-  if (priceContext.hasDrop && priceContext.currentPrice !== null) {
-    root.dataset.priceDrop = "true";
-  }
+  const applyWatchState = (context) => {
+    const price = createPriceDropContext({
+      id: context.id,
+      variantId: context.variantId,
+      price: context.price,
+      previousPrice: context.previousPrice,
+    });
+    const stock = createStockWatchContext({
+      id: context.id,
+      variantId: context.variantId,
+      stockStatus: context.stockStatus,
+    });
 
-  if (stockContext.state === STOCK_WATCH_STATES.OUT_OF_STOCK) {
-    root.dataset.backInStock = "available";
-  }
+    delete root.dataset.priceDrop;
+    delete root.dataset.backInStock;
 
-  if (
-    priceContext.state === PRICE_WATCH_STATES.UNKNOWN &&
-    stockContext.state === STOCK_WATCH_STATES.UNKNOWN
-  ) {
-    renderStatus(status, "", "unknown");
-  }
+    if (price.hasDrop && price.currentPrice !== null) {
+      root.dataset.priceDrop = "true";
+    }
+
+    if (stock.state === STOCK_WATCH_STATES.OUT_OF_STOCK) {
+      root.dataset.backInStock = "available";
+    }
+
+    if (
+      price.state === PRICE_WATCH_STATES.UNKNOWN &&
+      stock.state === STOCK_WATCH_STATES.UNKNOWN
+    ) {
+      renderStatus(status, "", "unknown");
+    }
+  };
+
+  applyWatchState(product);
+
+  document.addEventListener("product-detail:variant-changed", (event) => {
+    const detail = event.detail || {};
+    if (String(detail.productId ?? "") !== String(root.dataset.productId ?? "")) {
+      return;
+    }
+
+    const context = {
+      id: detail.productId,
+      variantId: detail.variantId,
+      price: detail.price,
+      previousPrice: detail.compareAtPrice,
+      stockStatus: detail.stockStatus || "unknown",
+    };
+
+    root.dataset.variantId = String(context.variantId ?? "");
+    root.dataset.currentPrice = context.price == null ? "" : String(context.price);
+    root.dataset.previousPrice =
+      context.previousPrice == null ? "" : String(context.previousPrice);
+    root.dataset.stockStatus = context.stockStatus;
+
+    applyWatchState(context);
+  });
 }
 
 export default initializePriceStockWatch;

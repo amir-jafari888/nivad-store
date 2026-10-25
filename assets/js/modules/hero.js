@@ -23,6 +23,21 @@ const hero = () => {
     return;
   }
 
+  slides.forEach((slide, index) => {
+    const image = slide.querySelector("img");
+
+    if (!image) return;
+
+    image.decoding = "async";
+    image.loading = index === 0 ? "eager" : "lazy";
+
+    if (index === 0) {
+      image.fetchPriority = "high";
+    } else {
+      image.fetchPriority = "low";
+    }
+  });
+
   pagination.innerHTML = "";
 
   const paginationItems = slides.map((slide, index) => {

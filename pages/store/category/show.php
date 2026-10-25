@@ -59,7 +59,6 @@ include_once __DIR__ . '/../../../partials/header.php';
 
 <main
     class="catalog-page category-page"
-    data-catalog-page
     data-catalog-page="category"
     data-catalog-page-root
     data-catalog-slug="<?= e($slug) ?>"
