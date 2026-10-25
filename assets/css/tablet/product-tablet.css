@@ -43,6 +43,10 @@
   background: var(--color-background);
 }
 
+.product-card-image__media {
+  object-fit: contain;
+}
+
 .product-image-placeholder {
   display: flex;
   align-items: center;
