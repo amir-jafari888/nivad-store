@@ -173,12 +173,27 @@ const search = () => {
     const payload = await response.json().catch(() => null);
 
     if (!response.ok || !payload || payload.success === false) {
-      throw new Error(
-        payload?.message || `Search suggestions failed (${response.status})`,
-      );
+      const message =
+        payload?.message ||
+        `Search suggestions failed (${response.status})`;
+
+      throw new Error(message);
     }
 
-    return payload.data ?? [];
+    const data = payload.data;
+
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    // Accept the common paginated/search response contract as well.
+    if (data && Array.isArray(data.items)) {
+      return data.items;
+    }
+
+    throw new Error(
+      "Search suggestions API returned an unexpected data shape.",
+    );
   };
 
   const normalizeRemoteSuggestions = (items) => {
@@ -400,10 +415,27 @@ const search = () => {
       }
 
       render(remote.slice(0, 6));
-    } catch {
+    } catch (error) {
       if (currentToken !== requestToken) {
         return;
       }
+
+      console.error("[Nivad search suggestions]", {
+        message: error instanceof Error ? error.message : String(error),
+        endpoint: (() => {
+          try {
+            const url = new URL(
+              `${baseUrl}/api/index.php`,
+              window.location.origin,
+            );
+            url.searchParams.set("path", "/search/suggestions");
+            url.searchParams.set("q", value);
+            return url.toString();
+          } catch {
+            return "Unable to resolve API endpoint";
+          }
+        })(),
+      });
 
       renderError();
     }
