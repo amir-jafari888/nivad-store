@@ -170,10 +170,42 @@ check(
     hasNoJsSyntaxErrors($root, 'assets/js/modules/storefront.js')
 );
 
+preg_match('/<main\\b[^>]*>/s', $categoryPage, $categoryRootMatch);
+$categoryRoot = $categoryRootMatch[0] ?? '';
+
 check(
-    'Known duplicate category data attribute is absent',
-    $categoryPage !== '' &&
-    substr_count($categoryPage, 'data-catalog-page="category"') === 0
+    'Category root has exactly one data-catalog-page attribute',
+    $categoryRoot !== '' &&
+    preg_match_all('/\\bdata-catalog-page(?:\\s*=|\\s|>)/', $categoryRoot) === 1 &&
+    str_contains($categoryRoot, 'data-catalog-page="category"')
+);
+
+$headerPhp = readProjectFile($root, 'partials/header.php');
+$themeInit = readProjectFile($root, 'assets/js/theme-init.js');
+$productDetailPhp = readProjectFile($root, 'pages/store/products/show.php');
+$priceStockWatch = readProjectFile($root, 'assets/js/modules/price-stock-watch-ui.js');
+
+check(
+    'Category route and Nivad brand are server-rendered',
+    str_contains($headerPhp, "$categoriesUrl = url('/categories');") &&
+    str_contains($headerPhp, 'aria-label="نیواد - صفحه اصلی"') &&
+    str_contains($headerPhp, '<span class="brand-logo__text">نیواد</span>') &&
+    !str_contains($headerPhp, 'دیجی‌استور')
+);
+
+check(
+    'Theme preference is applied before stylesheet loading',
+    str_contains($headerPhp, "asset('js/theme-init.js')") &&
+    str_contains($themeInit, 'prefers-color-scheme') &&
+    str_contains($themeInit, 'digital-store-theme')
+);
+
+check(
+    'Product price-watch markup uses object/variant contract',
+    !str_contains($productDetailPhp, "$product['variant_id']") &&
+    !str_contains($productDetailPhp, "$product['compare_at_price']") &&
+    str_contains($productDetailPhp, '$watchVariant->price') &&
+    str_contains($priceStockWatch, 'product-detail:variant-changed')
 );
 
 echo '<br><strong>PASS: ' . $pass . ' | FAIL: ' . $fail . '</strong><br>' . PHP_EOL;
