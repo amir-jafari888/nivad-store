@@ -6,6 +6,11 @@ const header = () => {
   const themeButtons = document.querySelectorAll("[data-theme-toggle]");
 
   const menuIcon = menuButton?.querySelector(".icon-menu");
+  const focusableSelector =
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  let lastMenuTrigger = null;
+  let lastProfileTrigger = null;
 
   const setMenuIcon = (open) => {
     if (!menuIcon) return;
@@ -14,47 +19,73 @@ const header = () => {
       : '<path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>';
   };
 
-  const closeMenu = () => {
+  const restoreFocus = (element) => {
+    if (element && document.contains(element)) {
+      element.focus({ preventScroll: true });
+    }
+  };
+
+  const closeMenu = ({ restore = true } = {}) => {
     if (!menuButton || !mobileMenu) return;
     mobileMenu.classList.remove("is-open");
     menuButton.setAttribute("aria-expanded", "false");
     menuButton.setAttribute("aria-label", "باز کردن منو");
     mobileMenu.setAttribute("aria-hidden", "true");
     setMenuIcon(false);
+
+    if (restore) {
+      restoreFocus(lastMenuTrigger || menuButton);
+      lastMenuTrigger = null;
+    }
   };
 
   const openMenu = () => {
     if (!menuButton || !mobileMenu) return;
+    lastMenuTrigger = menuButton;
     mobileMenu.classList.add("is-open");
     menuButton.setAttribute("aria-expanded", "true");
     menuButton.setAttribute("aria-label", "بستن منو");
     mobileMenu.setAttribute("aria-hidden", "false");
+
+    const firstFocusable = mobileMenu.querySelector(focusableSelector);
+    firstFocusable?.focus({ preventScroll: true });
     setMenuIcon(true);
   };
 
   menuButton?.addEventListener("click", () => {
-    mobileMenu?.classList.contains("is-open") ? closeMenu() : openMenu();
+    mobileMenu?.classList.contains("is-open")
+      ? closeMenu()
+      : openMenu();
   });
 
   mobileMenu
     ?.querySelectorAll("a")
-    .forEach((link) => link.addEventListener("click", closeMenu));
+    .forEach((link) => link.addEventListener("click", () => closeMenu({ restore: false })));
 
-  const closeProfile = () => {
+  const closeProfile = ({ restore = false } = {}) => {
     if (!profileButton || !profileMenu) return;
     profileMenu.hidden = true;
     profileButton.setAttribute("aria-expanded", "false");
+
+    if (restore) {
+      restoreFocus(lastProfileTrigger || profileButton);
+      lastProfileTrigger = null;
+    }
   };
 
   const openProfile = () => {
     if (!profileButton || !profileMenu) return;
+    lastProfileTrigger = profileButton;
     profileMenu.hidden = false;
     profileButton.setAttribute("aria-expanded", "true");
+
+    const firstFocusable = profileMenu.querySelector(focusableSelector);
+    firstFocusable?.focus({ preventScroll: true });
   };
 
   profileButton?.addEventListener("click", (event) => {
     event.stopPropagation();
-    profileMenu?.hidden ? openProfile() : closeProfile();
+    profileMenu?.hidden ? openProfile() : closeProfile({ restore: true });
   });
 
   profileMenu?.addEventListener("click", (event) => event.stopPropagation());
@@ -104,14 +135,41 @@ const header = () => {
 
   setActiveNavigation();
 
-  const getTheme = () => localStorage.getItem("digital-store-theme") || "light";
+  const readStoredTheme = () => {
+    try {
+      const stored = localStorage.getItem("digital-store-theme");
+      return stored === "light" || stored === "dark" ? stored : null;
+    } catch {
+      return null;
+    }
+  };
 
-  const applyTheme = (theme) => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem("digital-store-theme", theme);
+  const getTheme = () => {
+    const stored = readStoredTheme();
+
+    if (stored) {
+      return stored;
+    }
+
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  };
+
+  const applyTheme = (theme, persist = true) => {
+    const normalized = theme === "dark" ? "dark" : "light";
+    document.documentElement.dataset.theme = normalized;
+
+    if (persist) {
+      try {
+        localStorage.setItem("digital-store-theme", normalized);
+      } catch {
+        // Storage can be unavailable in private/restricted browsing contexts.
+      }
+    }
 
     themeButtons.forEach((button) => {
-      const isDark = theme === "dark";
+      const isDark = normalized === "dark";
       button.setAttribute("aria-pressed", String(isDark));
       button.setAttribute(
         "aria-label",
@@ -123,7 +181,7 @@ const header = () => {
     });
   };
 
-  applyTheme(getTheme());
+  applyTheme(getTheme(), Boolean(readStoredTheme()));
 
   themeButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -131,24 +189,63 @@ const header = () => {
     });
   });
 
+  const trapFocus = (container, event) => {
+    if (event.key !== "Tab") return;
+
+    const focusable = [...container.querySelectorAll(focusableSelector)].filter(
+      (element) => !element.hidden,
+    );
+
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   document.addEventListener("click", (event) => {
     if (
       profileMenu &&
       !profileMenu.contains(event.target) &&
       !profileButton?.contains(event.target)
-    )
-      closeProfile();
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMenu();
+    ) {
       closeProfile();
     }
   });
 
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      if (mobileMenu?.classList.contains("is-open")) {
+        closeMenu();
+      }
+
+      if (profileMenu && !profileMenu.hidden) {
+        closeProfile({ restore: true });
+      }
+
+      return;
+    }
+
+    if (mobileMenu?.classList.contains("is-open")) {
+      trapFocus(mobileMenu, event);
+    }
+
+    if (profileMenu && !profileMenu.hidden) {
+      trapFocus(profileMenu, event);
+    }
+  });
+
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 600) closeMenu();
+    if (window.innerWidth > 600 && mobileMenu?.classList.contains("is-open")) {
+      closeMenu();
+    }
   });
 };
 
