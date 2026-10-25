@@ -2,7 +2,8 @@ const storefront = () => {
   const categoriesSection = document.querySelector("[data-categories-section]");
   const categoriesContainer =
     categoriesSection?.querySelector(".categories-list");
-  const productsContainer = document.querySelector("[data-home-products-grid], .product-grid");
+  const productsRoot = document.querySelector("[data-home-products]");
+  const productsContainer = productsRoot?.querySelector("[data-home-products-grid]") || document.querySelector(".product-grid");
 
   if (!categoriesContainer && !productsContainer) {
     return;
@@ -100,7 +101,7 @@ const storefront = () => {
       return;
     }
 
-    const productBase = "/products";
+    const productBase = productsRoot?.dataset.productBase || "/products";
 
     items.forEach((product) => {
       if (!product || !product.slug || !product.name) return;
