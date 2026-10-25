@@ -2,6 +2,7 @@
     class="products section"
     aria-labelledby="products-title"
     data-home-products
+    data-api-base="<?= e(url('/api/index.php')) ?>"
     data-product-base="<?= e(url('/products')) ?>">
 
     <div class="container">
