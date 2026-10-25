@@ -61,6 +61,19 @@ function initializePriceStockWatch() {
 
   const status = root.querySelector(SELECTORS.status);
 
+  document.addEventListener("product-detail:variant-changed", (event) => {
+    const detail = event.detail || {};
+    if (String(detail.productId ?? "") !== String(root.dataset.productId ?? "")) {
+      return;
+    }
+
+    root.dataset.variantId = String(detail.variantId ?? "");
+    root.dataset.currentPrice = detail.price == null ? "" : String(detail.price);
+    root.dataset.previousPrice =
+      detail.compareAtPrice == null ? "" : String(detail.compareAtPrice);
+    root.dataset.stockStatus = String(detail.stockStatus || "unknown");
+  });
+
   if (priceContext.hasDrop && priceContext.currentPrice !== null) {
     root.dataset.priceDrop = "true";
   }
