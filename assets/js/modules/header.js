@@ -165,7 +165,6 @@ const header = () => {
     }
 
     if (mobileMenu?.classList.contains("is-open")) trapFocus(mobileMenu, event);
-    if (profileMenu && !profileMenu.hidden) trapFocus(profileMenu, event);
   });
 
   window.addEventListener("resize", () => {
