@@ -97,10 +97,10 @@ const header = () => {
     if (!links.length) return;
 
     const rawPathname =
-      window.location.pathname.replace(/\\/+$/, "") || "/";
+      window.location.pathname.replace(/\/+$/, "") || "/";
 
     const normalizedBase =
-      document.documentElement.dataset.basePath?.replace(/\\/+$/, "") || "";
+      document.documentElement.dataset.basePath?.replace(/\/+$/, "") || "";
 
     const pathname =
       normalizedBase &&
