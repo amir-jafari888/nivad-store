@@ -1,7 +1,8 @@
 <section
     class="products section"
     aria-labelledby="products-title"
-    data-home-products>
+    data-home-products
+    data-product-base="<?= e(url('/products')) ?>">
 
     <div class="container">
 
