@@ -965,3 +965,192 @@ main {
 .profile-menu[hidden] {
   display: none;
 }
+
+/* ==================================================
+   NIVAD — Landing Header / Tablet
+   ================================================== */
+
+.site-header {
+  background: var(--color-surface);
+  border-bottom: 0;
+  box-shadow: none;
+}
+
+.header-main {
+  grid-template-columns:
+    var(--control-height-md)
+    minmax(0, 1fr)
+    auto;
+  grid-template-rows: 68px 56px;
+  min-height: 124px;
+  column-gap: var(--spacing-3);
+  padding-inline: var(--spacing-5);
+  background: var(--color-surface);
+}
+
+.menu-toggle {
+  width: var(--control-height-md);
+  height: var(--control-height-md);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+}
+
+.menu-toggle:hover,
+.menu-toggle[aria-expanded="true"] {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.brand-logo {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  gap: var(--spacing-2);
+}
+
+.brand-logo:hover {
+  color: var(--color-text);
+}
+
+.brand-logo__mark {
+  width: 36px;
+  height: 36px;
+}
+
+.brand-logo__text {
+  font-size: var(--font-size-lg);
+}
+
+.header-actions {
+  grid-column: 3;
+  grid-row: 1;
+  gap: var(--spacing-1);
+}
+
+.header-action {
+  width: var(--control-height-md);
+  min-width: var(--control-height-md);
+  height: var(--control-height-md);
+  min-height: var(--control-height-md);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+}
+
+.header-action:hover,
+.header-action[aria-expanded="true"] {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.header-action__label,
+.header-action__content,
+.profile-button,
+.theme-button {
+  display: none;
+}
+
+.cart-count,
+.wishlist-count {
+  top: 0;
+  right: 0;
+  min-width: 18px;
+  height: 18px;
+  border-color: var(--color-surface);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 10px;
+}
+
+.header-search-wrap {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  padding-bottom: var(--spacing-2);
+}
+
+.header-search {
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--color-background);
+  box-shadow: none;
+}
+
+.header-search:focus-within {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: var(--focus-ring);
+}
+
+.header-search input {
+  height: 46px;
+  font-size: var(--font-size-sm);
+}
+
+.header-search__submit {
+  flex-basis: 44px;
+  width: 44px;
+  height: 44px;
+  border-inline-start: 0;
+}
+
+.header-search__submit:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.search-suggestions,
+.profile-menu {
+  border-color: var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.search-suggestion-content strong {
+  font-size: var(--font-size-sm);
+}
+
+.search-suggestion-content small {
+  font-size: var(--font-size-xs);
+}
+
+.mobile-menu {
+  border-top: 0;
+  background: var(--color-surface);
+  box-shadow: none;
+}
+
+.mobile-menu.is-open {
+  border-top-width: 0;
+}
+
+.mobile-menu__header {
+  margin: var(--spacing-3) var(--spacing-5);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-background);
+}
+
+.mobile-menu__links li + li {
+  border-top: 0;
+}
+
+.mobile-menu__links a {
+  min-height: var(--control-height-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.mobile-menu__links a:hover,
+.mobile-menu__links a.is-active {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.site-header :is(a, button, input):focus-visible {
+  outline: 2px solid var(--focus-ring-outline-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: none;
+}

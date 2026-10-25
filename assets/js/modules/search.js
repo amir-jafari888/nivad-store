@@ -6,16 +6,16 @@ const search = () => {
 
   if (!form || !input) return;
 
-  const baseUrl = window.NIVAD_BASE_URL || "";
-
   const recentSearchKey = "nivad-recent-searches";
   const maxRecentSearches = 6;
+  const debounceDelay = 180;
 
   const normalize = (value) =>
     String(value ?? "")
       .trim()
       .toLowerCase()
       .replace(/ي/g, "ی")
+      .replace(/ى/g, "ی")
       .replace(/ك/g, "ک");
 
   const escapeHTML = (value) =>
@@ -26,17 +26,42 @@ const search = () => {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
 
-  let requestToken = 0;
+  const resolveBaseUrl = () => {
+    try {
+      const actionUrl = new URL(
+        form.getAttribute("action") || "/search",
+        window.location.href,
+      );
 
-  let suggestionState = "idle";
+      const searchPath = actionUrl.pathname.replace(/\/+$/, "");
 
-  const setSuggestionState = (state) => {
-    suggestionState = state;
+      const suffix = "/search";
 
-    const box = createBox();
+      if (searchPath.endsWith(suffix)) {
+        return searchPath.slice(0, -suffix.length);
+      }
 
-    box.dataset.searchState = state;
+      return "";
+    } catch {
+      return "";
+    }
   };
+
+  const searchActionUrl = new URL(
+    form.getAttribute("action") || "/search",
+    window.location.href,
+  );
+
+  const searchPath = searchActionUrl.pathname.replace(/\/+$/, "");
+
+  const baseUrl = searchPath.endsWith("/search")
+    ? searchPath.slice(0, -"/search".length)
+    : "";
+
+  let requestToken = 0;
+  let debounceTimer = null;
+  let suggestionBox = null;
+  let activeIndex = -1;
 
   const readRecentSearches = () => {
     try {
@@ -70,36 +95,9 @@ const search = () => {
     try {
       window.localStorage.setItem(recentSearchKey, JSON.stringify(next));
     } catch {
-      // Local storage can be unavailable; search still works.
+      // Search remains functional if localStorage is unavailable.
     }
   };
-
-  const request = async (query) => {
-    const url = new URL(`${baseUrl}/api/index.php`, window.location.origin);
-
-    url.searchParams.set("path", "/search/suggestions");
-
-    url.searchParams.set("q", query);
-
-    const response = await fetch(url.toString(), {
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    const payload = await response.json().catch(() => ({}));
-
-    if (!response.ok || payload?.success === false) {
-      throw new Error(payload?.message || "Search suggestion request failed.");
-    }
-
-    return payload?.data ?? [];
-  };
-
-  let suggestionBox = form.querySelector(".search-suggestions");
-
-  let activeIndex = -1;
 
   const createBox = () => {
     if (suggestionBox) {
@@ -109,11 +107,8 @@ const search = () => {
     suggestionBox = document.createElement("div");
 
     suggestionBox.className = "search-suggestions";
-
     suggestionBox.id = "search-suggestions";
-
     suggestionBox.setAttribute("role", "listbox");
-
     suggestionBox.setAttribute("aria-label", "پیشنهادهای جستجو");
 
     form.appendChild(suggestionBox);
@@ -161,57 +156,52 @@ const search = () => {
     input.setAttribute("aria-expanded", "true");
   };
 
+  const request = async (query) => {
+    const apiUrl = new URL(`${baseUrl}/api/index.php`, window.location.origin);
+
+    apiUrl.searchParams.set("path", "/search/suggestions");
+    apiUrl.searchParams.set("q", query);
+
+    const response = await fetch(apiUrl.toString(), {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok || !payload || payload.success === false) {
+      throw new Error(
+        payload?.message || `Search suggestions failed (${response.status})`,
+      );
+    }
+
+    return payload.data ?? [];
+  };
+
   const normalizeRemoteSuggestions = (items) => {
     if (!Array.isArray(items)) {
       return [];
     }
 
     return items
-      .map((item) => ({
-        type: item.type || item.kind || "محصول",
+      .map((item) => {
+        const brand = item?.metadata?.brand?.name || "";
 
-        title: item.title || item.name || item.label || "",
+        const category = item?.metadata?.category?.name || "";
 
-        meta:
-          item.meta ||
-          item.description ||
-          item.brand ||
-          item.metadata?.brand?.name ||
-          "",
+        const meta = brand || category || "محصول";
 
-        value: item.value || item.name || item.title || "",
-      }))
-      .filter((item) => item.value !== "");
-  };
-
-  const renderLoading = () => {
-    setSuggestionState("loading");
-
-    const box = createBox();
-
-    box.innerHTML = `
-    <div class="search-empty">
-      <strong>در حال جستجو...</strong>
-      <small>پیشنهادهای مرتبط در حال دریافت هستند.</small>
-    </div>
-  `;
-
-    open();
-  };
-
-  const renderError = () => {
-    setSuggestionState("error");
-
-    const box = createBox();
-
-    box.innerHTML = `
-    <div class="search-empty">
-      <strong>دریافت پیشنهادها ناموفق بود.</strong>
-      <small>می‌توانید جستجو را مستقیم ارسال کنید.</small>
-    </div>
-  `;
-
-    open();
+        return {
+          type: "محصول",
+          title: item?.title || item?.name || item?.label || "",
+          meta,
+          value: item?.value || item?.name || item?.title || "",
+        };
+      })
+      .filter((item) => String(item.value).trim() !== "");
   };
 
   const iconFor = (type) => {
@@ -221,13 +211,11 @@ const search = () => {
           class="icon"
           viewBox="0 0 24 24"
           aria-hidden="true">
-
           <path
             d="M5 5h14v14H5z"
             fill="none"
             stroke="currentColor"
             stroke-width="1.7" />
-
           <path
             d="M8 9h8M8 12h5M8 15h7"
             fill="none"
@@ -243,14 +231,12 @@ const search = () => {
         class="icon"
         viewBox="0 0 24 24"
         aria-hidden="true">
-
         <path
           d="M6 8h12l1 12H5L6 8Z"
           fill="none"
           stroke="currentColor"
           stroke-width="1.7"
           stroke-linejoin="round" />
-
         <path
           d="M9 8a3 3 0 0 1 6 0"
           fill="none"
@@ -261,10 +247,51 @@ const search = () => {
     `;
   };
 
-  const render = (items, titleText = "نتایج پیشنهادی") => {
-    setSuggestionState(items.length ? "ready" : "empty");
+  const setState = (state) => {
+    const box = createBox();
+    box.dataset.searchState = state;
+  };
+
+  const renderLoading = () => {
+    setState("loading");
 
     const box = createBox();
+
+    box.innerHTML = `
+      <div class="search-empty">
+        <strong>در حال جستجو...</strong>
+        <small>
+          پیشنهادهای مرتبط در حال دریافت هستند.
+        </small>
+      </div>
+    `;
+
+    open();
+  };
+
+  const renderError = () => {
+    setState("error");
+
+    const box = createBox();
+
+    box.innerHTML = `
+      <div class="search-empty">
+        <strong>
+          دریافت پیشنهادها ناموفق بود.
+        </strong>
+        <small>
+          می‌توانید جستجو را مستقیم ارسال کنید.
+        </small>
+      </div>
+    `;
+
+    open();
+  };
+
+  const render = (items, titleText = "نتایج پیشنهادی") => {
+    const box = createBox();
+
+    setState(items.length ? "ready" : "empty");
 
     activeIndex = -1;
 
@@ -382,6 +409,12 @@ const search = () => {
     }
   };
 
+  const scheduleRefresh = () => {
+    window.clearTimeout(debounceTimer);
+
+    debounceTimer = window.setTimeout(refresh, debounceDelay);
+  };
+
   const selectItem = (item) => {
     if (!item) return;
 
@@ -404,9 +437,16 @@ const search = () => {
 
   input.setAttribute("aria-expanded", "false");
 
-  input.addEventListener("focus", refresh);
+  input.addEventListener("focus", () => {
+    if (input.value.trim()) {
+      scheduleRefresh();
+      return;
+    }
 
-  input.addEventListener("input", refresh);
+    refresh();
+  });
+
+  input.addEventListener("input", scheduleRefresh);
 
   input.addEventListener("keydown", (event) => {
     const options = getOptions();
@@ -468,11 +508,23 @@ const search = () => {
 
     saveRecentSearch(value);
 
-    updateCommerceContext({ search: { query: value, returnPath: `${baseUrl}/search?q=${encodeURIComponent(value)}` } });
+    const targetUrl = new URL(
+      form.getAttribute("action") || "/search",
+      window.location.href,
+    );
+
+    targetUrl.searchParams.set("q", value);
+
+    updateCommerceContext({
+      search: {
+        query: value,
+        returnPath: targetUrl.toString(),
+      },
+    });
 
     close();
 
-    window.location.href = `${baseUrl}/search?q=${encodeURIComponent(value)}`;
+    window.location.href = targetUrl.toString();
   });
 
   document.addEventListener("click", (event) => {

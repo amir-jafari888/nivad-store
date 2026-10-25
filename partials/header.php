@@ -23,7 +23,10 @@ $cartUrl = url('/pages/shop/cart.php');
 $wishlistUrl = url('/pages/shop/wishlist.php');
 ?>
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html
+    lang="fa"
+    dir="rtl"
+    data-base-path="<?= e($basePath) ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -336,3 +339,199 @@ $wishlistUrl = url('/pages/shop/wishlist.php');
             </div>
         </nav>
     </header>
+
+    <nav
+        class="mobile-bottom-nav"
+        aria-label="دسترسی سریع موبایل"
+        data-mobile-bottom-nav>
+
+        <a
+            href="<?= e($storeUrl) ?>"
+            class="mobile-bottom-nav__item"
+            data-nav-link="store"
+            aria-label="خانه">
+
+            <span class="mobile-bottom-nav__icon">
+                <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <path
+                        d="M3 10.5 12 3l9 7.5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                    <path
+                        d="M5.5 9.5V21h13V9.5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linejoin="round"></path>
+                </svg>
+            </span>
+
+            <span class="mobile-bottom-nav__label">
+                خانه
+            </span>
+        </a>
+
+        <a
+            href="<?= e($categoriesUrl) ?>"
+            class="mobile-bottom-nav__item"
+            data-nav-link="categories"
+            aria-label="دسته‌بندی‌ها">
+
+            <span class="mobile-bottom-nav__icon">
+                <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <rect
+                        x="4"
+                        y="4"
+                        width="6"
+                        height="6"
+                        rx="1"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"></rect>
+                    <rect
+                        x="14"
+                        y="4"
+                        width="6"
+                        height="6"
+                        rx="1"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"></rect>
+                    <rect
+                        x="4"
+                        y="14"
+                        width="6"
+                        height="6"
+                        rx="1"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"></rect>
+                    <rect
+                        x="14"
+                        y="14"
+                        width="6"
+                        height="6"
+                        rx="1"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"></rect>
+                </svg>
+            </span>
+
+            <span class="mobile-bottom-nav__label">
+                دسته‌ها
+            </span>
+        </a>
+
+        <a
+            href="<?= e($wishlistUrl) ?>"
+            class="mobile-bottom-nav__item"
+            aria-label="علاقه‌مندی‌ها">
+
+            <span class="mobile-bottom-nav__icon">
+                <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linejoin="round"></path>
+                </svg>
+
+                <span
+                    class="mobile-bottom-nav__badge wishlist-count"
+                    aria-label="۰ علاقه‌مندی">
+                    0
+                </span>
+            </span>
+
+            <span class="mobile-bottom-nav__label">
+                علاقه‌مندی
+            </span>
+        </a>
+
+        <a
+            href="<?= e($cartUrl) ?>"
+            class="mobile-bottom-nav__item"
+            aria-label="سبد خرید">
+
+            <span class="mobile-bottom-nav__icon">
+                <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <path
+                        d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                    <circle
+                        cx="10"
+                        cy="20"
+                        r="1"
+                        fill="currentColor"></circle>
+                    <circle
+                        cx="18"
+                        cy="20"
+                        r="1"
+                        fill="currentColor"></circle>
+                </svg>
+
+                <span
+                    class="mobile-bottom-nav__badge cart-count"
+                    aria-label="۰ کالا">
+                    0
+                </span>
+            </span>
+
+            <span class="mobile-bottom-nav__label">
+                سبد خرید
+            </span>
+        </a>
+
+        <a
+            href="<?= e(url('/pages/account/')) ?>"
+            class="mobile-bottom-nav__item"
+            data-nav-link="account"
+            aria-label="حساب کاربری">
+
+            <span class="mobile-bottom-nav__icon">
+                <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <circle
+                        cx="12"
+                        cy="8"
+                        r="3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"></circle>
+                    <path
+                        d="M5 20c.8-3.2 3.1-5 7-5s6.2 1.8 7 5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"></path>
+                </svg>
+            </span>
+
+            <span class="mobile-bottom-nav__label">
+                حساب
+            </span>
+        </a>
+    </nav>

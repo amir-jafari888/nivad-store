@@ -79,7 +79,9 @@ const header = () => {
     lastProfileTrigger = profileButton;
     profileMenu.hidden = false;
     profileButton.setAttribute("aria-expanded", "true");
-    profileMenu.querySelector(focusableSelector)?.focus({ preventScroll: true });
+    profileMenu
+      .querySelector(focusableSelector)
+      ?.focus({ preventScroll: true });
   };
 
   profileButton?.addEventListener("click", (event) => {
@@ -91,14 +93,27 @@ const header = () => {
 
   const setActiveNavigation = () => {
     const links = document.querySelectorAll("[data-nav-link]");
+
     if (!links.length) return;
 
-    const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
+    const rawPathname = window.location.pathname.replace(/\/+$/, "") || "/";
+
+    const normalizedBase =
+      document.documentElement.dataset.basePath?.replace(/\/+$/, "") || "";
+
+    const pathname =
+      normalizedBase && rawPathname.startsWith(normalizedBase)
+        ? rawPathname.slice(normalizedBase.length) || "/"
+        : rawPathname;
+
     let activeKey = "store";
 
     if (pathname === "/products" || pathname.startsWith("/products/")) {
       activeKey = "products";
-    } else if (pathname === "/categories" || pathname.startsWith("/categories/")) {
+    } else if (
+      pathname === "/categories" ||
+      pathname.startsWith("/categories/")
+    ) {
       activeKey = "categories";
     } else if (pathname === "/discover" || pathname.startsWith("/discover/")) {
       activeKey = "discover";
@@ -110,17 +125,39 @@ const header = () => {
       activeKey = "support";
     } else if (pathname === "/pages/content/about.php") {
       activeKey = "about";
+    } else if (
+      pathname === "/pages/account" ||
+      pathname.startsWith("/pages/account/")
+    ) {
+      activeKey = "account";
     }
 
-    links.forEach((link) => {
-      const isActive = link.dataset.navLink === activeKey;
-      link.classList.toggle("is-active", isActive);
+    const applyActiveLink = (activeLink) => {
+      links.forEach((link) => {
+        const isActive = link === activeLink;
 
-      if (isActive) {
-        link.setAttribute("aria-current", "page");
-      } else {
-        link.removeAttribute("aria-current");
-      }
+        link.classList.toggle("is-active", isActive);
+
+        if (isActive) {
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+    };
+
+    // وضعیت اولیه براساس مسیر فعلی صفحه
+    const currentLink = [...links].find(
+      (link) => link.dataset.navLink === activeKey,
+    );
+
+    applyActiveLink(currentLink || null);
+
+    // انتقال فوری دایره آبی هنگام کلیک
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        applyActiveLink(link);
+      });
     });
   };
 
