@@ -92,39 +92,42 @@ const header = () => {
   profileMenu?.addEventListener("click", (event) => event.stopPropagation());
 
   const setActiveNavigation = () => {
-    const links = document.querySelectorAll("[data-nav-link]");
+    const links = [...document.querySelectorAll("[data-nav-link]")];
 
     if (!links.length) return;
 
-    const rawPathname = window.location.pathname.replace(/\/+$/, "") || "/";
+    const rawPathname =
+      window.location.pathname.replace(/\\/+$/, "") || "/";
 
     const normalizedBase =
-      document.documentElement.dataset.basePath?.replace(/\/+$/, "") || "";
+      document.documentElement.dataset.basePath?.replace(/\\/+$/, "") || "";
 
     const pathname =
-      normalizedBase && rawPathname.startsWith(normalizedBase)
+      normalizedBase &&
+      (rawPathname === normalizedBase ||
+        rawPathname.startsWith(`${normalizedBase}/`))
         ? rawPathname.slice(normalizedBase.length) || "/"
         : rawPathname;
 
-    let activeKey = "store";
+    let activeKey = null;
 
-    if (pathname === "/products" || pathname.startsWith("/products/")) {
-      activeKey = "products";
+    if (pathname === "/" || pathname === "/index.php") {
+      activeKey = "home";
     } else if (
       pathname === "/categories" ||
       pathname.startsWith("/categories/")
     ) {
       activeKey = "categories";
-    } else if (pathname === "/discover" || pathname.startsWith("/discover/")) {
-      activeKey = "discover";
-    } else if (pathname === "/pages/store/compatibility.php") {
-      activeKey = "compatibility";
-    } else if (pathname === "/pages/content/faq.php") {
-      activeKey = "guide";
-    } else if (pathname === "/pages/content/contact.php") {
-      activeKey = "support";
-    } else if (pathname === "/pages/content/about.php") {
-      activeKey = "about";
+    } else if (
+      pathname === "/pages/shop/wishlist.php" ||
+      pathname.startsWith("/pages/shop/wishlist/")
+    ) {
+      activeKey = "wishlist";
+    } else if (
+      pathname === "/pages/shop/cart.php" ||
+      pathname.startsWith("/pages/shop/cart/")
+    ) {
+      activeKey = "cart";
     } else if (
       pathname === "/pages/account" ||
       pathname.startsWith("/pages/account/")
@@ -132,32 +135,18 @@ const header = () => {
       activeKey = "account";
     }
 
-    const applyActiveLink = (activeLink) => {
-      links.forEach((link) => {
-        const isActive = link === activeLink;
-
-        link.classList.toggle("is-active", isActive);
-
-        if (isActive) {
-          link.setAttribute("aria-current", "page");
-        } else {
-          link.removeAttribute("aria-current");
-        }
-      });
-    };
-
-    // وضعیت اولیه براساس مسیر فعلی صفحه
-    const currentLink = [...links].find(
-      (link) => link.dataset.navLink === activeKey,
-    );
-
-    applyActiveLink(currentLink || null);
-
-    // انتقال فوری دایره آبی هنگام کلیک
     links.forEach((link) => {
-      link.addEventListener("click", () => {
-        applyActiveLink(link);
-      });
+      const key = link.dataset.navLink;
+      const isHomeAlias = activeKey === "home" && key === "store";
+      const isActive = activeKey !== null && (key === activeKey || isHomeAlias);
+
+      link.classList.toggle("is-active", isActive);
+
+      if (isActive) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
     });
   };
 
