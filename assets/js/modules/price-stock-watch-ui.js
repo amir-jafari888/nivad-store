@@ -46,19 +46,6 @@ function initializePriceStockWatch() {
 
   const product = getProductContext(root);
 
-  const priceContext = createPriceDropContext({
-    id: product.id,
-    variantId: product.variantId,
-    price: product.price,
-    previousPrice: product.previousPrice,
-  });
-
-  const stockContext = createStockWatchContext({
-    id: product.id,
-    variantId: product.variantId,
-    stockStatus: product.stockStatus,
-  });
-
   const status = root.querySelector(SELECTORS.status);
 
   const applyWatchState = (context) => {
