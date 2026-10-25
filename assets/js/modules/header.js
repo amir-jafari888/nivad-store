@@ -90,12 +90,27 @@ const header = () => {
 
   profileMenu?.addEventListener("click", (event) => event.stopPropagation());
 
+  const normalizeBrandAndRoutes = () => {
+    const brand = document.querySelector(".brand-logo");
+    const brandText = brand?.querySelector(".brand-logo__text");
+
+    if (brandText) {
+      brandText.textContent = "نیواد";
+    }
+
+    brand?.setAttribute("aria-label", "نیواد - صفحه اصلی");
+
+    document.querySelectorAll('[data-nav-link="categories"]').forEach((link) => {
+      link.setAttribute("href", `${window.NIVAD_BASE_URL || ""}/categories`);
+    });
+  };
+
+  normalizeBrandAndRoutes();
+
   const setActiveNavigation = () => {
     const links = document.querySelectorAll("[data-nav-link]");
 
-    if (!links.length) {
-      return;
-    }
+    if (!links.length) return;
 
     const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
 
@@ -122,7 +137,6 @@ const header = () => {
 
     links.forEach((link) => {
       const isActive = link.dataset.navLink === activeKey;
-
       link.classList.toggle("is-active", isActive);
 
       if (isActive) {
@@ -147,9 +161,7 @@ const header = () => {
   const getTheme = () => {
     const stored = readStoredTheme();
 
-    if (stored) {
-      return stored;
-    }
+    if (stored) return stored;
 
     return window.matchMedia?.("(prefers-color-scheme: dark)").matches
       ? "dark"
@@ -222,14 +234,8 @@ const header = () => {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      if (mobileMenu?.classList.contains("is-open")) {
-        closeMenu();
-      }
-
-      if (profileMenu && !profileMenu.hidden) {
-        closeProfile({ restore: true });
-      }
-
+      if (mobileMenu?.classList.contains("is-open")) closeMenu();
+      if (profileMenu && !profileMenu.hidden) closeProfile({ restore: true });
       return;
     }
 
