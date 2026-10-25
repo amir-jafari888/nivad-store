@@ -53,9 +53,7 @@ const header = () => {
   };
 
   menuButton?.addEventListener("click", () => {
-    mobileMenu?.classList.contains("is-open")
-      ? closeMenu()
-      : openMenu();
+    mobileMenu?.classList.contains("is-open") ? closeMenu() : openMenu();
   });
 
   mobileMenu
@@ -101,7 +99,17 @@ const header = () => {
     brand?.setAttribute("aria-label", "نیواد - صفحه اصلی");
 
     document.querySelectorAll('[data-nav-link="categories"]').forEach((link) => {
-      link.setAttribute("href", `${window.NIVAD_BASE_URL || ""}/categories`);
+      const currentHref = link.getAttribute("href");
+
+      if (!currentHref) return;
+
+      try {
+        const target = new URL(currentHref, window.location.href);
+        target.pathname = target.pathname.replace(/\/products\/?$/, "/categories");
+        link.setAttribute("href", target.toString());
+      } catch {
+        // Preserve the server-provided route when URL normalization is unavailable.
+      }
     });
   };
 
@@ -109,11 +117,9 @@ const header = () => {
 
   const setActiveNavigation = () => {
     const links = document.querySelectorAll("[data-nav-link]");
-
     if (!links.length) return;
 
     const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
-
     let activeKey = "store";
 
     if (pathname === "/products" || pathname.startsWith("/products/")) {
@@ -160,7 +166,6 @@ const header = () => {
 
   const getTheme = () => {
     const stored = readStoredTheme();
-
     if (stored) return stored;
 
     return window.matchMedia?.("(prefers-color-scheme: dark)").matches
@@ -239,13 +244,8 @@ const header = () => {
       return;
     }
 
-    if (mobileMenu?.classList.contains("is-open")) {
-      trapFocus(mobileMenu, event);
-    }
-
-    if (profileMenu && !profileMenu.hidden) {
-      trapFocus(profileMenu, event);
-    }
+    if (mobileMenu?.classList.contains("is-open")) trapFocus(mobileMenu, event);
+    if (profileMenu && !profileMenu.hidden) trapFocus(profileMenu, event);
   });
 
   window.addEventListener("resize", () => {
