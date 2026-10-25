@@ -13,287 +13,97 @@
   font-display: swap;
 }
 :root {
-  /* ---------------------------------------
-     Colors
-     --------------------------------------- */
+  color-scheme: light;
 
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-
-  --color-background: #f7f8fa;
-  --color-surface: #ffffff;
-
-  --color-text: #111827;
-  --color-text-secondary: #6b7280;
-  --color-text-muted: #9ca3af;
-  --color-text-dark-secondary: #374151;
-
-  --color-border: #e5e7eb;
-  --color-border-light: #f3f4f6;
-  --color-border-hover: #d1d5db;
-
-  --color-primary-light: #eff6ff;
-
-  --color-success: #16a34a;
-  --color-warning: #d97706;
-  --color-error: #dc2626;
-
-  /* ---------------------------------------
-     Semantic Color Aliases
-     --------------------------------------- */
-
-  --primary-color: var(--color-primary);
-  --primary-hover-color: var(--color-primary-hover);
-
+  /* 01. Brand, semantic colors and overlays */
   --background-color: var(--color-background);
-
-  --surface: var(--color-surface);
-  --surface-color: var(--color-surface);
-
-  --text-color: var(--color-text);
-  --text-secondary: var(--color-text-secondary);
-  --text-muted: var(--color-text-muted);
-
   --border-color: var(--color-border);
-  --border-light-color: var(--color-border-light);
   --border-hover-color: var(--color-border-hover);
-
-  --success-color: var(--color-success);
-  --warning-color: var(--color-warning);
+  --border-light-color: var(--color-border-light);
+  --color-background: #f7f8fa;
+  --color-border: #e5e7eb;
+  --color-border-hover: #d1d5db;
+  --color-border-light: #f3f4f6;
+  --color-border-strong: var(--color-border-hover);
+  --color-danger: var(--color-error);
+  --color-danger-surface: rgba(220, 38, 38, 0.08);
+  --color-error: #b91c1c;
+  --color-on-primary: #ffffff;
+  --color-primary: #2563eb;
+  --color-primary-contrast: var(--color-on-primary);
+  --color-primary-dark: #1d4ed8;
+  --color-primary-focus: rgba(37, 99, 235, 0.08);
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #eff6ff;
+  --color-success: #15803d;
+  --color-success-surface: rgba(22, 163, 74, 0.08);
+  --color-surface: #ffffff;
+  --color-surface-alt: var(--color-border-light);
+  --color-surface-glass: rgba(255, 255, 255, 0.96);
+  --color-text: #111827;
+  --color-text-dark-secondary: #374151;
+  --color-text-muted: #6b7280;
+  --color-text-on-primary: var(--color-on-primary);
+  --color-text-secondary: #4b5563;
+  --color-warning: #b45309;
+  --color-warning-surface: rgba(217, 119, 6, 0.10);
   --danger-color: var(--color-error);
   --error-color: var(--color-error);
   --info-color: var(--color-primary);
+  --primary-color: var(--color-primary);
+  --primary-hover-color: var(--color-primary-hover);
+  --selection-background: var(--color-primary);
+  --selection-text: #ffffff;
+  --success-color: var(--color-success);
+  --surface: var(--color-surface);
+  --surface-color: var(--color-surface);
+  --text-color: var(--color-text);
+  --text-muted: var(--color-text-muted);
+  --text-secondary: var(--color-text-secondary);
+  --warning-color: var(--color-warning);
 
-  /* ---------------------------------------
-     Overlay / Transparency
-     --------------------------------------- */
-
-  --color-surface-glass: rgba(255, 255, 255, 0.96);
-  --color-primary-focus: rgba(37, 99, 235, 0.08);
-  --discovery-option-active-text: #ffffff;
-  --discovery-state-background: var(--color-surface);
-  --discovery-state-border: var(--color-border);
-  --discovery-state-error: var(--color-error);
-  --discovery-state-loading: var(--color-text-muted);
-  --discovery-state-empty: var(--color-text-muted);
-  --discovery-control-disabled-opacity: 0.35;
-
-  /* =========================================================
-   Discovery Design Tokens
-   ========================================================= */
-
-  --discovery-option-min-width-desktop: 112px;
-  --discovery-option-min-width-tablet: 108px;
-  --discovery-option-min-width-mobile: 96px;
-
-  --discovery-option-height-desktop: 46px;
-  --discovery-option-height-tablet: 44px;
-  --discovery-option-height-mobile: 40px;
-
-  --discovery-control-size-desktop: 42px;
-  --discovery-control-size-tablet: 38px;
-  --discovery-control-size-mobile: 36px;
-
-  --discovery-image-height-desktop: 250px;
-  --discovery-image-height-tablet: 205px;
-  --discovery-image-height-mobile: 190px;
-
-  --discovery-card-min-height-desktop: 420px;
-  --discovery-card-min-height-tablet: 365px;
-  --discovery-card-min-height-mobile: 340px;
-
-  --discovery-card-scale-inactive: 0.9;
-  --discovery-card-scale-hover: 0.93;
-  --discovery-card-opacity-inactive: 0.62;
-  --discovery-card-opacity-hover: 0.8;
-  --discovery-card-transition-duration: 520ms;
-  --discovery-card-opacity-duration: 420ms;
-
-  --discovery-heading-max-width-desktop: 760px;
-  --discovery-heading-max-width-tablet: 700px;
-  --discovery-description-max-width: 620px;
-
-  --discovery-option-padding-desktop: var(--spacing-5);
-  --discovery-option-padding-tablet: var(--spacing-4);
-  --discovery-option-padding-mobile: var(--spacing-4);
-
-  --discovery-state-min-height-desktop: 72px;
-  --discovery-state-min-height-tablet: 68px;
-  --discovery-state-min-height-mobile: 64px;
-
-  --discovery-option-shadow: var(--shadow-md);
-  --discovery-card-shadow: var(--shadow-sm);
-  --discovery-card-shadow-active: var(--shadow-md);
-
-  --discovery-option-active-text: var(--color-on-primary);
-  --discovery-state-background: var(--color-surface);
-  --discovery-state-border: var(--color-border);
-  --discovery-state-error: var(--color-error);
-  --discovery-state-loading: var(--color-text-muted);
-  --discovery-state-empty: var(--color-text-muted);
-  --discovery-control-disabled-opacity: 0.35;
-
-  /* ---------------------------------------
-     Category / Catalog Experience
-     --------------------------------------- */
-
-  --catalog-max-width: 1200px;
-
-  --catalog-page-padding-block-desktop: var(--spacing-10);
-  --catalog-page-padding-block-tablet: var(--spacing-8);
-  --catalog-page-padding-block-mobile: var(--spacing-7);
-
-  --catalog-page-padding-inline-desktop: var(--spacing-5);
-  --catalog-page-padding-inline-tablet: var(--spacing-5);
-  --catalog-page-padding-inline-mobile: var(--spacing-4);
-
-  --catalog-header-gap: var(--spacing-3);
-  --catalog-content-gap: var(--spacing-6);
-
-  --catalog-grid-columns-desktop: 4;
-  --catalog-grid-columns-tablet: 3;
-  --catalog-grid-columns-mobile: 2;
-
-  --catalog-grid-gap-desktop: var(--spacing-5);
-  --catalog-grid-gap-tablet: var(--spacing-4);
-  --catalog-grid-gap-mobile: var(--spacing-3);
-
-  --catalog-card-radius: var(--radius-lg);
-  --catalog-card-border: var(--color-border);
-  --catalog-card-background: var(--color-surface);
-
-  --catalog-card-media-background: var(--color-border-light);
-  --catalog-card-media-size: 1 / 1;
-
-  --catalog-card-padding-desktop: var(--spacing-5);
-  --catalog-card-padding-tablet: var(--spacing-4);
-  --catalog-card-padding-mobile: var(--spacing-3);
-
-  --catalog-card-title-size: var(--font-size-lg);
-  --catalog-card-description-size: var(--font-size-sm);
-
-  --catalog-state-padding: var(--spacing-8);
-  --catalog-state-min-height: 180px;
-
-  --catalog-transition: var(--transition-normal);
-
-  --state-loading-bg: var(--color-surface-alt);
-  --state-empty-bg: var(--color-surface-alt);
-  --state-error-bg: var(--color-danger-surface);
-  --state-error-text: var(--color-error);
-  --state-success-text: var(--color-success);
-
-  /* ---------------------------------------
-     Typography
-     --------------------------------------- */
-
-  --font-persian: "Vazirmatn", sans-serif;
+  /* 02. Typography */
   --font-latin: "Inter", sans-serif;
-
-  /* ---------------------------------------
-     Font Sizes
-     --------------------------------------- */
-
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-md: 16px;
-  --font-size-lg: 18px;
-
-  --font-size-h3: 24px;
-  --font-size-h2: 36px;
-  --font-size-h1: 48px;
-  --font-size-display: 64px;
-
-  /* ---------------------------------------
-   Catalog Card Experience Tokens
-   --------------------------------------- */
-
-  --catalog-card-badge-radius: var(--radius-full);
-  --catalog-card-badge-padding-inline: var(--spacing-2);
-  --catalog-card-badge-padding-block: var(--spacing-1);
-
-  --catalog-card-price-size: var(--font-size-lg);
-  --catalog-card-price-weight: 700;
-
-  --catalog-card-compare-price-size: var(--font-size-sm);
-
-  --catalog-card-variant-size: var(--font-size-xs);
-
-  --catalog-card-placeholder-size: 3rem;
-
-  --catalog-card-badge-bg: var(--color-primary);
-  --catalog-card-badge-text: var(--color-text-on-primary);
-
-  /* ---------------------------------------
-     Font Weights
-     --------------------------------------- */
-
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
-
-  /* ---------------------------------------
-     Line Heights
-     --------------------------------------- */
-
-  --line-height-tight: 1.2;
-  --line-height-heading: 1.3;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.7;
-
-  /* ---------------------------------------
-   Catalog / Shared UI Completion Tokens
-   --------------------------------------- */
-
-  --color-surface-alt: var(--color-border-light);
-  --color-danger-surface: rgba(220, 38, 38, 0.08);
-
-  --radius-full: 999px;
-  --radius-circle: 50%;
-
-  --spacing-14: 112px;
-  --spacing-16: 128px;
-  --spacing-20: 160px;
-
-  --font-size-xl: 20px;
+  --font-persian: "Vazirmatn", sans-serif;
   --font-size-2xl: 24px;
   --font-size-3xl: 30px;
   --font-size-4xl: 36px;
-
-  --control-height-sm: 36px;
-  --control-size-md: 40px;
-
-  --icon-size-md: 20px;
-  --icon-stroke-width: 1.8;
-
-  --button-min-width: 120px;
-
+  --font-size-display: 64px;
+  --font-size-h1: 48px;
+  --font-size-h2: 36px;
+  --font-size-h3: 24px;
+  --font-size-lg: 18px;
+  --font-size-md: 16px;
+  --font-size-sm: 14px;
+  --font-size-xl: 20px;
+  --font-size-xs: 12px;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
   --letter-spacing-wide: 0.08em;
+  --line-height-heading: 1.3;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+  --line-height-tight: 1.2;
 
-  --content-readable-width: 720px;
-
-  --opacity-disabled: 0.45;
-
-  --motion-fast: 150ms;
-
-  --ease-standard: ease;
-  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
-
-  --motion-hover-translate-y: -2px;
-
-  --focus-ring: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
-  --focus-ring-offset: 2px;
-
-  /* ---------------------------------------
-     Layout
-     --------------------------------------- */
-
+  /* 03. Layout, spacing and responsive grid */
+  --breakpoint-desktop: 1010px;
+  --breakpoint-mobile: 600px;
+  --breakpoint-tablet-max: 1009px;
+  --breakpoint-tablet-min: 601px;
   --container-max-width: 1280px;
-
+  --content-readable-width: 720px;
+  --grid-gap: 24px;
   --spacing-1: 4px;
+  --spacing-10: 64px;
+  --spacing-11: 80px;
+  --spacing-12: 96px;
+  --spacing-14: 112px;
+  --spacing-16: 128px;
   --spacing-2: 8px;
+  --spacing-20: 160px;
   --spacing-3: 12px;
   --spacing-4: 16px;
   --spacing-5: 20px;
@@ -301,354 +111,455 @@
   --spacing-7: 32px;
   --spacing-8: 40px;
   --spacing-9: 48px;
-  --spacing-10: 64px;
-  --spacing-11: 80px;
-  --spacing-12: 96px;
 
-  /* ---------------------------------------
-     Grid
-     --------------------------------------- */
-
-  --grid-gap: 24px;
-
-  /* ---------------------------------------
-     Responsive Breakpoints
-     --------------------------------------- */
-
-  --breakpoint-mobile: 600px;
-  --breakpoint-tablet-min: 601px;
-  --breakpoint-tablet-max: 1009px;
-  --breakpoint-desktop: 1010px;
-
-  /* ---------------------------------------
-     Radius
-     --------------------------------------- */
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
+  /* 04. Shape, shadow, motion and focus */
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-standard: ease;
+  --focus-ring: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+  --focus-ring-color: var(--color-primary-focus);
+  --focus-ring-offset: 2px;
+  --focus-ring-outline-color: var(--color-primary);
+  --focus-ring-width: 3px;
+  --motion-fast: 150ms;
+  --motion-hover-translate-y: -2px;
+  --opacity-disabled: 0.45;
+  --radius-circle: 50%;
+  --radius-full: 999px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-md: 12px;
   --radius-pill: 999px;
-
-  /* ---------------------------------------
-     Shadows
-     --------------------------------------- */
-
-  --shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.04);
-  --shadow-md: 0 4px 12px rgba(17, 24, 39, 0.06);
+  --radius-sm: 8px;
+  --radius-xl: 24px;
   --shadow-lg: 0 10px 30px rgba(17, 24, 39, 0.08);
-
-  /* ---------------------------------------
-     Motion
-     --------------------------------------- */
-
+  --shadow-md: 0 4px 12px rgba(17, 24, 39, 0.06);
+  --shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.04);
+  --transition-back-to-top-opacity: 0.5s ease;
+  --transition-back-to-top-transform: 0.3s ease;
+  --transition-back-to-top-visibility: 0.5s;
   --transition-fast: 150ms ease;
   --transition-normal: 200ms ease;
+  --transition-progress-ring: 0.1s linear;
   --transition-slow: 250ms ease;
 
-  --transition-back-to-top-opacity: 0.5s ease;
-  --transition-back-to-top-visibility: 0.5s;
-  --transition-back-to-top-transform: 0.3s ease;
-  --transition-progress-ring: 0.1s linear;
-
-  /* ---------------------------------------
-     Layers
-     --------------------------------------- */
-
-  --z-header: 1000;
-  --z-dropdown: 1050;
+  /* 05. Controls, buttons, icons and layers */
+  --button-disabled-opacity: 0.45;
+  --button-min-width: 120px;
+  --control-height: var(--control-height-md, 44px);
+  --control-height-lg: 48px;
+  --control-height-md: 44px;
+  --control-height-sm: 36px;
+  --control-size-md: 40px;
+  --icon-size-md: 20px;
+  --icon-stroke-width: 1.8;
   --z-bottom-nav: 1100;
+  --z-dropdown: 1050;
+  --z-header: 1000;
   --z-modal: 2000;
 
-  /* ---------------------------------------
-     Back To Top
-     --------------------------------------- */
+  /* 06. Alternatives */
+  --alternative-accent: var(--color-primary);
+  --alternative-card-background: var(--color-surface);
+  --alternative-card-border: var(--color-border);
+  --alternative-card-hover-shadow: var(--shadow-md);
+  --alternative-card-padding: var(--spacing-5);
+  --alternative-card-radius: var(--radius-xl);
+  --alternative-card-shadow: var(--shadow-sm);
+  --alternative-control-height: var(--control-height-md);
+  --alternative-error: var(--color-error);
+  --alternative-media-background: var(--color-border-light);
+  --alternative-page-gap: var(--spacing-8);
+  --alternative-state-background: var(--color-surface);
+  --alternative-state-border: var(--color-border);
+  --alternative-state-padding: var(--spacing-6);
+  --alternative-success: var(--color-success);
+  --alternative-transition: var(--transition-normal);
+  --alternative-warning: var(--color-warning);
 
-  --back-to-top-offset: 30px;
-  --back-to-top-size: 60px;
-  --back-to-top-hover-offset: -5px;
-  --back-to-top-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  /* 07. Budget optimizer */
+  --budget-optimizer-card-background: var(--color-surface);
+  --budget-optimizer-card-border: var(--color-border);
+  --budget-optimizer-card-radius: var(--radius-lg);
+  --budget-optimizer-grid-gap: var(--spacing-6);
+  --budget-optimizer-input-height: var(--control-height-md);
+  --budget-optimizer-max-width: 1180px;
+  --budget-optimizer-page-padding-desktop: var(--spacing-10);
+  --budget-optimizer-page-padding-mobile: var(--spacing-6);
+  --budget-optimizer-page-padding-tablet: var(--spacing-8);
+  --budget-optimizer-state-radius: var(--radius-md);
+  --budget-optimizer-transition: var(--transition-normal);
 
-  /* ---------------------------------------
-     Progress Ring
-     --------------------------------------- */
-
-  --progress-ring-dash: 170;
-
-  /* ---------------------------------------
-     Selection
-     --------------------------------------- */
-
-  --selection-background: var(--color-primary);
-  --selection-text: #ffffff;
-
-  /* ---------------------------------------
-     Catalog / Discovery UI
-     --------------------------------------- */
-
-  --catalog-max-width: var(--container-max-width);
-  --catalog-page-padding-top: var(--spacing-9);
-  --catalog-page-padding-bottom: var(--spacing-11);
-
-  --catalog-card-radius: var(--radius-lg);
-  --catalog-card-padding: var(--spacing-5);
+  /* 08. Catalog */
+  --catalog-card-background: var(--color-surface);
+  --catalog-card-badge-bg: var(--color-primary);
+  --catalog-card-badge-padding-block: var(--spacing-1);
+  --catalog-card-badge-padding-inline: var(--spacing-2);
+  --catalog-card-badge-radius: var(--radius-full);
+  --catalog-card-badge-text: var(--color-text-on-primary);
+  --catalog-card-border: var(--color-border);
+  --catalog-card-compare-price-size: var(--font-size-sm);
+  --catalog-card-description-size: var(--font-size-sm);
   --catalog-card-media-background: var(--color-background);
-
+  --catalog-card-media-bg: var(--catalog-card-media-background);
+  --catalog-card-media-size: 1 / 1;
+  --catalog-card-padding: var(--spacing-5);
+  --catalog-card-padding-desktop: var(--spacing-5);
+  --catalog-card-padding-mobile: var(--spacing-3);
+  --catalog-card-padding-tablet: var(--spacing-4);
+  --catalog-card-placeholder-size: 3rem;
+  --catalog-card-price-size: var(--font-size-lg);
+  --catalog-card-price-weight: 700;
+  --catalog-card-radius: var(--radius-lg);
+  --catalog-card-title-size: var(--font-size-lg);
+  --catalog-card-transition: var(--transition-normal);
+  --catalog-card-variant-size: var(--font-size-xs);
+  --catalog-content-gap: var(--spacing-6);
+  --catalog-grid-columns-desktop: 4;
+  --catalog-grid-columns-mobile: 2;
+  --catalog-grid-columns-tablet: 3;
+  --catalog-grid-gap-desktop: var(--spacing-5);
+  --catalog-grid-gap-mobile: var(--spacing-3);
+  --catalog-grid-gap-tablet: var(--spacing-4);
+  --catalog-header-gap: var(--spacing-3);
+  --catalog-max-width: var(--container-max-width);
+  --catalog-page-padding-block-desktop: var(--spacing-10);
+  --catalog-page-padding-block-mobile: var(--spacing-7);
+  --catalog-page-padding-block-tablet: var(--spacing-8);
+  --catalog-page-padding-bottom: var(--spacing-11);
+  --catalog-page-padding-inline-desktop: var(--spacing-5);
+  --catalog-page-padding-inline-mobile: var(--spacing-4);
+  --catalog-page-padding-inline-tablet: var(--spacing-5);
+  --catalog-page-padding-top: var(--spacing-9);
+  --catalog-state-min-height: 180px;
   --catalog-state-padding: var(--spacing-8);
+  --catalog-transition: var(--transition-normal);
 
-  --discovery-option-min-height: 44px;
-  --discovery-control-size: 42px;
-
-  --focus-ring-width: 3px;
-  --focus-ring-color: var(--color-primary-focus);
-
-  --button-disabled-opacity: 0.45;
-
-  /* ---------------------------------------
-     Category Catalog Design Tokens
-     --------------------------------------- */
-
-  --category-hero-start: var(--color-surface);
-  --category-hero-end: var(--color-primary-light);
-  --category-hero-accent: var(--color-primary);
-
+  /* 09. Category */
+  --category-card-radius: var(--radius-lg);
   --category-card-surface: var(--color-surface);
+  --category-content-width: var(--container-max-width);
   --category-filter-surface: var(--color-surface);
-
+  --category-grid-gap: var(--grid-gap);
+  --category-hero-accent: var(--color-primary);
+  --category-hero-end: var(--color-primary-light);
+  --category-hero-radius: var(--radius-xl);
+  --category-hero-start: var(--color-surface);
   --category-overlay: rgba(17, 24, 39, 0.42);
 
-  --category-content-width: var(--container-max-width);
-  --category-grid-gap: var(--grid-gap);
+  /* 10. Complete setup */
+  --complete-setup-card-background: var(--color-surface);
+  --complete-setup-card-border: var(--color-border);
+  --complete-setup-card-padding: var(--spacing-5);
+  --complete-setup-card-padding-desktop: var(--spacing-5);
+  --complete-setup-card-padding-mobile: var(--spacing-4);
+  --complete-setup-card-padding-tablet: var(--spacing-4);
+  --complete-setup-card-radius: var(--radius-lg);
+  --complete-setup-card-shadow: var(--shadow-sm);
+  --complete-setup-card-shadow-hover: var(--shadow-md);
+  --complete-setup-compatible-color: var(--color-success);
+  --complete-setup-control-height: 48px;
+  --complete-setup-control-radius: var(--radius-md);
+  --complete-setup-description-color: var(--color-text-secondary);
+  --complete-setup-error-color: var(--color-error);
+  --complete-setup-gap: var(--spacing-5);
+  --complete-setup-gap-desktop: var(--spacing-4);
+  --complete-setup-gap-mobile: var(--spacing-3);
+  --complete-setup-gap-tablet: var(--spacing-3);
+  --complete-setup-label-color: var(--color-primary);
+  --complete-setup-partial-color: var(--color-warning);
+  --complete-setup-price-color: var(--color-text);
+  --complete-setup-selected-background: var(--color-primary-light);
+  --complete-setup-selected-border: var(--color-primary);
+  --complete-setup-title-color: var(--color-text);
+  --complete-setup-transition: var(--transition-normal);
 
-  --category-card-radius: var(--radius-lg);
-  --category-hero-radius: var(--radius-xl);
-
-  --color-on-primary: #ffffff;
-
-  /* -----------------------------------------
-   Product Detail Design Tokens
-   ----------------------------------------- */
-
-  --product-detail-max-width: var(--container-max-width);
-
-  --product-detail-section-gap-desktop: var(--spacing-10);
-  --product-detail-section-gap-tablet: var(--spacing-8);
-  --product-detail-section-gap-mobile: var(--spacing-7);
-
-  --product-detail-main-gap-desktop: var(--spacing-9);
-  --product-detail-main-gap-tablet: var(--spacing-7);
-  --product-detail-main-gap-mobile: var(--spacing-5);
-
-  --product-detail-card-radius: var(--radius-lg);
-  --product-detail-card-border: var(--color-border);
-  --product-detail-card-background: var(--color-surface);
-
-  --product-detail-media-background: var(--color-background);
-
-  --product-detail-thumbnail-size-desktop: 76px;
-  --product-detail-thumbnail-size-tablet: 64px;
-  --product-detail-thumbnail-size-mobile: 56px;
-
-  --product-detail-title-size-desktop: var(--font-size-h2);
-  --product-detail-title-size-tablet: var(--font-size-h3);
-  --product-detail-title-size-mobile: var(--font-size-lg);
-
-  --product-detail-price-size-desktop: var(--font-size-h2);
-  --product-detail-price-size-tablet: var(--font-size-h3);
-  --product-detail-price-size-mobile: var(--font-size-lg);
-
-  --product-detail-button-height-desktop: 50px;
-  --product-detail-button-height-tablet: 48px;
-  --product-detail-button-height-mobile: 46px;
-
-  --product-detail-state-loading: var(--color-text-muted);
-
-  --product-detail-state-error: var(--color-error);
-
-  --product-detail-state-success: var(--color-success);
-
-  --product-detail-state-warning: var(--color-warning);
-
-  --product-detail-section-heading-gap: var(--spacing-2);
-
-  --product-detail-transition: var(--transition-normal);
-
-  /* -----------------------------------------
-   Compatibility Design Tokens
-   ----------------------------------------- */
-
-  --compatibility-card-radius: var(--radius-xl);
-  --compatibility-card-border: var(--color-border);
-  --compatibility-card-background: var(--color-background);
-
-  --compatibility-step-number-size: 42px;
-  --compatibility-step-number-border: var(--color-primary-focus);
-  --compatibility-step-number-background: var(--color-primary-light);
-  --compatibility-step-number-color: var(--color-primary);
-
-  --compatibility-control-height: 56px;
-  --compatibility-control-radius: var(--radius-md);
-
-  --compatibility-submit-background: var(--color-primary);
-  --compatibility-submit-hover: var(--color-primary-hover);
-  --compatibility-submit-color: var(--color-on-primary);
-  --compatibility-submit-shadow: var(--shadow-sm);
-
-  --compatibility-result-background: var(--color-primary-light);
-  --compatibility-result-border: var(--color-primary-focus);
-
-  --compatibility-product-background: var(--color-surface);
-  --compatibility-product-border: var(--color-border);
-
-  --compatibility-state-background: var(--color-surface);
-  --compatibility-state-border: var(--color-border);
-  --compatibility-state-text: var(--color-text-muted);
-  --compatibility-state-error: var(--color-error);
-
-  --compatibility-card-radius: var(--radius-xl);
-  --compatibility-card-border: var(--color-border);
+  /* 11. Compatibility */
   --compatibility-card-background: var(--color-surface);
-  --compatibility-card-shadow: var(--shadow-md);
-
-  --compatibility-step-number-size-desktop: 48px;
-  --compatibility-step-number-size-tablet: 44px;
-  --compatibility-step-number-size-mobile: 40px;
-
-  --compatibility-step-number-border: var(--color-border);
-  --compatibility-step-number-background: var(--color-primary-light);
-  --compatibility-step-number-color: var(--color-primary);
-
-  --compatibility-control-height-desktop: 52px;
-  --compatibility-control-height-tablet: 50px;
-  --compatibility-control-height-mobile: 48px;
-
-  --compatibility-control-radius: var(--radius-md);
-
-  --compatibility-submit-background: var(--color-primary);
-  --compatibility-submit-hover: var(--color-primary-hover);
-  --compatibility-submit-color: var(--color-on-primary);
-  --compatibility-submit-shadow: var(--shadow-sm);
-
-  --compatibility-result-max-width: 1200px;
-  --compatibility-result-border: var(--color-border);
-  --compatibility-result-background: var(--color-surface);
-  --compatibility-result-shadow: var(--shadow-md);
-
-  --compatibility-product-border: var(--color-border);
-  --compatibility-product-radius: var(--radius-md);
-  --compatibility-product-background: var(--color-surface);
-
+  --compatibility-card-border: var(--color-border);
+  --compatibility-card-radius: var(--radius-xl);
+  --compatibility-card-shadow: var(--shadow-sm);
+  --compatibility-compatible-background: var(--color-success-surface);
   --compatibility-compatible-color: var(--color-success);
-  --compatibility-partial-color: var(--color-warning);
-  --compatibility-incompatible-color: var(--color-danger);
-
-  --compatibility-product-image-size-desktop: 64px;
-  --compatibility-product-image-size-tablet: 56px;
-  --compatibility-product-image-size-mobile: 48px;
-
+  --compatibility-control-height: 56px;
+  --compatibility-control-height-desktop: 52px;
+  --compatibility-control-height-mobile: 48px;
+  --compatibility-control-height-tablet: 50px;
+  --compatibility-control-icon-size: 20px;
+  --compatibility-control-padding-inline: var(--spacing-5);
+  --compatibility-control-radius: var(--radius-md);
+  --compatibility-dark-product-background: var(--color-background);
+  --compatibility-divider-margin-inline: var(--spacing-7);
   --compatibility-focus-ring: var(--focus-ring);
-
-  --compatibility-transition: 180ms ease;
-
-  --compatibility-transition: var(--transition-normal);
-
+  --compatibility-heading-copy-max-width: 620px;
+  --compatibility-heading-eyebrow-border: var(--color-primary-focus);
+  --compatibility-heading-eyebrow-height: 30px;
+  --compatibility-heading-eyebrow-padding-inline: var(--spacing-3);
+  --compatibility-heading-max-width: 760px;
+  --compatibility-heading-padding-desktop: 8px;
   --compatibility-heading-padding-mobile: 8px;
   --compatibility-heading-padding-tablet: 8px;
-  --compatibility-heading-padding-desktop: 8px;
-
-  --compatibility-card-shadow: var(--shadow-sm);
-
-  --compatibility-step-gap-mobile: var(--spacing-3);
-  --compatibility-step-gap-tablet: var(--spacing-4);
-  --compatibility-step-gap-desktop: var(--spacing-5);
-
-  --compatibility-step-padding-mobile: var(--spacing-4);
-  --compatibility-step-padding-tablet: var(--spacing-6);
-  --compatibility-step-padding-desktop: var(--spacing-7);
-
-  --compatibility-select-height-mobile: 48px;
-  --compatibility-select-height-tablet: 50px;
-  --compatibility-select-height-desktop: var(--compatibility-control-height);
-
-  --compatibility-select-radius: var(--compatibility-control-radius);
-
-  --compatibility-submit-shadow: var(--shadow-sm);
-  --compatibility-submit-hover-shadow: var(--shadow-md);
-
+  --compatibility-incompatible-background: var(--color-danger-surface);
+  --compatibility-incompatible-color: var(--color-danger);
+  --compatibility-partial-background: var(--color-warning-surface);
+  --compatibility-partial-color: var(--color-warning);
+  --compatibility-product-background: var(--color-surface);
+  --compatibility-product-badge-background: var(--color-surface);
+  --compatibility-product-badge-danger: var(--color-error);
+  --compatibility-product-badge-success: var(--color-success);
+  --compatibility-product-badge-warning: var(--color-warning);
+  --compatibility-product-border: var(--color-border);
+  --compatibility-product-image-size: 82px;
+  --compatibility-product-image-size-desktop: 64px;
+  --compatibility-product-image-size-mobile: 48px;
+  --compatibility-product-image-size-tablet: 56px;
+  --compatibility-product-note-color: var(--color-text-secondary);
+  --compatibility-product-radius: var(--radius-md);
+  --compatibility-product-shadow: var(--shadow-sm);
+  --compatibility-product-type-background: var(--color-primary-light);
+  --compatibility-product-type-color: var(--color-primary);
+  --compatibility-result-background: var(--color-surface);
+  --compatibility-result-border: var(--color-border);
+  --compatibility-result-margin-top: var(--spacing-7);
+  --compatibility-result-max-width: 1200px;
+  --compatibility-result-padding: var(--spacing-6);
   --compatibility-result-radius: var(--radius-xl);
   --compatibility-result-shadow: var(--shadow-sm);
-
-  --compatibility-product-radius: var(--radius-md);
-  --compatibility-product-background: var(--color-surface);
-  --compatibility-product-shadow: var(--shadow-sm);
-
-  --compatibility-product-note-color: var(--color-text-secondary);
-  --compatibility-product-type-color: var(--color-primary);
-
-  --compatibility-product-type-background: var(--color-primary-light);
-
-  --compatibility-dark-product-background: var(--color-background);
-
+  --compatibility-section-padding: var(--spacing-12);
+  --compatibility-select-height-desktop: var(--compatibility-control-height);
+  --compatibility-select-height-mobile: 48px;
+  --compatibility-select-height-tablet: 50px;
+  --compatibility-select-radius: var(--compatibility-control-radius);
+  --compatibility-state-background: var(--color-surface);
+  --compatibility-state-border: var(--color-border);
+  --compatibility-state-error: var(--color-error);
+  --compatibility-state-min-height: 120px;
+  --compatibility-state-padding: var(--spacing-6);
+  --compatibility-state-text: var(--color-text-muted);
+  --compatibility-step-gap: var(--spacing-5);
+  --compatibility-step-gap-desktop: var(--spacing-5);
+  --compatibility-step-gap-mobile: var(--spacing-3);
+  --compatibility-step-gap-tablet: var(--spacing-4);
+  --compatibility-step-number-background: var(--color-primary-light);
+  --compatibility-step-number-border: var(--color-border);
+  --compatibility-step-number-color: var(--color-primary);
+  --compatibility-step-number-size: 42px;
+  --compatibility-step-number-size-desktop: 48px;
+  --compatibility-step-number-size-mobile: 40px;
+  --compatibility-step-number-size-tablet: 44px;
+  --compatibility-step-padding: var(--spacing-7);
+  --compatibility-step-padding-desktop: var(--spacing-7);
+  --compatibility-step-padding-mobile: var(--spacing-4);
+  --compatibility-step-padding-tablet: var(--spacing-6);
+  --compatibility-submit-background: var(--color-primary);
+  --compatibility-submit-color: var(--color-on-primary);
+  --compatibility-submit-hover: var(--color-primary-hover);
+  --compatibility-submit-hover-shadow: var(--shadow-md);
+  --compatibility-submit-min-height: 54px;
+  --compatibility-submit-shadow: var(--shadow-sm);
   --compatibility-transition: var(--transition-normal);
 
-  --control-height-md: 44px;
-  --smart-bundle-max-width: var(--container-max-width);
-  --smart-bundle-padding-mobile: var(--spacing-7) var(--spacing-4);
-  --smart-bundle-padding-tablet: var(--spacing-8) var(--spacing-5);
-  --smart-bundle-padding-desktop: var(--spacing-10) var(--spacing-5);
+  /* 12. Comparison */
+  --comparison-card-background: var(--color-surface);
+  --comparison-card-border: var(--color-border);
+  --comparison-card-padding: var(--spacing-5);
+  --comparison-card-radius: var(--radius-xl);
+  --comparison-card-shadow: var(--shadow-sm);
+  --comparison-control-height: var(--control-height-md);
+  --comparison-highlight: var(--color-primary-light);
+  --comparison-max-width: 1440px;
+  --comparison-negative: var(--color-error);
+  --comparison-page-padding: var(--spacing-4);
+  --comparison-positive: var(--color-success);
+  --comparison-section-gap: var(--spacing-7);
+  --comparison-transition: var(--transition-normal);
+  --comparison-warning: var(--color-warning);
+
+  /* 13. Discovery */
+  --discovery-card-min-height-desktop: 420px;
+  --discovery-card-min-height-mobile: 340px;
+  --discovery-card-min-height-tablet: 365px;
+  --discovery-card-opacity-duration: 420ms;
+  --discovery-card-opacity-hover: 0.8;
+  --discovery-card-opacity-inactive: 0.62;
+  --discovery-card-scale-hover: 0.93;
+  --discovery-card-scale-inactive: 0.9;
+  --discovery-card-shadow: var(--shadow-sm);
+  --discovery-card-shadow-active: var(--shadow-md);
+  --discovery-card-transition-duration: 520ms;
+  --discovery-control-disabled-opacity: 0.35;
+  --discovery-control-size: 42px;
+  --discovery-control-size-desktop: 42px;
+  --discovery-control-size-mobile: 36px;
+  --discovery-control-size-tablet: 38px;
+  --discovery-description-max-width: 620px;
+  --discovery-heading-max-width-desktop: 760px;
+  --discovery-heading-max-width-tablet: 700px;
+  --discovery-image-height-desktop: 250px;
+  --discovery-image-height-mobile: 190px;
+  --discovery-image-height-tablet: 205px;
+  --discovery-option-active-text: var(--color-on-primary);
+  --discovery-option-height-desktop: 46px;
+  --discovery-option-height-mobile: 40px;
+  --discovery-option-height-tablet: 44px;
+  --discovery-option-min-height: 44px;
+  --discovery-option-min-width-desktop: 112px;
+  --discovery-option-min-width-mobile: 96px;
+  --discovery-option-min-width-tablet: 108px;
+  --discovery-option-padding-desktop: var(--spacing-5);
+  --discovery-option-padding-mobile: var(--spacing-4);
+  --discovery-option-padding-tablet: var(--spacing-4);
+  --discovery-option-shadow: var(--shadow-md);
+  --discovery-state-background: var(--color-surface);
+  --discovery-state-border: var(--color-border);
+  --discovery-state-empty: var(--color-text-muted);
+  --discovery-state-error: var(--color-error);
+  --discovery-state-loading: var(--color-text-muted);
+  --discovery-state-min-height-desktop: 72px;
+  --discovery-state-min-height-mobile: 64px;
+  --discovery-state-min-height-tablet: 68px;
+
+  /* 14. Finder */
+  --finder-accent-background: var(--color-primary-light);
+  --finder-accent-border: var(--color-primary);
+  --finder-card-padding: var(--spacing-6);
+  --finder-card-radius: var(--radius-xl);
+  --finder-control-height: 52px;
+  --finder-control-radius: var(--radius-md);
+  --finder-page-max-width: var(--container-max-width);
+  --finder-panel-background: var(--color-surface);
+  --finder-panel-border: var(--color-border);
+  --finder-panel-shadow: var(--shadow-sm);
+  --finder-result-gap: var(--spacing-5);
+  --finder-section-gap: var(--spacing-8);
+  --finder-state-padding: var(--spacing-8);
+  --finder-transition: var(--transition-normal);
+
+  /* 15. Product detail and media */
+  --product-detail-button-height-desktop: 50px;
+  --product-detail-button-height-mobile: 46px;
+  --product-detail-button-height-tablet: 48px;
+  --product-detail-card-background: var(--color-surface);
+  --product-detail-card-border: var(--color-border);
+  --product-detail-card-radius: var(--radius-lg);
+  --product-detail-main-gap-desktop: var(--spacing-9);
+  --product-detail-main-gap-mobile: var(--spacing-5);
+  --product-detail-main-gap-tablet: var(--spacing-7);
+  --product-detail-max-width: var(--container-max-width);
+  --product-detail-media-background: var(--color-background);
+  --product-detail-price-size-desktop: var(--font-size-h2);
+  --product-detail-price-size-mobile: var(--font-size-lg);
+  --product-detail-price-size-tablet: var(--font-size-h3);
+  --product-detail-section-gap-desktop: var(--spacing-10);
+  --product-detail-section-gap-mobile: var(--spacing-7);
+  --product-detail-section-gap-tablet: var(--spacing-8);
+  --product-detail-section-heading-gap: var(--spacing-2);
+  --product-detail-state-error: var(--color-error);
+  --product-detail-state-loading: var(--color-text-muted);
+  --product-detail-state-success: var(--color-success);
+  --product-detail-state-warning: var(--color-warning);
+  --product-detail-thumbnail-size-desktop: 76px;
+  --product-detail-thumbnail-size-mobile: 56px;
+  --product-detail-thumbnail-size-tablet: 64px;
+  --product-detail-title-size-desktop: var(--font-size-h2);
+  --product-detail-title-size-mobile: var(--font-size-lg);
+  --product-detail-title-size-tablet: var(--font-size-h3);
+  --product-detail-transition: var(--transition-normal);
+
+  /* 16. Recommendation */
+  --recommendation-accent: var(--color-primary-light);
+  --recommendation-card-background: var(--color-surface);
+  --recommendation-card-border: var(--color-border);
+  --recommendation-card-padding: var(--spacing-5);
+  --recommendation-card-radius: var(--radius-lg);
+  --recommendation-card-shadow: var(--shadow-sm);
+  --recommendation-control-height: var(--control-height-md);
+  --recommendation-error: var(--color-error);
+  --recommendation-muted: var(--color-text-secondary);
+  --recommendation-page-gap: var(--spacing-4);
+  --recommendation-transition: var(--transition-normal);
+
+  /* 17. Setup builder */
+  --setup-accent-background: var(--color-primary-light);
+  --setup-accent-border: var(--color-primary);
+  --setup-card-padding: var(--spacing-6);
+  --setup-card-radius: var(--radius-xl);
+  --setup-control-height: 52px;
+  --setup-control-radius: var(--radius-md);
+  --setup-error-background: var(--color-danger-surface);
+  --setup-error-text: var(--color-error);
+  --setup-muted-background: var(--color-background);
+  --setup-option-gap: var(--spacing-4);
+  --setup-page-gap: var(--spacing-8);
+  --setup-panel-background: var(--color-surface);
+  --setup-panel-border: var(--color-border);
+  --setup-panel-shadow: var(--shadow-sm);
+  --setup-section-gap: var(--spacing-7);
+  --setup-state-padding: var(--spacing-6);
+  --setup-state-radius: var(--radius-md);
+  --setup-step-gap: var(--spacing-3);
+  --setup-success-background: var(--color-success-surface);
+  --setup-transition: var(--transition-normal);
+  --setup-warning-background: var(--color-warning-surface);
+
+  /* 18. Smart bundle */
+  --smart-bundle-background: var(--color-background);
+  --smart-bundle-border: var(--color-border);
+  --smart-bundle-description-max-width: 720px;
+  --smart-bundle-gap-desktop: var(--spacing-6);
   --smart-bundle-gap-mobile: var(--spacing-4);
   --smart-bundle-gap-tablet: var(--spacing-5);
-  --smart-bundle-gap-desktop: var(--spacing-6);
-  --smart-bundle-background: var(--color-background);
-  --smart-bundle-surface: var(--color-surface);
-  --smart-bundle-border: var(--color-border);
+  --smart-bundle-max-width: var(--container-max-width);
+  --smart-bundle-padding-desktop: var(--spacing-10) var(--spacing-5);
+  --smart-bundle-padding-mobile: var(--spacing-7) var(--spacing-4);
+  --smart-bundle-padding-tablet: var(--spacing-8) var(--spacing-5);
   --smart-bundle-saving-background: var(--color-primary-light);
-  --smart-bundle-description-max-width: 720px;
+  --smart-bundle-surface: var(--color-surface);
+
+  /* 19. Watch action */
+  --watch-action-height: var(--control-height, 44px);
+  --watch-action-radius: var(--radius-md, 10px);
+  --watch-action-transition: var(--transition-fast, 160ms ease);
+
+  /* 20. Wishlist */
+  --wishlist-action-height: var(--control-height);
+  --wishlist-action-radius: var(--radius-md);
+  --wishlist-danger-color: var(--color-error);
+  --wishlist-empty-padding: var(--spacing-8);
+  --wishlist-focus-color: var(--color-primary-focus);
+  --wishlist-item-background: var(--color-surface);
+  --wishlist-item-border: var(--color-border);
+  --wishlist-item-gap: var(--spacing-4);
+  --wishlist-item-hover-background: var(--color-background);
+  --wishlist-item-padding: var(--spacing-5);
+  --wishlist-item-radius: var(--radius-lg);
+  --wishlist-meta-color: var(--color-text-secondary);
+  --wishlist-price-color: var(--color-primary);
+  --wishlist-title-color: var(--color-text);
+  --wishlist-transition: var(--transition-fast);
+
+  /* 21. Other feature tokens */
+  --back-to-top-hover-offset: -5px;
+  --back-to-top-offset: 30px;
+  --back-to-top-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  --back-to-top-size: 60px;
+  --progress-ring-dash: 170;
+  --recent-device-background: var(--color-surface);
+  --recent-device-border: var(--color-border);
+  --recent-device-gap: var(--spacing-3);
+  --recent-device-muted: var(--color-text-secondary);
+  --recent-device-padding: var(--spacing-5);
+  --recent-device-radius: var(--radius-lg);
+  --recent-device-text: var(--color-text);
+  --recent-device-transition: var(--transition-normal);
+  --state-empty-bg: var(--color-surface-alt);
+  --state-error-bg: var(--color-danger-surface);
+  --state-error-text: var(--color-error);
+  --state-loading-bg: var(--color-surface-alt);
+  --state-success-text: var(--color-success);
 }
 
 /* -----------------------------------------
    Wishlist — Phase 26
    ----------------------------------------- */
-
-:root {
-  --wishlist-item-gap: var(--spacing-4);
-  --wishlist-item-padding: var(--spacing-5);
-  --wishlist-item-radius: var(--radius-lg);
-  --wishlist-item-border: var(--color-border);
-  --wishlist-item-background: var(--color-surface);
-  --wishlist-item-hover-background: var(--color-background);
-
-  --wishlist-title-color: var(--color-text);
-  --wishlist-meta-color: var(--color-text-secondary);
-  --wishlist-price-color: var(--color-primary);
-
-  --wishlist-action-height: var(--control-height);
-  --wishlist-action-radius: var(--radius-md);
-
-  --wishlist-danger-color: var(--color-error);
-  --wishlist-focus-color: var(--color-primary-focus);
-
-  --wishlist-empty-padding: var(--spacing-8);
-
-  --wishlist-transition: var(--transition-fast);
-}
-
-:root {
-  --recent-device-radius: var(--radius-lg);
-  --recent-device-padding: var(--spacing-5);
-  --recent-device-gap: var(--spacing-3);
-  --recent-device-transition: var(--transition-normal);
-  --recent-device-border: var(--color-border);
-  --recent-device-background: var(--color-surface);
-  --recent-device-text: var(--color-text);
-  --recent-device-muted: var(--color-text-secondary);
-}
-
-:root {
-  --watch-action-height: var(--control-height, 44px);
-  --watch-action-radius: var(--radius-md, 10px);
-  --watch-action-transition: var(--transition-fast, 160ms ease);
-}
 
 [data-theme="dark"] {
   --watch-action-height: var(--control-height, 44px);
@@ -660,262 +571,23 @@
    Compatibility Engine — Phase 13 Tokens
    ----------------------------------------- */
 
-:root {
-  --compatibility-section-padding: var(--spacing-12);
-  --compatibility-heading-max-width: 760px;
-  --compatibility-heading-copy-max-width: 620px;
-
-  --compatibility-heading-eyebrow-height: 30px;
-  --compatibility-heading-eyebrow-padding-inline: var(--spacing-3);
-  --compatibility-heading-eyebrow-border: var(--color-primary-focus);
-
-  --compatibility-step-gap: var(--spacing-5);
-  --compatibility-step-padding: var(--spacing-7);
-
-  --compatibility-control-padding-inline: var(--spacing-5);
-  --compatibility-control-icon-size: 20px;
-
-  --compatibility-divider-margin-inline: var(--spacing-7);
-
-  --compatibility-submit-min-height: 54px;
-
-  --compatibility-result-padding: var(--spacing-6);
-  --compatibility-result-margin-top: var(--spacing-7);
-
-  --compatibility-product-image-size: 82px;
-
-  --compatibility-product-badge-background: var(--color-surface);
-  --compatibility-product-badge-success: var(--color-success);
-  --compatibility-product-badge-warning: var(--color-warning);
-  --compatibility-product-badge-danger: var(--color-error);
-
-  --compatibility-state-min-height: 120px;
-  --compatibility-state-padding: var(--spacing-6);
-}
-
 /* -----------------------------------------
    Smart Product Finder — Phase 14 Tokens
    ----------------------------------------- */
-
-:root {
-  --finder-page-max-width: var(--container-max-width);
-  --finder-section-gap: var(--spacing-8);
-
-  --finder-card-radius: var(--radius-xl);
-  --finder-card-padding: var(--spacing-6);
-
-  --finder-control-height: 52px;
-  --finder-control-radius: var(--radius-md);
-
-  --finder-panel-background: var(--color-surface);
-  --finder-panel-border: var(--color-border);
-  --finder-panel-shadow: var(--shadow-sm);
-
-  --finder-accent-background: var(--color-primary-light);
-
-  --finder-accent-border: var(--color-primary);
-
-  --finder-result-gap: var(--spacing-5);
-  --finder-state-padding: var(--spacing-8);
-
-  --finder-transition: var(--transition-normal);
-}
 
 /* -----------------------------------------
    Setup Builder Tokens
    ----------------------------------------- */
 
-:root {
-  --setup-page-gap: var(--spacing-8);
-  --setup-card-radius: var(--radius-xl);
-  --setup-card-padding: var(--spacing-6);
-
-  --setup-control-height: 52px;
-  --setup-control-radius: var(--radius-md);
-
-  --setup-panel-background: var(--color-surface);
-  --setup-panel-border: var(--color-border);
-  --setup-panel-shadow: var(--shadow-sm);
-
-  --setup-accent-background: var(--color-primary-light);
-  --setup-accent-border: var(--color-primary);
-
-  --setup-state-padding: var(--spacing-6);
-  --setup-state-radius: var(--radius-md);
-
-  --setup-transition: var(--transition-normal);
-
-  --setup-error-background: var(--color-danger-surface);
-  --setup-error-text: var(--color-error);
-
-  --setup-muted-background: var(--color-background);
-
-  /* -----------------------------------------
-   Setup Builder Design Tokens
-   ----------------------------------------- */
-
-  --setup-page-gap: var(--spacing-8);
-
-  --setup-card-radius: var(--radius-xl);
-  --setup-card-padding: var(--spacing-6);
-
-  --setup-control-height: 52px;
-  --setup-control-radius: var(--radius-md);
-
-  --setup-panel-background: var(--color-surface);
-  --setup-panel-border: var(--color-border);
-  --setup-panel-shadow: var(--shadow-sm);
-
-  --setup-accent-background: var(--color-primary-light);
-  --setup-accent-border: var(--color-primary);
-
-  --setup-state-padding: var(--spacing-6);
-  --setup-state-radius: var(--radius-md);
-
-  --setup-transition: var(--transition-normal);
-
-  --setup-error-background: var(--color-danger-surface);
-  --setup-error-text: var(--color-error);
-
-  --setup-muted-background: var(--color-background);
-}
-
 /* =========================================================
    Complete Your Setup
    ========================================================= */
 
-:root {
-  --complete-setup-card-background: var(--color-surface);
-  --complete-setup-card-border: var(--color-border);
-  --complete-setup-card-radius: var(--radius-lg);
-  --complete-setup-card-padding-desktop: var(--spacing-5);
-  --complete-setup-card-padding-tablet: var(--spacing-4);
-  --complete-setup-card-padding-mobile: var(--spacing-4);
-
-  --complete-setup-card-shadow: var(--shadow-sm);
-  --complete-setup-card-shadow-hover: var(--shadow-md);
-
-  --complete-setup-label-color: var(--color-primary);
-  --complete-setup-title-color: var(--color-text);
-  --complete-setup-description-color: var(--color-text-secondary);
-  --complete-setup-price-color: var(--color-text);
-
-  --complete-setup-gap-desktop: var(--spacing-4);
-  --complete-setup-gap-tablet: var(--spacing-3);
-  --complete-setup-gap-mobile: var(--spacing-3);
-
-  --complete-setup-transition: var(--transition-normal);
-}
-
 /* Phase 18 — Smart Comparison */
-
-:root {
-  --comparison-max-width: 1440px;
-
-  --comparison-page-padding: var(--spacing-4);
-
-  --comparison-section-gap: var(--spacing-7);
-
-  --comparison-card-radius: var(--radius-xl);
-
-  --comparison-card-padding: var(--spacing-5);
-
-  --comparison-card-background: var(--color-surface);
-
-  --comparison-card-border: var(--color-border);
-
-  --comparison-card-shadow: var(--shadow-sm);
-
-  --comparison-highlight: var(--color-primary-light);
-
-  --comparison-positive: var(--color-success);
-
-  --comparison-warning: var(--color-warning);
-
-  --comparison-negative: var(--color-error);
-
-  --comparison-control-height: var(--control-height-md);
-
-  --comparison-transition: var(--transition-normal);
-}
-
-:root {
-  --alternative-page-gap: var(--spacing-8);
-  --alternative-card-radius: var(--radius-xl);
-  --alternative-card-padding: var(--spacing-5);
-  --alternative-card-background: var(--color-surface);
-  --alternative-card-border: var(--color-border);
-  --alternative-card-shadow: var(--shadow-sm);
-  --alternative-card-hover-shadow: var(--shadow-md);
-  --alternative-media-background: var(--color-border-light);
-  --alternative-accent: var(--color-primary);
-  --alternative-success: var(--color-success);
-  --alternative-warning: var(--color-warning);
-  --alternative-error: var(--color-error);
-  --alternative-state-background: var(--color-surface);
-  --alternative-state-border: var(--color-border);
-  --alternative-state-padding: var(--spacing-6);
-  --alternative-control-height: var(--control-height-md);
-  --alternative-transition: var(--transition-normal);
-}
 
 /* =========================================================
    Budget Optimizer
    ========================================================= */
-
-:root {
-  --budget-optimizer-max-width: 1180px;
-
-  --budget-optimizer-page-padding-desktop: var(--spacing-10);
-  --budget-optimizer-page-padding-tablet: var(--spacing-8);
-  --budget-optimizer-page-padding-mobile: var(--spacing-6);
-
-  --budget-optimizer-grid-gap: var(--spacing-6);
-
-  --budget-optimizer-card-radius: var(--radius-lg);
-  --budget-optimizer-card-border: var(--color-border);
-  --budget-optimizer-card-background: var(--color-surface);
-
-  --budget-optimizer-input-height: var(--control-height-md);
-
-  --budget-optimizer-state-radius: var(--radius-md);
-
-  --budget-optimizer-transition: var(--transition-normal);
-}
-
-:root[data-theme="dark"] {
-  --alternative-card-background: var(--color-surface);
-
-  --alternative-card-border: var(--color-border);
-
-  --alternative-media-background: var(--color-border-light);
-
-  --alternative-state-background: var(--color-surface);
-
-  --alternative-state-border: var(--color-border);
-}
-
-:root {
-  --complete-setup-gap: var(--spacing-5);
-  --complete-setup-card-padding: var(--spacing-5);
-  --complete-setup-card-radius: var(--radius-lg);
-  --complete-setup-card-border: var(--color-border);
-  --complete-setup-card-background: var(--color-surface);
-  --complete-setup-card-shadow: var(--shadow-sm);
-  --complete-setup-card-shadow-hover: var(--shadow-md);
-
-  --complete-setup-control-height: 48px;
-  --complete-setup-control-radius: var(--radius-md);
-
-  --complete-setup-selected-border: var(--color-primary);
-  --complete-setup-selected-background: var(--color-primary-light);
-
-  --complete-setup-compatible-color: var(--color-success);
-  --complete-setup-partial-color: var(--color-warning);
-  --complete-setup-error-color: var(--color-error);
-
-  --complete-setup-transition: var(--transition-normal);
-}
 
 [data-theme="dark"] {
   --complete-setup-card-background: var(--color-surface);
@@ -930,55 +602,6 @@
   --complete-setup-title-color: var(--color-text);
   --complete-setup-description-color: var(--color-text-secondary);
   --complete-setup-price-color: var(--color-text);
-}
-
-:root {
-  --setup-page-gap: var(--spacing-8);
-  --setup-card-radius: var(--radius-xl);
-  --setup-card-padding: var(--spacing-6);
-  --setup-control-height: 52px;
-  --setup-control-radius: var(--radius-md);
-
-  --setup-panel-background: var(--color-surface);
-  --setup-panel-border: var(--color-border);
-  --setup-panel-shadow: var(--shadow-sm);
-
-  --setup-accent-background: var(--color-primary-light);
-  --setup-accent-border: var(--color-primary);
-
-  --setup-state-padding: var(--spacing-6);
-  --setup-state-radius: var(--radius-md);
-
-  --setup-transition: var(--transition-normal);
-
-  --setup-error-background: var(--color-danger-surface);
-  --setup-error-text: var(--color-error);
-
-  --setup-muted-background: var(--color-background);
-
-  --setup-success-background: var(--color-success-surface);
-  --setup-warning-background: var(--color-warning-surface);
-
-  --setup-step-gap: var(--spacing-3);
-  --setup-option-gap: var(--spacing-4);
-  --setup-section-gap: var(--spacing-7);
-}
-
-:root[data-theme="dark"] {
-  --setup-panel-background: var(--color-surface);
-  --setup-panel-border: var(--color-border);
-
-  --setup-accent-background: var(--color-primary-light);
-
-  --setup-muted-background: var(--color-background);
-}
-
-:root[data-theme="dark"] {
-  --finder-panel-background: var(--color-surface);
-
-  --finder-panel-border: var(--color-border);
-
-  --finder-accent-background: var(--color-primary-light);
 }
 
 /* -----------------------------------------
@@ -1154,8 +777,8 @@ table {
    ----------------------------------------- */
 
 :focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--focus-ring-outline-color);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* -----------------------------------------
@@ -1344,72 +967,83 @@ table {
    ----------------------------------------- */
 
 :root[data-theme="dark"] {
-  --color-primary: #60a5fa;
-  --color-primary-hover: #93c5fd;
+  color-scheme: dark;
 
-  --color-background: #0b1120;
-  --color-surface: #111827;
+  /* 01. Brand, semantic colors and overlays */
+  --color-background: #20252c;
+  --color-border: #3d444d;
+  --color-border-hover: #545d68;
+  --color-border-light: #30363d;
+  --color-danger: var(--color-error);
+  --color-danger-surface: rgba(255, 123, 114, 0.14);
+  --color-error: #ff7b72;
+  --color-on-primary: #1c2128;
+  --color-primary: #6cb6ff;
+  --color-primary-contrast: var(--color-on-primary);
+  --color-primary-dark: #3d5a75;
+  --color-primary-focus: rgba(108, 182, 255, 0.24);
+  --color-primary-hover: #91cbff;
+  --color-primary-light: rgba(108, 182, 255, 0.14);
+  --color-success: #3fb950;
+  --color-success-surface: rgba(63, 185, 80, 0.14);
+  --color-surface: #272d35;
+  --color-surface-alt: #242a32;
+  --color-surface-glass: rgba(39, 45, 53, 0.96);
+  --color-text: #e6edf3;
+  --color-text-dark-secondary: #c9d1d9;
+  --color-text-muted: #8b949e;
+  --color-text-on-primary: var(--color-on-primary);
+  --color-text-secondary: #b1bac4;
+  --color-warning: #d29922;
+  --color-warning-surface: rgba(210, 153, 34, 0.14);
 
-  --color-text: #f9fafb;
-  --color-text-secondary: #9ca3af;
-  --color-text-muted: #6b7280;
-  --color-text-dark-secondary: #d1d5db;
+  /* 04. Shape, shadow, motion and focus */
+  --focus-ring-outline-color: var(--color-primary);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.28);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.20);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.14);
 
-  --color-border: #1f2937;
-  --color-border-light: #172033;
-  --color-border-hover: #374151;
+  /* 06. Alternatives */
+  --alternative-card-background: var(--color-surface);
+  --alternative-card-border: var(--color-border);
+  --alternative-media-background: var(--color-surface-alt);
+  --alternative-state-background: var(--color-surface);
+  --alternative-state-border: var(--color-border);
 
-  --color-primary-light: rgba(96, 165, 250, 0.1);
-  --color-primary-focus: rgba(96, 165, 250, 0.12);
-  --discovery-option-active-text: #0b1120;
+  /* 09. Category */
+  --category-hero-end: var(--color-primary-light);
+  --category-hero-start: var(--color-surface);
+  --category-overlay: rgba(13, 17, 23, 0.62);
+
+  /* 10. Complete setup */
+  --complete-setup-selected-background: var(--color-primary-light);
+
+  /* 11. Compatibility */
+  --compatibility-card-background: var(--color-surface);
+  --compatibility-result-background: var(--color-surface);
+  --compatibility-result-border: var(--color-border);
+
+  /* 13. Discovery */
+  --discovery-option-active-text: var(--color-on-primary);
   --discovery-state-background: var(--color-surface);
   --discovery-state-border: var(--color-border);
+  --discovery-state-empty: var(--color-text-muted);
   --discovery-state-error: var(--color-error);
   --discovery-state-loading: var(--color-text-muted);
-  --discovery-state-empty: var(--color-text-muted);
 
-  --color-surface-glass: rgba(17, 24, 39, 0.96);
+  /* 14. Finder */
+  --finder-accent-background: var(--color-primary-light);
+  --finder-panel-background: var(--color-surface);
+  --finder-panel-border: var(--color-border);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.35);
-
-  /* Semantic aliases automatically follow
-     the theme because they reference the
-     base color variables. */
-
-  --category-hero-start: var(--color-surface);
-  --category-hero-end: var(--color-primary-light);
-  --category-overlay: rgba(0, 0, 0, 0.62);
-
-  --color-surface-alt: #172033;
-  --color-danger-surface: rgba(248, 113, 113, 0.1);
-
-  --setup-panel-background: var(--color-surface);
-  --setup-panel-border: var(--color-border);
-
+  /* 17. Setup builder */
   --setup-accent-background: var(--color-primary-light);
   --setup-accent-border: var(--color-primary);
-
   --setup-error-background: var(--color-danger-surface);
   --setup-error-text: var(--color-error);
-
   --setup-muted-background: var(--color-background);
-
-  /* -----------------------------------------
-   Setup Builder — Dark / Night
-   ----------------------------------------- */
-
   --setup-panel-background: var(--color-surface);
   --setup-panel-border: var(--color-border);
-
-  --setup-accent-background: var(--color-primary-light);
-  --setup-accent-border: var(--color-primary);
-
-  --setup-error-background: var(--color-danger-surface);
-  --setup-error-text: var(--color-error);
-
-  --setup-muted-background: var(--color-background);
 }
 
 /* -----------------------------------------
