@@ -260,21 +260,9 @@
                     class="swiper-wrapper"
                     data-discovery-results-wrapper>
 
-                    <article
-                        class="page-discovery__product swiper-slide">
-
-                        <div class="page-discovery__product-media">
-                            <span>65W</span>
-                        </div>
-
-                        <div class="page-discovery__product-body">
-                            <span>ANKER</span>
-                            <h3>شارژر سریع 65W</h3>
-                            <p>USB-C · GaN · PD</p>
-                            <strong>۲,۴۹۰,۰۰۰ تومان</strong>
-                        </div>
-
-                    </article>
+                    <div class="page-discovery__empty" role="status">
+                        در حال دریافت پیشنهادهای واقعی…
+                    </div>
 
                 </div>
 
