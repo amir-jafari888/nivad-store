@@ -187,7 +187,7 @@ const storefront = () => {
 
       if (imageLink && mediaUrl) {
         const image = document.createElement("img");
-        image.className = "product-card-image__media";
+        image.className = "product-image-placeholder product-card-image__media";
         image.src = mediaUrl;
         image.alt = String(primaryMedia?.alt || product.name || "");
         image.loading = "lazy";
