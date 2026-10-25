@@ -1129,3 +1129,36 @@ main {
   }
 }
 
+/* ==================================================
+   NIVAD — Desktop Header Layout + Bottom Navigation
+   ================================================== */
+@media screen and (min-width: 1010px) {
+  .header-main {
+    direction: rtl;
+    grid-template-columns: auto minmax(500px, min(42%, 600px)) auto;
+    column-gap: var(--spacing-8);
+    justify-content: space-between;
+  }
+
+  .header-main__start {
+    display: contents;
+  }
+
+  .header-search-wrap {
+    width: 100%;
+    min-width: 0;
+    max-width: 600px;
+    justify-self: center;
+  }
+
+  .header-actions {
+    justify-self: start;
+    justify-content: flex-start;
+    gap: var(--spacing-2);
+    margin-inline-start: 0;
+  }
+
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
