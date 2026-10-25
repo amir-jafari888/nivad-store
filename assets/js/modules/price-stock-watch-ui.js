@@ -61,33 +61,62 @@ function initializePriceStockWatch() {
 
   const status = root.querySelector(SELECTORS.status);
 
+  const applyWatchState = (context) => {
+    const price = createPriceDropContext({
+      id: context.id,
+      variantId: context.variantId,
+      price: context.price,
+      previousPrice: context.previousPrice,
+    });
+    const stock = createStockWatchContext({
+      id: context.id,
+      variantId: context.variantId,
+      stockStatus: context.stockStatus,
+    });
+
+    delete root.dataset.priceDrop;
+    delete root.dataset.backInStock;
+
+    if (price.hasDrop && price.currentPrice !== null) {
+      root.dataset.priceDrop = "true";
+    }
+
+    if (stock.state === STOCK_WATCH_STATES.OUT_OF_STOCK) {
+      root.dataset.backInStock = "available";
+    }
+
+    if (
+      price.state === PRICE_WATCH_STATES.UNKNOWN &&
+      stock.state === STOCK_WATCH_STATES.UNKNOWN
+    ) {
+      renderStatus(status, "", "unknown");
+    }
+  };
+
+  applyWatchState(product);
+
   document.addEventListener("product-detail:variant-changed", (event) => {
     const detail = event.detail || {};
     if (String(detail.productId ?? "") !== String(root.dataset.productId ?? "")) {
       return;
     }
 
-    root.dataset.variantId = String(detail.variantId ?? "");
-    root.dataset.currentPrice = detail.price == null ? "" : String(detail.price);
+    const context = {
+      id: detail.productId,
+      variantId: detail.variantId,
+      price: detail.price,
+      previousPrice: detail.compareAtPrice,
+      stockStatus: detail.stockStatus || "unknown",
+    };
+
+    root.dataset.variantId = String(context.variantId ?? "");
+    root.dataset.currentPrice = context.price == null ? "" : String(context.price);
     root.dataset.previousPrice =
-      detail.compareAtPrice == null ? "" : String(detail.compareAtPrice);
-    root.dataset.stockStatus = String(detail.stockStatus || "unknown");
+      context.previousPrice == null ? "" : String(context.previousPrice);
+    root.dataset.stockStatus = context.stockStatus;
+
+    applyWatchState(context);
   });
-
-  if (priceContext.hasDrop && priceContext.currentPrice !== null) {
-    root.dataset.priceDrop = "true";
-  }
-
-  if (stockContext.state === STOCK_WATCH_STATES.OUT_OF_STOCK) {
-    root.dataset.backInStock = "available";
-  }
-
-  if (
-    priceContext.state === PRICE_WATCH_STATES.UNKNOWN &&
-    stockContext.state === STOCK_WATCH_STATES.UNKNOWN
-  ) {
-    renderStatus(status, "", "unknown");
-  }
 }
 
 export default initializePriceStockWatch;
