@@ -10,7 +10,7 @@ const storefront = () => {
   }
 
   const api = async (path, options = {}) => {
-    const apiBase = categoriesSection?.dataset.apiBase || "/api/index.php";
+    const apiBase = categoriesSection?.dataset.apiBase || productsRoot?.dataset.apiBase || "/api/index.php";
     const apiUrl = new URL(apiBase, window.location.origin);
 
     apiUrl.searchParams.set("path", path);
@@ -76,6 +76,14 @@ const storefront = () => {
     });
   };
 
+  const escapeHTML = (value) =>
+    String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
   const formatPrice = (price, currency = "IRR") => {
     if (price === null || price === undefined) return "قیمت نامشخص";
 
@@ -110,6 +118,11 @@ const storefront = () => {
       article.className = "product-card";
 
       const variant = product.variant ?? null;
+      const mediaItems = Array.isArray(product.media)
+        ? product.media.filter((item) => item && item.url)
+        : [];
+      const primaryMedia =
+        mediaItems.find((item) => item.is_primary) || mediaItems[0] || null;
       const detailUrl =
         `${productBase.replace(/\/$/, "")}/` +
         encodeURIComponent(product.slug);
@@ -168,6 +181,19 @@ const storefront = () => {
           </div>
         </div>
       `;
+
+      const imageLink = article.querySelector(".product-image-link");
+      const mediaUrl = primaryMedia?.thumbnail_url || primaryMedia?.url || "";
+
+      if (imageLink && mediaUrl) {
+        const image = document.createElement("img");
+        image.className = "product-card-image__media";
+        image.src = mediaUrl;
+        image.alt = String(primaryMedia?.alt || product.name || "");
+        image.loading = "lazy";
+        image.decoding = "async";
+        imageLink.querySelector(".product-image-placeholder")?.replaceWith(image);
+      }
 
       const productName = article.querySelector(".product-name a");
       const productSpec = article.querySelector(".product-spec");
