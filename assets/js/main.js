@@ -15,43 +15,72 @@ cartDrawer();
 backToTopButton();
 
 const deferredModuleManifest = [
-  { path: "./modules/hero.js", selectors: ["[data-hero]"] },
-  { path: "./modules/discovery.js", selectors: ["[data-discovery]"] },
-  { path: "./modules/setup-builder.js", selectors: ["[data-setup-builder]"] },
-  { path: "./modules/compatibility.js", selectors: ["[data-compatibility]"] },
-  { path: "./modules/new-product.js", selectors: ["[data-new-product]"] },
+  { path: "./modules/hero.js", aliases: ["hero"] },
+  { path: "./modules/discovery.js", aliases: ["discovery"] },
+  { path: "./modules/setup-builder.js", aliases: ["setup-builder"] },
+  { path: "./modules/compatibility.js", aliases: ["compatibility"] },
+  { path: "./modules/new-product.js", aliases: ["new-product"] },
   {
     path: "./modules/storefront.js",
     selectors: ["[data-home-products]", "[data-categories-section]"],
   },
-  { path: "./modules/catalog.js", selectors: ["[data-catalog-page]"] },
-  { path: "./modules/product-detail.js", selectors: ["[data-product-detail]"] },
-  { path: "./modules/product-media.js", selectors: ["[data-product-media]"] },
-  { path: "./modules/customer-shop.js", selectors: ["[data-customer-shop]"] },
-  { path: "./modules/account.js", selectors: ["[data-account]"] },
-  { path: "./modules/customer-commerce.js", selectors: ["[data-customer-commerce]"] },
-  { path: "./modules/auth.js", selectors: ["[data-auth]"] },
-  { path: "./modules/finder.js", selectors: ["[data-finder]"] },
-  { path: "./modules/home-commerce.js", selectors: ["[data-home-commerce]"] },
-  { path: "./modules/collection.js", selectors: ["[data-collection]"] },
-  { path: "./modules/complete-your-setup.js", selectors: ["[data-complete-setup]"] },
-  { path: "./modules/comparison.js", selectors: ["[data-comparison]"] },
-  { path: "./modules/alternative.js", selectors: ["[data-alternative]"] },
-  { path: "./modules/budget-optimizer.js", selectors: ["[data-budget-optimizer]"] },
-  { path: "./modules/smart-bundle.js", selectors: ["[data-smart-bundle]"] },
-  { path: "./modules/price-stock-watch-ui.js", selectors: ["[data-price-stock-watch]"] },
-  { path: "./modules/recent-device-ui.js", selectors: ["[data-recent-device]"] },
-  { path: "./modules/checkout.js", selectors: ["[data-checkout]"] },
-  { path: "./modules/payment.js", selectors: ["[data-payment]"] },
-  { path: "./modules/notification.js", selectors: ["[data-notification]"] },
+  { path: "./modules/catalog.js", aliases: ["catalog-page"] },
+  { path: "./modules/product-detail.js", aliases: ["product-detail"] },
+  { path: "./modules/product-media.js", aliases: ["product-media"] },
+  { path: "./modules/customer-shop.js", aliases: ["customer-shop"] },
+  { path: "./modules/account.js", aliases: ["account"] },
+  { path: "./modules/customer-commerce.js", aliases: ["customer-commerce"] },
+  { path: "./modules/auth.js", aliases: ["auth"] },
+  { path: "./modules/finder.js", aliases: ["finder"] },
+  {
+    path: "./modules/home-commerce.js",
+    selectors: ["[data-home-collections]", "[data-home-sliders]"],
+  },
+  { path: "./modules/collection.js", aliases: ["collection"] },
+  { path: "./modules/complete-your-setup.js", aliases: ["complete-setup"] },
+  { path: "./modules/comparison.js", aliases: ["comparison"] },
+  { path: "./modules/alternative.js", aliases: ["alternative"] },
+  { path: "./modules/budget-optimizer.js", aliases: ["budget-optimizer"] },
+  { path: "./modules/smart-bundle.js", aliases: ["smart-bundle"] },
+  { path: "./modules/price-stock-watch-ui.js", aliases: ["price-stock-watch"] },
+  { path: "./modules/recent-device-ui.js", aliases: ["recent-device"] },
+  { path: "./modules/checkout.js", aliases: ["checkout"] },
+  { path: "./modules/payment.js", aliases: ["payment"] },
+  { path: "./modules/notification.js", aliases: ["notification"] },
 ];
 
-const shouldLoad = (selectors) =>
-  selectors.some((selector) => document.querySelector(selector));
+const pageCapabilities = () => {
+  const capabilities = new Set();
+
+  document.querySelectorAll("*").forEach((element) => {
+    for (const attribute of element.attributes) {
+      if (!attribute.name.startsWith("data-")) continue;
+
+      const name = attribute.name.slice(5);
+      capabilities.add(name);
+    }
+  });
+
+  return capabilities;
+};
+
+const shouldLoad = (entry, capabilities) => {
+  if (entry.selectors?.some((selector) => document.querySelector(selector))) {
+    return true;
+  }
+
+  return (entry.aliases || []).some((alias) =>
+    [...capabilities].some(
+      (capability) =>
+        capability === alias || capability.startsWith(`${alias}-`),
+    ),
+  );
+};
 
 const loadDeferredModules = async () => {
+  const capabilities = pageCapabilities();
   const candidates = deferredModuleManifest.filter((entry) =>
-    shouldLoad(entry.selectors),
+    shouldLoad(entry, capabilities),
   );
 
   if (!candidates.length) return;
