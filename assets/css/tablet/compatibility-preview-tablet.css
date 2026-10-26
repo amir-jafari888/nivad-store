@@ -30,7 +30,7 @@
 .home-compatibility-preview__orbit--outer{width:86%;opacity:.7}
 .home-compatibility-preview__orbit--inner{width:64%;border-style:dashed}
 .home-compatibility-preview__phone{position:absolute;z-index:2;top:8%;left:calc(50% - 62px);width:124px}
-.home-compatibility-preview__phone-frame{position:relative;height:218px;padding:7px;border:2px solid var(--color-text-muted);border-radius:25px;background:var(--color-text);box-shadow:0 16px 28px var(--shadow-lg);transform:rotate(-7deg)}
+.home-compatibility-preview__phone-frame{position:relative;height:218px;padding:7px;border:2px solid var(--color-text-muted);border-radius:25px;background:var(--color-text);box-shadow:var(--shadow-lg);transform:rotate(-7deg)}
 .home-compatibility-preview__phone-camera{position:absolute;z-index:2;top:10px;left:50%;width:38px;height:7px;border-radius:var(--radius-pill);background:var(--color-text);transform:translateX(-50%)}
 .home-compatibility-preview__phone-screen{display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);height:100%;overflow:hidden;padding:var(--spacing-6) var(--spacing-2);border-radius:18px;background:linear-gradient(155deg,var(--color-primary-light),var(--color-surface) 58%,var(--color-primary-light))}
 .home-compatibility-preview__screen-time{align-self:flex-start;color:var(--color-text);font-family:var(--font-latin);font-size:9px;font-weight:var(--font-weight-bold)}
