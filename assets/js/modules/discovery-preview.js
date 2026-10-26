@@ -6,6 +6,7 @@ const discoveryPreview = () => {
   root.dataset.previewInitialized = "true";
 
   const apiBase = root.dataset.apiBase || "/api/index.php";
+  const appBasePath = new URL(apiBase, window.location.href).pathname.replace(/\/api\/index\.php\/?$/, "").replace(/\/$/, "");
   const filters = root.querySelector("[data-preview-filters]");
   const products = root.querySelector("[data-preview-products]");
   const wrapper = root.querySelector("[data-preview-products-wrapper]");
@@ -51,6 +52,7 @@ const discoveryPreview = () => {
   const createCard = (product) => {
     const slide = document.createElement("article");
     slide.className = "home-discovery__product swiper-slide";
+
     const media = document.createElement("div");
     media.className = "home-discovery__product-media";
     if (product.image) {
@@ -79,24 +81,26 @@ const discoveryPreview = () => {
     const brand = document.createElement("span");
     brand.className = "home-discovery__product-brand";
     brand.textContent = product.brand || "NIVAD";
+
     const title = document.createElement("h5");
     title.textContent = product.name || "محصول";
+
+    const slug = product.slug || product.product_slug;
+    if (slug) {
+      const titleLink = document.createElement("a");
+      titleLink.className = "home-discovery__product-title-link";
+      titleLink.href = `${appBasePath}/products/${encodeURIComponent(slug)}`;
+      titleLink.setAttribute("aria-label", `مشاهده ${product.name || "محصول"}`);
+      titleLink.textContent = product.name || "محصول";
+      title.replaceWith(titleLink);
+    }
+
     const description = document.createElement("p");
     description.textContent = product.short_description || product.description || "";
     const productPrice = document.createElement("strong");
     productPrice.textContent = price(product.sale_price ?? product.final_price ?? product.price);
     body.append(brand, title, description, productPrice);
     slide.append(media, body);
-
-    const slug = product.slug || product.product_slug;
-    if (slug) {
-      const link = document.createElement("a");
-      link.className = "home-discovery__product-link";
-      link.href = `/products/${encodeURIComponent(slug)}`;
-      link.setAttribute("aria-label", `مشاهده ${product.name || "محصول"}`);
-      link.appendChild(slide);
-      return link;
-    }
     return slide;
   };
 
@@ -168,13 +172,17 @@ const discoveryPreview = () => {
   };
 
   filterSwiper = new Swiper(filters, {
-    slidesPerView: "auto",
-    spaceBetween: 10,
+    slidesPerView: 2.25,
+    spaceBetween: 8,
     freeMode: true,
     grabCursor: true,
     watchOverflow: true,
     keyboard: { enabled: true, onlyInViewport: true },
     navigation: { nextEl: filterNext, prevEl: filterPrev },
+    breakpoints: {
+      601: { slidesPerView: "auto", spaceBetween: 10 },
+      1010: { slidesPerView: 4, spaceBetween: 12 },
+    },
   });
 
   productSwiper = new Swiper(products, {
