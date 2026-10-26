@@ -1,6 +1,3 @@
-<?php
-include_once __DIR__ . '/../helpers/escape.php';
-?>
 <section
     class="products section"
     aria-labelledby="products-title"
