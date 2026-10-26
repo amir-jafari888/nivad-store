@@ -180,7 +180,7 @@ const discoveryPreview = () => {
     keyboard: { enabled: true, onlyInViewport: true },
     navigation: { nextEl: filterNext, prevEl: filterPrev },
     breakpoints: {
-      601: { slidesPerView: "auto", spaceBetween: 10 },
+      601: { slidesPerView: 3.15, spaceBetween: 12 },
       1010: { slidesPerView: 4, spaceBetween: 12 },
     },
   });
@@ -195,7 +195,7 @@ const discoveryPreview = () => {
     navigation: { nextEl: productNext, prevEl: productPrev },
     pagination: pagination ? { el: pagination, clickable: true } : undefined,
     breakpoints: {
-      601: { slidesPerView: 2, spaceBetween: 14 },
+      601: { slidesPerView: 1, spaceBetween: 16 },
       1010: { slidesPerView: 3, spaceBetween: 16 },
     },
     on: {
