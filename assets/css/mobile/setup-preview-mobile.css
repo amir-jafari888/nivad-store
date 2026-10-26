@@ -47,4 +47,3 @@
 .home-setup-preview__flow-step span { color: var(--color-primary); font-family: var(--font-latin); font-size: 8px; font-weight: var(--font-weight-bold); }
 .home-setup-preview__flow-step strong { color: var(--color-text); font-family: var(--font-persian); font-size: 9px; }
 .home-setup-preview__flow-connector { flex: 1; height: 1px; background: var(--color-border); }
-@media (prefers-reduced-motion: reduce) { .home-setup-preview__cta { transition: none; } .home-setup-preview__cta:hover { transform: none; } }
