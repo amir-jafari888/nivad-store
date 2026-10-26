@@ -154,6 +154,11 @@
                     <small data-compatibility-device-summary>
                     </small>
 
+                    <span
+                        class="compatibility-result-count"
+                        data-compatibility-count>
+                    </span>
+
                 </div>
 
                 <button
