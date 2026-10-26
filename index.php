@@ -4,7 +4,7 @@ include_once "./partials/hero.php";
 include_once "./partials/categories.php";
 include_once "./partials/discovery.php";
 include_once "./partials/product.php";
-include_once "./partials/build-setup.php";
+include_once "./partials/setup-preview.php";
 include_once "./partials/compatibilty.php";
 include_once "./partials/new-product.php";
 include_once "./partials/value-proposition.php";
