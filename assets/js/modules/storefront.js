@@ -147,9 +147,12 @@ const storefront = () => {
       const currentPrice = variant?.price;
       const compareAtPrice = Number(variant?.compare_at_price);
       const numericPrice = Number(currentPrice);
-      const hasDiscount = variant && Number.isFinite(numericPrice) && numericPrice > 0 &&
-        Number.isFinite(compareAtPrice) && compareAtPrice > numericPrice;
-      const discountPercent = hasDiscount ? Math.round((1 - numericPrice / compareAtPrice) * 100) : 0;
+      const rawDiscountPercent = variant && Number.isFinite(numericPrice) && numericPrice > 0 &&
+        Number.isFinite(compareAtPrice) && compareAtPrice > numericPrice
+        ? Math.round((1 - numericPrice / compareAtPrice) * 100)
+        : 0;
+      const hasDiscount = rawDiscountPercent > 0;
+      const discountPercent = hasDiscount ? rawDiscountPercent : 0;
 
       article.innerHTML = `
         <div class="product-card-image">
