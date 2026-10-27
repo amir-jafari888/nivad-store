@@ -112,7 +112,7 @@ if (Request::isPost()) {
 
             <form
                 method="post"
-                action="<?= e(url('/admin/auth/login')) ?>">
+                action="<?= e(url('/admin/auth/login.php')) ?>">
 
                 <input
                     type="hidden"

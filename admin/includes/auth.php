@@ -14,7 +14,7 @@ if (
     !$adminAuth->validateCurrentSession()
 ) {
     Response::redirect(
-        url('/admin/auth/login')
+        url('/admin/auth/login.php')
     );
 }
 
@@ -23,6 +23,6 @@ $currentAdmin =
 
 if ($currentAdmin === null) {
     Response::redirect(
-        url('/admin/auth/login')
+        url('/admin/auth/login.php')
     );
 }
