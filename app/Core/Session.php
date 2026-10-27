@@ -17,6 +17,27 @@ final class Session
         return self::$config['session'];
     }
 
+    /**
+     * Secure cookies are required for HTTPS deployments. Local XAMPP
+     * development over HTTP is the only exception because browsers do not
+     * send Secure cookies over plain HTTP.
+     */
+    private static function usesSecureCookie(array $config): bool
+    {
+        $host = strtolower(trim((string) ($_SERVER['HTTP_HOST'] ?? '')));
+        $host = preg_replace('/:\\d+$/', '', $host) ?? $host;
+
+        $isLocalHost = in_array(
+            $host,
+            ['localhost', '127.0.0.1', '::1', '[::1]'],
+            true
+        );
+
+        $isLocalHttp = $isLocalHost && !Security::isHttps();
+
+        return (bool) ($config['secure'] ?? true) && !$isLocalHttp;
+    }
+
     public static function start(): void
     {
         if (self::$started || session_status() === PHP_SESSION_ACTIVE) {
@@ -29,6 +50,8 @@ final class Session
         if (session_status() === PHP_SESSION_DISABLED) {
             throw new RuntimeException('PHP sessions are disabled.');
         }
+
+        $secureCookie = self::usesSecureCookie($config);
 
         session_name($config['name']);
 
@@ -49,7 +72,7 @@ final class Session
 
         ini_set(
             'session.cookie_secure',
-            $config['secure'] ? '1' : '0'
+            $secureCookie ? '1' : '0'
         );
 
         ini_set(
@@ -65,7 +88,7 @@ final class Session
         session_set_cookie_params([
             'lifetime' => 0,
             'path' => '/',
-            'secure' => $config['secure'],
+            'secure' => $secureCookie,
             'httponly' => $config['httponly'],
             'samesite' => $config['samesite'],
         ]);
