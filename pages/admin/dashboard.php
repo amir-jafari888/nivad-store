@@ -130,6 +130,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                         <a href="<?= e(url('/admin/audit-logs')) ?>">گزارش رویدادها</a>
                     </div>
                 </details>
+                <a class="admin-dashboard-nav-link" href="<?= e(url('/admin/settings')) ?>">تنظیمات رابط کاربری</a>
             </nav>
             <div class="admin-dashboard-sidebar-note">
                 <span class="admin-dashboard-status-dot" aria-hidden="true"></span>
