@@ -1,0 +1,418 @@
+NIVAD — ADMIN PANEL MASTER IDEAS / PRODUCT VISION
+====================================================
+Document status: MASTER IDEA REGISTER
+Purpose: حفظ تمام ایده‌ها، تصمیم‌ها و نیازهای توافق‌شده برای پنل مدیریت نیواد تا در مراحل بعدی گم یا فراموش نشوند.
+
+IMPORTANT
+---------
+- این فایل سند ایده و نیازمندی است، نه مجوز پیاده‌سازی همه موارد.
+- هر قابلیت قبل از implementation باید با معماری واقعی پروژه، دیتابیس، قراردادهای backend، permission system و UX rules ممیزی شود.
+- هیچ role، permission، route، table یا data source نباید حدس زده شود.
+- وضعیت هر قابلیت در implementation باید یکی از این‌ها باشد: VERIFIED / PARTIAL / MISSING / UNKNOWN / BLOCKED.
+
+1. CORE ADMIN EXPERIENCE
+------------------------
+1.1 داشبورد اصلی باید ترکیبی از تمام ایده‌های قبلی باشد، نه یک CRUD dashboard ساده.
+1.2 داشبورد باید اطلاعات واقعی فروشگاه را نمایش دهد؛ KPI جعلی یا hard-coded ممنوع.
+1.3 بخش‌های پیشنهادی داشبورد:
+    - فروش و درآمد
+    - سفارش‌ها و وضعیت سفارش
+    - پرداخت‌ها
+    - موجودی و هشدار کمبود کالا
+    - محصولات مهم/پربازدید
+    - فعالیت‌های اخیر
+    - کارهای نیازمند اقدام
+    - خطاها و رخدادهای سیستمی
+    - اعلان‌های مهم مدیریتی
+    - وضعیت سرویس‌ها/سلامت سیستم در صورت وجود داده واقعی
+    - میانبرهای عملیاتی برای کارهای پرتکرار
+1.4 طراحی باید حرفه‌ای، خلاقانه و دارای hierarchy واضح باشد؛ ساده و بی‌روح یا صرفاً کارت‌های تکراری نباشد.
+1.5 از Design System واقعی موجود Nivad استفاده شود.
+1.6 فایل‌های Skill و UX/UI Rules پروژه باید مرجع تصمیم‌های طراحی باشند.
+
+2. SHARED ADMIN SHELL
+---------------------
+2.1 تمام صفحات ادمین باید یک shell مشترک داشته باشند.
+2.2 Sidebar در تمام صفحات authenticated admin حضور داشته باشد.
+2.3 Sidebar کاملاً RTL و متناسب با فارسی باشد.
+2.4 Header/Topbar مشترک برای تمام صفحات ادمین داشته باشیم.
+2.5 وضعیت صفحه فعلی در navigation مشخص باشد.
+2.6 responsive behavior باید برای mobile/tablet/desktop تعریف شود.
+2.7 هیچ صفحه‌ای نباید shell مخصوص و ناسازگار خودش را بدون دلیل معماری داشته باشد.
+
+3. MEGA MENU / GROUPED NAVIGATION
+---------------------------------
+3.1 هر folder/module که چند صفحه واقعی دارد در navigation به صورت گروه/mega menu نمایش داده شود.
+3.2 با بازکردن گروه، تمام صفحات واقعی آن بخش نمایش داده شوند.
+3.3 گروه‌ها پیشنهادی:
+    - Overview / Dashboard
+    - Catalog
+    - Storefront & Content
+    - Discovery / Compatibility
+    - Orders & Sales
+    - Inventory
+    - Customers
+    - Support & Communication
+    - Reports & Monitoring
+    - Administration & Security
+    - Settings
+3.4 فقط route/page واقعی در منو قرار گیرد.
+3.5 لینک مرده یا route حدسی ممنوع.
+
+4. ADMIN PROFILE / IDENTITY
+---------------------------
+4.1 نام نمایش‌داده‌شده مدیر نباید email یا username باشد.
+4.2 سیستم باید admin ID نشست فعلی را بگیرد و از منبع واقعی داده، first_name و last_name مدیر را بخواند.
+4.3 در profile area نام کامل مدیر نمایش داده شود.
+4.4 avatar/profile indicator داشته باشیم.
+4.5 در صورت نبود نام، fallback باید UX-safe باشد و هرگز email/username را به عنوان نام شخص نمایش ندهد مگر اینکه قرارداد محصول صراحتاً چنین چیزی را تأیید کند.
+4.6 اطلاعات حساس مثل password، token یا داده امنیتی هرگز در UI profile نمایش داده نشود.
+
+5. LOGOUT
+---------
+5.1 Logout باید در انتهای sidebar/menu باشد.
+5.2 Logout فقط POST باشد.
+5.3 CSRF protection اجباری است.
+5.4 session/auth invalidation باید واقعی و server-side باشد.
+5.5 redirect بعد از logout باید به login صحیح برود.
+5.6 route مستقیم /admin/logout نباید باعث Not Found شود؛ route/rewrite واقعی باید ممیزی و تست شود.
+
+6. ADMIN SETTINGS
+-----------------
+6.1 یک بخش Settings در پنل وجود داشته باشد.
+6.2 Settings فقط cosmetic نباشد؛ هر setting باید کاربرد مشخص داشته باشد.
+6.3 گزینه‌های پیشنهادی:
+    - تراکم جدول‌ها: Comfortable / Compact
+    - اندازه متن رابط
+    - تنظیم رفتار navigation گروه‌ها
+    - تنظیمات notification preferences مدیر
+    - تنظیمات session/security در صورت پشتیبانی backend
+    - ترجیحات dashboard در صورت وجود contract واقعی
+6.4 هر setting باید مشخص کند local/browser-only است یا server-side.
+6.5 تنظیمات امنیتی نباید فقط client-side باشند.
+6.6 Dark Mode toggle حذف شود؛ پروژه به سمت حذف کامل dark theme می‌رود.
+
+7. ADMIN MANAGEMENT / SUPER ADMIN
+----------------------------------
+7.1 یک سطح بسیار قدرتمند برای مدیریت مدیران وجود داشته باشد؛ نام UI پیشنهادی: مدیریت مدیران / Admin Management.
+7.2 این سطح نباید صرفاً یک صفحه CRUD admin باشد.
+7.3 Super Admin / highest-level admin باید در صورت تأیید قرارداد واقعی permission system بتواند:
+    - ساخت admin
+    - غیرفعال/فعال کردن admin
+    - تخصیص role
+    - تغییر دسترسی‌ها
+    - مشاهده وضعیت admin
+    - مشاهده sessionهای admin
+    - مشاهده آخرین فعالیت‌ها
+    - بررسی تغییرات انجام‌شده توسط هر admin
+    - مدیریت دسترسی‌های حساس
+    - مشاهده رخدادهای امنیتی مرتبط با adminها
+7.4 عملیات حساس باید audit trail داشته باشند.
+7.5 عملیات حساس باید در صورت نیاز confirmation/reauthentication داشته باشند.
+7.6 حذف یا تغییر سطح دسترسی یک admin نباید بدون ثبت audit انجام شود.
+
+8. ADMIN ROLES / PERMISSIONS
+----------------------------
+8.1 سیستم role/permission فعلی پروژه باید از دیتابیس واقعی audit شود.
+8.2 قبل از تصمیم‌گیری درباره تعداد roleها، باید roleهای واقعی دیتابیس استخراج شوند.
+8.3 برای هر role باید مشخص شود:
+    - نام
+    - slug
+    - status
+    - تعداد permissionها
+    - moduleهای قابل دسترسی
+    - actionهای قابل انجام
+    - adminهای assigned
+8.4 نقش‌ها باید least-privilege باشند.
+8.5 نقش بالاتر نباید صرفاً با hidden UI ایجاد شود؛ authorization باید server-side باشد.
+8.6 UI باید با permission واقعی کنترل شود.
+8.7 پنهان‌کردن یک menu item به تنهایی access control محسوب نمی‌شود.
+8.8 یک all-access/highest-level role برای مدیریت کامل سیستم در نظر گرفته شود، اما تعریف نهایی آن بعد از audit واقعی permission matrix انجام شود.
+
+9. PERMISSION-DENIED UX
+-----------------------
+9.1 وقتی admin به یک بخش دسترسی ندارد، نباید JSON error خام یا صفحه فنی نامفهوم ببیند.
+9.2 یک Access Denied state اختصاصی در وسط صفحه نمایش داده شود.
+9.3 UI پیشنهادی:
+    - container مرکزی
+    - shadow واضح
+    - backdrop/blur برای کاهش visual noise و جلوگیری از نمایش محتوای پشت state
+    - icon/visual مناسب
+    - first_name + last_name مدیر
+    - پیام: «[نام]، شما مجوز دسترسی به این بخش را ندارید.»
+    - توضیح کوتاه و غیر فنی
+    - دکمه برگشت به داشبورد
+9.4 پیام permission denied نباید اطلاعات حساس permission policy را لو بدهد.
+9.5 APIها همچنان باید status/error مناسب server-side بدهند؛ این UI جایگزین authorization نیست.
+
+10. FULL STORE CONTROL / CMS
+----------------------------
+10.1 پنل باید در نهایت کنترل تمام بخش‌های قابل مدیریت سایت را پوشش دهد، نه فقط products/orders.
+10.2 حوزه‌ها:
+    - تمام صفحات storefront
+    - landing/homepage sections
+    - banners/sliders
+    - collections
+    - discovery
+    - compatibility
+    - product presentation
+    - categories
+    - brands
+    - attributes
+    - specifications
+    - content/pages
+    - notifications
+    - users/customers
+    - reviews/questions
+    - returns/refunds
+    - coupons
+    - shipping
+    - media
+10.3 برای هر page/section باید source of truth مشخص باشد.
+10.4 مدیریت محتوا باید در صورت نیاز شامل:
+    - publish/unpublish
+    - ordering
+    - visibility
+    - scheduling
+    - draft/published state
+    - revision/audit history
+    - media selection
+باشد؛ فقط در صورت وجود یا طراحی contract واقعی.
+
+11. PRODUCT ANALYTICS
+---------------------
+11.1 مدیر بتواند آمار واقعی تعامل کاربران با محصول را ببیند.
+11.2 مثال: چند کاربر محصولی مثل iPhone 17 را به wishlist اضافه کرده‌اند.
+11.3 قابلیت‌های احتمالی:
+    - product views
+    - unique viewers
+    - wishlist adds
+    - cart adds
+    - purchase conversion
+    - search impressions
+    - related-product interactions
+11.4 هیچ metric نباید بدون event/data source واقعی ساخته شود.
+
+12. NOTIFICATION CENTER
+-----------------------
+12.1 notification center برای adminها لازم است.
+12.2 notificationها باید حداقل دسته‌بندی شوند:
+    - system
+    - security
+    - orders
+    - inventory
+    - customer/support
+    - content
+    - errors/incidents
+12.3 severity داشته باشند:
+    - info
+    - warning
+    - critical
+12.4 read/unread state و در صورت نیاز acknowledgement داشته باشند.
+12.5 notificationها باید audit-friendly باشند.
+
+13. AUTOMATIC ERROR / INCIDENT DETECTION
+----------------------------------------
+13.1 یک سیستم مرکزی برای تشخیص خطاهای واقعی سایت ایجاد شود.
+13.2 نمونه رخدادها:
+    - صفحه‌ای که repeatedly با error باز می‌شود
+    - 404های پرتکرار
+    - 500/5xx
+    - PHP exceptions
+    - database failures
+    - failed API calls
+    - JavaScript runtime errors در storefront/admin در صورت طراحی telemetry امن
+    - payment failures
+    - failed background jobs
+    - broken routes
+13.3 سیستم باید error را به incident تبدیل کند، نه اینکه هر error خام را بی‌نهایت notification کند.
+13.4 deduplication و aggregation لازم است.
+13.5 severity و frequency باید قابل ارزیابی باشد.
+13.6 برای incidentهای مهم admin notification ایجاد شود.
+13.7 در آینده dashboard سلامت سیستم می‌تواند داشته باشیم.
+13.8 اطلاعات حساس، password، token، PII غیرضروری و secrets نباید وارد log/notification شوند.
+
+14. ADMIN SUPPORT CENTER
+------------------------
+14.1 یک سیستم پشتیبانی مستقل از automatic error detection لازم است.
+14.2 کاربر بتواند مشکل خود را گزارش کند.
+14.3 ticket/message به adminها برسد.
+14.4 برای ticketها:
+    - status
+    - priority
+    - category
+    - requester
+    - timestamps
+    - assigned admin
+    - conversation/history
+وجود داشته باشد.
+14.5 admin بتواند پاسخ دهد و وضعیت ticket را تغییر دهد.
+14.6 امکان notification برای admin وجود داشته باشد.
+
+15. EMAIL / GMAIL NOTIFICATION SYSTEM
+-------------------------------------
+15.1 سیستم notification باید قابلیت ارسال email داشته باشد.
+15.2 «Gmail» در معماری بهتر است به عنوان provider/SMTP یا mailbox integration در نظر گرفته شود، نه اینکه business logic مستقیماً به Gmail وابسته باشد.
+15.3 نمونه emailهای احتمالی:
+    - critical system incident
+    - security event
+    - suspicious admin activity
+    - new support ticket
+    - important customer complaint
+    - critical inventory alert
+    - payment incident
+    - admin account changes
+15.4 باید notification policy داشته باشیم تا spam ایجاد نشود.
+15.5 برای incidentهای تکراری rate-limit/deduplication لازم است.
+15.6 email provider باید قابل تعویض باشد.
+15.7 email delivery باید log شود: queued/sent/failed در صورت طراحی mail subsystem.
+15.8 secrets مربوط به SMTP/API نباید در repository قرار گیرند.
+
+16. ADMIN SESSION MONITORING
+----------------------------
+16.1 Super Admin بتواند sessionهای adminها را مشاهده کند.
+16.2 اطلاعات قابل نمایش پس از audit امنیتی:
+    - admin identity
+    - login time
+    - last activity
+    - session status
+    - logout time در صورت ثبت
+    - device/browser information در صورت نیاز و با ملاحظات privacy
+    - IP در صورت ضرورت امنیتی و policy مناسب
+16.3 قابلیت terminate/revoke session برای سطح مجاز قابل طراحی است.
+16.4 عملیات terminate session باید audit شود.
+
+17. ADMIN AUDIT LOG
+-------------------
+17.1 تمام عملیات حساس admin باید audit log داشته باشند.
+17.2 مثال:
+    - login/logout
+    - failed login
+    - role change
+    - permission change
+    - admin creation/deactivation
+    - product price change
+    - inventory adjustment
+    - order state change
+    - refund approval
+    - coupon creation/change
+    - content publish/unpublish
+    - security settings change
+17.3 audit log باید tamper-resistant تا حد امکان باشد.
+17.4 باید مشخص شود چه کسی، چه چیزی، چه زمانی و در صورت نیاز از چه contextی تغییر داده است.
+
+18. ANTI-FRAUD / SECURITY OPERATIONS
+------------------------------------
+18.1 پنل مدیریت باید ابزارهای امنیتی داشته باشد.
+18.2 نمونه‌ها:
+    - suspicious login detection
+    - repeated failed logins
+    - unusual admin activity
+    - mass price changes
+    - mass inventory changes
+    - mass account changes
+    - unusual refund activity
+    - privilege escalation attempts
+18.3 برای رخدادهای مهم notification و audit لازم است.
+18.4 اقدامات بسیار حساس می‌توانند نیازمند re-authentication یا second confirmation باشند.
+18.5 security controls باید server-side باشند.
+
+19. ADMIN ACCESS HARDENING
+--------------------------
+19.1 صرفاً مخفی‌کردن /admin از URL کافی نیست و security through obscurity نباید راهکار اصلی باشد.
+19.2 access به admin باید با authentication + authorization + session controls محافظت شود.
+19.3 امکان تغییر مسیر ورود ادمین در صورت نیاز معماری بررسی شود، اما این فقط یک لایه دفاعی است.
+19.4 rate limiting برای login بررسی شود.
+19.5 lockout/throttling برای brute-force بررسی شود.
+19.6 session rotation و secure cookie settings بررسی شوند.
+19.7 CSRF برای عملیات state-changing اجباری باشد.
+19.8 re-authentication برای عملیات بسیار حساس بررسی شود.
+19.9 audit trail برای security actions لازم است.
+
+20. ERROR UX
+-----------
+20.1 خطای backend نباید مستقیماً به کاربر admin به شکل stack trace یا JSON خام نشان داده شود.
+20.2 UI error states باید context-aware باشند.
+20.3 برای خطاهای قابل بازیابی:
+    - پیام واضح
+    - retry
+    - back
+    - dashboard link
+ارائه شود.
+20.4 برای خطاهای امنیتی جزئیات حساس نمایش داده نشود.
+
+21. DASHBOARD FUTURE MODULES
+----------------------------
+21.1 Command Center برای مدیر ارشد.
+21.2 Action Queue.
+21.3 Security Center.
+21.4 System Health.
+21.5 Support Inbox.
+21.6 Content Operations.
+21.7 Commerce Analytics.
+21.8 Recent Admin Activity.
+21.9 Incident Timeline.
+22.0 Quick Actions بر اساس permission واقعی.
+
+22. DESIGN / UX RULES
+---------------------
+22.1 RTL-first.
+22.2 accessibility از ابتدا.
+22.3 keyboard navigation.
+22.4 visible focus state.
+22.5 semantic HTML.
+22.6 contrast مناسب.
+22.7 responsive layouts.
+22.8 loading/empty/error/success states برای componentهای مهم.
+22.9 جلوگیری از information overload.
+22.10 hierarchy بصری واضح.
+22.11 از Design System موجود Nivad استفاده شود و token source واحد حفظ شود.
+22.12 CSS معماری فعلی پنل حفظ شود:
+      admin/assets/css/setting.css
+      admin/assets/css/mobile/
+      admin/assets/css/tablet/
+      admin/assets/css/desktop/
+22.13 داخل فایل‌های mobile/tablet/desktop از @media استفاده نشود.
+22.14 برای هر صفحه/بخش responsive، فایل‌های متناظر breakpoint رعایت شوند.
+22.15 JS فقط زیر admin/assets/js باشد.
+22.16 main.js فقط entrypoint/import باشد.
+22.17 ماژول‌های JS زیر admin/assets/js/modules/ باشند.
+
+23. IDEAS THAT SHOULD NOT BE FORGOTTEN
+--------------------------------------
+23.1 Global search در پنل برای پیدا کردن product/order/user/ticket.
+23.2 Command palette برای adminهای حرفه‌ای.
+23.3 Bulk actions با confirmation و audit.
+23.4 Saved filters/views برای جدول‌های پرتکرار.
+23.5 Activity timeline برای entityهای مهم.
+23.6 Revision history برای content.
+23.7 Draft/preview برای محتوای storefront.
+23.8 Scheduled publishing.
+23.9 Permission-aware quick actions.
+23.10 Backup/recovery awareness و نمایش وضعیت backup در سطح مناسب، بدون exposing secrets.
+23.11 System health checks.
+23.12 Background job/queue monitoring در صورت وجود queue.
+23.13 Webhook/API integration monitoring در صورت وجود integration.
+23.14 Payment gateway health در صورت وجود gateway.
+23.15 Inventory anomaly detection.
+23.16 Customer abuse/fraud signals.
+
+24. IMPLEMENTATION RULE
+-----------------------
+هر feature قبل از اجرا:
+AUDIT → CONTRACT → DESIGN → IMPLEMENT → TEST → PASS → LOCK
+
+هیچ موردی فقط به دلیل اینکه ایده خوبی است «موجود» فرض نشود.
+هر قابلیت باید به فایل/route/controller/service/repository/model/database contract واقعی متصل باشد.
+
+25. CURRENT DESIGN DIRECTION
+----------------------------
+هدف نهایی پنل:
+یک Admin Operating System حرفه‌ای برای Nivad؛ نه صرفاً CRUD panel.
+
+پنل باید سه نقش اصلی را همزمان پشتیبانی کند:
+1) عملیات روزمره فروشگاه
+2) مدیریت محتوا و تجربه storefront
+3) کنترل، امنیت، مانیتورینگ و مدیریت مدیران
+
+END OF MASTER IDEA REGISTER
