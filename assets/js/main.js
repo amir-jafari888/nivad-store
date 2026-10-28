@@ -5,6 +5,7 @@ import wishlist from "./modules/wishlist.js";
 import cart from "./modules/cart.js";
 import cartDrawer from "./modules/cart-drawer.js";
 import backToTopButton from "./modules/backtoup.js";
+import skipNavigation from "./modules/skip-navigation.js";
 
 header();
 theme();
@@ -13,6 +14,7 @@ wishlist();
 cart();
 cartDrawer();
 backToTopButton();
+skipNavigation();
 
 const deferredModuleManifest = [
   { path: "./modules/hero.js", aliases: ["hero"] },

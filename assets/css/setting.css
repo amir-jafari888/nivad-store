@@ -1082,3 +1082,32 @@ table {
     transition: none;
   }
 }
+
+/* Visually hidden main-content target, shown when keyboard focus reaches it. */
+.skip-navigation-target {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-navigation-target:focus {
+  position: fixed !important;
+  z-index: var(--z-modal, 2000);
+  inset-block-start: 1rem;
+  inset-inline-start: 1rem;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  clip: auto;
+  overflow: visible;
+  border: 2px solid var(--color-primary, #2563eb);
+  border-radius: 0.5rem;
+  background: var(--color-background, #fff);
+  color: var(--color-text, #111827);
+}
