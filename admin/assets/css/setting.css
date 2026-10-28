@@ -42,26 +42,6 @@
   --admin-performance-content-visibility: auto;
   --admin-performance-image-root-margin: 400px;
 }
-:root[data-admin-theme="dark"] {
-  color-scheme: dark;
-  --admin-color-bg: #111827;
-  --admin-color-surface: #1f2937;
-  --admin-color-surface-raised: #273449;
-  --admin-color-text: #f3f4f6;
-  --admin-color-text-muted: #c0cad8;
-  --admin-color-border: #3b4759;
-  --admin-color-primary: #93c5fd;
-  --admin-color-primary-hover: #bfdbfe;
-  --admin-color-primary-soft: #263b56;
-  --admin-color-success: #86efac;
-  --admin-color-warning: #fcd34d;
-  --admin-color-error: #fca5a5;
-  --admin-color-info: #93c5fd;
-  --admin-shadow-card: 0 1px 3px rgba(0, 0, 0, .22);
-  --admin-shadow-floating: 0 12px 28px rgba(0, 0, 0, .32);
-  --admin-focus-ring: 0 0 0 3px rgba(147, 197, 253, .32);
-}
-
 /* Keyboard-accessible skip navigation. */
 .admin-skip-link {
   position: fixed;
