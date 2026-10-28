@@ -38,11 +38,6 @@ final class AdminSessionRepository
             );
         }
 
-        $expiresAt = date(
-            'Y-m-d H:i:s',
-            time() + $expiresInSeconds
-        );
-
         $stmt = $this->db->prepare(
             'INSERT INTO admin_sessions (
                 admin_user_id,
@@ -57,7 +52,11 @@ final class AdminSessionRepository
                 :ip_address,
                 :user_agent,
                 CURRENT_TIMESTAMP,
-                :expires_at
+                TIMESTAMPADD(
+                    SECOND,
+                    :expires_in_seconds,
+                    CURRENT_TIMESTAMP
+                )
             )'
         );
 
@@ -74,8 +73,8 @@ final class AdminSessionRepository
             'user_agent' =>
             $userAgent,
 
-            'expires_at' =>
-            $expiresAt,
+            'expires_in_seconds' =>
+            $expiresInSeconds,
         ]);
 
         return (int)$this->db->lastInsertId();

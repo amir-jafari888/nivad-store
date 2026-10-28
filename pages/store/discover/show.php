@@ -11,5 +11,5 @@ $canonicalUrl = url('/discover');
 $robots = 'index,follow';
 
 include_once __DIR__ . '/../../../partials/header.php';
-include_once __DIR__ . '/../../../partials/discovery.php';
+include_once __DIR__ . '/content.php';
 include_once __DIR__ . '/../../../partials/footer.php';

@@ -339,13 +339,32 @@ const discovery = () => {
 
       updateNavigation();
     } catch (error) {
-      if (errorContainer) {
-        errorContainer.hidden = false;
-
-        errorContainer.textContent =
-          error.message || "دریافت پیشنهادها ناموفق بود.";
+      if (error.name === "AbortError") {
+        return;
       }
 
+      resultsWrapper.replaceChildren();
+
+      if (errorContainer) {
+        errorContainer.hidden = false;
+        errorContainer.replaceChildren();
+
+        const message = document.createElement("p");
+        message.textContent =
+          error.message || "دریافت پیشنهادها ناموفق بود.";
+
+        const retry = document.createElement("button");
+        retry.type = "button";
+        retry.className = "page-discovery__retry";
+        retry.textContent = "تلاش دوباره";
+        retry.addEventListener("click", () => loadDiscoveryProducts({ reset: true }));
+
+        errorContainer.append(message, retry);
+      }
+
+      updateCount(0);
+      resultsSwiper?.update();
+      updateNavigation();
       console.error("Discovery products failed:", error);
     } finally {
       isLoading = false;
