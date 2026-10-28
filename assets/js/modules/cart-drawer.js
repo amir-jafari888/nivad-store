@@ -233,6 +233,9 @@ const cartDrawer = () => {
       return;
     }
 
+    // Cancel an in-progress exit if the user reopens the drawer quickly.
+    finishClose();
+
     lastFocusedElement = document.activeElement;
 
     render();
