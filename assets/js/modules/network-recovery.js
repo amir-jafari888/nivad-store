@@ -179,6 +179,20 @@ const installFetchResilience = () => {
 
   window.fetch = (input, init = {}) => {
     const details = requestDetails(input, init);
+
+    // Leave third-party requests untouched; resilience notices are for Nivad APIs.
+    if (details.url.origin !== window.location.origin) {
+      return originalFetch(input, init);
+    }
+
+    // Never abort or automatically retry non-idempotent writes such as checkout/payment.
+    if (details.method !== "GET" && details.method !== "HEAD") {
+      return originalFetch(input, init).then((response) => {
+        dispatchResponseState(response, details);
+        return response;
+      });
+    }
+
     return fetchWithTimeout(input, init, details, 0);
   };
 };
