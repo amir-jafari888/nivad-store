@@ -458,3 +458,9 @@ body.is-cart-drawer-open {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+/* Keep the drawer rendered while its panel exits; prevent click-through. */
+.cart-drawer.is-closing {
+  visibility: visible;
+  pointer-events: none;
+}

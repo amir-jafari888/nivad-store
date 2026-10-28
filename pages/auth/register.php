@@ -3,7 +3,7 @@ declare(strict_types=1);
 $pageTitle = 'ثبت‌نام | نیواد';
 include_once __DIR__ . '/../../partials/header.php';
 ?>
-<main class="auth-page" data-auth-page>
+<main id="main-content" tabindex="-1" class="auth-page" data-auth-page>
   <header class="auth-page__head">
     <h1>ساخت حساب کاربری</h1>
     <p>برای ایجاد حساب، اطلاعات زیر را وارد کنید.</p>

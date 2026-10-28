@@ -8,7 +8,7 @@ $cartApiUrl = $baseUrl . '/api/index.php';
 $loginUrl = $baseUrl . '/pages/auth/login.php';
 ?>
 
-<main
+<main id="main-content" tabindex="-1"
     class="customer-shop cart-page"
     data-customer-page="cart"
     data-customer-cart

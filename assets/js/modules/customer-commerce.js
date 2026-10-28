@@ -97,7 +97,7 @@ const customerCommerce = () => {
 
         if (security) {
           security.innerHTML = securityResult
-            ? `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? sessions.length)}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`
+            ? `<h2>امنیت حساب</h2><p>وضعیت حساب: ${escape(securityResult?.data?.account_status || "نامشخص")}</p><p>تأیید ایمیل: ${securityResult?.data?.email_verified ? "تأیید شده" : "تأیید نشده"}</p><p>نشست‌های دیگر: ${escape(securityResult?.data?.active_other_sessions ?? (sessionsResult ? sessions.length : "نامشخص"))}</p><p>آخرین ورود: ${escape(securityResult?.data?.last_login_at || "نامشخص")}</p>`
             : "<h2>امنیت حساب</h2><p role=\"alert\">دریافت اطلاعات امنیتی انجام نشد.</p>";
         }
         if (verification) {
@@ -115,8 +115,15 @@ const customerCommerce = () => {
           if (node.dataset.accountMetric === "orders") node.textContent = ordersResult ? String(orders.length) : "—";
         });
 
-        const failed = results.some((result) => result.status === "rejected");
-        show(state, failed ? "بخشی از اطلاعات حساب دریافت نشد." : "اطلاعات حساب دریافت شد.", failed);
+        const failedCount = results.filter((result) => result.status === "rejected").length;
+        const failed = failedCount > 0;
+        show(
+          state,
+          failed
+            ? `بخشی از اطلاعات حساب دریافت نشد (${failedCount} بخش). سایر بخش‌های دریافت‌شده همچنان قابل استفاده هستند.`
+            : "اطلاعات حساب دریافت شد.",
+          failed,
+        );
         if (failed && state && !state.querySelector("[data-account-retry]")) {
           const retry = document.createElement("button");
           retry.type = "button";

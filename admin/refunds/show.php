@@ -6,10 +6,7 @@ require_once __DIR__ . '/../../app/Core/Bootstrap.php';
 
 Bootstrap::boot();
 
-if (Auth::id() === null) {
-    http_response_code(401);
-    exit('دسترسی غیرمجاز.');
-}
+require_once __DIR__ . '/../includes/auth.php';
 
 $refundId =
     (int)($_GET['id'] ?? 0);

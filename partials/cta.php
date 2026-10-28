@@ -8,7 +8,7 @@
 
                       <p>برند و مدل دستگاهت رو انتخاب کن تا محصولات سازگار رو ببینی.</p>
 
-                      <a href="#" class="final-cta-button">
+                      <a href="<?= e(url('/finder')) ?>" class="final-cta-button">
                           پیدا کردن محصول
                           <svg viewBox="0 0 24 24" aria-hidden="true">
                               <path d="M5 12h14" />

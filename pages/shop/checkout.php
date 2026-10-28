@@ -4,7 +4,7 @@ $pageTitle = 'تکمیل سفارش | نیواد';
 include_once __DIR__ . '/../../partials/header.php';
 ?>
 
-<main
+<main id="main-content" tabindex="-1"
     class="customer-shop checkout-page"
     data-customer-page="checkout"
     data-customer-checkout
