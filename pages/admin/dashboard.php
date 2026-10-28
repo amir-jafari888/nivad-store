@@ -109,7 +109,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                         <a href="<?= e(url('/admin/payments')) ?>">پرداخت‌ها</a>
                         <a href="<?= e(url('/admin/coupons')) ?>">کدهای تخفیف</a>
                         <a href="<?= e(url('/admin/inventory')) ?>">موجودی و گردش انبار</a>
-                        <a href="<?= e(url('/admin/shipping')) ?>">ارسال و روش‌های ارسال</a>
+                        <a href="<?= e(url('/admin/shipping/shipments')) ?>">ارسال و روش‌های ارسال</a>
                     </div>
                 </details>
                 <details class="admin-dashboard-nav-group">
