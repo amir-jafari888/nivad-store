@@ -1,5 +1,8 @@
 RewriteEngine On
 
+# Admin logout is a direct PHP endpoint because /admin is a physical directory.
+RewriteRule ^admin/logout/?$ admin/logout.php [L,QSA]
+
 RewriteRule ^sitemap\.xml$ api/index.php?path=/seo/sitemap [L,QSA]
 RewriteRule ^robots\.txt$ api/index.php?path=/seo/robots [L,QSA]
 
