@@ -18,7 +18,7 @@ include_once __DIR__ . '/../../../partials/header.php';
 
 <?php if ($searchQuery === ''): ?>
 
-    <main
+    <main id="main-content" tabindex="-1"
         class="catalog-page catalog-page--search-empty">
 
         <header class="catalog-page__head">
