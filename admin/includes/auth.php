@@ -32,21 +32,29 @@ if ($currentAdmin === null) {
  * Keep the legacy page markup intact and inject assets only when a head exists.
  */
 ob_start(static function (string $html): string {
-    if (
-        stripos($html, '</head>') === false
-        || stripos($html, '/admin/assets/css/main.css') !== false
-    ) {
+    if (stripos($html, '</head>') === false) {
         return $html;
     }
 
-    $stylesheet = e(url('/admin/assets/css/main.css'));
-    $script = e(url('/admin/assets/js/main.js'));
-    $assets = "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">"
-        . "\n<script type=\"module\" src=\"{$script}\"></script>\n";
+    $assets = '';
+
+    if (stripos($html, '/admin/assets/css/main.css') === false) {
+        $stylesheet = e(url('/admin/assets/css/main.css'));
+        $assets .= "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">";
+    }
+
+    if (stripos($html, '/admin/assets/js/main.js') === false) {
+        $script = e(url('/admin/assets/js/main.js'));
+        $assets .= "\n<script type=\"module\" src=\"{$script}\"></script>";
+    }
+
+    if ($assets === '') {
+        return $html;
+    }
 
     $updated = preg_replace(
         '/<\/head\s*>/i',
-        $assets . '</head>',
+        $assets . "\n</head>",
         $html,
         1
     );
