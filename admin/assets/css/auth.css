@@ -1,0 +1,248 @@
+/* Admin authentication page — aligned with the storefront auth form. */
+body.admin-auth-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text);
+}
+
+body.admin-auth-page > .admin-theme-toggle {
+  position: fixed;
+  z-index: var(--admin-z-floating);
+  inset-block-start: var(--admin-space-4);
+  inset-inline-end: var(--admin-space-4);
+  margin: 0;
+  padding-inline: var(--admin-space-3);
+}
+
+body.admin-auth-page main.admin-auth-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  width: min(calc(100% - var(--admin-space-4) - var(--admin-space-4)), 520px);
+  margin-inline: auto;
+  padding-block: 76px var(--admin-space-6);
+}
+
+.admin-auth-heading {
+  margin-bottom: var(--admin-space-6);
+  text-align: center;
+}
+
+.admin-auth-heading h1 {
+  margin: 0 0 var(--admin-space-2);
+  font-size: clamp(1.45rem, 3vw, 1.8rem);
+  line-height: 1.4;
+}
+
+.admin-auth-heading p {
+  margin: 0;
+  color: var(--admin-color-text-muted);
+  line-height: 1.7;
+}
+
+body.admin-auth-page main.admin-auth-main > section.admin-auth-card {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: var(--admin-space-5);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-lg);
+  background: var(--admin-color-surface);
+  box-shadow: var(--admin-shadow-card);
+}
+
+.admin-auth-card__title {
+  margin: 0 0 var(--admin-space-5);
+  color: var(--admin-color-text);
+  font-size: var(--admin-font-size-lg);
+  line-height: 1.5;
+}
+
+.admin-auth-error {
+  margin-bottom: var(--admin-space-4);
+  padding: var(--admin-space-3);
+  border: 1px solid var(--admin-color-error);
+  border-radius: var(--admin-radius-md);
+  background: color-mix(in srgb, var(--admin-color-error) 8%, var(--admin-color-surface));
+  color: var(--admin-color-error);
+  overflow-wrap: anywhere;
+}
+
+form.admin-auth-form {
+  display: grid;
+  gap: var(--admin-space-4);
+}
+
+.admin-auth-field {
+  display: grid;
+  min-width: 0;
+  gap: var(--admin-space-2);
+}
+
+.admin-auth-field > label {
+  display: block;
+  color: var(--admin-color-text);
+  font-weight: 600;
+}
+
+.admin-auth-field > input,
+.admin-password-field > input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: var(--admin-space-3) var(--admin-space-4);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+  color: var(--admin-color-text);
+  font: inherit;
+  transition: border-color var(--admin-transition), box-shadow var(--admin-transition);
+}
+
+.admin-auth-field > input:hover {
+  border-color: var(--admin-color-primary);
+}
+
+.admin-auth-field > input:focus-visible {
+  border-color: var(--admin-color-primary);
+  box-shadow: var(--admin-focus-ring);
+}
+
+.admin-auth-hint {
+  color: var(--admin-color-text-muted);
+  font-size: var(--admin-font-size-sm);
+  line-height: 1.5;
+}
+
+.admin-password-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  align-items: stretch;
+  min-width: 0;
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+  transition: border-color var(--admin-transition), box-shadow var(--admin-transition);
+}
+
+.admin-password-field:hover,
+.admin-password-field:focus-within {
+  border-color: var(--admin-color-primary);
+}
+
+.admin-password-field:focus-within {
+  box-shadow: var(--admin-focus-ring);
+}
+
+.admin-password-field > input {
+  grid-row: 1;
+  grid-column: 1;
+  min-height: 48px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: none;
+}
+
+.admin-password-field > input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.admin-password-toggle {
+  display: inline-flex;
+  grid-row: 1;
+  grid-column: 2;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--admin-radius-md);
+  background: transparent;
+  color: var(--admin-color-text-muted);
+  cursor: pointer;
+}
+
+.admin-password-toggle:hover {
+  border-color: transparent;
+  background: var(--admin-color-primary-soft);
+  color: var(--admin-color-primary);
+}
+
+.admin-password-toggle svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.admin-password-toggle svg[hidden] {
+  display: none;
+}
+
+.admin-auth-submit {
+  width: 100%;
+  min-height: 48px;
+  padding: var(--admin-space-3) var(--admin-space-5);
+  border: 1px solid transparent;
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-primary);
+  color: var(--admin-color-bg);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--admin-transition), opacity var(--admin-transition);
+}
+
+.admin-auth-submit:hover:not(:disabled) {
+  border-color: transparent;
+  background: var(--admin-color-primary-hover);
+}
+
+.admin-auth-submit:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+.admin-auth-page :focus-visible {
+  outline-color: var(--admin-color-primary);
+}
+
+:root[data-admin-theme="dark"] .admin-auth-error {
+  background: color-mix(in srgb, var(--admin-color-error) 12%, var(--admin-color-surface));
+}
+
+@media (min-width: 601px) {
+  body.admin-auth-page main.admin-auth-main {
+    width: min(calc(100% - var(--admin-space-6) - var(--admin-space-6)), 520px);
+    padding-block: 88px var(--admin-space-8);
+  }
+
+  body.admin-auth-page main.admin-auth-main > section.admin-auth-card {
+    padding: var(--admin-space-6);
+  }
+}
+
+@media (min-width: 1010px) {
+  body.admin-auth-page main.admin-auth-main {
+    padding-block: 96px var(--admin-space-8);
+  }
+
+  body.admin-auth-page main.admin-auth-main > section.admin-auth-card {
+    padding: var(--admin-space-8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-auth-page *,
+  .admin-auth-page *::before,
+  .admin-auth-page *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
