@@ -62,6 +62,15 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     }
     $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8');
 
+    $topbar = '
+    <header class="admin-shared-topbar">
+        <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
+        <div class="admin-shared-topbar-profile">
+            <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
+            <span class="admin-shared-account-name">' . e($adminName) . '</span>
+        </div>
+    </header>';
+
     $nav = '
     <aside class="admin-shared-sidebar" aria-label="ناوبری پنل مدیریت">
         <a class="admin-shared-brand" href="' . e(url('/admin')) . '">
@@ -150,7 +159,7 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     return preg_replace_callback(
         '/<body\\b[^>]*>/i',
         static function (array $matches) use ($nav): string {
-            return $matches[0] . $nav;
+            return $matches[0] . $topbar . $nav;
         },
         $html,
         1
