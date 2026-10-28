@@ -21,6 +21,20 @@ final class AdminDashboardMetricsService
                 $queryData
             );
 
+        $salesByPeriod = [];
+        $salesByPeriodStatus = 'error';
+
+        try {
+            $salesByPeriod =
+                $this->reportService->salesRevenueByPeriod($query);
+
+            $salesByPeriodStatus =
+                $salesByPeriod === [] ? 'empty' : 'ready';
+        } catch (Throwable $exception) {
+            // The dashboard remains available when this optional report source is unavailable.
+            $salesByPeriodStatus = 'error';
+        }
+
         return [
             'orders' =>
             $this->reportService
@@ -37,6 +51,9 @@ final class AdminDashboardMetricsService
             'inventory' =>
             $this->reportService
                 ->inventorySummary($query),
+
+            'sales_by_period' => $salesByPeriod,
+            'sales_by_period_status' => $salesByPeriodStatus,
         ];
     }
 }
