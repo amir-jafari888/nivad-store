@@ -84,3 +84,13 @@
     scroll-behavior: auto !important;
   }
 }
+
+
+/* Browser-local interface preferences; no server-side settings are implied. */
+html[data-admin-font-scale="large"] {
+  font-size: 18px;
+}
+html[data-admin-density="compact"] table th,
+html[data-admin-density="compact"] table td {
+  padding-block: var(--admin-space-1);
+}
