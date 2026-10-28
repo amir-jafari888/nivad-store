@@ -29,6 +29,16 @@ const cartDrawer = () => {
   }
 
   let lastFocusedElement = null;
+  let closeTimer = null;
+
+  const finishClose = () => {
+    if (closeTimer !== null) {
+      window.clearTimeout(closeTimer);
+      closeTimer = null;
+    }
+
+    drawer.classList.remove("is-closing");
+  };
 
   const getCartAPI = () => window.digitalStoreCart || null;
 
@@ -247,17 +257,19 @@ const cartDrawer = () => {
       return;
     }
 
-    drawer.classList.remove("is-open");
-
     drawer.setAttribute("aria-hidden", "true");
-
+    drawer.classList.remove("is-open");
+    drawer.classList.add("is-closing");
     panel.classList.remove("is-visible");
-
     document.body.classList.remove("is-cart-drawer-open");
 
     if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
       lastFocusedElement.focus();
     }
+
+    // Keep the drawer rendered until its exit transition finishes.
+    // The timeout is a fallback for reduced-motion settings or missing transition events.
+    closeTimer = window.setTimeout(finishClose, 350);
 
     lastFocusedElement = null;
   };
@@ -387,6 +399,16 @@ const cartDrawer = () => {
     if (!event.shiftKey && document.activeElement === last) {
       event.preventDefault();
       first.focus();
+    }
+  });
+
+  panel.addEventListener("transitionend", (event) => {
+    if (
+      event.target === panel &&
+      event.propertyName === "transform" &&
+      drawer.classList.contains("is-closing")
+    ) {
+      finishClose();
     }
   });
 
