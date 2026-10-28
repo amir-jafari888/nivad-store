@@ -1054,3 +1054,31 @@ table {
 [hidden] {
   display: none !important;
 }
+
+/* Keyboard-accessible skip navigation shared by storefront pages. */
+.skip-link {
+  position: fixed;
+  z-index: var(--z-modal, 2000);
+  top: 1rem;
+  inset-inline-start: 1rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--color-primary, #2563eb);
+  border-radius: 0.5rem;
+  background: var(--color-background, #fff);
+  color: var(--color-text, #111827);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 2rem));
+  transition: transform 160ms ease;
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid var(--color-primary, #2563eb);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skip-link {
+    transition: none;
+  }
+}
