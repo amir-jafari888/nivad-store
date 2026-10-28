@@ -146,5 +146,12 @@ ob_start(static function (string $html) use ($currentAdmin): string {
         1
     ) ?? $html;
 
-    return preg_replace('/(<body\b[^>]*>)/i', '$1' . $nav, $html, 1) ?? $html;
+    return preg_replace_callback(
+        '/<body\\b[^>]*>/i',
+        static function (array $matches) use ($nav): string {
+            return $matches[0] . $nav;
+        },
+        $html,
+        1
+    ) ?? $html;
 });
