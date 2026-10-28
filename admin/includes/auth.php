@@ -98,7 +98,7 @@ ob_start(static function (string $html) use ($currentAdmin): string {
                     <a href="' . e(url('/admin/payments')) . '">پرداخت‌ها</a>
                     <a href="' . e(url('/admin/coupons')) . '">کدهای تخفیف</a>
                     <a href="' . e(url('/admin/inventory')) . '">موجودی و گردش انبار</a>
-                    <a href="' . e(url('/admin/shipping')) . '">ارسال</a>
+                    <a href="' . e(url('/admin/shipping/shipments')) . '">ارسال</a>
                 </div>
             </details>
             <details class="admin-shared-nav-group">
