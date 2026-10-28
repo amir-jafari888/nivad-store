@@ -153,25 +153,25 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
 
             <section class="admin-dashboard-kpis" aria-label="شاخص‌های اصلی">
                 <article class="admin-dashboard-kpi admin-dashboard-kpi-orders">
-                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-icon" aria-hidden="true">▤</span><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
+                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
                     <h2>کل سفارش‌ها</h2>
                     <p class="admin-dashboard-kpi-value"><?= e($formatNumber($orders['total_orders'] ?? 0)) ?></p>
                     <p class="admin-dashboard-kpi-foot">مبلغ سفارش‌ها: <strong><?= e($formatNumber($orders['total_amount'] ?? 0)) ?></strong></p>
                 </article>
                 <article class="admin-dashboard-kpi admin-dashboard-kpi-payments">
-                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-icon" aria-hidden="true">◈</span><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
+                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
                     <h2>تعداد پرداخت‌ها</h2>
                     <p class="admin-dashboard-kpi-value"><?= e($formatNumber($payments['total_payments'] ?? 0)) ?></p>
                     <p class="admin-dashboard-kpi-foot">مبلغ پرداخت‌ها: <strong><?= e($formatNumber($payments['total_amount'] ?? 0)) ?></strong></p>
                 </article>
                 <article class="admin-dashboard-kpi admin-dashboard-kpi-items">
-                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-icon" aria-hidden="true">▣</span><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
+                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
                     <h2>تعداد کالاهای سفارش‌داده‌شده</h2>
                     <p class="admin-dashboard-kpi-value"><?= e($formatNumber($orderItems['total_quantity'] ?? 0)) ?></p>
                     <p class="admin-dashboard-kpi-foot">خطوط سفارش: <strong><?= e($formatNumber($orderItems['total_lines'] ?? 0)) ?></strong></p>
                 </article>
                 <article class="admin-dashboard-kpi admin-dashboard-kpi-inventory">
-                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-icon" aria-hidden="true">▥</span><span class="admin-dashboard-kpi-caption">وضعیت فعلی</span></div>
+                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-caption">وضعیت فعلی</span></div>
                     <h2>مجموع موجودی</h2>
                     <p class="admin-dashboard-kpi-value"><?= e($formatNumber($inventory['total_quantity'] ?? 0)) ?></p>
                     <p class="admin-dashboard-kpi-foot">موجودی در دسترس: <strong><?= e($formatNumber($inventory['total_available_quantity'] ?? 0)) ?></strong></p>
