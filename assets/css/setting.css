@@ -155,6 +155,7 @@
   --z-dropdown: 1050;
   --z-header: 1000;
   --z-modal: 2000;
+  --z-index-network-notice: 2100;
 
   /* 06. Alternatives */
   --alternative-accent: var(--color-primary);

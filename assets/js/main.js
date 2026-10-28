@@ -48,6 +48,8 @@ const deferredModuleManifest = [
   { path: "./modules/checkout.js", aliases: ["checkout"] },
   { path: "./modules/payment.js", aliases: ["payment"] },
   { path: "./modules/notification.js", aliases: ["notification"] },
+  { path: "./modules/performance.js", always: true },
+  { path: "./modules/network-recovery.js", always: true },
 ];
 
 const pageCapabilities = () => {
@@ -66,6 +68,7 @@ const pageCapabilities = () => {
 };
 
 const shouldLoad = (entry, capabilities) => {
+  if (entry.always) return true;
   if (entry.selectors?.some((selector) => document.querySelector(selector))) {
     return true;
   }
