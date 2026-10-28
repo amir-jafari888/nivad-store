@@ -3,3 +3,7 @@
 @import url(./forms-desktop.css);
 @import url(./tables-desktop.css);
 @import url(./auth-desktop.css);
+
+@import url(./dashboard-desktop.css);
+@import url(./settings-desktop.css);
+@import url(./shared-shell-desktop.css);

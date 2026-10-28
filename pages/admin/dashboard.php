@@ -40,27 +40,23 @@ foreach ($salesByPeriod as $periodRow) {
     $maxOrders = max($maxOrders, (float)($periodRow['total_orders'] ?? 0));
 }
 
-$adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
+$firstName = trim((string)($admin['first_name'] ?? ''));
+$lastName = trim((string)($admin['last_name'] ?? ''));
+$adminName = trim($firstName . ' ' . $lastName);
+if ($adminName === '') {
+    $adminName = 'مدیر سیستم';
+}
+$adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8');
 ?>
 
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" data-admin-theme="light">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light dark">
+    <meta name="color-scheme" content="light">
     <title>داشبورد مدیریت | نیواد</title>
     <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
-    <script>
-        (() => {
-            try {
-                const saved = localStorage.getItem('nivad-admin-theme');
-                if (saved === 'light' || saved === 'dark') {
-                    document.documentElement.dataset.adminTheme = saved;
-                }
-            } catch (_) {}
-        })();
-    </script>
     <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </head>
 <body class="admin-dashboard-page">
@@ -70,31 +66,75 @@ $adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
             <span class="admin-dashboard-brand-mark" aria-hidden="true">N</span>
             <span>نیواد <small>پنل مدیریت</small></span>
         </a>
-        <div class="admin-dashboard-user">
+        <div class="admin-dashboard-user" aria-label="حساب مدیر واردشده">
+            <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitial) ?></span>
             <span class="admin-dashboard-user-name"><?= e($adminName) ?></span>
-            <form method="post" action="<?= e(url('/admin/logout')) ?>">
-                <input type="hidden" name="csrf_token" value="<?= e(Csrf::token()) ?>">
-                <button class="admin-dashboard-logout" type="submit">خروج</button>
-            </form>
         </div>
     </header>
 
     <div class="admin-dashboard-shell">
         <aside class="admin-dashboard-sidebar" aria-label="ناوبری مدیریت">
             <p class="admin-dashboard-nav-label">مدیریت فروشگاه</p>
-            <nav>
-                <a href="<?= e(url('/admin')) ?>" aria-current="page"><span aria-hidden="true">▦</span> داشبورد</a>
-                <a href="<?= e(url('/admin/products')) ?>"><span aria-hidden="true">▣</span> محصولات</a>
-                <a href="<?= e(url('/admin/categories')) ?>"><span aria-hidden="true">◫</span> دسته‌بندی‌ها</a>
-                <a href="<?= e(url('/admin/brands')) ?>"><span aria-hidden="true">◇</span> برندها</a>
-                <a href="<?= e(url('/admin/orders')) ?>"><span aria-hidden="true">▤</span> سفارش‌ها</a>
-                <a href="<?= e(url('/admin/inventory')) ?>"><span aria-hidden="true">▥</span> موجودی</a>
-                <a href="<?= e(url('/admin/payments')) ?>"><span aria-hidden="true">◈</span> پرداخت‌ها</a>
-                <a href="<?= e(url('/admin/reports')) ?>"><span aria-hidden="true">▧</span> گزارش‌ها</a>
+            <nav class="admin-dashboard-nav">
+                <a class="admin-dashboard-nav-link" href="<?= e(url('/admin')) ?>" aria-current="page"><span aria-hidden="true">⌂</span> داشبورد</a>
+                <details class="admin-dashboard-nav-group" open>
+                    <summary>کاتالوگ محصولات</summary>
+                    <div class="admin-dashboard-nav-submenu">
+                        <a href="<?= e(url('/admin/products')) ?>">محصولات</a>
+                        <a href="<?= e(url('/admin/categories')) ?>">دسته‌بندی‌ها</a>
+                        <a href="<?= e(url('/admin/brands')) ?>">برندها</a>
+                        <a href="<?= e(url('/admin/collections')) ?>">مجموعه‌ها</a>
+                        <a href="<?= e(url('/admin/attributes')) ?>">ویژگی‌ها</a>
+                        <a href="<?= e(url('/admin/product-types')) ?>">نوع محصول</a>
+                        <a href="<?= e(url('/admin/specifications')) ?>">مشخصات فنی</a>
+                    </div>
+                </details>
+                <details class="admin-dashboard-nav-group">
+                    <summary>ویترین و دیسکاوری</summary>
+                    <div class="admin-dashboard-nav-submenu">
+                        <a href="<?= e(url('/admin/sliders')) ?>">اسلایدرها</a>
+                        <a href="<?= e(url('/admin/discovery')) ?>">دیسکاوری</a>
+                        <a href="<?= e(url('/admin/compatibility')) ?>">سازگاری</a>
+                        <a href="<?= e(url('/admin/setups')) ?>">ستاپ‌ها</a>
+                    </div>
+                </details>
+                <details class="admin-dashboard-nav-group">
+                    <summary>فروش و انبار</summary>
+                    <div class="admin-dashboard-nav-submenu">
+                        <a href="<?= e(url('/admin/orders')) ?>">سفارش‌ها</a>
+                        <a href="<?= e(url('/admin/payments')) ?>">پرداخت‌ها</a>
+                        <a href="<?= e(url('/admin/coupons')) ?>">کدهای تخفیف</a>
+                        <a href="<?= e(url('/admin/inventory')) ?>">موجودی و گردش انبار</a>
+                        <a href="<?= e(url('/admin/shipping/shipments')) ?>">ارسال و روش‌های ارسال</a>
+                    </div>
+                </details>
+                <details class="admin-dashboard-nav-group">
+                    <summary>مشتریان و پشتیبانی</summary>
+                    <div class="admin-dashboard-nav-submenu">
+                        <a href="<?= e(url('/admin/users')) ?>">کاربران</a>
+                        <a href="<?= e(url('/admin/questions')) ?>">پرسش‌ها</a>
+                        <a href="<?= e(url('/admin/reviews')) ?>">دیدگاه‌ها</a>
+                        <a href="<?= e(url('/admin/returns')) ?>">مرجوعی‌ها</a>
+                        <a href="<?= e(url('/admin/refunds')) ?>">بازپرداخت‌ها</a>
+                        <a href="<?= e(url('/admin/notifications')) ?>">اعلان‌ها</a>
+                    </div>
+                </details>
+                <details class="admin-dashboard-nav-group">
+                    <summary>گزارش و ممیزی</summary>
+                    <div class="admin-dashboard-nav-submenu">
+                        <a href="<?= e(url('/admin/reports')) ?>">گزارش‌های فروش</a>
+                        <a href="<?= e(url('/admin/audit-logs')) ?>">گزارش رویدادها</a>
+                    </div>
+                </details>
+                <a class="admin-dashboard-nav-link" href="<?= e(url('/admin/settings')) ?>">تنظیمات رابط کاربری</a>
             </nav>
-            <div class="admin-dashboard-sidebar-note">
-                <span class="admin-dashboard-status-dot" aria-hidden="true"></span>
-                <span>نمای کلی فروشگاه</span>
+            <div class="admin-dashboard-account">
+                <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitial) ?></span>
+                <span class="admin-dashboard-account-name"><?= e($adminName) ?></span>
+                <form method="post" action="<?= e(url('/admin/logout')) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= e(Csrf::token()) ?>">
+                    <button class="admin-dashboard-logout" type="submit">خروج از پنل</button>
+                </form>
             </div>
         </aside>
 
@@ -113,25 +153,25 @@ $adminName = (string)($admin['name'] ?? $admin['username'] ?? 'مدیر');
 
             <section class="admin-dashboard-kpis" aria-label="شاخص‌های اصلی">
                 <article class="admin-dashboard-kpi admin-dashboard-kpi-orders">
-                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-icon" aria-hidden="true">▤</span><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
+                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
                     <h2>کل سفارش‌ها</h2>
                     <p class="admin-dashboard-kpi-value"><?= e($formatNumber($orders['total_orders'] ?? 0)) ?></p>
                     <p class="admin-dashboard-kpi-foot">مبلغ سفارش‌ها: <strong><?= e($formatNumber($orders['total_amount'] ?? 0)) ?></strong></p>
                 </article>
                 <article class="admin-dashboard-kpi admin-dashboard-kpi-payments">
-                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-icon" aria-hidden="true">◈</span><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
+                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
                     <h2>تعداد پرداخت‌ها</h2>
                     <p class="admin-dashboard-kpi-value"><?= e($formatNumber($payments['total_payments'] ?? 0)) ?></p>
                     <p class="admin-dashboard-kpi-foot">مبلغ پرداخت‌ها: <strong><?= e($formatNumber($payments['total_amount'] ?? 0)) ?></strong></p>
                 </article>
                 <article class="admin-dashboard-kpi admin-dashboard-kpi-items">
-                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-icon" aria-hidden="true">▣</span><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
+                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-caption">تمام بازه‌ها</span></div>
                     <h2>تعداد کالاهای سفارش‌داده‌شده</h2>
                     <p class="admin-dashboard-kpi-value"><?= e($formatNumber($orderItems['total_quantity'] ?? 0)) ?></p>
                     <p class="admin-dashboard-kpi-foot">خطوط سفارش: <strong><?= e($formatNumber($orderItems['total_lines'] ?? 0)) ?></strong></p>
                 </article>
                 <article class="admin-dashboard-kpi admin-dashboard-kpi-inventory">
-                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-icon" aria-hidden="true">▥</span><span class="admin-dashboard-kpi-caption">وضعیت فعلی</span></div>
+                    <div class="admin-dashboard-kpi-top"><span class="admin-dashboard-kpi-caption">وضعیت فعلی</span></div>
                     <h2>مجموع موجودی</h2>
                     <p class="admin-dashboard-kpi-value"><?= e($formatNumber($inventory['total_quantity'] ?? 0)) ?></p>
                     <p class="admin-dashboard-kpi-foot">موجودی در دسترس: <strong><?= e($formatNumber($inventory['total_available_quantity'] ?? 0)) ?></strong></p>

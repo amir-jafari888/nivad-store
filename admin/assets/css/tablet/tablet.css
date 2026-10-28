@@ -3,3 +3,7 @@
 @import url(./forms-tablet.css);
 @import url(./tables-tablet.css);
 @import url(./auth-tablet.css);
+
+@import url(./dashboard-tablet.css);
+@import url(./settings-tablet.css);
+@import url(./shared-shell-tablet.css);
