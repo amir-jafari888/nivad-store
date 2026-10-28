@@ -69,10 +69,6 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
         <div class="admin-dashboard-user" aria-label="حساب مدیر واردشده">
             <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitial) ?></span>
             <span class="admin-dashboard-user-name"><?= e($adminName) ?></span>
-            <form method="post" action="<?= e(url('/admin/logout')) ?>">
-                <input type="hidden" name="csrf_token" value="<?= e(Csrf::token()) ?>">
-                <button class="admin-dashboard-logout" type="submit">خروج</button>
-            </form>
         </div>
     </header>
 
@@ -132,9 +128,13 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                 </details>
                 <a class="admin-dashboard-nav-link" href="<?= e(url('/admin/settings')) ?>">تنظیمات رابط کاربری</a>
             </nav>
-            <div class="admin-dashboard-sidebar-note">
-                <span class="admin-dashboard-status-dot" aria-hidden="true"></span>
-                <span>نمای کلی فروشگاه</span>
+            <div class="admin-dashboard-account">
+                <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitial) ?></span>
+                <span class="admin-dashboard-account-name"><?= e($adminName) ?></span>
+                <form method="post" action="<?= e(url('/admin/logout')) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= e(Csrf::token()) ?>">
+                    <button class="admin-dashboard-logout" type="submit">خروج از پنل</button>
+                </form>
             </div>
         </aside>
 
