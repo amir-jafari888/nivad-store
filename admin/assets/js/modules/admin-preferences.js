@@ -25,7 +25,7 @@ const adminPreferences = () => {
 
     const groups = document.querySelectorAll(".admin-shared-nav-group, .admin-dashboard-nav-group");
     groups.forEach((group, index) => {
-      if (index === 0 && preferences.openFirstGroup) group.open = true;
+      if (index === 0) group.open = preferences.openFirstGroup;
     });
 
     document.querySelectorAll("[data-admin-preference]").forEach((control) => {
