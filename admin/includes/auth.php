@@ -20,9 +20,8 @@ if ($currentAdmin === null) {
 }
 
 /*
- * Admin-owned shared assets and navigation.
- * The dashboard has its own shell; every other authenticated admin page gets
- * the same RTL mega-navigation and a CSRF-protected logout action.
+ * Shared authenticated-admin shell.
+ * Dashboard keeps its own shell; all other admin pages receive this RTL shell.
  */
 ob_start(static function (string $html) use ($currentAdmin): string {
     if (stripos($html, '</head>') !== false) {
@@ -65,7 +64,7 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     $topbar = '
     <header class="admin-shared-topbar">
         <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
-        <div class="admin-shared-topbar-profile">
+        <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده">
             <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
             <span class="admin-shared-account-name">' . e($adminName) . '</span>
         </div>
@@ -157,8 +156,8 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     ) ?? $html;
 
     return preg_replace_callback(
-        '/<body\\b[^>]*>/i',
-        static function (array $matches) use ($nav): string {
+        '/<body\b[^>]*>/i',
+        static function (array $matches) use ($nav, $topbar): string {
             return $matches[0] . $topbar . $nav;
         },
         $html,

@@ -42,19 +42,23 @@ $mainJs = adminRedesignRead('admin/assets/js/main.js');
 $tokens = adminRedesignRead('admin/assets/css/setting.css');
 $settings = adminRedesignRead('admin/settings/index.php');
 $preferences = adminRedesignRead('admin/assets/js/modules/admin-preferences.js');
+$navigationState = adminRedesignRead('admin/assets/js/modules/navigation-state.js');
 
 adminRedesignCheck(str_contains($dashboardEntry, "pages/admin/dashboard.php"), 'Direct /admin entry reuses the shared dashboard view');
 adminRedesignCheck(str_contains($dashboardView, "first_name") && str_contains($dashboardView, "last_name"), 'Dashboard identity uses first and last name fields');
 adminRedesignCheck(!str_contains($dashboardView, "['email']") && !str_contains($dashboardView, "['username']"), 'Dashboard does not expose email or username as the display-name fallback');
 adminRedesignCheck(str_contains($dashboardView, 'admin-dashboard-nav-group') && str_contains($authInclude, 'admin-shared-nav-group'), 'Dashboard and authenticated pages have grouped mega-navigation');
 adminRedesignCheck(str_contains($authInclude, "url('/admin/settings')") && is_file($root . '/admin/settings/index.php'), 'Shared navigation points to an implemented settings page');
+adminRedesignCheck(str_contains($authInclude, 'use ($nav, $topbar)'), 'Shared shell closure captures both navigation and topbar safely');
 adminRedesignCheck(str_contains($logout, 'Csrf::verify') && str_contains($logout, 'Request::isPost') && str_contains($logout, 'AdminAuth::logout'), 'Direct logout endpoint enforces POST and CSRF before clearing admin auth');
 adminRedesignCheck(str_contains($htaccess, 'RewriteRule ^admin/logout/?$ admin/logout.php'), 'Apache rewrite points /admin/logout to the direct endpoint');
 adminRedesignCheck(!str_contains($mainJs, 'modules/theme.js') && !str_contains($mainJs, 'adminTheme()'), 'Theme toggle module is no longer initialized');
 adminRedesignCheck(!str_contains($tokens, 'data-admin-theme="dark"'), 'Dark theme token override has been removed');
+adminRedesignCheck(!is_file($root . '/admin/assets/css/auth.css'), 'Legacy root auth.css is removed from the three-breakpoint CSS architecture');
 adminRedesignCheck(str_contains($settings, 'data-admin-preferences-form') && str_contains($preferences, 'localStorage'), 'Settings page saves browser-local interface preferences');
 adminRedesignCheck(str_contains($mainCss, './setting.css') && str_contains($mainCss, './mobile/mobile.css') && str_contains($mainCss, './tablet/tablet.css') && str_contains($mainCss, './desktop/desktop.css'), 'Admin CSS entrypoint retains token source and breakpoint bundles');
-adminRedesignCheck(str_contains($mainJs, 'modules/admin-preferences.js'), 'Admin preferences are initialized through main.js');
+adminRedesignCheck(str_contains($mainJs, 'modules/admin-preferences.js') && str_contains($mainJs, 'modules/navigation-state.js'), 'Admin interface modules are initialized through main.js');
+adminRedesignCheck(str_contains($navigationState, 'aria-current') && str_contains($navigationState, 'closest("details")'), 'Navigation state marks the active page and opens its mega-menu group');
 
 $cssRoot = $root . '/admin/assets/css';
 $cssDirs = ['mobile', 'tablet', 'desktop'];
