@@ -1,8 +1,8 @@
 @import url(./layout-mobile.css);
-@import url(./settings-mobile.css);
-@import url(./dashboard-mobile.css);
-@import url(./shared-shell-mobile.css);
 @import url(./components-mobile.css);
 @import url(./forms-mobile.css);
 @import url(./tables-mobile.css);
 @import url(./auth-mobile.css);
+@import url(./dashboard-mobile.css);
+@import url(./settings-mobile.css);
+@import url(./shared-shell-mobile.css);
