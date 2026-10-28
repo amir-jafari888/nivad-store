@@ -1,8 +1,8 @@
 @import url(./layout-tablet.css);
-@import url(./settings-tablet.css);
-@import url(./dashboard-tablet.css);
-@import url(./shared-shell-tablet.css);
 @import url(./components-tablet.css);
 @import url(./forms-tablet.css);
 @import url(./tables-tablet.css);
 @import url(./auth-tablet.css);
+@import url(./dashboard-tablet.css);
+@import url(./settings-tablet.css);
+@import url(./shared-shell-tablet.css);
