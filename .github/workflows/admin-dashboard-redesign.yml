@@ -1,0 +1,42 @@
+name: Admin Dashboard Redesign Integrity
+
+on:
+  pull_request:
+    paths:
+      - "admin/**"
+      - "pages/admin/dashboard.php"
+      - ".htaccess"
+      - "test-admin-dashboard-redesign.php"
+      - ".github/workflows/admin-dashboard-redesign.yml"
+  push:
+    branches:
+      - "feature/admin-dashboard-shell-2026-10-28"
+    paths:
+      - "admin/**"
+      - "pages/admin/dashboard.php"
+      - ".htaccess"
+      - "test-admin-dashboard-redesign.php"
+      - ".github/workflows/admin-dashboard-redesign.yml"
+
+jobs:
+  static-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+      - name: PHP syntax checks
+        run: |
+          php -l admin/index.php
+          php -l admin/includes/auth.php
+          php -l admin/logout.php
+          php -l admin/settings/index.php
+          php -l pages/admin/dashboard.php
+          php -l test-admin-dashboard-redesign.php
+          php -l test-admin-role-audit.php
+      - name: Run read-only admin redesign contract test
+        run: php test-admin-dashboard-redesign.php
