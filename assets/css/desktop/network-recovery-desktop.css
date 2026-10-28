@@ -1,0 +1,29 @@
+.network-recovery-notice {
+  position: fixed;
+  inset-block-start: var(--spacing-3);
+  inset-inline-start: 50%;
+  z-index: var(--z-index-network-notice);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  inline-size: min(900px, calc(100vw - var(--spacing-10)));
+  transform: translateX(-50%);
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+}
+.network-recovery-notice__message { flex: 1; margin: 0; font-size: var(--font-size-sm); line-height: var(--line-height-normal); }
+.network-recovery-notice__action, .network-recovery-notice__dismiss {
+  flex: 0 0 auto; min-height: var(--control-height-sm); padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface);
+  color: var(--color-text); font: inherit; text-decoration: none; cursor: pointer;
+}
+.network-recovery-notice__action { border-color: var(--color-primary); color: var(--color-primary); }
+.network-recovery-notice[data-state="offline"], .network-recovery-notice[data-state="server"],
+.network-recovery-notice[data-state="timeout"], .network-recovery-notice[data-state="session"] { border-inline-start: 4px solid var(--color-warning); }
+.network-recovery-notice[data-state="connection"] { border-inline-start: 4px solid var(--color-error); }
+.network-recovery-notice[data-state="online"] { border-inline-start: 4px solid var(--color-success); }
+.network-recovery-notice :is(a, button):focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); }
