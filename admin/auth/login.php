@@ -146,7 +146,7 @@ if (Request::isPost()) {
                             data-password-toggle
                             aria-label="نمایش رمز عبور"
                             aria-controls="password"
-                            aria-pressed="false">
+>
                             <svg
                                 data-password-icon="visible"
                                 viewBox="0 0 24 24"
