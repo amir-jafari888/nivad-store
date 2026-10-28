@@ -125,9 +125,9 @@ try {
     roleAuditOut('Non-deleted permission definitions in database: ' . $permissionCount);
     roleAuditOut('No changes were made to the database.');
 } catch (Throwable $exception) {
-    http_response_code(2);
     roleAuditOut('BLOCKED: role inventory could not be read from the configured database.');
-    roleAuditOut('Reason: ' . $exception->getMessage());
+    error_log('Nivad admin role audit failed: ' . $exception->getMessage());
+    roleAuditOut('Reason: check the local PHP error log for database details.');
     roleAuditOut('No changes were made to the database.');
     exit(2);
 }
