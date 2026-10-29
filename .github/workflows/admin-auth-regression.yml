@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "feature/admin-panel-implementation-2026-10-29"
+      - "feature/admin-panel-clean-2026-10-29"
 
 permissions:
   contents: read
@@ -27,6 +28,7 @@ jobs:
           php -l app/Core/AdminPermissionCatalog.php
           php -l app/Core/SensitiveDataRedactor.php
           php -l app/Core/AdminFeatureRegistry.php
+          php -l app/Core/AdminCapabilityContractRegistry.php
           php -l app/Core/AdminActorContext.php
           php -l app/Core/AdminRouteFeatureMap.php
           php -l app/Core/AdminRoutePermissionMap.php
@@ -39,6 +41,7 @@ jobs:
           php -l app/Middleware/AdminRoutePermissionMiddleware.php
           php -l app/Services/AdminFeatureAccessService.php
           php -l app/Services/AdminFeatureContractValidator.php
+          php -l app/Services/AdminCapabilityReadinessService.php
           php -l app/Services/AdminHealthCheckService.php
           php -l app/Services/AdminMediaStorageService.php
           php -l app/Services/AdminSavedViewValidator.php
@@ -72,6 +75,7 @@ jobs:
           php -l test-admin-panel-foundation.php
           php -l test-admin-nondb-foundations.php
           php -l test-admin-route-contracts.php
+          php -l test-admin-capability-contracts.php
 
       - name: Run authentication and authorization regression
         run: php test-admin-auth-route-regression.php
@@ -81,6 +85,9 @@ jobs:
 
       - name: Run non-database foundation contracts
         run: php test-admin-nondb-foundations.php
+
+      - name: Run admin capability contracts
+        run: php test-admin-capability-contracts.php
 
       - name: Run admin route contract audit
         run: php test-admin-route-contracts.php
