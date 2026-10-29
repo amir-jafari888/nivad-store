@@ -18,28 +18,33 @@ final class AdminRoutePermissionMiddleware implements MiddlewareInterface
             return $next($context);
         }
 
-        $adminUserId = AdminAuth::id();
-        if (!is_int($adminUserId) || $adminUserId < 1) {
-            throw new AdminAuthenticationException(
-                'برای ادامه باید وارد پنل مدیریت شوید.'
-            );
-        }
+        // Always validate the session before reading the admin identity or
+        // consulting permission data; never rely on a session ID alone.
+        return (new AdminAuthMiddleware())->handle(
+            $context,
+            function (RequestContext $authenticatedContext) use ($routeName, $next): mixed {
+                $adminUserId = AdminAuth::id();
+                if (!is_int($adminUserId) || $adminUserId < 1) {
+                    throw new AdminAuthenticationException(
+                        'برای ادامه باید وارد پنل مدیریت شوید.'
+                    );
+                }
 
-        $featureId = AdminRouteFeatureMap::featureForRoute($routeName);
-        if ($featureId === null) {
-            // Unknown route-to-feature mappings fail closed; never guess a
-            // permission from a route name or allow the request by default.
-            throw new AuthorizationException(
-                'برای این مسیر قرارداد قابلیت و مجوز ثبت نشده است.'
-            );
-        }
+                $featureId = AdminRouteFeatureMap::featureForRoute($routeName);
+                if ($featureId === null) {
+                    throw new AuthorizationException(
+                        'برای این مسیر قرارداد قابلیت و مجوز ثبت نشده است.'
+                    );
+                }
 
-        if (!(new AdminFeatureAccessService())->canAccess($adminUserId, $featureId)) {
-            throw new AuthorizationException(
-                'برای اجرای این قابلیت مجوز کافی ندارید.'
-            );
-        }
+                if (!(new AdminFeatureAccessService())->canAccess($adminUserId, $featureId)) {
+                    throw new AuthorizationException(
+                        'برای اجرای این قابلیت مجوز کافی ندارید.'
+                    );
+                }
 
-        return $next($context);
+                return $next($authenticatedContext);
+            }
+        );
     }
 }
