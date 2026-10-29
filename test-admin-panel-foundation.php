@@ -71,7 +71,7 @@ adminFoundationCheck('Permission catalog includes sensitive-operation approvals'
 
 adminFoundationCheck('Audit repository persists old/new snapshots', str_contains($auditRepository, 'old_values') && str_contains($auditRepository, 'new_values') && str_contains($auditRepository, 'public function create('));
 adminFoundationCheck('Audit service records actor and request metadata', str_contains($auditService, 'AdminActorContext') && str_contains($auditService, 'Request::ip()') && str_contains($auditService, 'Request::userAgent()'));
-adminFoundationCheck('Audit service redacts nested sensitive values', str_contains($auditService, 'SensitiveDataRedactor::encode(') && str_contains($redactor, '[REDACTED]'));
+adminFoundationCheck('Audit service redacts nested sensitive values', str_contains($auditService, 'AdminAuditSnapshotService') && str_contains(adminFoundationRead('app/Services/AdminAuditSnapshotService.php'), 'SensitiveDataRedactor::redact(') && str_contains($redactor, '[REDACTED]'));
 adminFoundationCheck('Audit service bounds large values', str_contains($redactor, '[OMITTED: VALUE TOO LARGE]'));
 
 adminFoundationCheck('Session inventory query exists', str_contains($sessionRepository, 'findForMonitoring('));
