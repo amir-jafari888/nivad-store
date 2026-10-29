@@ -18,6 +18,15 @@ on:
       - "database/seeds/20261029_admin_permission_catalog.sql"
       - "test-admin-auth-route-regression.php"
       - "test-admin-panel-foundation.php"
+      - "app/Core/AdminFeatureRegistry.php"
+      - "app/Core/AdminRequestContext.php"
+      - "app/Middleware/AdminFeatureMiddleware.php"
+      - "app/Services/AdminFeatureAccessService.php"
+      - "app/Services/AdminFeatureContractValidator.php"
+      - "app/Services/AdminHealthCheckService.php"
+      - "app/Services/AdminOperationPolicy.php"
+      - "app/Services/GmailSmtpTransport.php"
+      - "test-admin-nondb-foundations.php"
       - ".github/workflows/admin-auth-regression.yml"
   push:
     branches:
@@ -59,6 +68,15 @@ jobs:
       - name: Lint changed and shared foundation PHP files
         run: |
           php -l app/Core/AdminPermissionCatalog.php
+          php -l app/Core/AdminFeatureRegistry.php
+          php -l app/Core/AdminRequestContext.php
+          php -l app/Core/AdminPermissionCatalog.php
+          php -l app/Middleware/AdminFeatureMiddleware.php
+          php -l app/Services/AdminFeatureAccessService.php
+          php -l app/Services/AdminFeatureContractValidator.php
+          php -l app/Services/AdminHealthCheckService.php
+          php -l app/Services/AdminOperationPolicy.php
+          php -l app/Services/GmailSmtpTransport.php
           php -l app/Middleware/AdminAuthMiddleware.php
           php -l app/Repositories/AdminFoundationRepository.php
           php -l app/Repositories/AdminNotificationRepository.php
@@ -77,3 +95,6 @@ jobs:
 
       - name: Run shared foundation regression
         run: php test-admin-panel-foundation.php
+
+      - name: Run non-database foundation contracts
+        run: php test-admin-nondb-foundations.php
