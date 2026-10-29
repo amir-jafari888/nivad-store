@@ -36,7 +36,7 @@ $check('Desktop sidebar is anchored to the physical right edge', str_contains($d
 $check('Tablet layout keeps navigation in flow without overlay', str_contains($tablet, 'position:static!important') && str_contains($tablet, 'admin-shared-sidebar'));
 $check('Mobile layout keeps navigation in flow without overlay', str_contains($mobile, 'position:static!important') && str_contains($mobile, 'admin-shared-sidebar'));
 $check('Dashboard has labelled demo data and 14-day sample series', str_contains($dashboard, '$isDemoDashboard') && str_contains($dashboard, 'داده نمونه') && str_contains($dashboard, '$demoOrders') && str_contains($dashboard, '$demoSales'));
-$check('Dashboard charts accept live metrics when status is ready', str_contains($dashboard, "$salesByPeriodStatus = (string)($metrics['sales_by_period_status'] ?? 'dependency')") && str_contains($dashboard, "['ready', 'demo']"));
+$check('Dashboard charts accept live metrics when status is ready', str_contains($dashboard, '$salesByPeriodStatus = (string)($metrics[\'sales_by_period_status\'] ?? \'dependency\')') && str_contains($dashboard, "['ready', 'demo']"));
 $check('Admin typography uses the storefront Persian font family', str_contains($tokens, 'font-family: "Vazirmatn"') && str_contains($tokens, '--admin-font-family: "Vazirmatn"'));
 $check('Responsive CSS architecture remains split by breakpoint', str_contains($mainCss, './mobile/mobile.css') && str_contains($mainCss, './tablet/tablet.css') && str_contains($mainCss, './desktop/desktop.css'));
 $check('Navigation state continues to expose active page accessibly', str_contains($navigationJs, 'aria-current') && str_contains($navigationJs, 'closest("details")'));
