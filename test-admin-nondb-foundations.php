@@ -40,6 +40,7 @@ require_once __DIR__ . '/app/Core/Exceptions/AuthorizationException.php';
 require_once __DIR__ . '/app/Services/AdminFeatureContractValidator.php';
 require_once __DIR__ . '/app/Services/AdminAuditSnapshotService.php';
 require_once __DIR__ . '/app/Services/AdminOperationPolicy.php';
+require_once __DIR__ . '/app/Services/AdminSecurityEventPolicy.php';
 require_once __DIR__ . '/app/Services/AdminNotificationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminHealthCheckService.php';
 require_once __DIR__ . '/app/Services/AdminMediaStorageService.php';
@@ -59,6 +60,13 @@ adminNonDbCheck('Every feature has a permission and dependency metadata', count(
 adminNonDbCheck('All feature permissions exist in the canonical permission catalog', $contract['permission_count'] >= 46 && count(array_filter($contract['errors'], static fn($error) => $error['code'] === 'permission_missing_from_catalog')) === 0);
 adminNonDbCheck('All feature dependencies exist and the dependency graph is acyclic', $contract['valid'] === true && $contract['dependency_edges_checked'] > 0);
 adminNonDbCheck('Feature contract validator does not access the database', $contract['database_accessed'] === false);
+
+$securityEventPolicy = new AdminSecurityEventPolicy();
+$failedLoginEvent = $securityEventPolicy->requireDefinition('admin.auth.login_failed');
+$criticalEvent = $securityEventPolicy->requireDefinition('admin.sensitive_data.exposure_suspected');
+adminNonDbCheck('Security event policy defines authentication events consistently', $failedLoginEvent['severity'] === 'warning' && $securityEventPolicy->definition('admin.auth.logout')['severity'] === 'info');
+adminNonDbCheck('Critical security events request notification and incident handling', $criticalEvent['severity'] === 'critical' && $criticalEvent['notify_email'] === true && $criticalEvent['open_incident'] === true);
+adminNonDbCheck('Unknown security event keys fail closed', $securityEventPolicy->definition('admin.unknown.event') === null);
 
 $redacted = SensitiveDataRedactor::redact([
     'password' => 'never-log-this',
