@@ -46,7 +46,7 @@ final class AdminFoundationRepository
                 ) VALUES (
                     :entity_type, :entity_id, :version_number, :status,
                     :snapshot_json, :scheduled_at,
-                    CASE WHEN :published_status = 'published' THEN CURRENT_TIMESTAMP ELSE NULL END,
+                    CASE WHEN :published_status = \'published\' THEN CURRENT_TIMESTAMP ELSE NULL END,
                     :created_by_admin_id
                 )'
             );
