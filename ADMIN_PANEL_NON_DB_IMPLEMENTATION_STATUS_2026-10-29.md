@@ -15,6 +15,7 @@
 - `app/Middleware/AdminFeatureMiddleware.php`: authenticates the admin session before checking the feature permission.
 - `app/Middleware/AdminRoutePermissionMiddleware.php`: resolves the named route to a feature and enforces the mapped permission; it validates the session first and fails closed on unmapped admin routes.
 - `app/Core/AdminRequestContext.php`: generates/validates a correlation ID and publishes `X-Request-ID` on protected responses. Persistence of that ID in the existing audit schema is not claimed.
+- `app/Core/AdminActorContext.php`: validates the current admin session before deriving an actor ID and rejects caller-supplied actor IDs that do not match the authenticated identity. Connected to foundation mutations, audit writing, and admin notification creation.
 
 ### Shared security controls
 - `app/Core/SensitiveDataRedactor.php`: central recursive redaction for passwords, tokens, secrets, cookies, payment identifiers, credentials, oversized values, unsupported values, and excessive nesting.
@@ -45,7 +46,7 @@ Static inspection of `routes/api.php` found **161 named admin API routes**:
 Latest successful run on this branch:
 - Authentication/authorization regression: **19 PASS, 0 FAIL**
 - Shared foundation regression: **30 PASS, 0 FAIL**
-- Non-database foundation contracts: **23 PASS, 0 FAIL**
+- Non-database foundation contracts: **26 PASS, 0 FAIL**
 - Admin route contract audit: **6 PASS, 0 FAIL**
 - PHP lint: all files in the workflow passed.
 
