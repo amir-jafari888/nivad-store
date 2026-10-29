@@ -26,6 +26,7 @@ jobs:
         run: |
           php -l app/Core/AdminPermissionCatalog.php
           php -l app/Core/AdminFeatureRegistry.php
+          php -l app/Core/AdminRouteFeatureMap.php
           php -l app/Core/AdminRequestContext.php
           php -l app/Core/AdminPermissionCatalog.php
           php -l app/Middleware/AdminFeatureMiddleware.php
@@ -55,3 +56,6 @@ jobs:
 
       - name: Run non-database foundation contracts
         run: php test-admin-nondb-foundations.php
+
+      - name: Run admin route contract audit
+        run: php test-admin-route-contracts.php
