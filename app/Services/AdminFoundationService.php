@@ -140,6 +140,10 @@ final class AdminFoundationService
         ?array $result = null,
         ?string $errorSummary = null
     ): bool {
+        // This service method is an authenticated admin command. Background
+        // workers should update the repository through a dedicated worker path.
+        $this->actors->requireCurrentAdmin();
+
         if ($jobId < 1) {
             return false;
         }
