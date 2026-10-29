@@ -111,3 +111,24 @@ jobs:
 
       - name: Run admin UI shell contract regression
         run: php test-admin-ui-shell-contracts.php
+
+  admin-ui-shell-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Lint admin UI PHP views
+        run: |
+          php -l admin/includes/auth.php
+          php -l pages/admin/dashboard.php
+          php -l test-admin-ui-shell-contracts.php
+
+      - name: Run read-only admin UI shell contracts
+        run: php test-admin-ui-shell-contracts.php
