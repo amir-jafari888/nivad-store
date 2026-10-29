@@ -28,8 +28,8 @@ jobs:
           php -l app/Core/AdminFeatureRegistry.php
           php -l app/Core/AdminRouteFeatureMap.php
           php -l app/Core/AdminRequestContext.php
-          php -l app/Core/AdminPermissionCatalog.php
           php -l app/Middleware/AdminFeatureMiddleware.php
+          php -l app/Middleware/AdminRoutePermissionMiddleware.php
           php -l app/Services/AdminFeatureAccessService.php
           php -l app/Services/AdminFeatureContractValidator.php
           php -l app/Services/AdminHealthCheckService.php
@@ -47,6 +47,8 @@ jobs:
           php -l app/Services/AuthorizationService.php
           php -l test-admin-auth-route-regression.php
           php -l test-admin-panel-foundation.php
+          php -l test-admin-nondb-foundations.php
+          php -l test-admin-route-contracts.php
 
       - name: Run authentication and authorization regression
         run: php test-admin-auth-route-regression.php
