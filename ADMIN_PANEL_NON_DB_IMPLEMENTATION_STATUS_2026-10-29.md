@@ -25,6 +25,9 @@
 - `app/Services/AdminNotificationPolicy.php`: event-key/severity validation, priority, configurable email threshold, rate-limit decision contract, and deterministic recipient-aware deduplication key.
 - `app/Services/AdminHealthCheckService.php`: non-invasive PHP/extensions/source readiness checks. It does not connect to MySQL or the network and reports database readiness as `blocked`.
 - `app/Services/AdminMediaStorageService.php`: validates image MIME/content/dimensions/size/hash and can store uploads under an explicitly configured private absolute path outside the web root. It does not write metadata to the DB.
+- `app/Services/AdminPreviewTokenService.php`: issues short-lived HMAC-signed preview tokens bound to a specific entity and admin identity; one-time/replay prevention still needs persistence.
+- `app/Services/AdminSavedViewValidator.php`: validates saved filter/sort structures and restricts fields/operators; query providers must still map fields to explicit per-module allowlists.
+- `app/Core/AdminSearchProviderInterface.php` and `app/Services/AdminGlobalSearchService.php`: permission-aware search orchestration with bounded results, deduplication, and strict internal-admin URL validation. DB-backed search providers and route/UI wiring remain gated.
 
 ### Gmail / notifications
 - `app/Services/GmailSmtpTransport.php`: Gmail-only SMTP transport using environment variables, TLS verification, header validation, and stable non-secret error codes. No SMTP connection is made unless `send()` is called.
@@ -47,7 +50,7 @@ Static inspection of `routes/api.php` found **161 named admin API routes**:
 Latest successful run on this branch:
 - Authentication/authorization regression: **21 PASS, 0 FAIL**
 - Shared foundation regression: **30 PASS, 0 FAIL**
-- Non-database foundation contracts: **26 PASS, 0 FAIL**
+- Non-database foundation contracts: **32 PASS, 0 FAIL**
 - Admin route contract audit: **6 PASS, 0 FAIL**
 - PHP lint: all files in the workflow passed.
 
