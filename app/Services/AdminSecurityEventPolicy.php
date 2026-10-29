@@ -15,6 +15,11 @@ final class AdminSecurityEventPolicy
             'notify_email' => false,
             'open_incident' => false,
         ],
+        'admin.auth.logout' => [
+            'severity' => 'info',
+            'notify_email' => false,
+            'open_incident' => false,
+        ],
         'admin.auth.login_failed' => [
             'severity' => 'warning',
             'notify_email' => false,
