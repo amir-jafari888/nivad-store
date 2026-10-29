@@ -75,7 +75,7 @@ adminFoundationCheck('Audit service bounds large values', str_contains($auditSer
 
 adminFoundationCheck('Session inventory query exists', str_contains($sessionRepository, 'findForMonitoring('));
 adminFoundationCheck('Session inventory does not select session token hashes in its query', preg_match('/public function findForMonitoring\([\s\S]*?public function deleteExpired/s', $sessionRepository, $sessionMatch) === 1 && !str_contains($sessionMatch[0], 'session_token_hash'));
-adminFoundationCheck('Session inventory returns active/expired/revoked status', str_contains($sessionRepository, "'active'") && str_contains($sessionRepository, "'expired'") && str_contains($sessionRepository, "'revoked'"));
+adminFoundationCheck('Session inventory returns active/expired/revoked status', str_contains($sessionRepository, "THEN \\'active\\'") && str_contains($sessionRepository, "\\'expired\\'") && str_contains($sessionRepository, "\\'revoked\\'"));
 adminFoundationCheck('Session inventory is exposed through service layer', str_contains($sessionService, 'findForMonitoring('));
 
 adminFoundationCheck('Admin notification recipients are isolated per admin', str_contains($notificationRepository, 'admin_notification_recipients') && str_contains($notificationRepository, 'r.admin_user_id = :admin_user_id'));
