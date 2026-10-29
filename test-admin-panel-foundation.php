@@ -54,6 +54,7 @@ $notificationRepository = adminFoundationRead('app/Repositories/AdminNotificatio
 $notificationService = adminFoundationRead('app/Services/AdminNotificationService.php');
 $foundationRepository = adminFoundationRead('app/Repositories/AdminFoundationRepository.php');
 $foundationService = adminFoundationRead('app/Services/AdminFoundationService.php');
+$redactor = adminFoundationRead('app/Core/SensitiveDataRedactor.php');
 
 adminFoundationCheck('Additive foundation migration exists', $migration !== '');
 adminFoundationCheck('Migration declares additive-only/no auto-execution contract', str_contains($migration, 'NOT auto-executed') && str_contains($migration, 'Existing tables are not altered or dropped'));
@@ -70,7 +71,7 @@ adminFoundationCheck('Permission catalog includes sensitive-operation approvals'
 
 adminFoundationCheck('Audit repository persists old/new snapshots', str_contains($auditRepository, 'old_values') && str_contains($auditRepository, 'new_values') && str_contains($auditRepository, 'public function create('));
 adminFoundationCheck('Audit service records actor and request metadata', str_contains($auditService, 'AdminAuth::id()') && str_contains($auditService, 'Request::ip()') && str_contains($auditService, 'Request::userAgent()'));
-adminFoundationCheck('Audit service redacts nested sensitive values', str_contains($auditService, 'private function redact(') && str_contains($auditService, '[REDACTED]'));
+adminFoundationCheck('Audit service redacts nested sensitive values', str_contains($auditService, 'SensitiveDataRedactor::encode(') && str_contains($redactor, '[REDACTED]'));
 adminFoundationCheck('Audit service bounds large values', str_contains($auditService, '[OMITTED: VALUE TOO LARGE]'));
 
 adminFoundationCheck('Session inventory query exists', str_contains($sessionRepository, 'findForMonitoring('));
@@ -82,14 +83,14 @@ adminFoundationCheck('Admin notification recipients are isolated per admin', str
 adminFoundationCheck('Notification reads are scoped to recipient identity', str_contains($notificationRepository, 'findForAdmin(') && str_contains($notificationRepository, 'markReadForAdmin('));
 adminFoundationCheck('Email delivery is queued rather than assumed sent', str_contains($notificationRepository, 'admin_email_outbox') && str_contains($notificationRepository, "'pending'"));
 adminFoundationCheck('Notification service validates email address and severity', str_contains($notificationService, 'FILTER_VALIDATE_EMAIL') && str_contains($notificationService, 'SEVERITIES'));
-adminFoundationCheck('Notification payloads redact sensitive values', str_contains($notificationService, 'sanitizePayload(') && str_contains($notificationService, '[REDACTED]'));
+adminFoundationCheck('Notification payloads redact sensitive values', str_contains($notificationService, 'sanitizePayload(') && str_contains($notificationService, 'SensitiveDataRedactor::redact(') && str_contains($redactor, '[REDACTED]'));
 
 adminFoundationCheck('Foundation repository includes content revisions and saved views', str_contains($foundationRepository, 'admin_content_revisions') && str_contains($foundationRepository, 'admin_saved_views'));
 adminFoundationCheck('Foundation repository includes bulk-operation jobs', str_contains($foundationRepository, 'admin_operation_jobs'));
 adminFoundationCheck('Foundation repository includes incidents and approvals', str_contains($foundationRepository, 'admin_system_incidents') && str_contains($foundationRepository, 'admin_approval_requests'));
 adminFoundationCheck('Approval decisions require a pending request and a different reviewer', str_contains($foundationRepository, "status = \'pending\'") && str_contains($foundationRepository, 'requested_by_admin_id <> :requester_guard'));
 adminFoundationCheck('Foundation repository includes media, support and analytics', str_contains($foundationRepository, 'admin_media_assets') && str_contains($foundationRepository, 'admin_support_tickets') && str_contains($foundationRepository, 'admin_analytics_events'));
-adminFoundationCheck('Foundation service validates payloads and redacts sensitive keys', str_contains($foundationService, 'private function redact(') && str_contains($foundationService, '[REDACTED]'));
+adminFoundationCheck('Foundation service validates payloads and redacts sensitive keys', str_contains($foundationService, 'SensitiveDataRedactor::redact(') && str_contains($redactor, '[REDACTED]'));
 adminFoundationCheck('Media storage key rejects traversal patterns', str_contains($foundationService, 'str_contains($storageKey, \'..\')') && str_contains($foundationService, 'str_starts_with($storageKey, \'/\')'));
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
