@@ -33,7 +33,10 @@ require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
 require_once __DIR__ . '/app/Core/AdminBulkOperationRegistry.php';
 require_once __DIR__ . '/app/Core/AdminSearchProviderInterface.php';
 require_once __DIR__ . '/app/Core/AdminEmailOutboxRepositoryInterface.php';
+require_once __DIR__ . '/app/Core/AdminFoundationRepositoryInterface.php';
 require_once __DIR__ . '/app/Services/AdminGlobalSearchService.php';
+require_once __DIR__ . '/app/Services/AdminFoundationService.php';
+require_once __DIR__ . '/app/Services/AdminFeatureAccessService.php';
 require_once __DIR__ . '/app/Core/AdminRequestContext.php';
 require_once __DIR__ . '/app/Core/AdminActorContext.php';
 require_once __DIR__ . '/app/Core/Exceptions/AppException.php';
@@ -452,6 +455,52 @@ foreach (['NIVAD_GMAIL_SMTP_USER', 'NIVAD_GMAIL_SMTP_APP_PASSWORD', 'NIVAD_GMAIL
     putenv($key);
     unset($_ENV[$key], $_SERVER[$key]);
 }
+
+$fakeFoundationRepository = new class implements AdminFoundationRepositoryInterface {
+    public array $calls = [];
+    public function createContentRevision(string $entityType, string $entityId, string $status, string $snapshotJson, int $createdByAdminId, ?string $scheduledAt = null): int { $this->calls['revision'] = func_get_args(); return 101; }
+    public function saveView(int $adminUserId, string $moduleKey, string $name, string $filtersJson, ?string $sortJson, bool $shared): int { $this->calls['view'] = func_get_args(); return 102; }
+    public function enqueueOperationJob(string $jobType, string $payloadJson, int $createdByAdminId): int { $this->calls['job'] = func_get_args(); return 103; }
+    public function updateOperationJob(int $jobId, string $status, int $progressPercent, ?string $resultJson = null, ?string $errorSummary = null): bool { $this->calls['job_update'] = func_get_args(); return true; }
+    public function recordIncident(string $incidentKey, string $severity, string $source, string $title, ?string $description, ?string $contextJson): int { $this->calls['incident'] = func_get_args(); return 104; }
+    public function createApprovalRequest(string $actionKey, string $entityType, string $entityId, int $requesterAdminId, string $payloadJson, ?string $beforeSnapshotJson): int { $this->calls['approval'] = func_get_args(); return 105; }
+    public function decideApprovalRequest(int $requestId, int $reviewerAdminId, string $decision, ?string $decisionNote): bool { $this->calls['decision'] = func_get_args(); return true; }
+    public function createMediaAsset(string $storageKey, string $originalName, string $mimeType, int $fileSizeBytes, string $sha256, ?string $altText, int $uploadedByAdminId): int { $this->calls['media'] = func_get_args(); return 106; }
+    public function createSupportTicket(string $ticketKey, ?int $customerId, string $priority, string $subject, string $description, ?int $assignedAdminId, ?int $createdByAdminId): int { $this->calls['ticket'] = func_get_args(); return 107; }
+    public function recordAnalyticsEvent(string $eventKey, ?string $entityType, int|string|null $entityId, ?int $actorAdminId, ?float $numericValue, ?string $dimensionsJson): int { $this->calls['analytics'] = func_get_args(); return 108; }
+};
+$fakeActors = new AdminActorContext(static fn(): int => 7, static fn(): bool => true);
+$foundationService = new AdminFoundationService(
+    $fakeFoundationRepository,
+    $fakeActors,
+    new AdminSavedViewValidator(),
+    new AdminContentPublishingPolicy(),
+    new AdminBulkOperationPolicy(),
+    new AdminFeatureAccessService()
+);
+$revisionId = $foundationService->createContentRevision(
+    'product',
+    'SKU-TEST',
+    'draft',
+    ['title' => 'Test product', 'password' => 'foundation-secret'],
+    7
+);
+$revisionPayload = json_decode($fakeFoundationRepository->calls['revision'][3], true);
+adminNonDbCheck('Foundation service uses injected persistence boundary and redacts revision snapshots', $revisionId === 101 && ($revisionPayload['password'] ?? null) === '[REDACTED]' && !str_contains($fakeFoundationRepository->calls['revision'][3], 'foundation-secret'));
+$viewId = $foundationService->saveView(7, 'products', 'Test view', [['field' => 'status', 'operator' => 'eq', 'value' => 'active']], ['field' => 'created_at', 'direction' => 'desc'], false);
+$viewFilters = json_decode($fakeFoundationRepository->calls['view'][3], true);
+adminNonDbCheck('Foundation service validates saved views before persistence', $viewId === 102 && is_array($viewFilters) && $viewFilters[0]['field'] === 'status');
+$approvalId = $foundationService->requestApproval('product.publish', 'product', 'SKU-TEST', 7, ['note' => 'review', 'api_token' => 'sensitive'], ['status' => 'draft']);
+$approvalPayload = json_decode($fakeFoundationRepository->calls['approval'][4], true);
+adminNonDbCheck('Foundation service redacts approval payloads and validates the actor', $approvalId === 105 && ($approvalPayload['api_token'] ?? null) === '[REDACTED]' && $fakeFoundationRepository->calls['approval'][3] === 7);
+$mediaId = $foundationService->registerMediaAsset('media/test-image.webp', 'test-image.webp', 'image/webp', 512, hash('sha256', 'image-bytes'), 7, 'Test image');
+adminNonDbCheck('Foundation service validates and forwards media metadata without filesystem or DB access', $mediaId === 106 && $fakeFoundationRepository->calls['media'][0] === 'media/test-image.webp');
+$ticketId = $foundationService->createSupportTicket('Test ticket', 'A non-production contract test', 'normal', null, null, 7);
+$analyticsId = $foundationService->recordAnalytics('admin.test.event', 'test', '42', 7, 1.5, ['cookie' => 'private']);
+$analyticsPayload = json_decode($fakeFoundationRepository->calls['analytics'][5], true);
+adminNonDbCheck('Foundation service forwards support and analytics commands through the injected boundary', $ticketId === 107 && $analyticsId === 108 && ($analyticsPayload['cookie'] ?? null) === '[REDACTED]');
+$foundationService->updateOperation(5, 'completed', 12, ['token' => 'private-result']);
+adminNonDbCheck('Foundation service normalizes job completion and redacts result payloads', $fakeFoundationRepository->calls['job_update'][2] === 100 && !str_contains($fakeFoundationRepository->calls['job_update'][3], 'private-result'));
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
 echo "Mode: non-database contract/unit checks; no SQL, network, email, or application data changes.\n";
