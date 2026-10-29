@@ -58,28 +58,11 @@ implements MiddlewareInterface
         );
 
         if (!$authorization->allowed()) {
-            if ($expectsJson) {
-                Response::json(
-                    [
-                        'success' => false,
-                        'message' => 'دسترسی به بخش مدیریت مجاز نیست.',
-                        'reason' => $authorization->reason(),
-                    ],
-                    403
-                );
-            }
-
-            /*
-             * Do not redirect to another protected admin route, and do not
-             * return JSON to a normal browser document navigation.
-             * A dedicated localized HTML 403 view can replace this response
-             * once the shared error-page contract is implemented.
-             */
-            Response::text(
+            AdminHttpErrorResponder::respond(
+                403,
                 'دسترسی به بخش مدیریت مجاز نیست.',
-                403
+                ['reason' => $authorization->reason()]
             );
-        }
 
         return $next($context);
     }
