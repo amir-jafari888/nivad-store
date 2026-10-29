@@ -23,11 +23,19 @@ final class AdminReportExportService
             throw new InvalidArgumentException('CSV export exceeds the 10000-row limit.');
         }
 
+        $fieldKeys = [];
         $normalizedHeaders = [];
-        foreach ($headers as $header) {
-            if (!is_string($header) || trim($header) === '' || mb_strlen($header) > 120) {
-                throw new InvalidArgumentException('CSV headers must be non-empty strings of at most 120 characters.');
+        foreach ($headers as $fieldKey => $header) {
+            if (
+                !is_string($fieldKey) ||
+                preg_match('/^[A-Za-z][A-Za-z0-9_.-]{0,99}$/', $fieldKey) !== 1 ||
+                !is_string($header) ||
+                trim($header) === '' ||
+                mb_strlen($header) > 120
+            ) {
+                throw new InvalidArgumentException('CSV headers must map safe field keys to labels of at most 120 characters.');
             }
+            $fieldKeys[] = $fieldKey;
             $normalizedHeaders[] = $header;
         }
 
