@@ -41,6 +41,8 @@ SELECT 'admin.reports.view' AS name, 'admin.reports.view' AS slug, 'View busines
 UNION ALL
 SELECT 'admin.analytics.view' AS name, 'admin.analytics.view' AS slug, 'View product and operational analytics' AS description, 'analytics' AS module, 'view' AS action, 'active' AS status
 UNION ALL
+SELECT 'admin.search.use' AS name, 'admin.search.use' AS slug, 'Use permission-aware global admin search' AS description, 'search' AS module, 'use' AS action, 'active' AS status
+UNION ALL
 SELECT 'admin.products.view' AS name, 'admin.products.view' AS slug, 'View products' AS description, 'products' AS module, 'view' AS action, 'active' AS status
 UNION ALL
 SELECT 'admin.products.manage' AS name, 'admin.products.manage' AS slug, 'Create and update products' AS description, 'products' AS module, 'manage' AS action, 'active' AS status
