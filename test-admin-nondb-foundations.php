@@ -496,7 +496,7 @@ $foundationService = new AdminFoundationService(
     new AdminSavedViewValidator(),
     new AdminContentPublishingPolicy(),
     new AdminBulkOperationPolicy(),
-    new AdminFeatureAccessService()
+    null
 );
 $revisionId = $foundationService->createContentRevision(
     'product',
