@@ -9,6 +9,8 @@ implements MiddlewareInterface
         RequestContext $context,
         callable $next
     ): mixed {
+        AdminRequestContext::publishResponseHeader();
+
         $service = new AdminAuthService();
 
         $expectsJson =
