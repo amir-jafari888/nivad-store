@@ -66,7 +66,7 @@ $check(
     is_string($middleware)
         && str_contains($middleware, 'if ($expectsJson)')
         && str_contains($middleware, "'success' => false")
-        && str_contains($middleware, '],\n                    401')
+        && preg_match('/Response::json\\(\\s*\\[.*?\\]\\s*,\\s*401\\s*\\);/s', $middleware) === 1
 );
 
 $check(
@@ -79,7 +79,7 @@ $check(
 $check(
     'Permission denial preserves JSON 403 and gives browser requests HTTP 403',
     is_string($middleware)
-        && str_contains($middleware, '],\n                    403')
+        && preg_match('/Response::json\\(\\s*\\[.*?\\]\\s*,\\s*403\\s*\\);/s', $middleware) === 1
         && str_contains($middleware, "'دسترسی به بخش مدیریت مجاز نیست.'")
         && str_contains($middleware, 'Response::text(')
 );
