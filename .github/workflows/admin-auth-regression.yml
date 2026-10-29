@@ -38,6 +38,8 @@ jobs:
           php -l app/Services/AdminFeatureContractValidator.php
           php -l app/Services/AdminHealthCheckService.php
           php -l app/Services/AdminMediaStorageService.php
+          php -l app/Services/AdminSavedViewValidator.php
+          php -l app/Services/AdminPreviewTokenService.php
           php -l app/Services/AdminOperationPolicy.php
           php -l app/Services/GmailSmtpTransport.php
           php -l app/Middleware/AdminAuthMiddleware.php
