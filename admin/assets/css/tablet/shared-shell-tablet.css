@@ -88,3 +88,7 @@
 .admin-shared-shell main a[href*="/create"],.admin-shared-shell main a[href*="/groups"]{display:inline-flex;align-items:center;justify-content:center;min-height:40px;margin-block-end:11px;padding:8px 11px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);color:var(--admin-color-text);background:var(--admin-color-surface);font-size:13px;font-weight:600;text-decoration:none}
 .admin-shared-shell main .status,.admin-shared-shell main .badge,.admin-shared-shell main .status-badge,.admin-shared-shell main .status-label{display:inline-flex;align-items:center;padding:3px 8px;border:1px solid var(--admin-color-border);border-radius:999px;background:var(--admin-color-bg);color:var(--admin-color-text-muted);font-size:12px}
 
+
+.admin-shared-shell .admin-skip-link,.admin-dashboard-page .admin-skip-link{inset-inline-start:calc(var(--admin-sidebar-width) + 12px)}
+.admin-dashboard-line-chart{height:160px}
+.admin-dashboard-line-chart-labels{font-size:10px}
