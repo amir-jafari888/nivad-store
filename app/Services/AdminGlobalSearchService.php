@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Closure;
-
 /**
  * Permission-aware search orchestrator. Data providers are injected so their
  * DB dependencies can be added only after the relevant schema contracts pass.
@@ -12,7 +10,7 @@ final class AdminGlobalSearchService
 {
     /** @var array<int, AdminSearchProviderInterface> */
     private array $providers;
-    private Closure $canAccess;
+    private \Closure $canAccess;
 
     public function __construct(
         array $providers = [],
@@ -26,7 +24,7 @@ final class AdminGlobalSearchService
 
         $this->providers = array_values($providers);
         $this->canAccess = $canAccess !== null
-            ? Closure::fromCallable($canAccess)
+            ? \Closure::fromCallable($canAccess)
             : static fn(int $adminId, string $featureId): bool =>
                 (new AdminFeatureAccessService())->canAccess($adminId, $featureId);
     }
