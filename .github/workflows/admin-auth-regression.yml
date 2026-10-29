@@ -1,26 +1,50 @@
-name: Admin Authentication and Authorization Regression
+name: Admin Panel Foundation Regression
 
 on:
   pull_request:
     paths:
+      - "app/Core/AdminPermissionCatalog.php"
       - "app/Middleware/AdminAuthMiddleware.php"
+      - "app/Repositories/AdminFoundationRepository.php"
+      - "app/Repositories/AdminNotificationRepository.php"
+      - "app/Repositories/AdminSessionRepository.php"
+      - "app/Repositories/AuditLogRepository.php"
+      - "app/Services/AdminActivityAuditService.php"
+      - "app/Services/AdminFoundationService.php"
+      - "app/Services/AdminNotificationService.php"
+      - "app/Services/AdminSessionService.php"
       - "app/Services/AuthorizationService.php"
+      - "database/migrations/20261029_admin_panel_foundation.sql"
+      - "database/seeds/20261029_admin_permission_catalog.sql"
       - "test-admin-auth-route-regression.php"
+      - "test-admin-panel-foundation.php"
       - ".github/workflows/admin-auth-regression.yml"
   push:
     branches:
       - "feature/admin-panel-implementation-2026-10-29"
     paths:
+      - "app/Core/AdminPermissionCatalog.php"
       - "app/Middleware/AdminAuthMiddleware.php"
+      - "app/Repositories/AdminFoundationRepository.php"
+      - "app/Repositories/AdminNotificationRepository.php"
+      - "app/Repositories/AdminSessionRepository.php"
+      - "app/Repositories/AuditLogRepository.php"
+      - "app/Services/AdminActivityAuditService.php"
+      - "app/Services/AdminFoundationService.php"
+      - "app/Services/AdminNotificationService.php"
+      - "app/Services/AdminSessionService.php"
       - "app/Services/AuthorizationService.php"
+      - "database/migrations/20261029_admin_panel_foundation.sql"
+      - "database/seeds/20261029_admin_permission_catalog.sql"
       - "test-admin-auth-route-regression.php"
+      - "test-admin-panel-foundation.php"
       - ".github/workflows/admin-auth-regression.yml"
 
 permissions:
   contents: read
 
 jobs:
-  php-static-regression:
+  admin-foundation-contracts:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -32,11 +56,24 @@ jobs:
           php-version: "8.3"
           coverage: none
 
-      - name: Lint changed PHP files
+      - name: Lint changed and shared foundation PHP files
         run: |
+          php -l app/Core/AdminPermissionCatalog.php
           php -l app/Middleware/AdminAuthMiddleware.php
+          php -l app/Repositories/AdminFoundationRepository.php
+          php -l app/Repositories/AdminNotificationRepository.php
+          php -l app/Repositories/AdminSessionRepository.php
+          php -l app/Repositories/AuditLogRepository.php
+          php -l app/Services/AdminActivityAuditService.php
+          php -l app/Services/AdminFoundationService.php
+          php -l app/Services/AdminNotificationService.php
+          php -l app/Services/AdminSessionService.php
           php -l app/Services/AuthorizationService.php
           php -l test-admin-auth-route-regression.php
+          php -l test-admin-panel-foundation.php
 
-      - name: Run read-only admin auth/authorization regression
+      - name: Run authentication and authorization regression
         run: php test-admin-auth-route-regression.php
+
+      - name: Run shared foundation regression
+        run: php test-admin-panel-foundation.php
