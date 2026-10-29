@@ -50,19 +50,49 @@ final class AdminEmailOutboxWorker
         foreach ($rows as $row) {
             if (!$this->isValidRow($row)) {
                 $summary['invalid_rows']++;
+
+                $candidateId = $row['id'] ?? null;
+                if (
+                    (is_int($candidateId) || (is_string($candidateId) && ctype_digit($candidateId))) &&
+                    (int) $candidateId > 0
+                ) {
+                    $attempt = max(0, (int) ($row['attempts'] ?? 0)) + 1;
+                    $marked = $this->repository->markFailed(
+                        (int) $candidateId,
+                        $attempt,
+                        'invalid_message',
+                        null,
+                        true
+                    );
+                    if (!$marked) {
+                        $summary['failed']++;
+                    } else {
+                        $summary['failed']++;
+                    }
+                }
+
                 continue;
             }
 
             $outboxId = (int) $row['id'];
             $attempt = max(0, (int) ($row['attempts'] ?? 0)) + 1;
-            $result = ($this->send)(
-                (string) $row['recipient_email'],
-                (string) $row['subject'],
-                (string) $row['body_text'],
-                isset($row['recipient_name']) && is_string($row['recipient_name'])
-                    ? $row['recipient_name']
-                    : null
-            );
+            try {
+                $result = ($this->send)(
+                    (string) $row['recipient_email'],
+                    (string) $row['subject'],
+                    (string) $row['body_text'],
+                    isset($row['recipient_name']) && is_string($row['recipient_name'])
+                        ? $row['recipient_name']
+                        : null
+                );
+                if (!is_array($result)) {
+                    $result = ['success' => false, 'error_code' => 'smtp_delivery_failed'];
+                }
+            } catch (Throwable $exception) {
+                // A failed provider adapter must not abort the rest of the batch
+                // or leave this claimed row silently unprocessed.
+                $result = ['success' => false, 'error_code' => 'smtp_delivery_failed'];
+            }
 
             if (($result['success'] ?? false) === true) {
                 if ($this->repository->markSent($outboxId, $attempt, $result['message_id'] ?? null)) {
