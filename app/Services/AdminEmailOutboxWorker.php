@@ -13,16 +13,20 @@ final class AdminEmailOutboxWorker
     private const MAX_BACKOFF_SECONDS = 21600;
 
     private AdminEmailOutboxRepositoryInterface $repository;
-    private GmailSmtpTransport $transport;
+    private \Closure $send;
     private \Closure $clock;
 
     public function __construct(
         AdminEmailOutboxRepositoryInterface $repository,
-        ?GmailSmtpTransport $transport = null,
+        ?callable $send = null,
         ?callable $clock = null
     ) {
         $this->repository = $repository;
-        $this->transport = $transport ?? new GmailSmtpTransport();
+        $transport = new GmailSmtpTransport();
+        $this->send = $send !== null
+            ? \Closure::fromCallable($send)
+            : static fn(string $email, string $subject, string $body, ?string $name = null): array =>
+                $transport->send($email, $subject, $body, $name);
         $this->clock = $clock !== null
             ? \Closure::fromCallable($clock)
             : static fn(): int => time();
@@ -51,7 +55,7 @@ final class AdminEmailOutboxWorker
 
             $outboxId = (int) $row['id'];
             $attempt = max(0, (int) ($row['attempts'] ?? 0)) + 1;
-            $result = $this->transport->send(
+            $result = ($this->send)(
                 (string) $row['recipient_email'],
                 (string) $row['subject'],
                 (string) $row['body_text'],
@@ -61,7 +65,7 @@ final class AdminEmailOutboxWorker
             );
 
             if (($result['success'] ?? false) === true) {
-                if ($this->repository->markSent($outboxId, $result['message_id'] ?? null)) {
+                if ($this->repository->markSent($outboxId, $attempt, $result['message_id'] ?? null)) {
                     $summary['sent']++;
                 } else {
                     $summary['failed']++;
