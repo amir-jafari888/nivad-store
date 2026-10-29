@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Persistence primitives for the additive Admin Panel foundation tables.
  * These methods are intentionally not exposed as routes by themselves.
  */
-final class AdminFoundationRepository
+final class AdminFoundationRepository implements AdminFoundationRepositoryInterface
 {
     private PDO $db;
 
