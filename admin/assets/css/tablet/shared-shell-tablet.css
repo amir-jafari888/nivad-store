@@ -36,3 +36,10 @@
 .admin-shared-shell main .reports-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
 .admin-shared-shell main .report-card { min-height:130px; padding:13px; }
 .admin-shared-shell main .table-wrap, .admin-shared-shell main .admin-data-table-wrap { max-width:100%; overflow:auto; }
+
+
+.admin-page-compatibility main .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.admin-page-reports main .reports-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.admin-page-products main form, .admin-page-categories main form, .admin-page-brands main form,
+.admin-page-attributes main form, .admin-page-specifications main form, .admin-page-settings main form { max-width:100%; }
+.admin-page-orders main .grid, .admin-page-users main .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
