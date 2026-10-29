@@ -48,7 +48,7 @@ final class AdminFeatureRegistry
             'ADM-027' => self::feature('Setup builder and compatible component suggestions', 'admin.catalog.manage', true, ['ADM-026', 'ADM-013'], 'storefront_intelligence'),
             'ADM-028' => self::feature('Recently viewed and compared events', 'admin.analytics.view', true, ['ADM-023'], 'storefront_intelligence'),
             'ADM-029' => self::feature('Rule-based recommendations and smart bundles', 'admin.analytics.view', true, ['ADM-023', 'ADM-026', 'ADM-027'], 'storefront_intelligence'),
-            'ADM-030' => self::feature('Admin global search and command palette', 'admin.dashboard.view', true, ['ADM-002'], 'productivity'),
+            'ADM-030' => self::feature('Admin global search and command palette', 'admin.search.use', true, ['ADM-002'], 'productivity'),
             'ADM-031' => self::feature('Bulk operations and saved views', 'admin.bulk_operations.execute', true, ['ADM-008', 'ADM-039'], 'productivity'),
             'ADM-032' => self::feature('Entity activity timeline and content revisions', 'admin.audit.view', true, ['ADM-008', 'ADM-009'], 'audit_content'),
             'ADM-033' => self::feature('Draft, preview and scheduled publishing', 'admin.content.publish', true, ['ADM-014', 'ADM-032'], 'content'),
