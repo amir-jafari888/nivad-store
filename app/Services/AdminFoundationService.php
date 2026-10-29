@@ -12,6 +12,8 @@ final class AdminFoundationService
     private AdminActorContext $actors;
     private AdminSavedViewValidator $savedViewValidator;
     private AdminContentPublishingPolicy $contentPublishingPolicy;
+    private AdminBulkOperationPolicy $bulkOperationPolicy;
+    private AdminFeatureAccessService $featureAccess;
 
     private const SENSITIVE_KEY_PARTS = [
         'password', 'token', 'secret', 'authorization', 'cookie',
@@ -22,7 +24,9 @@ final class AdminFoundationService
         ?AdminFoundationRepository $repository = null,
         ?AdminActorContext $actors = null,
         ?AdminSavedViewValidator $savedViewValidator = null,
-        ?AdminContentPublishingPolicy $contentPublishingPolicy = null
+        ?AdminContentPublishingPolicy $contentPublishingPolicy = null,
+        ?AdminBulkOperationPolicy $bulkOperationPolicy = null,
+        ?AdminFeatureAccessService $featureAccess = null
     ) {
         $this->repository =
             $repository ??
@@ -36,6 +40,12 @@ final class AdminFoundationService
         $this->contentPublishingPolicy =
             $contentPublishingPolicy ??
             new AdminContentPublishingPolicy();
+        $this->bulkOperationPolicy =
+            $bulkOperationPolicy ??
+            new AdminBulkOperationPolicy();
+        $this->featureAccess =
+            $featureAccess ??
+            new AdminFeatureAccessService();
     }
 
     public function createContentRevision(
@@ -92,13 +102,28 @@ final class AdminFoundationService
     public function enqueueOperation(
         string $jobType,
         array $payload,
-        int $createdByAdminId
+        int $createdByAdminId,
+        bool $confirmed = false,
+        ?int $approvalRequestId = null
     ): int {
         $createdByAdminId = $this->actors->requireCurrentAdmin($createdByAdminId);
+        $operation = $this->bulkOperationPolicy->validate(
+            $jobType,
+            $payload,
+            $confirmed,
+            $approvalRequestId
+        );
+
+        if (
+            !$this->featureAccess->canAccess($createdByAdminId, 'ADM-031') ||
+            !$this->featureAccess->canAccess($createdByAdminId, $operation['feature_id'])
+        ) {
+            throw new AuthorizationException('The admin lacks permission for this bulk operation.');
+        }
 
         return $this->repository->enqueueOperationJob(
-            $this->requiredText($jobType, 100, 'Job type'),
-            $this->json($payload),
+            $operation['job_type'],
+            $this->json($operation['payload']),
             $createdByAdminId
         );
     }
