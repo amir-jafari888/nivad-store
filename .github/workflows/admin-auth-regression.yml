@@ -30,6 +30,8 @@ jobs:
           php -l app/Core/AdminActorContext.php
           php -l app/Core/AdminRouteFeatureMap.php
           php -l app/Core/AdminRequestContext.php
+          php -l app/Core/AdminHttpErrorResponder.php
+          php -l app/Core/ErrorHandler.php
           php -l app/Middleware/AdminFeatureMiddleware.php
           php -l app/Middleware/AdminRoutePermissionMiddleware.php
           php -l app/Services/AdminFeatureAccessService.php
