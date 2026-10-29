@@ -6,6 +6,7 @@ final class AdminNotificationService
 {
     private AdminNotificationRepository $repository;
     private AdminNotificationPolicy $policy;
+    private AdminActorContext $actors;
 
     private const SEVERITIES = [
         'info',
@@ -16,7 +17,8 @@ final class AdminNotificationService
 
     public function __construct(
         ?AdminNotificationRepository $repository = null,
-        ?AdminNotificationPolicy $policy = null
+        ?AdminNotificationPolicy $policy = null,
+        ?AdminActorContext $actors = null
     ) {
         $this->repository =
             $repository ??
@@ -24,6 +26,9 @@ final class AdminNotificationService
         $this->policy =
             $policy ??
             new AdminNotificationPolicy();
+        $this->actors =
+            $actors ??
+            new AdminActorContext();
     }
 
     public function createForAdmins(
@@ -66,13 +71,8 @@ final class AdminNotificationService
             );
         }
 
-        if (
-            $createdByAdminId !== null &&
-            $createdByAdminId < 1
-        ) {
-            throw new InvalidArgumentException(
-                'Invalid notification creator ID.'
-            );
+        if ($createdByAdminId !== null) {
+            $createdByAdminId = $this->actors->requireCurrentAdmin($createdByAdminId);
         }
 
         if ($entityType !== null) {
