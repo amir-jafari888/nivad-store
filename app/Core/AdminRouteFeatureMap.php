@@ -50,6 +50,7 @@ final class AdminRouteFeatureMap
         'admin.approvals.' => 'ADM-039',
         'admin.bulk.' => 'ADM-031',
         'admin.saved-views.' => 'ADM-031',
+        'admin.search.' => 'ADM-030',
         'admin.analytics.' => 'ADM-023',
         'admin.health.' => 'ADM-020',
         'admin.incidents.' => 'ADM-019',
