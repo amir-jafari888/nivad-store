@@ -35,7 +35,24 @@ final class GmailSmtpTransport
             return $this->failure('invalid_recipient');
         }
 
-        if ($this->containsHeaderBreak($subject) || $this->containsHeaderBreak($recipientName ?? '')) {
+        $subject = trim($subject);
+        $bodyText = trim($bodyText);
+        $recipientName = $recipientName !== null ? trim($recipientName) : null;
+
+        if (
+            $subject === '' ||
+            mb_strlen($subject) > 255 ||
+            $bodyText === '' ||
+            mb_strlen($bodyText) > 50000
+        ) {
+            return $this->failure('invalid_message');
+        }
+
+        if (
+            $this->containsHeaderBreak($subject) ||
+            $this->containsHeaderBreak($recipientName ?? '') ||
+            ($recipientName !== null && mb_strlen($recipientName) > 120)
+        ) {
             return $this->failure('invalid_header');
         }
 
