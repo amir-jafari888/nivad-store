@@ -47,3 +47,7 @@
 .admin-nav-backdrop{position:fixed;inset:0;z-index:940;display:none;padding:0;border:0;background:rgba(17,24,39,.32)}
 .admin-nav-open .admin-nav-backdrop{display:block}
 @media (prefers-reduced-motion:reduce){.admin-shared-sidebar,.admin-dashboard-sidebar{transition:none}}
+
+
+/* Legacy page header becomes a content toolbar, not a competing global header. */
+.admin-shared-shell>header:not(.admin-shared-topbar){display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:16px 16px 0;border:0;background:transparent;box-shadow:none}
