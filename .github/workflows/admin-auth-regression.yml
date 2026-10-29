@@ -64,6 +64,7 @@ jobs:
           php -l app/Services/AdminNotificationPolicy.php
           php -l app/Services/AdminAuthenticationAuditService.php
           php -l app/Services/AdminAccountPolicy.php
+          php -l app/Services/AdminSupportTicketPolicy.php
           php -l app/Services/AdminSecurityEventPolicy.php
           php -l app/Services/AdminSessionService.php
           php -l app/Services/AuthorizationService.php
