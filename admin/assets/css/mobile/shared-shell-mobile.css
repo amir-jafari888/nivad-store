@@ -59,3 +59,24 @@
 
 /* Legacy page header becomes a content toolbar, not a competing global header. */
 .admin-shared-shell>header:not(.admin-shared-topbar){display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0;padding:12px 12px 0;border:0;background:transparent;box-shadow:none}
+
+
+/* Shared task-oriented page components — mobile density and no horizontal page overflow. */
+.admin-shared-shell main>h1{font-size:21px;margin:0 0 14px}
+.admin-shared-shell main .toolbar,.admin-shared-shell main .admin-data-toolbar,.admin-shared-shell main .admin-data-bulk{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin-block:0 12px}
+.admin-shared-shell main .toolbar>*{min-width:0;max-width:100%}
+.admin-shared-shell main .reports-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.admin-shared-shell main .report-card{padding:13px}
+.admin-shared-shell main .field,.admin-shared-shell main .form-field,.admin-shared-shell main .form-group{gap:6px;margin-block:0 12px}
+.admin-shared-shell main form.card{gap:0}
+.admin-shared-shell main label{font-size:13px}
+.admin-shared-shell main input:not([type=checkbox]):not([type=radio]):not([type=hidden]),.admin-shared-shell main select,.admin-shared-shell main textarea{min-height:44px;padding:10px;font-size:16px}
+.admin-shared-shell main textarea{min-height:100px}
+.admin-shared-shell main button,.admin-shared-shell main input[type=submit],.admin-shared-shell main input[type=button]{min-height:44px;padding:10px 12px;font-size:13px}
+.admin-shared-shell main .message{padding:11px 12px;font-size:13px}
+.admin-shared-shell main .admin-data-field{flex:1 1 140px;min-width:min(140px,100%)}
+.admin-shared-shell main .admin-data-bulk{align-items:center}
+.admin-shared-shell main .admin-data-table-wrap{max-width:100%;overflow-x:auto}
+.admin-shared-shell main .admin-data-pagination{justify-content:space-between;flex-wrap:wrap}
+.admin-shared-shell main .admin-settings-heading{display:grid;gap:8px}
+
