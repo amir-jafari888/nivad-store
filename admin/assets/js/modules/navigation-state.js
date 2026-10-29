@@ -48,6 +48,14 @@ const navigationState = () => {
     if (!sidebar || toggles.length === 0) return;
 
     const mobileQuery = window.matchMedia("(max-width: 1009px)");
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.className = "admin-nav-close";
+    closeButton.dataset.adminMenuClose = "";
+    closeButton.setAttribute("aria-label", "بستن منوی مدیریت");
+    closeButton.textContent = "×";
+    sidebar.prepend(closeButton);
+
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "admin-nav-backdrop";
@@ -80,10 +88,27 @@ const navigationState = () => {
       });
     });
 
+    closeButton.addEventListener("click", () => setOpen(false));
     backdrop.addEventListener("click", () => setOpen(false));
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && document.body.classList.contains("admin-nav-open")) {
+      if (!document.body.classList.contains("admin-nav-open")) return;
+      if (event.key === "Escape") {
         setOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(
+        sidebar.querySelectorAll('a[href], summary, button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])')
+      ).filter((element) => !element.hidden);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     });
 
