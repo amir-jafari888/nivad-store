@@ -30,6 +30,7 @@ final class AdminPermissionCatalog
     public const SETTINGS_MANAGE = 'admin.settings.manage';
     public const REPORTS_VIEW = 'admin.reports.view';
     public const ANALYTICS_VIEW = 'admin.analytics.view';
+    public const SEARCH_USE = 'admin.search.use';
     public const PRODUCTS_VIEW = 'admin.products.view';
     public const PRODUCTS_MANAGE = 'admin.products.manage';
     public const CATALOG_MANAGE = 'admin.catalog.manage';
@@ -81,6 +82,7 @@ final class AdminPermissionCatalog
             self::SETTINGS_MANAGE => ['settings', 'manage', 'Update admin settings'],
             self::REPORTS_VIEW => ['reports', 'view', 'View business reports'],
             self::ANALYTICS_VIEW => ['analytics', 'view', 'View product and operational analytics'],
+            self::SEARCH_USE => ['search', 'use', 'Use permission-aware global admin search'],
             self::PRODUCTS_VIEW => ['products', 'view', 'View products'],
             self::PRODUCTS_MANAGE => ['products', 'manage', 'Create and update products'],
             self::CATALOG_MANAGE => ['catalog', 'manage', 'Manage categories, brands, attributes and specifications'],
