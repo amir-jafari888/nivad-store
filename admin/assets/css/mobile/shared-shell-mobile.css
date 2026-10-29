@@ -82,3 +82,7 @@
 
 
 .admin-nav-close{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;width:40px;height:40px;margin-inline-start:auto;padding:0;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);background:var(--admin-color-surface);color:var(--admin-color-text);font-size:24px;line-height:1;cursor:pointer}
+
+/* Remove duplicated legacy identity from pages now using the shared header. */
+.admin-shared-shell>header:not(.admin-shared-topbar){color:var(--admin-color-text);font-size:13px}
+.admin-shared-shell>header:not(.admin-shared-topbar):has(>a:first-child[href$="/admin"])>a:first-child,.admin-shared-shell>header:not(.admin-shared-topbar):has(>a:first-child[href$="/admin"])>span{display:none}
