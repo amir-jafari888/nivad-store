@@ -42,10 +42,12 @@ final class AdminFoundationRepository
             $stmt = $this->db->prepare(
                 'INSERT INTO admin_content_revisions (
                     entity_type, entity_id, version_number, status,
-                    snapshot_json, scheduled_at, created_by_admin_id
+                    snapshot_json, scheduled_at, published_at, created_by_admin_id
                 ) VALUES (
                     :entity_type, :entity_id, :version_number, :status,
-                    :snapshot_json, :scheduled_at, :created_by_admin_id
+                    :snapshot_json, :scheduled_at,
+                    CASE WHEN :published_status = 'published' THEN CURRENT_TIMESTAMP ELSE NULL END,
+                    :created_by_admin_id
                 )'
             );
             $stmt->execute([
@@ -55,6 +57,7 @@ final class AdminFoundationRepository
                 'status' => $status,
                 'snapshot_json' => $snapshotJson,
                 'scheduled_at' => $scheduledAt,
+                'published_status' => $status,
                 'created_by_admin_id' => $createdByAdminId,
             ]);
 
