@@ -38,6 +38,7 @@
 - `app/Services/GmailSmtpTransport.php`: Gmail-only SMTP transport using environment variables, TLS verification, header validation, and stable non-secret error codes. No SMTP connection is made unless `send()` is called.
 - `AdminNotificationService` now applies the shared event/severity policy, redacts payloads, and validates/enqueues email requests through the outbox repository.
 - `GmailSmtpTransport` validates recipient, subject, display name and body bounds before opening a socket; credentials remain environment-only. No real delivery test was run.
+- `app/Services/AdminEmailOutboxWorker.php` plus `app/Core/AdminEmailOutboxRepositoryInterface.php`: batch-limited sender orchestration, success tracking, permanent-failure handling, capped exponential retry, and a fakeable sender for tests. The atomic database adapter (`claimDue`/status updates) remains a DB gate.
 - Durable outbox processing, DB-backed deduplication/rate-limit state, retries, and real Gmail delivery are not claimed complete.
 
 ### Database-facing primitives prepared but NOT executed
