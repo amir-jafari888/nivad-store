@@ -13,7 +13,7 @@ final class AdminFoundationService
     private AdminSavedViewValidator $savedViewValidator;
     private AdminContentPublishingPolicy $contentPublishingPolicy;
     private AdminBulkOperationPolicy $bulkOperationPolicy;
-    private AdminFeatureAccessService $featureAccess;
+    private ?AdminFeatureAccessService $featureAccess;
     private AdminSupportTicketPolicy $supportTicketPolicy;
 
     private const SENSITIVE_KEY_PARTS = [
@@ -45,9 +45,7 @@ final class AdminFoundationService
         $this->bulkOperationPolicy =
             $bulkOperationPolicy ??
             new AdminBulkOperationPolicy();
-        $this->featureAccess =
-            $featureAccess ??
-            new AdminFeatureAccessService();
+        $this->featureAccess = $featureAccess;
         $this->supportTicketPolicy =
             $supportTicketPolicy ??
             new AdminSupportTicketPolicy();
@@ -119,9 +117,11 @@ final class AdminFoundationService
             $approvalRequestId
         );
 
+        $featureAccess = $this->featureAccess ?? new AdminFeatureAccessService();
+
         if (
-            !$this->featureAccess->canAccess($createdByAdminId, 'ADM-031') ||
-            !$this->featureAccess->canAccess($createdByAdminId, $operation['feature_id'])
+            !$featureAccess->canAccess($createdByAdminId, 'ADM-031') ||
+            !$featureAccess->canAccess($createdByAdminId, $operation['feature_id'])
         ) {
             throw new AuthorizationException('The admin lacks permission for this bulk operation.');
         }
