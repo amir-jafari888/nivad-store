@@ -30,14 +30,14 @@ final class AdminRoutePermissionMiddleware implements MiddlewareInterface
                     );
                 }
 
-                $featureId = AdminRouteFeatureMap::featureForRoute($routeName);
-                if ($featureId === null) {
+                $permission = AdminRoutePermissionMap::permissionForRoute($routeName);
+                if ($permission === null) {
                     throw new AuthorizationException(
-                        'برای این مسیر قرارداد قابلیت و مجوز ثبت نشده است.'
+                        'برای این مسیر قرارداد مجوز ثبت نشده است.'
                     );
                 }
 
-                if (!(new AdminFeatureAccessService())->canAccess($adminUserId, $featureId)) {
+                if (!(new AuthorizationService())->can($adminUserId, $permission)) {
                     throw new AuthorizationException(
                         'برای اجرای این قابلیت مجوز کافی ندارید.'
                     );
