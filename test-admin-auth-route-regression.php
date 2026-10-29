@@ -100,7 +100,7 @@ $check(
 $check(
     'Unhandled exception logging does not include the raw exception message',
     is_string($errorHandler)
-        && !str_contains($errorHandler, "'message' => $exception->getMessage()")
+        && !str_contains($errorHandler, '$exception->getMessage()')
         && str_contains($errorHandler, "'request_id' => AdminRequestContext::id()")
 );
 
