@@ -100,9 +100,9 @@ $check(
 $loggerBlock = '';
 if (is_string($errorHandler)) {
     $loggerStart = strpos($errorHandler, 'Logger::error(');
-    $loggerEnd = $loggerStart === false ? false : strpos($errorHandler, ');', $loggerStart);
+    $loggerEnd = $loggerStart === false ? false : strpos($errorHandler, ']);', $loggerStart);
     if ($loggerStart !== false && $loggerEnd !== false) {
-        $loggerBlock = substr($errorHandler, $loggerStart, $loggerEnd - $loggerStart);
+        $loggerBlock = substr($errorHandler, $loggerStart, ($loggerEnd + 3) - $loggerStart);
     }
 }
 $check(
