@@ -53,3 +53,12 @@
 .admin-shared-shell main table { display:block; max-width:100%; overflow-x:auto; }
 .admin-shared-shell main .toolbar>* { max-width:100%; }
 .admin-shared-shell main form { grid-template-columns:minmax(0,1fr); }
+
+
+.admin-page-compatibility main .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.admin-page-reports main .reports-grid { grid-template-columns:minmax(0,1fr); }
+.admin-page-products main form, .admin-page-categories main form, .admin-page-brands main form,
+.admin-page-collections main form, .admin-page-attributes main form, .admin-page-product-types main form,
+.admin-page-specifications main form, .admin-page-settings main form { max-width:100%; }
+.admin-page-orders main .grid, .admin-page-users main .grid { grid-template-columns:minmax(0,1fr); }
+.admin-page-audit-logs main table, .admin-page-notifications main table { font-size:12px; }
