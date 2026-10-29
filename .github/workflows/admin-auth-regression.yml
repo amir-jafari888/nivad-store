@@ -27,6 +27,7 @@ jobs:
           php -l app/Core/AdminPermissionCatalog.php
           php -l app/Core/SensitiveDataRedactor.php
           php -l app/Core/AdminFeatureRegistry.php
+          php -l app/Core/AdminActorContext.php
           php -l app/Core/AdminRouteFeatureMap.php
           php -l app/Core/AdminRequestContext.php
           php -l app/Middleware/AdminFeatureMiddleware.php
