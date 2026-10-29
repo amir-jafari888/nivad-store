@@ -419,6 +419,8 @@ $health = (new AdminHealthCheckService())->run();
 adminNonDbCheck('Health inspection explicitly avoids database and network access', $health['database_accessed'] === false && $health['network_accessed'] === false);
 adminNonDbCheck('Database readiness is reported as blocked, not falsely healthy', count(array_filter($health['checks'], static fn($item) => $item['key'] === 'database.schema' && $item['status'] === 'blocked')) === 1);
 adminNonDbCheck('Health inspection does not return secret values', !str_contains(json_encode($health, JSON_THROW_ON_ERROR), 'NIVAD_GMAIL_SMTP_APP_PASSWORD'));
+$requiredSourceChecks = array_filter($health['checks'], static fn(array $item): bool => str_starts_with($item['key'], 'source.'));
+adminNonDbCheck('Health inspection covers the connected admin foundation contracts', count($requiredSourceChecks) >= 20 && count(array_filter($requiredSourceChecks, static fn(array $item): bool => $item['status'] === 'fail')) === 0);
 
 foreach (['NIVAD_GMAIL_SMTP_USER', 'NIVAD_GMAIL_SMTP_APP_PASSWORD', 'NIVAD_GMAIL_SMTP_HOST', 'NIVAD_GMAIL_SMTP_PORT'] as $key) {
     putenv($key);
