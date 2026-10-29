@@ -1,4 +1,11 @@
-/* NIVAD Admin-only Design Tokens — isolated from customer storefront assets. */
+/* NIVAD Admin tokens mirror the storefront palette while keeping admin styles isolated. */
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../../../assets/fonts/webfonts/Vazirmatn[wght].woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 :root {
   color-scheme: light;
   --admin-color-bg: #f7f8fa;
@@ -26,7 +33,7 @@
   --admin-space-5: 20px;
   --admin-space-6: 24px;
   --admin-space-8: 32px;
-  --admin-font-family: Tahoma, Arial, sans-serif;
+  --admin-font-family: "Vazirmatn", Tahoma, Arial, sans-serif;
   --admin-font-size-sm: 14px;
   --admin-font-size-md: 16px;
   --admin-font-size-lg: 18px;
@@ -94,3 +101,8 @@ html[data-admin-density="compact"] table th,
 html[data-admin-density="compact"] table td {
   padding-block: var(--admin-space-1);
 }
+
+
+/* Compact, quiet admin density: hierarchy comes from spacing and type, not oversized blocks. */
+:root { --admin-sidebar-width: 264px; --admin-content-gutter: 24px; --admin-panel-padding: 18px; --admin-density-row: 42px; }
+.admin-shared-shell, .admin-dashboard-page { color: var(--admin-color-text); font-family: var(--admin-font-family); font-size: 14px; line-height: 1.55; }
