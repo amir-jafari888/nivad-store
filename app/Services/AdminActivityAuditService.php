@@ -11,13 +11,16 @@ final class AdminActivityAuditService
 {
     private AuditLogRepository $repository;
     private AdminActorContext $actors;
+    private AdminAuditSnapshotService $snapshots;
 
     public function __construct(
         ?AuditLogRepository $repository = null,
-        ?AdminActorContext $actors = null
+        ?AdminActorContext $actors = null,
+        ?AdminAuditSnapshotService $snapshots = null
     ) {
         $this->repository = $repository ?? new AuditLogRepository();
         $this->actors = $actors ?? new AdminActorContext();
+        $this->snapshots = $snapshots ?? new AdminAuditSnapshotService();
     }
 
     public function record(
@@ -42,6 +45,8 @@ final class AdminActivityAuditService
             ? $this->actors->currentAdminId()
             : $this->actors->requireCurrentAdmin($actorAdminId);
 
+        $snapshot = $this->snapshots->compare($before, $after);
+
         return $this->repository->create([
             'admin_user_id' => $actorAdminId,
             'action' => mb_substr($action, 0, 100),
@@ -49,8 +54,8 @@ final class AdminActivityAuditService
             'entity_type' => $entityType !== null ? mb_substr(trim($entityType), 0, 100) : null,
             'entity_id' => $entityId !== null ? (string) $entityId : null,
             'description' => mb_substr($description, 0, 1000),
-            'old_values' => $before === null ? null : SensitiveDataRedactor::encode($before),
-            'new_values' => $after === null ? null : SensitiveDataRedactor::encode($after),
+            'old_values' => $snapshot['before'] === null ? null : json_encode($snapshot['before'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'new_values' => $snapshot['after'] === null ? null : json_encode($snapshot['after'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             'ip_address' => Request::ip(),
             'user_agent' => Request::userAgent(),
         ]);
