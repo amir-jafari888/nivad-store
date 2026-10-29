@@ -61,7 +61,7 @@ Static inspection of `routes/api.php` found **161 named admin API routes**:
 Latest successful run on this branch:
 - Authentication/authorization regression: **21 PASS, 0 FAIL**
 - Shared foundation regression: **30 PASS, 0 FAIL**
-- Non-database foundation contracts: **66 PASS, 0 FAIL**
+- Non-database foundation contracts: **67 PASS, 0 FAIL**
 - Admin route contract audit: **7 PASS, 0 FAIL**
 - PHP lint: all files in the workflow passed.
 
