@@ -204,9 +204,10 @@ final class AdminMediaStorageService
 
     private function safeOriginalName(string $name): string
     {
-        $name = str_replace(["\\", '/', "\0"], '', $name);
-        $name = preg_replace('/[\x00-\x1F\x7F]+/u', '', $name) ?? '';
-        $name = trim(basename($name));
+        $name = basename(str_replace('\\\\', '/', $name));
+        $name = str_replace("\\0", '', $name);
+        $name = preg_replace('/[\\x00-\\x1F\\x7F]+/u', '', $name) ?? '';
+        $name = trim($name);
 
         if ($name === '') {
             return 'upload';
