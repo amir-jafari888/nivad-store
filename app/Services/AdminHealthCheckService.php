@@ -40,11 +40,17 @@ final class AdminHealthCheckService
             'app/Core/Bootstrap.php',
             'app/Core/Request.php',
             'app/Core/Response.php',
+            'app/Core/AdminHttpErrorResponder.php',
             'app/Core/AdminPermissionCatalog.php',
             'app/Core/AdminFeatureRegistry.php',
             'app/Services/AuthorizationService.php',
             'app/Services/AdminFeatureAccessService.php',
             'app/Services/AdminActivityAuditService.php',
+            'app/Services/AdminAuditSnapshotService.php',
+            'app/Services/AdminGlobalSearchService.php',
+            'app/Services/AdminPreviewTokenService.php',
+            'app/Services/AdminSavedViewValidator.php',
+            'app/Services/GmailSmtpTransport.php',
         ] as $relativePath) {
             $exists = is_file($root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath));
 
