@@ -88,7 +88,7 @@ final class AdminNotificationService
             $createdByAdminId,
             $entityType,
             $entityId,
-            $payload
+            $payload === null ? null : $this->sanitizePayload($payload)
         );
     }
 
@@ -112,6 +112,39 @@ final class AdminNotificationService
             $notificationId,
             $adminUserId
         );
+    }
+
+    private function sanitizePayload(array $payload): array
+    {
+        $sensitiveParts = [
+            'password', 'token', 'secret', 'authorization',
+            'cookie', 'session_id', 'api_key', 'private_key',
+            'card_number', 'cvv',
+        ];
+        $safe = [];
+
+        foreach ($payload as $key => $value) {
+            $normalizedKey = strtolower((string) $key);
+
+            foreach ($sensitiveParts as $part) {
+                if (str_contains($normalizedKey, $part)) {
+                    $safe[$key] = '[REDACTED]';
+                    continue 2;
+                }
+            }
+
+            if (is_array($value)) {
+                $safe[$key] = $this->sanitizePayload($value);
+            } elseif (is_string($value) && strlen($value) > 20000) {
+                $safe[$key] = '[OMITTED: VALUE TOO LARGE]';
+            } elseif (is_scalar($value) || $value === null) {
+                $safe[$key] = $value;
+            } else {
+                $safe[$key] = '[OMITTED: UNSUPPORTED VALUE]';
+            }
+        }
+
+        return $safe;
     }
 
     public function enqueueEmail(
