@@ -131,8 +131,8 @@ $check(
 $check(
     'Inactive or soft-deleted Super Admin roles do not grant the bypass',
     is_string($authorization)
-        && str_contains($authorization, "($role['status'] ?? null) === 'active'")
-        && str_contains($authorization, "($role['deleted_at'] ?? null) === null")
+        && str_contains($authorization, '($role[\'status\'] ?? null) === \'active\'')
+        && str_contains($authorization, '($role[\'deleted_at\'] ?? null) === null')
 );
 
 $check(
