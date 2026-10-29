@@ -33,6 +33,7 @@ require_once __DIR__ . '/app/Core/AdminRequestContext.php';
 require_once __DIR__ . '/app/Services/AdminFeatureContractValidator.php';
 require_once __DIR__ . '/app/Services/AdminOperationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminHealthCheckService.php';
+require_once __DIR__ . '/app/Services/AdminMediaStorageService.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
 
 $registry = AdminFeatureRegistry::all();
@@ -82,6 +83,28 @@ $generatedId = AdminRequestContext::id();
 adminNonDbCheck('Unsafe inbound request IDs are replaced with generated IDs', preg_match('/^[a-f0-9]{32}$/', $generatedId) === 1);
 unset($_SERVER['HTTP_X_REQUEST_ID']);
 AdminRequestContext::resetForTests();
+
+$mediaPath = tempnam(sys_get_temp_dir(), 'nivad-admin-media-');
+$mediaPng = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jS8sAAAAASUVORK5CYII=', true);
+$mediaInspectPassed = false;
+$mediaFilenameSafe = false;
+if (is_string($mediaPath) && is_string($mediaPng) && file_put_contents($mediaPath, $mediaPng) !== false) {
+    try {
+        $mediaInfo = (new AdminMediaStorageService())->inspectFile($mediaPath, '../../private/photo.png');
+        $mediaInspectPassed = $mediaInfo['mime_type'] === 'image/png'
+            && $mediaInfo['width'] === 1
+            && $mediaInfo['height'] === 1
+            && preg_match('/^[a-f0-9]{64}$/', $mediaInfo['sha256']) === 1;
+        $mediaFilenameSafe = $mediaInfo['original_name'] === 'photo.png';
+    } catch (Throwable $exception) {
+        $mediaInspectPassed = false;
+    }
+}
+if (is_string($mediaPath) && is_file($mediaPath)) {
+    @unlink($mediaPath);
+}
+adminNonDbCheck('Media inspection verifies actual image MIME, dimensions and SHA-256', $mediaInspectPassed);
+adminNonDbCheck('Media filenames are reduced to a safe basename', $mediaFilenameSafe);
 
 $health = (new AdminHealthCheckService())->run();
 adminNonDbCheck('Health inspection explicitly avoids database and network access', $health['database_accessed'] === false && $health['network_accessed'] === false);
