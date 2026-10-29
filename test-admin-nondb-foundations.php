@@ -31,6 +31,9 @@ require_once __DIR__ . '/app/Core/AdminPermissionCatalog.php';
 require_once __DIR__ . '/app/Core/SensitiveDataRedactor.php';
 require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
 require_once __DIR__ . '/app/Core/AdminRequestContext.php';
+require_once __DIR__ . '/app/Core/AdminActorContext.php';
+require_once __DIR__ . '/app/Core/Exceptions/AppException.php';
+require_once __DIR__ . '/app/Core/Exceptions/AuthorizationException.php';
 require_once __DIR__ . '/app/Services/AdminFeatureContractValidator.php';
 require_once __DIR__ . '/app/Services/AdminOperationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminNotificationPolicy.php';
@@ -60,6 +63,18 @@ $redactedJson = json_encode($redacted, JSON_THROW_ON_ERROR);
 adminNonDbCheck('Central redactor removes secrets recursively', $redacted['password'] === '[REDACTED]' && $redacted['profile']['access_token'] === '[REDACTED]');
 adminNonDbCheck('Central redactor preserves non-sensitive values', $redacted['profile']['display_name'] === 'Nivad Admin' && $redacted['normal_value'] === 'safe');
 adminNonDbCheck('Central redactor output does not contain supplied secret values', !str_contains($redactedJson, 'never-log-this'));
+
+$actorContext = new AdminActorContext(static fn() => 7, static fn() => true);
+adminNonDbCheck('Actor context uses the validated current admin identity', $actorContext->requireCurrentAdmin(7) === 7);
+$actorMismatchDenied = false;
+try {
+    $actorContext->requireCurrentAdmin(8);
+} catch (AuthorizationException $exception) {
+    $actorMismatchDenied = true;
+}
+adminNonDbCheck('Actor context rejects spoofed admin IDs', $actorMismatchDenied);
+$noSessionActor = new AdminActorContext(static fn() => 7, static fn() => false);
+adminNonDbCheck('Actor context rejects an unvalidated session', $noSessionActor->currentAdminId() === null);
 
 $notificationPolicy = new AdminNotificationPolicy();
 $notificationAllowed = $notificationPolicy->evaluate('order.status.changed', 'warning', 0, null, 1000);
