@@ -1,7 +1,7 @@
 # NIVAD Admin Panel — Non-Database Infrastructure Progress
 **Date:** 2026-10-29  
-**Branch:** `feature/admin-panel-implementation-2026-10-29`  
-**Pull request:** #44 — draft; not merged  
+**Branch:** `feature/admin-panel-clean-2026-10-29`  
+**Pull request:** #45 — draft; not merged. PR #44 was closed without merging because its branch carried 189 commits of ancestry ahead of `master`; this clean branch is a single snapshot commit based directly on `master`.  
 **Scope:** Implement and connect reusable non-database infrastructure. Database execution, target-schema verification, and production delivery remain explicitly gated.
 
 ## What is now implemented
