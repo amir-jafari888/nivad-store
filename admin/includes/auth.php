@@ -144,12 +144,11 @@ ob_start(static function (string $html) use ($currentAdmin): string {
                 <div class="admin-shared-submenu">
                     <a href="' . e(url('/admin/sliders')) . '">اسلایدرها</a>
                     <a href="' . e(url('/admin/discovery')) . '">دیسکاوری</a>
-                    <a href="' . e(url('/admin/discovery/tags')) . '">برچسب‌های دیسکاوری</a>
                     <a href="' . e(url('/admin/compatibility')) . '">سازگاری</a>
                     <a href="' . e(url('/admin/compatibility/devices')) . '">دستگاه‌های سازگاری</a>
                     <a href="' . e(url('/admin/setups')) . '">ستاپ‌ها</a>
-                    <a href="' . e(url('/admin/setups/devices')) . '">دستگاه‌های Setup</a>
-                    <a href="' . e(url('/admin/setups/accessories')) . '">اکسسوری‌های Setup</a>
+                    <a href="' . e(url('/admin/setups/devices.php')) . '">دستگاه‌های Setup</a>
+                    <a href="' . e(url('/admin/setups/accessories.php')) . '">اکسسوری‌های Setup</a>
                 </div>
             </details>
             <details class="admin-shared-nav-group">
@@ -157,14 +156,14 @@ ob_start(static function (string $html) use ($currentAdmin): string {
                 <div class="admin-shared-submenu">
                     <a href="' . e(url('/admin/orders')) . '">سفارش‌ها</a>
                     <a href="' . e(url('/admin/payments')) . '">پرداخت‌ها</a>
-                    <a href="' . e(url('/admin/payments/attempts')) . '">تلاش‌های پرداخت</a>
+                    <a href="' . e(url('/admin/payments/attempts.php')) . '">تلاش‌های پرداخت</a>
                     <a href="' . e(url('/admin/coupons')) . '">کدهای تخفیف</a>
                     <a href="' . e(url('/admin/inventory')) . '">موجودی</a>
-                    <a href="' . e(url('/admin/inventory/movements')) . '">گردش موجودی</a>
-                    <a href="' . e(url('/admin/inventory/reservations')) . '">رزروهای موجودی</a>
+                    <a href="' . e(url('/admin/inventory/movements.php')) . '">گردش موجودی</a>
+                    <a href="' . e(url('/admin/inventory/reservations.php')) . '">رزروهای موجودی</a>
                     <a href="' . e(url('/admin/shipping/shipments')) . '">مرسوله‌ها</a>
-                    <a href="' . e(url('/admin/shipping/methods')) . '">روش‌های ارسال</a>
-                    <a href="' . e(url('/admin/shipping/zones')) . '">مناطق ارسال</a>
+                    <a href="' . e(url('/admin/shipping/methods.php')) . '">روش‌های ارسال</a>
+                    <a href="' . e(url('/admin/shipping/zones.php')) . '">مناطق ارسال</a>
                 </div>
             </details>
             <details class="admin-shared-nav-group">
