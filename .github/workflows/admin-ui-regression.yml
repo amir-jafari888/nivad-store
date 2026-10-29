@@ -1,0 +1,32 @@
+name: Admin UI Regression
+
+on:
+  push:
+    branches:
+      - "feature/admin-panel-ui-redesign-2026-10-29"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  admin-ui-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Lint admin shell, dashboard and UI contracts
+        run: |
+          php -l admin/includes/auth.php
+          php -l pages/admin/dashboard.php
+          php -l test-admin-ui-contracts.php
+
+      - name: Run admin UI shell and dashboard contracts
+        run: php test-admin-ui-contracts.php
