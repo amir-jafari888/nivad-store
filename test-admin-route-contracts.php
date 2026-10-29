@@ -26,6 +26,8 @@ function adminRouteCheck(string $name, bool $condition): void
 
 require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
 require_once __DIR__ . '/app/Core/AdminRouteFeatureMap.php';
+require_once __DIR__ . '/app/Core/AdminPermissionCatalog.php';
+require_once __DIR__ . '/app/Core/AdminRoutePermissionMap.php';
 
 $routeFile = __DIR__ . '/routes/api.php';
 $source = is_file($routeFile) ? file_get_contents($routeFile) : false;
@@ -43,6 +45,9 @@ $unclassified = [];
 $unauthenticated = [];
 $mutationsWithoutCsrf = [];
 $unknownFeatureReferences = [];
+$missingPermissionContracts = [];
+$unknownPermissionContracts = [];
+$knownPermissions = array_fill_keys(AdminPermissionCatalog::allNames(), true);
 
 for ($index = 0, $count = count($starts); $index < $count; $index++) {
     $start = $starts[$index][1];
@@ -95,13 +100,20 @@ for ($index = 0, $count = count($starts); $index < $count; $index++) {
     $featureId = AdminRouteFeatureMap::featureForRoute($routeName);
     if ($featureId === null) {
         $unclassified[] = $routeName;
-        continue;
-    }
-
-    if (AdminFeatureRegistry::find($featureId) === null) {
+    } elseif (AdminFeatureRegistry::find($featureId) === null) {
         $unknownFeatureReferences[] = [
             'route' => $routeName,
             'feature' => $featureId,
+        ];
+    }
+
+    $permission = AdminRoutePermissionMap::permissionForRoute($routeName);
+    if ($permission === null) {
+        $missingPermissionContracts[] = $routeName;
+    } elseif (!isset($knownPermissions[$permission])) {
+        $unknownPermissionContracts[] = [
+            'route' => $routeName,
+            'permission' => $permission,
         ];
     }
 }
@@ -129,10 +141,12 @@ adminRouteCheck('All 161 admin API routes are represented in the static inventor
 adminRouteCheck('Every admin API route requires AdminAuthMiddleware', $unauthenticated === []);
 adminRouteCheck('Every mutating admin API route requires CSRF middleware', $mutationsWithoutCsrf === []);
 adminRouteCheck('Every mapped route points to a known feature ID', $unknownFeatureReferences === []);
+adminRouteCheck('All 161 admin API routes have an explicit permission contract', $missingPermissionContracts === [] && $unknownPermissionContracts === []);
 adminRouteCheck('Only explicitly unresolved route families remain unclassified', $unclassified === $expectedUnclassified);
 
 echo "Admin API routes audited: " . count($adminRoutes) . "\n";
-echo "Unclassified routes (DB/feature-contract gate): " . count($unclassified) . "\n";
+echo "Routes lacking feature-bucket mapping (exact permission map covers these): " . count($unclassified) . "\n";
+echo "Routes lacking permission contracts: " . count($missingPermissionContracts) . "\n";
 if ($unclassified !== []) {
     echo "Unclassified route names:\n";
     foreach ($unclassified as $routeName) {
