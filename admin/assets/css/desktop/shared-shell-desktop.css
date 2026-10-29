@@ -84,3 +84,43 @@
 
 /* Legacy page header becomes a content toolbar, not a competing global header. */
 .admin-shared-shell>header:not(.admin-shared-topbar){display:flex;align-items:center;justify-content:space-between;gap:16px;margin-inline-start:264px;padding:18px 24px 0;border:0;background:transparent;box-shadow:none}
+
+
+/* Shared task-oriented page components — restrained by default. */
+.admin-shared-shell main>h1{font-size:24px;line-height:1.35;margin:0 0 18px}
+.admin-shared-shell main>p{color:var(--admin-color-text-muted)}
+.admin-shared-shell main .toolbar,.admin-shared-shell main .admin-data-toolbar,.admin-shared-shell main .admin-data-bulk{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-block:0 14px}
+.admin-shared-shell main .card,.admin-shared-shell main .panel,.admin-shared-shell main .report-card{border:1px solid var(--admin-color-border);background:var(--admin-color-surface);border-radius:var(--admin-radius-md);box-shadow:none}
+.admin-shared-shell main .reports-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.admin-shared-shell main .report-card{padding:16px;text-decoration:none;transition:border-color var(--admin-transition-fast),background var(--admin-transition-fast)}
+.admin-shared-shell main .report-card h2{margin:0 0 8px;color:var(--admin-color-text);font-size:16px}
+.admin-shared-shell main .report-card p{margin:0;color:var(--admin-color-text-muted);font-size:13px;line-height:1.7}
+.admin-shared-shell main .report-card:hover{border-color:var(--admin-color-primary);background:var(--admin-color-primary-soft)}
+.admin-shared-shell main .field,.admin-shared-shell main .form-field,.admin-shared-shell main .form-group{display:grid;gap:6px;min-width:0;margin-block:0 14px}
+.admin-shared-shell main form.card{display:grid;gap:2px}
+.admin-shared-shell main label{font-size:13px;font-weight:600;color:var(--admin-color-text)}
+.admin-shared-shell main input:not([type=checkbox]):not([type=radio]):not([type=hidden]),.admin-shared-shell main select,.admin-shared-shell main textarea{width:100%;min-width:0;min-height:42px;padding:9px 11px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);background:var(--admin-color-surface);color:var(--admin-color-text);font:inherit;font-size:14px;line-height:1.5}
+.admin-shared-shell main textarea{min-height:112px;resize:vertical}
+.admin-shared-shell main input::placeholder,.admin-shared-shell main textarea::placeholder{color:var(--admin-color-text-muted);opacity:1}
+.admin-shared-shell main input:focus,.admin-shared-shell main select:focus,.admin-shared-shell main textarea:focus{border-color:var(--admin-color-primary)}
+.admin-shared-shell main button,.admin-shared-shell main input[type=submit],.admin-shared-shell main input[type=button]{min-height:40px;padding:8px 13px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);background:var(--admin-color-surface);color:var(--admin-color-text);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.admin-shared-shell main button:hover,.admin-shared-shell main input[type=submit]:hover,.admin-shared-shell main input[type=button]:hover{background:var(--admin-color-bg);border-color:var(--admin-color-border-hover,var(--admin-color-border))}
+.admin-shared-shell main button:disabled,.admin-shared-shell main input:disabled{opacity:.55;cursor:not-allowed}
+.admin-shared-shell main .message{margin:0 0 14px;padding:12px 14px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);background:var(--admin-color-surface);color:var(--admin-color-text-secondary,var(--admin-color-text));font-size:13px}
+.admin-shared-shell main .admin-data-experience{display:grid;gap:10px;min-width:0}
+.admin-shared-shell main .admin-data-field{display:grid;gap:5px;min-width:150px;font-size:12px}
+.admin-shared-shell main .admin-data-field input,.admin-shared-shell main .admin-data-field select{min-height:38px}
+.admin-shared-shell main .admin-data-table-wrap{max-width:100%;overflow:auto;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm)}
+.admin-shared-shell main .admin-data-table{min-width:620px}
+.admin-shared-shell main .admin-data-status{margin:0;color:var(--admin-color-text-muted);font-size:12px}
+.admin-shared-shell main .admin-data-pagination{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+.admin-shared-shell main .admin-data-pagination button{min-height:36px}
+.admin-shared-shell main .admin-data-select-all{display:flex;align-items:center;gap:8px;font-size:12px}
+.admin-shared-shell main .admin-data-selected-count{color:var(--admin-color-text-muted);font-size:12px}
+.admin-shared-shell main .admin-settings-section{border-bottom:1px solid var(--admin-color-border)}
+.admin-shared-shell main .admin-settings-current-user{font-size:13px;color:var(--admin-color-text-muted)}
+.admin-shared-shell main .admin-settings-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.admin-shared-shell main .admin-settings-heading p{margin:5px 0 0;color:var(--admin-color-text-muted);font-size:13px}
+.admin-shared-shell main .admin-settings-section h2{margin:0 0 8px}
+.admin-shared-shell main .admin-settings-section p{color:var(--admin-color-text-muted);font-size:13px}
+
