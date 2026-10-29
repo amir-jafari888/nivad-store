@@ -102,3 +102,25 @@
 .admin-shared-shell main .table-wrap table, .admin-shared-shell main .admin-data-table-wrap table { margin:0; }
 .admin-shared-shell main .message { margin-block:12px; padding:10px 12px; border:1px solid var(--admin-color-border); background:var(--admin-color-surface); font-size:12px; }
 .admin-shared-shell main .message a { font-weight:600; }
+
+
+/* Domain-level page refinements. These classes are derived from the current admin route. */
+.admin-page-products main>section, .admin-page-categories main>section, .admin-page-brands main>section,
+.admin-page-collections main>section, .admin-page-attributes main>section, .admin-page-product-types main>section,
+.admin-page-specifications main>section { align-items:start; }
+.admin-page-products main form, .admin-page-categories main form, .admin-page-brands main form,
+.admin-page-collections main form, .admin-page-attributes main form, .admin-page-product-types main form,
+.admin-page-specifications main form { max-width:900px; }
+.admin-page-orders main .card, .admin-page-orders main .panel, .admin-page-orders main .grid,
+.admin-page-payments main .card, .admin-page-inventory main .card, .admin-page-shipping main .card,
+.admin-page-returns main .card, .admin-page-refunds main .card { min-width:0; }
+.admin-page-orders main .grid, .admin-page-users main .grid { grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+.admin-page-orders main .status, .admin-page-payments main .status, .admin-page-inventory main .status,
+.admin-page-shipping main .status, .admin-page-returns main .status, .admin-page-refunds main .status { white-space:nowrap; }
+.admin-page-compatibility main .summary-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.admin-page-compatibility main .actions { margin-block:8px; }
+.admin-page-discovery main .container, .admin-page-setups main .container { max-width:100%; }
+.admin-page-reports main .reports-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.admin-page-audit-logs main table, .admin-page-notifications main table { font-variant-numeric:tabular-nums; }
+.admin-page-users main .card, .admin-page-questions main .card, .admin-page-reviews main .card { min-width:0; }
+.admin-page-settings main form { max-width:760px; }
