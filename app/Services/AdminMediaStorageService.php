@@ -154,6 +154,10 @@ final class AdminMediaStorageService
             ? realpath($documentRoot)
             : false;
 
+        if (is_string($documentRoot) && $documentRoot !== '' && $documentRootReal === false) {
+            throw new RuntimeException('Document root could not be verified; refusing to initialize media storage.');
+        }
+
         $normalized = $this->normalizePath($configured);
         if ($documentRootReal !== false) {
             $documentRootNormalized = rtrim($this->normalizePath($documentRootReal), '/');
