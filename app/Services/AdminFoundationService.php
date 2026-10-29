@@ -9,6 +9,7 @@ declare(strict_types=1);
 final class AdminFoundationService
 {
     private AdminFoundationRepository $repository;
+    private AdminActorContext $actors;
 
     private const SENSITIVE_KEY_PARTS = [
         'password', 'token', 'secret', 'authorization', 'cookie',
@@ -16,11 +17,15 @@ final class AdminFoundationService
     ];
 
     public function __construct(
-        ?AdminFoundationRepository $repository = null
+        ?AdminFoundationRepository $repository = null,
+        ?AdminActorContext $actors = null
     ) {
         $this->repository =
             $repository ??
             new AdminFoundationRepository();
+        $this->actors =
+            $actors ??
+            new AdminActorContext();
     }
 
     public function createContentRevision(
@@ -31,6 +36,7 @@ final class AdminFoundationService
         int $createdByAdminId,
         ?string $scheduledAt = null
     ): int {
+        $createdByAdminId = $this->actors->requireCurrentAdmin($createdByAdminId);
         $entityType = $this->requiredText($entityType, 100, 'Entity type');
         $entityId = $this->requiredText($entityId, 100, 'Entity ID');
 
@@ -64,9 +70,7 @@ final class AdminFoundationService
         ?array $sort = null,
         bool $shared = false
     ): int {
-        if ($adminUserId < 1) {
-            throw new InvalidArgumentException('Invalid saved-view owner.');
-        }
+        $adminUserId = $this->actors->requireCurrentAdmin($adminUserId);
 
         return $this->repository->saveView(
             $adminUserId,
@@ -83,9 +87,7 @@ final class AdminFoundationService
         array $payload,
         int $createdByAdminId
     ): int {
-        if ($createdByAdminId < 1) {
-            throw new InvalidArgumentException('Invalid operation creator.');
-        }
+        $createdByAdminId = $this->actors->requireCurrentAdmin($createdByAdminId);
 
         return $this->repository->enqueueOperationJob(
             $this->requiredText($jobType, 100, 'Job type'),
@@ -154,9 +156,7 @@ final class AdminFoundationService
         array $payload,
         ?array $beforeSnapshot = null
     ): int {
-        if ($requesterAdminId < 1) {
-            throw new InvalidArgumentException('Invalid approval requester.');
-        }
+        $requesterAdminId = $this->actors->requireCurrentAdmin($requesterAdminId);
 
         return $this->repository->createApprovalRequest(
             $this->requiredText($actionKey, 120, 'Action key'),
@@ -174,9 +174,10 @@ final class AdminFoundationService
         string $decision,
         ?string $note = null
     ): bool {
-        if ($requestId < 1 || $reviewerAdminId < 1) {
+        if ($requestId < 1) {
             return false;
         }
+        $reviewerAdminId = $this->actors->requireCurrentAdmin($reviewerAdminId);
 
         if (!in_array($decision, ['approved', 'rejected'], true)) {
             throw new InvalidArgumentException('Unsupported approval decision.');
@@ -199,7 +200,8 @@ final class AdminFoundationService
         int $uploadedByAdminId,
         ?string $altText = null
     ): int {
-        if ($uploadedByAdminId < 1 || $fileSizeBytes < 1) {
+        $uploadedByAdminId = $this->actors->requireCurrentAdmin($uploadedByAdminId);
+        if ($fileSizeBytes < 1) {
             throw new InvalidArgumentException('Invalid media metadata.');
         }
 
@@ -234,6 +236,10 @@ final class AdminFoundationService
             throw new InvalidArgumentException('Unsupported support priority.');
         }
 
+        if ($createdByAdminId !== null) {
+            $createdByAdminId = $this->actors->requireCurrentAdmin($createdByAdminId);
+        }
+
         foreach ([$customerId, $assignedAdminId, $createdByAdminId] as $id) {
             if ($id !== null && $id < 1) {
                 throw new InvalidArgumentException('Invalid support ticket reference ID.');
@@ -261,8 +267,8 @@ final class AdminFoundationService
         ?float $numericValue = null,
         ?array $dimensions = null
     ): int {
-        if ($actorAdminId !== null && $actorAdminId < 1) {
-            throw new InvalidArgumentException('Invalid analytics actor ID.');
+        if ($actorAdminId !== null) {
+            $actorAdminId = $this->actors->requireCurrentAdmin($actorAdminId);
         }
 
         return $this->repository->recordAnalyticsEvent(
