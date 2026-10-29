@@ -30,6 +30,7 @@ require_once __DIR__ . '/app/Core/Response.php';
 require_once __DIR__ . '/app/Core/AdminPermissionCatalog.php';
 require_once __DIR__ . '/app/Core/SensitiveDataRedactor.php';
 require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
+require_once __DIR__ . '/app/Core/AdminBulkOperationRegistry.php';
 require_once __DIR__ . '/app/Core/AdminSearchProviderInterface.php';
 require_once __DIR__ . '/app/Services/AdminGlobalSearchService.php';
 require_once __DIR__ . '/app/Core/AdminRequestContext.php';
@@ -44,6 +45,7 @@ require_once __DIR__ . '/app/Services/AdminMediaStorageService.php';
 require_once __DIR__ . '/app/Services/AdminPreviewTokenService.php';
 require_once __DIR__ . '/app/Services/AdminSavedViewValidator.php';
 require_once __DIR__ . '/app/Services/AdminContentPublishingPolicy.php';
+require_once __DIR__ . '/app/Services/AdminBulkOperationPolicy.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
 
 $registry = AdminFeatureRegistry::all();
@@ -174,6 +176,32 @@ $expiredPreview = $previewService->verify($previewToken, 7, 'product', 'product-
 $tamperedPreview = $previewService->verify($previewToken . 'x', 7, 'product', 'product-15', 1500);
 adminNonDbCheck('Preview tokens verify signature, scope, actor and expiry', is_array($previewClaims) && $previewClaims['entity_id'] === 'product-15' && $wrongAdminPreview === null && $expiredPreview === null && $tamperedPreview === null);
 putenv('NIVAD_ADMIN_PREVIEW_SECRET');
+
+$bulkPolicy = new AdminBulkOperationPolicy();
+$validBulk = $bulkPolicy->validate('catalog.products.status', ['ids' => [1, '2', 2], 'access_token' => 'never-store-this'], true);
+$sensitiveBulk = $bulkPolicy->validate('inventory.adjust', ['ids' => [4, 5]], true, 17);
+$unknownBulkRejected = false;
+try {
+    $bulkPolicy->validate('arbitrary.sql', ['ids' => [1]], true);
+} catch (InvalidArgumentException $exception) {
+    $unknownBulkRejected = true;
+}
+$unconfirmedBulkRejected = false;
+try {
+    $bulkPolicy->validate('catalog.products.status', ['ids' => [1]], false);
+} catch (InvalidArgumentException $exception) {
+    $unconfirmedBulkRejected = true;
+}
+$missingApprovalRejected = false;
+try {
+    $bulkPolicy->validate('inventory.adjust', ['ids' => [1]], true);
+} catch (InvalidArgumentException $exception) {
+    $missingApprovalRejected = true;
+}
+adminNonDbCheck('Bulk operation policy allowlists job types and deduplicates IDs', $validBulk['payload']['ids'] === [1, 2] && $validBulk['job_type'] === 'catalog.products.status');
+adminNonDbCheck('Sensitive bulk operations require an approval reference', $sensitiveBulk['requires_approval'] === true && $sensitiveBulk['approval_verification_required_at_execution'] === true && $missingApprovalRejected);
+adminNonDbCheck('Bulk operation policy rejects unknown jobs and missing confirmation', $unknownBulkRejected && $unconfirmedBulkRejected);
+adminNonDbCheck('Bulk operation payload redacts sensitive fields', $validBulk['payload']['access_token'] === '[REDACTED]');
 
 $publishingPolicy = new AdminContentPublishingPolicy();
 $normalizedSchedule = $publishingPolicy->normalizeSchedule('scheduled', '2099-01-01T00:00:00+03:30');
