@@ -10,11 +10,11 @@ declare(strict_types=1);
  */
 final class AdminFeatureAccessService
 {
-    private AuthorizationService $authorization;
+    private ?AuthorizationService $authorization;
 
     public function __construct(?AuthorizationService $authorization = null)
     {
-        $this->authorization = $authorization ?? new AuthorizationService();
+        $this->authorization = $authorization;
     }
 
     public function canAccess(int $adminUserId, string $featureId): bool
@@ -28,7 +28,7 @@ final class AdminFeatureAccessService
             return false;
         }
 
-        return $this->authorization->can(
+        return $this->authorization()->can(
             $adminUserId,
             $feature['permission']
         );
@@ -66,6 +66,15 @@ final class AdminFeatureAccessService
         }
 
         return true;
+    }
+
+    private function authorization(): AuthorizationService
+    {
+        if ($this->authorization === null) {
+            $this->authorization = new AuthorizationService();
+        }
+
+        return $this->authorization;
     }
 
     public function requiredPermission(string $featureId): ?string
