@@ -50,27 +50,15 @@ final class AdminFeatureMiddleware implements MiddlewareInterface
 
     private function deny(string $reason, int $status): never
     {
-        $expectsJson = Request::acceptsJson()
-            || Request::isAjax()
-            || Request::isJson();
-
-        if ($expectsJson) {
-            Response::json([
-                'success' => false,
-                'message' => $status === 401
-                    ? 'هویت مدیر معتبر نیست.'
-                    : 'دسترسی به این قابلیت مجاز نیست.',
-                'reason' => $reason,
-                'feature' => $this->featureId,
-                'request_id' => AdminRequestContext::id(),
-            ], $status);
-        }
-
-        Response::text(
+        AdminHttpErrorResponder::respond(
+            $status,
             $status === 401
                 ? 'هویت مدیر معتبر نیست.'
                 : 'دسترسی به این قابلیت مجاز نیست.',
-            $status
+            [
+                'reason' => $reason,
+                'feature' => $this->featureId,
+            ]
         );
     }
 }
