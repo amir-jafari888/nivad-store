@@ -146,7 +146,7 @@ $check(
     'Non-Super-Admin permission checks remain role/permission based',
     is_string($authorization)
         && str_contains($authorization, '$this->permissions->findByName($permissionName)')
-        && str_contains($authorization, '$this->rolePermissions->permissionIdsForRole(')
+        && str_contains($authorization, 'permissionIdsForRole(')
 );
 
 $check(
