@@ -41,7 +41,7 @@ final class AdminFeatureRegistry
             'ADM-020' => self::feature('System health checks', 'admin.system_health.view', false, ['ADM-019'], 'observability'),
             'ADM-021' => self::feature('Background jobs, webhooks and gateway health', 'admin.system_health.view', true, ['ADM-019'], 'observability', [], true),
             'ADM-022' => self::feature('Admin support ticket workflow', 'admin.support.manage', true, ['ADM-016', 'ADM-008'], 'support'),
-            'ADM-023' => self::feature('Product interaction and conversion analytics', 'admin.analytics.view', true, ['ADM-042'], 'analytics'),
+            'ADM-023' => self::feature('Product interaction and conversion analytics', 'admin.analytics.view', true, [], 'analytics'),
             'ADM-024' => self::feature('Product buying guides and educational content', 'admin.content.manage', true, ['ADM-014'], 'storefront_intelligence'),
             'ADM-025' => self::feature('Product comparison contracts', 'admin.products.view', true, ['ADM-011'], 'storefront_intelligence'),
             'ADM-026' => self::feature('Product/accessory compatibility graph', 'admin.catalog.manage', true, ['ADM-011'], 'storefront_intelligence'),
