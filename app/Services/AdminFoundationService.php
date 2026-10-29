@@ -11,6 +11,7 @@ final class AdminFoundationService
     private AdminFoundationRepository $repository;
     private AdminActorContext $actors;
     private AdminSavedViewValidator $savedViewValidator;
+    private AdminContentPublishingPolicy $contentPublishingPolicy;
 
     private const SENSITIVE_KEY_PARTS = [
         'password', 'token', 'secret', 'authorization', 'cookie',
@@ -20,7 +21,8 @@ final class AdminFoundationService
     public function __construct(
         ?AdminFoundationRepository $repository = null,
         ?AdminActorContext $actors = null,
-        ?AdminSavedViewValidator $savedViewValidator = null
+        ?AdminSavedViewValidator $savedViewValidator = null,
+        ?AdminContentPublishingPolicy $contentPublishingPolicy = null
     ) {
         $this->repository =
             $repository ??
@@ -31,6 +33,9 @@ final class AdminFoundationService
         $this->savedViewValidator =
             $savedViewValidator ??
             new AdminSavedViewValidator();
+        $this->contentPublishingPolicy =
+            $contentPublishingPolicy ??
+            new AdminContentPublishingPolicy();
     }
 
     public function createContentRevision(
@@ -45,17 +50,10 @@ final class AdminFoundationService
         $entityType = $this->requiredText($entityType, 100, 'Entity type');
         $entityId = $this->requiredText($entityId, 100, 'Entity ID');
 
-        if (!in_array($status, ['draft', 'scheduled', 'published', 'archived'], true)) {
-            throw new InvalidArgumentException('Unsupported content revision status.');
-        }
-
-        if ($createdByAdminId < 1) {
-            throw new InvalidArgumentException('Invalid revision creator ID.');
-        }
-
-        if ($status === 'scheduled' && $scheduledAt === null) {
-            throw new InvalidArgumentException('Scheduled revisions require a publish time.');
-        }
+        $scheduledAt = $this->contentPublishingPolicy->normalizeSchedule(
+            $status,
+            $scheduledAt
+        );
 
         return $this->repository->createContentRevision(
             $entityType,
