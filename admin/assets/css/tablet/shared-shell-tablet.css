@@ -92,3 +92,10 @@
 .admin-shared-shell .admin-skip-link,.admin-dashboard-page .admin-skip-link{inset-inline-start:calc(var(--admin-sidebar-width) + 12px)}
 .admin-dashboard-line-chart{height:160px}
 .admin-dashboard-line-chart-labels{font-size:10px}
+
+
+.admin-shared-shell>header:not(.admin-shared-topbar):has(>strong:only-child){display:none}
+.admin-shared-shell main>a[href$="/admin"],.admin-shared-shell main>a[href*="/admin/"]:not([href*="/create"]):not([href*="/groups"]){display:inline-flex;align-items:center;justify-content:center;min-height:38px;margin-block-end:11px;padding:8px 10px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);background:var(--admin-color-surface);color:var(--admin-color-text-muted);font-size:12px;text-decoration:none}
+.admin-dashboard-chart-value,.admin-dashboard-chart-label{font-size:10px}
+.admin-dashboard-line-chart-labels{font-size:10px}
+
