@@ -12,7 +12,7 @@ interface AdminEmailOutboxRepositoryInterface
     /** @return array<int,array<string,mixed>> */
     public function claimDue(int $limit): array;
 
-    public function markSent(int $outboxId, ?string $providerMessageId): bool;
+    public function markSent(int $outboxId, int $attemptCount, ?string $providerMessageId): bool;
 
     public function markFailed(
         int $outboxId,
