@@ -25,6 +25,7 @@ function adminCapabilityCheck(string $name, bool $condition): void
     echo "[FAIL] {$name}\n";
 }
 
+require_once __DIR__ . '/app/Core/AdminPermissionCatalog.php';
 require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
 require_once __DIR__ . '/app/Core/AdminCapabilityContractRegistry.php';
 require_once __DIR__ . '/app/Core/AdminFoundationRepositoryInterface.php';
