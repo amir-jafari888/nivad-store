@@ -34,7 +34,7 @@ final class AdminFeatureRegistry
             'ADM-013' => self::feature('Inventory, shipping and low-stock alerts', 'admin.inventory.manage', true, ['ADM-008', 'ADM-016'], 'commerce'),
             'ADM-014' => self::feature('Storefront content management', 'admin.content.manage', true, ['ADM-015', 'ADM-032'], 'content'),
             'ADM-015' => self::feature('Media library and file management', 'admin.media.manage', true, ['ADM-044'], 'content'),
-            'ADM-016' => self::feature('In-app admin notification center', 'admin.notifications.view', true, ['ADM-018'], 'communications'),
+            'ADM-016' => self::feature('In-app admin notification center', 'admin.notifications.view', true, [], 'communications'),
             'ADM-017' => self::feature('Gmail SMTP delivery', 'admin.notifications.manage', true, ['ADM-016', 'ADM-018'], 'communications', ['gmail_smtp']),
             'ADM-018' => self::feature('Notification policy, deduplication and throttling', 'admin.notifications.manage', true, ['ADM-016'], 'communications'),
             'ADM-019' => self::feature('Central error and incident tracking', 'admin.incidents.manage', true, ['ADM-016', 'ADM-044'], 'observability'),
@@ -62,7 +62,7 @@ final class AdminFeatureRegistry
             'ADM-041' => self::feature('Admin route discovery hardening', 'admin.access', false, ['ADM-001', 'ADM-002'], 'security'),
             'ADM-042' => self::feature('Business reports and analytics', 'admin.reports.view', true, ['ADM-023'], 'reports'),
             'ADM-043' => self::feature('Audited admin lifecycle and bulk account changes', 'admin.admins.manage', true, ['ADM-005', 'ADM-008', 'ADM-009', 'ADM-039'], 'administration'),
-            'ADM-044' => self::feature('Secrets and sensitive data protection', 'admin.security_events.manage', false, ['ADM-008', 'ADM-019'], 'security'),
+            'ADM-044' => self::feature('Secrets and sensitive data protection', 'admin.security_events.manage', false, ['ADM-008'], 'security'),
         ];
     }
 
