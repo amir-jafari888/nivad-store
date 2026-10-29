@@ -56,6 +56,7 @@ require_once __DIR__ . '/app/Services/AdminContentPublishingPolicy.php';
 require_once __DIR__ . '/app/Services/AdminReportExportService.php';
 require_once __DIR__ . '/app/Services/AdminBulkOperationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminAccountPolicy.php';
+require_once __DIR__ . '/app/Services/AdminSupportTicketPolicy.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
 require_once __DIR__ . '/app/Services/AdminEmailOutboxWorker.php';
 
@@ -110,6 +111,25 @@ $outboxSummary = $outboxWorker->processBatch(20);
 adminNonDbCheck('Email outbox worker records successful deliveries', $outboxSummary['sent'] === 1 && count($fakeOutboxRepository->sent) === 1);
 adminNonDbCheck('Email outbox worker terminally handles malformed rows', $outboxSummary['invalid_rows'] === 1 && $fakeOutboxRepository->failed[0]['error_code'] === 'invalid_message' && $fakeOutboxRepository->failed[0]['terminal'] === true);
 adminNonDbCheck('Email outbox worker retries sender exceptions with backoff', $outboxSummary['retry_scheduled'] === 1 && $fakeOutboxRepository->failed[1]['next_attempt_at'] === 1060 && $fakeOutboxRepository->failed[1]['terminal'] === false);
+
+$supportPolicy = new AdminSupportTicketPolicy();
+$validTicket = $supportPolicy->validateCreation('Order delivery', 'Package is delayed.', 'high', 12, 7, null);
+$validInternalMessage = $supportPolicy->validateMessage('Internal note', 'internal', 7, null);
+$customerInternalMessageRejected = false;
+try {
+    $supportPolicy->validateMessage('Internal note', 'internal', null, 12);
+} catch (InvalidArgumentException $exception) {
+    $customerInternalMessageRejected = true;
+}
+$invalidTransitionRejected = false;
+try {
+    $supportPolicy->assertTransition('closed', 'resolved');
+} catch (InvalidArgumentException $exception) {
+    $invalidTransitionRejected = true;
+}
+adminNonDbCheck('Support ticket policy normalizes valid ticket creation', $validTicket['priority'] === 'high' && $validTicket['status'] === 'open');
+adminNonDbCheck('Support ticket policy permits admin-only internal notes and rejects customer internal notes', $validInternalMessage['visibility'] === 'internal' && $customerInternalMessageRejected);
+adminNonDbCheck('Support ticket policy rejects invalid lifecycle transitions', $invalidTransitionRejected);
 
 $accountPolicy = new AdminAccountPolicy();
 $validAdminCreate = $accountPolicy->validateCreate(
