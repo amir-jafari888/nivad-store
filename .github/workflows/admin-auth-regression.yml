@@ -61,6 +61,8 @@ jobs:
           php -l app/Services/AdminFoundationService.php
           php -l app/Services/AdminNotificationService.php
           php -l app/Services/AdminNotificationPolicy.php
+          php -l app/Services/AdminAuthenticationAuditService.php
+          php -l app/Services/AdminSecurityEventPolicy.php
           php -l app/Services/AdminSessionService.php
           php -l app/Services/AuthorizationService.php
           php -l test-admin-auth-route-regression.php
