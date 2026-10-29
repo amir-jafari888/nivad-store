@@ -32,6 +32,35 @@ final class AuthorizationService
             new AdminRoleRepository();
     }
 
+    /**
+     * The Super Admin bypass is server-side and depends on an active,
+     * non-deleted role assigned to the authenticated admin.
+     *
+     * The canonical role slug is "super-admin". A role name/label alone is
+     * never used to grant access.
+     */
+    private function hasSuperAdminRole(
+        int $adminUserId
+    ): bool {
+        foreach (
+            $this->userRoles->roleIdsForUser($adminUserId)
+            as $roleId
+        ) {
+            $role = $this->roles->findById((int) $roleId);
+
+            if (
+                $role !== null &&
+                ($role['slug'] ?? null) === 'super-admin' &&
+                ($role['status'] ?? null) === 'active' &&
+                ($role['deleted_at'] ?? null) === null
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function check(
         int $adminUserId,
         string $permissionName
@@ -42,11 +71,7 @@ final class AuthorizationService
             );
         }
 
-        $permissionName = trim(
-            $permissionName
-        );
-
-
+        $permissionName = trim($permissionName);
 
         if ($permissionName === '') {
             return AuthorizationResult::rejected(
@@ -54,10 +79,16 @@ final class AuthorizationService
             );
         }
 
-        $permission =
-            $this->permissions->findByName(
-                $permissionName
-            );
+        /*
+         * Super Admin has full server-side permission access, including
+         * permissions added later. Authentication/session validation remains
+         * mandatory in the caller and is not bypassed here.
+         */
+        if ($this->hasSuperAdminRole($adminUserId)) {
+            return AuthorizationResult::granted();
+        }
+
+        $permission = $this->permissions->findByName($permissionName);
 
         if ($permission === null) {
             return AuthorizationResult::rejected(
@@ -65,41 +96,26 @@ final class AuthorizationService
             );
         }
 
-        $permissionId =
-            (int)$permission['id'];
+        $permissionId = (int) $permission['id'];
 
-        $roleIds =
-            $this->userRoles->roleIdsForUser(
-                $adminUserId
-            );
+        $roleIds = $this->userRoles->roleIdsForUser($adminUserId);
 
         foreach ($roleIds as $roleId) {
-            $role =
-                $this->roles->findById(
-                    (int)$roleId
-                );
+            $role = $this->roles->findById((int) $roleId);
 
             if (
                 $role === null ||
-                $role['status'] !== 'active' ||
-                $role['deleted_at'] !== null
+                ($role['status'] ?? null) !== 'active' ||
+                ($role['deleted_at'] ?? null) !== null
             ) {
                 continue;
             }
 
-            $permissionIds =
-                $this->rolePermissions
-                ->permissionIdsForRole(
-                    (int)$roleId
-                );
+            $permissionIds = $this->rolePermissions->permissionIdsForRole(
+                (int) $roleId
+            );
 
-            if (
-                in_array(
-                    $permissionId,
-                    $permissionIds,
-                    true
-                )
-            ) {
+            if (in_array($permissionId, $permissionIds, true)) {
                 return AuthorizationResult::granted();
             }
         }
@@ -114,10 +130,7 @@ final class AuthorizationService
         string $permissionName
     ): bool {
         return $this
-            ->check(
-                $adminUserId,
-                $permissionName
-            )
+            ->check($adminUserId, $permissionName)
             ->allowed();
     }
 
@@ -125,10 +138,7 @@ final class AuthorizationService
         int $adminUserId,
         string $permissionName
     ): bool {
-        return $this->can(
-            $adminUserId,
-            $permissionName
-        );
+        return $this->can($adminUserId, $permissionName);
     }
 
     public function hasAnyPermission(
@@ -147,22 +157,13 @@ final class AuthorizationService
                 continue;
             }
 
-            if (!is_string($permission)) {
-                continue;
-            }
-
             $permission = trim($permission);
 
             if ($permission === '') {
                 continue;
             }
 
-            if (
-                $this->can(
-                    $adminUserId,
-                    $permission
-                )
-            ) {
+            if ($this->can($adminUserId, $permission)) {
                 return true;
             }
         }
@@ -191,16 +192,8 @@ final class AuthorizationService
             if ($permission === '') {
                 return false;
             }
-            if ($permission === '') {
-                return false;
-            }
 
-            if (
-                !$this->can(
-                    $adminUserId,
-                    $permission
-                )
-            ) {
+            if (!$this->can($adminUserId, $permission)) {
                 return false;
             }
         }
