@@ -82,6 +82,7 @@ adminFoundationCheck('Admin notification recipients are isolated per admin', str
 adminFoundationCheck('Notification reads are scoped to recipient identity', str_contains($notificationRepository, 'findForAdmin(') && str_contains($notificationRepository, 'markReadForAdmin('));
 adminFoundationCheck('Email delivery is queued rather than assumed sent', str_contains($notificationRepository, 'admin_email_outbox') && str_contains($notificationRepository, "'pending'"));
 adminFoundationCheck('Notification service validates email address and severity', str_contains($notificationService, 'FILTER_VALIDATE_EMAIL') && str_contains($notificationService, 'SEVERITIES'));
+adminFoundationCheck('Notification payloads redact sensitive values', str_contains($notificationService, 'sanitizePayload(') && str_contains($notificationService, '[REDACTED]'));
 
 adminFoundationCheck('Foundation repository includes content revisions and saved views', str_contains($foundationRepository, 'admin_content_revisions') && str_contains($foundationRepository, 'admin_saved_views'));
 adminFoundationCheck('Foundation repository includes bulk-operation jobs', str_contains($foundationRepository, 'admin_operation_jobs'));
