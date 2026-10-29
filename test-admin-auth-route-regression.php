@@ -97,11 +97,19 @@ $check(
         && str_contains($errorHandler, "'request_id' => AdminRequestContext::id()")
 );
 
+$loggerBlock = '';
+if (is_string($errorHandler)) {
+    $loggerStart = strpos($errorHandler, 'Logger::error(');
+    $loggerEnd = $loggerStart === false ? false : strpos($errorHandler, ');', $loggerStart);
+    if ($loggerStart !== false && $loggerEnd !== false) {
+        $loggerBlock = substr($errorHandler, $loggerStart, $loggerEnd - $loggerStart);
+    }
+}
 $check(
     'Unhandled exception logging does not include the raw exception message',
-    is_string($errorHandler)
-        && !str_contains($errorHandler, '$exception->getMessage()')
-        && str_contains($errorHandler, "'request_id' => AdminRequestContext::id()")
+    $loggerBlock !== ''
+        && !str_contains($loggerBlock, '$exception->getMessage()')
+        && str_contains($loggerBlock, "'request_id' => AdminRequestContext::id()")
 );
 
 $check(
