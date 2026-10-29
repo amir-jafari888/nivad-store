@@ -1,0 +1,42 @@
+name: Admin Authentication and Authorization Regression
+
+on:
+  pull_request:
+    paths:
+      - "app/Middleware/AdminAuthMiddleware.php"
+      - "app/Services/AuthorizationService.php"
+      - "test-admin-auth-route-regression.php"
+      - ".github/workflows/admin-auth-regression.yml"
+  push:
+    branches:
+      - "feature/admin-panel-implementation-2026-10-29"
+    paths:
+      - "app/Middleware/AdminAuthMiddleware.php"
+      - "app/Services/AuthorizationService.php"
+      - "test-admin-auth-route-regression.php"
+      - ".github/workflows/admin-auth-regression.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  php-static-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Lint changed PHP files
+        run: |
+          php -l app/Middleware/AdminAuthMiddleware.php
+          php -l app/Services/AuthorizationService.php
+          php -l test-admin-auth-route-regression.php
+
+      - name: Run read-only admin auth/authorization regression
+        run: php test-admin-auth-route-regression.php
