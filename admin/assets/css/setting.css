@@ -1,4 +1,18 @@
-/* NIVAD Admin-only Design Tokens — isolated from customer storefront assets. */
+/* NIVAD Admin-only Design Tokens — palette aligned with the storefront design system. */
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../../../assets/fonts/webfonts/Vazirmatn[wght].woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../../../assets/fonts/InterVariable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 :root {
   color-scheme: light;
   --admin-color-bg: #f7f8fa;
@@ -26,12 +40,18 @@
   --admin-space-5: 20px;
   --admin-space-6: 24px;
   --admin-space-8: 32px;
-  --admin-font-family: Tahoma, Arial, sans-serif;
+  --admin-font-family: "Vazirmatn", "Inter", Tahoma, Arial, sans-serif;
   --admin-font-size-sm: 14px;
   --admin-font-size-md: 16px;
   --admin-font-size-lg: 18px;
   --admin-control-height: 44px;
   --admin-content-width: 1440px;
+  --admin-sidebar-width: 264px;
+  --admin-page-padding: 24px;
+  --admin-page-padding-tablet: 16px;
+  --admin-page-padding-mobile: 12px;
+  --admin-density-compact: 8px;
+  --admin-density-comfortable: 12px;
   --admin-transition: 160ms ease;
   --admin-transition-fast: 120ms ease;
   --admin-transition-normal: 160ms ease;
