@@ -43,6 +43,7 @@ require_once __DIR__ . '/app/Services/AdminHealthCheckService.php';
 require_once __DIR__ . '/app/Services/AdminMediaStorageService.php';
 require_once __DIR__ . '/app/Services/AdminPreviewTokenService.php';
 require_once __DIR__ . '/app/Services/AdminSavedViewValidator.php';
+require_once __DIR__ . '/app/Services/AdminContentPublishingPolicy.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
 
 $registry = AdminFeatureRegistry::all();
@@ -173,6 +174,24 @@ $expiredPreview = $previewService->verify($previewToken, 7, 'product', 'product-
 $tamperedPreview = $previewService->verify($previewToken . 'x', 7, 'product', 'product-15', 1500);
 adminNonDbCheck('Preview tokens verify signature, scope, actor and expiry', is_array($previewClaims) && $previewClaims['entity_id'] === 'product-15' && $wrongAdminPreview === null && $expiredPreview === null && $tamperedPreview === null);
 putenv('NIVAD_ADMIN_PREVIEW_SECRET');
+
+$publishingPolicy = new AdminContentPublishingPolicy();
+$normalizedSchedule = $publishingPolicy->normalizeSchedule('scheduled', '2099-01-01T00:00:00+03:30');
+$invalidScheduleRejected = false;
+try {
+    $publishingPolicy->normalizeSchedule('scheduled', '2099-01-01 00:00:00');
+} catch (InvalidArgumentException $exception) {
+    $invalidScheduleRejected = true;
+}
+$pastScheduleRejected = false;
+try {
+    $publishingPolicy->normalizeSchedule('scheduled', '2000-01-01T00:00:00Z');
+} catch (InvalidArgumentException $exception) {
+    $pastScheduleRejected = true;
+}
+adminNonDbCheck('Publishing policy normalizes explicit-offset schedules to UTC', $normalizedSchedule === '2098-12-31 20:30:00');
+adminNonDbCheck('Publishing policy rejects ambiguous or past schedule times', $invalidScheduleRejected && $pastScheduleRejected);
+adminNonDbCheck('Publishing state machine blocks invalid transitions', $publishingPolicy->canTransition('draft', 'published') && !$publishingPolicy->canTransition('archived', 'published'));
 
 $savedViewValidator = new AdminSavedViewValidator();
 $validFilters = $savedViewValidator->validateFilters([
