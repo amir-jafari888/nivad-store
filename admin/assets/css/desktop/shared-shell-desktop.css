@@ -28,7 +28,7 @@
 .admin-shared-topbar-profile .admin-shared-account-name,.admin-dashboard-user-name{display:flex;gap:4px;max-width:240px;min-width:0;overflow-wrap:anywhere;font-size:var(--admin-font-size-sm);font-weight:600}
 .admin-shared-topbar-profile .admin-shared-account-name span{display:inline}
 .admin-shared-mobile-menu,.admin-dashboard-mobile-menu{display:none}
-.admin-shared-shell>main{width:auto;max-width:1440px;min-width:0;margin-inline-start:264px;margin-inline-end:auto;padding:24px}
+.admin-shared-shell main{width:auto;max-width:1440px;min-width:0;margin-inline-start:264px;margin-inline-end:auto;padding:24px}
 .admin-shared-shell>main>header{margin-bottom:20px}
 .admin-shared-shell h1,.admin-dashboard-main h1{font-size:24px;line-height:1.35;margin:0 0 6px;font-weight:700}
 .admin-shared-shell h2,.admin-dashboard-main h2{font-size:17px;line-height:1.45;margin:0;font-weight:650}
