@@ -43,7 +43,7 @@
 .admin-shared-shell main table { font-size:13px; }
 .admin-shared-shell main th { background:var(--admin-color-bg); color:var(--admin-color-text-muted); font-size:12px; font-weight:600; }
 .admin-shared-shell main th, .admin-shared-shell main td { padding:10px 12px; }
-.admin-shared-shell main tr:hover td { background:rgba(37,99,235,.035); }
+.admin-shared-shell main tr:hover td { background:var(--admin-color-primary-soft); }
 .admin-shared-shell main form { gap:12px; }
 .admin-shared-shell main label { font-size:13px; font-weight:600; }
 .admin-shared-shell main input:not([type=checkbox]):not([type=radio]):not([type=hidden]), .admin-shared-shell main select, .admin-shared-shell main textarea { min-height:40px; border-radius:7px; font-size:13px; }
