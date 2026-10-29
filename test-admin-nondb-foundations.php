@@ -39,6 +39,8 @@ require_once __DIR__ . '/app/Services/AdminOperationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminNotificationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminHealthCheckService.php';
 require_once __DIR__ . '/app/Services/AdminMediaStorageService.php';
+require_once __DIR__ . '/app/Services/AdminPreviewTokenService.php';
+require_once __DIR__ . '/app/Services/AdminSavedViewValidator.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
 
 $registry = AdminFeatureRegistry::all();
@@ -122,6 +124,43 @@ $generatedId = AdminRequestContext::id();
 adminNonDbCheck('Unsafe inbound request IDs are replaced with generated IDs', preg_match('/^[a-f0-9]{32}$/', $generatedId) === 1);
 unset($_SERVER['HTTP_X_REQUEST_ID']);
 AdminRequestContext::resetForTests();
+
+putenv('NIVAD_ADMIN_PREVIEW_SECRET=test-preview-secret-32-bytes-minimum');
+$previewService = new AdminPreviewTokenService();
+$previewToken = $previewService->issue('product', 'product-15', 7, 900, 1000);
+$previewClaims = $previewService->verify($previewToken, 7, 'product', 'product-15', 1500);
+$wrongAdminPreview = $previewService->verify($previewToken, 8, 'product', 'product-15', 1500);
+$expiredPreview = $previewService->verify($previewToken, 7, 'product', 'product-15', 1900);
+$tamperedPreview = $previewService->verify($previewToken . 'x', 7, 'product', 'product-15', 1500);
+adminNonDbCheck('Preview tokens verify signature, scope, actor and expiry', is_array($previewClaims) && $previewClaims['entity_id'] === 'product-15' && $wrongAdminPreview === null && $expiredPreview === null && $tamperedPreview === null);
+putenv('NIVAD_ADMIN_PREVIEW_SECRET');
+
+$savedViewValidator = new AdminSavedViewValidator();
+$validFilters = $savedViewValidator->validateFilters([
+    ['field' => 'status', 'operator' => 'eq', 'value' => 'active'],
+    ['field' => 'created_at', 'operator' => 'gte', 'value' => '2026-01-01'],
+]);
+$validSort = $savedViewValidator->validateSort([
+    ['field' => 'created_at', 'direction' => 'desc'],
+]);
+$unsafeSavedViewRejected = false;
+try {
+    $savedViewValidator->validateFilters([
+        ['field' => 'id;DROP_TABLE', 'operator' => 'eq', 'value' => 1],
+    ]);
+} catch (InvalidArgumentException $exception) {
+    $unsafeSavedViewRejected = true;
+}
+$unsafeOperatorRejected = false;
+try {
+    $savedViewValidator->validateFilters([
+        ['field' => 'status', 'operator' => 'or 1=1', 'value' => 'active'],
+    ]);
+} catch (InvalidArgumentException $exception) {
+    $unsafeOperatorRejected = true;
+}
+adminNonDbCheck('Saved-view validator accepts safe filter/sort contracts', count($validFilters) === 2 && $validSort[0]['direction'] === 'desc');
+adminNonDbCheck('Saved-view validator rejects unsafe fields and operators', $unsafeSavedViewRejected && $unsafeOperatorRejected);
 
 $mediaPath = tempnam(sys_get_temp_dir(), 'nivad-admin-media-');
 $mediaPng = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jS8sAAAAASUVORK5CYII=', true);
