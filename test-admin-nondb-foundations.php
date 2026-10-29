@@ -50,6 +50,7 @@ require_once __DIR__ . '/app/Services/AdminSavedViewValidator.php';
 require_once __DIR__ . '/app/Services/AdminContentPublishingPolicy.php';
 require_once __DIR__ . '/app/Services/AdminReportExportService.php';
 require_once __DIR__ . '/app/Services/AdminBulkOperationPolicy.php';
+require_once __DIR__ . '/app/Services/AdminAccountPolicy.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
 require_once __DIR__ . '/app/Services/AdminEmailOutboxWorker.php';
 
@@ -62,6 +63,42 @@ adminNonDbCheck('Every feature has a permission and dependency metadata', count(
 adminNonDbCheck('All feature permissions exist in the canonical permission catalog', $contract['permission_count'] >= 46 && count(array_filter($contract['errors'], static fn($error) => $error['code'] === 'permission_missing_from_catalog')) === 0);
 adminNonDbCheck('All feature dependencies exist and the dependency graph is acyclic', $contract['valid'] === true && $contract['dependency_edges_checked'] > 0);
 adminNonDbCheck('Feature contract validator does not access the database', $contract['database_accessed'] === false);
+
+$accountPolicy = new AdminAccountPolicy();
+$validAdminCreate = $accountPolicy->validateCreate(
+    'Operations Admin',
+    'ops-admin@example.com',
+    'Strong-Admin-Password-482!',
+    ['catalog-admin', 'catalog-admin']
+);
+$selfDisableRejected = false;
+try {
+    $accountPolicy->validateLifecycleAction('disable', 7, 7, false, 2);
+} catch (InvalidArgumentException $exception) {
+    $selfDisableRejected = true;
+}
+$lastSuperAdminRejected = false;
+try {
+    $accountPolicy->validateLifecycleAction('delete', 7, 8, true, 1);
+} catch (InvalidArgumentException $exception) {
+    $lastSuperAdminRejected = true;
+}
+$roleEscalationRejected = false;
+try {
+    $accountPolicy->validateRoleAssignment(7, 8, ['super-admin'], false, false, 2);
+} catch (InvalidArgumentException $exception) {
+    $roleEscalationRejected = true;
+}
+$weakPasswordRejected = false;
+try {
+    $accountPolicy->validatePassword('weakpass');
+} catch (InvalidArgumentException $exception) {
+    $weakPasswordRejected = true;
+}
+adminNonDbCheck('Admin account policy normalizes email and deduplicates role assignments', $validAdminCreate['email'] === 'ops-admin@example.com' && $validAdminCreate['role_slugs'] === ['catalog-admin']);
+adminNonDbCheck('Admin account policy rejects self-disable and last Super Admin removal', $selfDisableRejected && $lastSuperAdminRejected);
+adminNonDbCheck('Admin account policy prevents unauthorized Super Admin assignment', $roleEscalationRejected);
+adminNonDbCheck('Admin account policy enforces a strong admin password baseline', $weakPasswordRejected);
 
 $securityEventPolicy = new AdminSecurityEventPolicy();
 $failedLoginEvent = $securityEventPolicy->requireDefinition('admin.auth.login_failed');
