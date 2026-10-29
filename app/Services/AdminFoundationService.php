@@ -14,6 +14,7 @@ final class AdminFoundationService
     private AdminContentPublishingPolicy $contentPublishingPolicy;
     private AdminBulkOperationPolicy $bulkOperationPolicy;
     private AdminFeatureAccessService $featureAccess;
+    private AdminSupportTicketPolicy $supportTicketPolicy;
 
     private const SENSITIVE_KEY_PARTS = [
         'password', 'token', 'secret', 'authorization', 'cookie',
@@ -26,7 +27,8 @@ final class AdminFoundationService
         ?AdminSavedViewValidator $savedViewValidator = null,
         ?AdminContentPublishingPolicy $contentPublishingPolicy = null,
         ?AdminBulkOperationPolicy $bulkOperationPolicy = null,
-        ?AdminFeatureAccessService $featureAccess = null
+        ?AdminFeatureAccessService $featureAccess = null,
+        ?AdminSupportTicketPolicy $supportTicketPolicy = null
     ) {
         $this->repository =
             $repository ??
@@ -46,6 +48,9 @@ final class AdminFoundationService
         $this->featureAccess =
             $featureAccess ??
             new AdminFeatureAccessService();
+        $this->supportTicketPolicy =
+            $supportTicketPolicy ??
+            new AdminSupportTicketPolicy();
     }
 
     public function createContentRevision(
@@ -264,30 +269,29 @@ final class AdminFoundationService
         ?int $assignedAdminId = null,
         ?int $createdByAdminId = null
     ): int {
-        if (!in_array($priority, ['low', 'normal', 'high', 'urgent'], true)) {
-            throw new InvalidArgumentException('Unsupported support priority.');
-        }
-
         if ($createdByAdminId !== null) {
             $createdByAdminId = $this->actors->requireCurrentAdmin($createdByAdminId);
         }
 
-        foreach ([$customerId, $assignedAdminId, $createdByAdminId] as $id) {
-            if ($id !== null && $id < 1) {
-                throw new InvalidArgumentException('Invalid support ticket reference ID.');
-            }
-        }
+        $ticket = $this->supportTicketPolicy->validateCreation(
+            $subject,
+            $description,
+            $priority,
+            $customerId,
+            $assignedAdminId,
+            $createdByAdminId
+        );
 
         $ticketKey = 'NV-' . strtoupper(bin2hex(random_bytes(6)));
 
         return $this->repository->createSupportTicket(
             $ticketKey,
-            $customerId,
-            $priority,
-            $this->requiredText($subject, 255, 'Ticket subject'),
-            $this->requiredText($description, 20000, 'Ticket description'),
-            $assignedAdminId,
-            $createdByAdminId
+            $ticket['customer_id'],
+            $ticket['priority'],
+            $ticket['subject'],
+            $ticket['description'],
+            $ticket['assigned_admin_id'],
+            $ticket['created_by_admin_id']
         );
     }
 
