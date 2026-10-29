@@ -10,10 +10,14 @@ declare(strict_types=1);
 final class AdminActivityAuditService
 {
     private AuditLogRepository $repository;
+    private AdminActorContext $actors;
 
-    public function __construct(?AuditLogRepository $repository = null)
-    {
+    public function __construct(
+        ?AuditLogRepository $repository = null,
+        ?AdminActorContext $actors = null
+    ) {
         $this->repository = $repository ?? new AuditLogRepository();
+        $this->actors = $actors ?? new AdminActorContext();
     }
 
     public function record(
@@ -34,10 +38,9 @@ final class AdminActivityAuditService
             throw new InvalidArgumentException('Audit action, module and description are required.');
         }
 
-        if ($actorAdminId === null) {
-            $currentId = AdminAuth::id();
-            $actorAdminId = is_int($currentId) && $currentId > 0 ? $currentId : null;
-        }
+        $actorAdminId = $actorAdminId === null
+            ? $this->actors->currentAdminId()
+            : $this->actors->requireCurrentAdmin($actorAdminId);
 
         return $this->repository->create([
             'admin_user_id' => $actorAdminId,
