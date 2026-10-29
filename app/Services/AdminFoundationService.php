@@ -47,6 +47,7 @@ final class AdminFoundationService
         ?string $scheduledAt = null
     ): int {
         $createdByAdminId = $this->actors->requireCurrentAdmin($createdByAdminId);
+        $status = strtolower(trim($status));
         $entityType = $this->requiredText($entityType, 100, 'Entity type');
         $entityId = $this->requiredText($entityId, 100, 'Entity ID');
 
