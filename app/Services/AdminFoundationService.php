@@ -10,6 +10,7 @@ final class AdminFoundationService
 {
     private AdminFoundationRepository $repository;
     private AdminActorContext $actors;
+    private AdminSavedViewValidator $savedViewValidator;
 
     private const SENSITIVE_KEY_PARTS = [
         'password', 'token', 'secret', 'authorization', 'cookie',
@@ -18,7 +19,8 @@ final class AdminFoundationService
 
     public function __construct(
         ?AdminFoundationRepository $repository = null,
-        ?AdminActorContext $actors = null
+        ?AdminActorContext $actors = null,
+        ?AdminSavedViewValidator $savedViewValidator = null
     ) {
         $this->repository =
             $repository ??
@@ -26,6 +28,9 @@ final class AdminFoundationService
         $this->actors =
             $actors ??
             new AdminActorContext();
+        $this->savedViewValidator =
+            $savedViewValidator ??
+            new AdminSavedViewValidator();
     }
 
     public function createContentRevision(
@@ -71,6 +76,9 @@ final class AdminFoundationService
         bool $shared = false
     ): int {
         $adminUserId = $this->actors->requireCurrentAdmin($adminUserId);
+
+        $filters = $this->savedViewValidator->validateFilters($filters);
+        $sort = $this->savedViewValidator->validateSort($sort);
 
         return $this->repository->saveView(
             $adminUserId,
