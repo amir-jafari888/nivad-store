@@ -48,7 +48,7 @@
 Static inspection of `routes/api.php` found **161 named admin API routes**:
 - All 161 include `AdminAuthMiddleware`.
 - All mutating admin API routes include `CsrfMiddleware`.
-- 14 route names intentionally remain unmapped pending a precise feature/permission contract: admin notification creation, reviews, questions/answers, and customer-user management. These are not assigned an inferred permission.
+- 14 route names do not belong to a canonical feature bucket, but now have explicit exact-route permission contracts in `app/Core/AdminRoutePermissionMap.php`: notification creation, reviews, questions/answers, and customer-user management. Their permissions are not inferred from a broad route prefix.
 - The existing route table has not yet been changed to apply granular feature middleware globally. Doing so before the target DB's role/permission assignments are verified could lock out legitimate admins or alter authorization unexpectedly.
 
 ## Automated checks
@@ -66,7 +66,7 @@ These are source/static/unit checks, not a live XAMPP/browser/database/Gmail int
 2. Review the additive migration against that schema; verify backup and restore before applying.
 3. Apply migration and permission seed only in a controlled target environment after review.
 4. Verify the actual Super Admin role slug/status/deletion state and permission matrix.
-5. Wire granular middleware to the existing 161 routes after mapping the 14 unresolved routes and validating current role assignments.
+5. Wire granular middleware to the existing 161 routes after validating the exact permission map and current role assignments. The middleware is prepared but is not globally attached to the route table yet.
 6. Run DB-backed tests for admin account lifecycle, sessions, audit persistence, notifications/outbox, content revisions, jobs, incidents, approvals, media metadata, support messages, and analytics.
 7. Configure Gmail app-password environment variables outside Git, then run a deliberate delivery test and verify outbox status/retry behavior.
 8. Configure `NIVAD_PRIVATE_STORAGE_PATH` outside the document root before accepting uploads; then connect returned metadata to the DB only after schema approval.
