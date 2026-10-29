@@ -1,0 +1,341 @@
+NIVAD — ADMIN PANEL MASTER IDEAS / PRODUCT & SECURITY VISION
+===============================================================
+
+Status: Planning / Decision Document
+Scope: Admin Panel, Dashboard, Administration, Security, Observability, Support, CMS/Store Management
+Rule: This file is a planning source. It does NOT claim that every capability listed below already exists in the codebase.
+
+1) ADMIN DASHBOARD EXPERIENCE
+-----------------------------
+- Combine the five previously proposed dashboard directions into one unified experience.
+- Premium, professional digital-commerce admin UI; not a generic CRUD dashboard.
+- Use the existing Nivad design system and token source.
+- RTL Persian-first interface.
+- Persistent right-side navigation across authenticated admin pages.
+- Responsive behavior for mobile / tablet / desktop.
+- Header with Nivad branding, current admin profile, contextual page information and useful actions.
+- Dashboard should prioritize real data: sales, orders, inventory, customers, content, alerts, system health and pending actions.
+- Avoid decorative metrics that do not come from real contracts/data.
+- Dashboard should provide actionable information, not only numbers.
+
+2) SIDEBAR / MEGA NAVIGATION
+----------------------------
+- Right-to-left persistent sidebar.
+- Every authenticated admin page should use the same navigation shell.
+- Folders containing multiple admin pages should be represented as expandable mega-menu groups.
+- Clicking a group exposes its available child pages/actions without forcing the user to guess URLs.
+- Suggested groups:
+  * Overview
+  * Catalog / Products
+  * Categories / Brands / Collections
+  * Product Types / Attributes / Specifications
+  * Discovery / Compatibility / Setups
+  * Orders / Payments / Coupons
+  * Inventory / Shipping
+  * Customers / Questions / Reviews
+  * Returns / Refunds / Notifications
+  * Storefront / Content / Sliders
+  * Reports / Audit Logs
+  * Administration / Admin Management / Roles
+  * Settings
+- Active page state must be visually obvious.
+- Navigation must never expose an action the current admin is not authorized to perform unless it is intentionally shown as locked/disabled UX.
+
+3) ADMIN PROFILE
+-----------------
+- Never use login email or username as the visual display name when first/last name exists.
+- Resolve the logged-in admin ID through the authenticated session and load first_name + last_name from the real admin-user data source.
+- Show profile/avatar and first name + last name in the header/sidebar.
+- Profile area may later include account details, active sessions and security information according to real backend contracts.
+
+4) LOGOUT
+---------
+- Logout must be a real POST action protected by CSRF.
+- Logout action should invalidate the admin authentication/session state.
+- Logout should be placed at the bottom of the sidebar/profile section.
+- Friendly redirect to admin login after successful logout.
+- Do not rely on an unverified URL-only GET logout route.
+
+5) ADMIN SETTINGS
+-----------------
+Settings should improve operator usability without pretending to change server configuration when they do not.
+Potential UI settings:
+- Table density: comfortable / compact.
+- Text-size preference / readability.
+- Navigation group behavior.
+- Dashboard layout preferences if backed by a real persistence contract.
+- Notification preferences if backed by a real notification contract.
+- Security settings only where real backend support exists.
+- Global store/system settings must be separated from personal UI preferences.
+- Dark-theme toggle is intentionally removed because the project direction is light/day theme only.
+
+6) SUPER ADMIN / ADMIN MANAGEMENT
+---------------------------------
+The highest-level administrator should have a dedicated Administration area.
+Required conceptual capabilities:
+- Create admin accounts.
+- Edit/deactivate/reactivate admins.
+- Assign roles and permissions.
+- Review effective permissions.
+- View active sessions.
+- Revoke suspicious sessions.
+- Review admin activity/audit history.
+- Review security-sensitive changes.
+- Detect unusual administrative behavior where feasible.
+- Enforce stronger authentication/security policies where supported.
+- Prevent ordinary admins from granting themselves higher privileges.
+- Protect privilege-management operations with additional authorization and security checks.
+
+7) ADMIN ROLES / PERMISSIONS
+-----------------------------
+- The project already contains database/model concepts for admin roles and permissions, but the exact number of real roles and their effective permissions must be read from the live/configured database before declaring a final role hierarchy.
+- Do not invent role names or permission counts.
+- Final design should distinguish:
+  * Role definition.
+  * Permission definition.
+  * Role-to-permission assignment.
+  * Admin-to-role assignment.
+  * Effective permissions after all assignments.
+- Proposed permission dimensions:
+  * View
+  * Create
+  * Edit
+  * Delete/archive
+  * Publish/unpublish
+  * Approve/reject
+  * Export
+  * Manage permissions
+  * Manage admins
+  * Security/session management
+  * Audit-log access
+- Super Admin should be the highest privilege level only if the backend authorization contract explicitly supports it.
+
+8) ACCESS-DENIED UX
+--------------------
+When an admin reaches a section they are not authorized to access:
+- Do not dump a raw JSON authorization error into the page.
+- Render a dedicated, polished access-denied container in the existing admin design system.
+- Resolve the current admin's first_name + last_name from the authenticated identity.
+- Message should explicitly address the admin by name and explain that they do not have permission for this section.
+- Container should be centered and visually separated from the underlying application.
+- Use a strong shadow and controlled blur/overlay around the protected content area so underlying information is not readable.
+- Provide a safe navigation action back to an authorized area.
+- The UI must not leak protected data in HTML, API payloads or client-side state merely because the user lacks permission.
+- Backend authorization remains the source of truth; this UX is not a substitute for server-side authorization.
+
+9) FULL SITE CONTROL / CMS VISION
+---------------------------------
+The admin panel should eventually control the entire customer-facing experience, not only products/orders.
+Target control surface:
+- Homepage sections.
+- Static/content pages.
+- Navigation/menu content.
+- Sliders/banners.
+- Collections and merchandising.
+- Discovery content.
+- Product content and media.
+- Categories/brands.
+- Product attributes/specifications.
+- Notifications.
+- Customer accounts.
+- Reviews/questions.
+- Wishlist/product-interest analytics where data contracts exist.
+- Orders/payments/inventory/shipping.
+- Returns/refunds.
+- Promotional content/coupons.
+- Reports and audit history.
+- Media library if a real media contract exists.
+- Publish/draft/status/order controls where supported.
+
+10) PRODUCT / CUSTOMER INSIGHTS
+-------------------------------
+Examples of useful operator intelligence:
+- Number of users who added a product such as iPhone 17 to wishlist.
+- Product views.
+- Product interest trends.
+- Conversion-related metrics where reliable event/order data exists.
+- Search/discovery behavior.
+- Stock pressure and popular products.
+- Customer support volume.
+These must be based on real event/data contracts, not guessed or fabricated metrics.
+
+11) AUTOMATIC ERROR / INCIDENT DETECTION
+-----------------------------------------
+Goal: automatically detect failures across the storefront and notify administrators.
+Potential architecture:
+- Centralized application error logging.
+- Exception/error aggregation.
+- Failed request monitoring.
+- Route/page availability checks.
+- Background health checks for critical customer-facing pages/endpoints.
+- Database/connectivity health monitoring.
+- External service/API failure monitoring where applicable.
+- Detection of repeated failures and threshold-based incident creation.
+- Incident severity: informational / warning / high / critical.
+- Deduplication so one outage does not create thousands of identical notifications.
+- Incident lifecycle: detected -> acknowledged -> investigating -> resolved.
+- Admin audit trail for incident handling.
+- Never expose sensitive stack traces or secrets to ordinary admins/users.
+
+12) ADMIN NOTIFICATIONS
+-----------------------
+Notification channels should be separated into an internal notification center and external delivery channels.
+Internal:
+- Admin notification inbox.
+- Unread/read state.
+- Severity.
+- Timestamp.
+- Source/event.
+- Link to the relevant admin page.
+External channels (only after a real provider/configuration contract exists):
+- Email.
+- Gmail/Google Workspace delivery through an appropriate mail integration/provider.
+- Optional future channels such as SMS/push if required and securely configured.
+Important:
+- Do not send credentials/secrets through notifications.
+- Sensitive events should have stricter delivery and access rules.
+- Notification delivery must be queued/retried safely where the architecture supports queues.
+- Delivery failures should themselves become observable events.
+
+13) CUSTOMER SUPPORT
+---------------------
+A dedicated support/ticket system should exist in addition to automatic system-error detection.
+Customer support should allow:
+- Customer submits a problem/question.
+- Ticket/conversation created.
+- Admin notification generated.
+- Optional email notification to assigned admins.
+- Status: open / in progress / waiting / resolved / closed.
+- Assignment to an admin/team where supported.
+- Conversation history.
+- Customer identity and relevant order/product context.
+- Attachments only through a secure validated upload contract.
+- Audit trail for important support actions.
+- Do not expose internal admin notes to customers.
+
+14) SECURITY / ANTI-FRAUD ADMIN CAPABILITIES
+---------------------------------------------
+Potential high-value controls:
+- Strong authentication for admin accounts.
+- Session inventory and session revocation.
+- Login history.
+- Suspicious-login detection.
+- Failed-login monitoring.
+- Privilege-change audit trail.
+- Sensitive-action confirmation.
+- CSRF protection.
+- Authorization checks at server/service level.
+- Rate limiting for sensitive operations.
+- Audit logs for destructive/high-risk actions.
+- Separation of duties for critical operations where business requirements justify it.
+- Alerts for unusual admin behavior.
+- Protection against privilege escalation.
+- Security event retention and review.
+
+15) ADMIN ACCESS URL / DISCOVERY HARDENING
+------------------------------------------
+The admin panel should not depend on a predictable public URL such as /admin as the only barrier.
+However, changing/obscuring the URL is NOT a security control by itself.
+Required security model:
+- Strong authentication.
+- Server-side authorization.
+- Session security.
+- CSRF protection.
+- Rate limiting / abuse protection.
+- Optional network restrictions or additional authentication for high-risk deployments.
+- Non-public admin discovery should be treated only as defense-in-depth, never as the primary protection.
+- Any URL/route change must be audited against existing routing and deployment configuration before implementation.
+
+16) AUDIT LOGGING
+-----------------
+Admin activity should be auditable.
+Capture appropriate events such as:
+- Login/logout.
+- Session creation/revocation.
+- Role/permission changes.
+- Admin creation/deactivation.
+- Product/content changes.
+- Price/stock changes.
+- Order/payment/refund actions.
+- Coupon changes.
+- Customer-data access when appropriate.
+- Security-setting changes.
+- Support actions.
+- Incident acknowledgement/resolution.
+For sensitive records, capture actor, action, target, timestamp, request context and outcome where legally/technically appropriate.
+
+17) SYSTEM HEALTH / OPERATIONS
+------------------------------
+Dashboard should eventually expose:
+- Application health.
+- Database health.
+- Critical route checks.
+- Queue/job health if queues exist.
+- Mail/notification delivery health.
+- External API health where applicable.
+- Recent incidents.
+- Failed jobs/events.
+- Storage/media health where relevant.
+
+18) DESIGN / UX RULES
+---------------------
+- Use Nivad's existing design tokens instead of inventing disconnected colors/spacings.
+- Follow the project's UI/UX rules document before implementation.
+- Keep RTL direction consistent across the complete shell.
+- Keyboard accessibility and visible focus states.
+- Semantic HTML and appropriate ARIA only where needed.
+- Clear hierarchy and predictable interaction.
+- Avoid excessive cards, gradients, decorative icons and meaningless visual noise.
+- Use meaningful empty states, loading states, error states, locked states and success feedback.
+- Responsive layouts must be intentional per breakpoint.
+- CSS architecture remains:
+  * admin/assets/css/setting.css = token source.
+  * admin/assets/css/mobile/ = mobile rules.
+  * admin/assets/css/tablet/ = tablet rules.
+  * admin/assets/css/desktop/ = desktop rules.
+  * No @media rules inside the three breakpoint folders.
+  * Page/section styles should have matching mobile/tablet/desktop files.
+- JS architecture remains:
+  * admin/assets/js/main.js = entrypoint/imports.
+  * Feature modules under admin/assets/js/modules/.
+
+19) EMAIL / GMAIL NOTIFICATION VISION
+-------------------------------------
+Yes, admin notifications can be delivered by email.
+Recommended architecture concept:
+Event -> notification service -> internal notification record -> delivery queue -> mail provider -> delivery result/log.
+Provider choice should be based on the deployment requirements and actual infrastructure.
+Gmail/Google Workspace can be a delivery target through an appropriate authenticated mail integration, but credentials/tokens must never be hard-coded in the repository.
+Email preferences, recipient selection, severity rules, retry policy and failure handling must be configurable through real backend contracts.
+
+20) THINGS THAT MUST NOT BE FORGOTTEN
+--------------------------------------
+- Backend authorization is always the source of truth.
+- UI hiding is not authorization.
+- No fake metrics.
+- No invented roles/permissions.
+- No invented data sources.
+- No sensitive data in client-side error payloads.
+- No raw JSON authorization errors shown to normal admins.
+- No credentials or secrets committed to Git.
+- No destructive database changes during audit.
+- No architectural rewrite without auditing the existing implementation.
+- Every implementation batch should be audited -> implemented -> tested -> passed -> locked.
+
+21) CURRENT DECISION POINTS
+---------------------------
+Before implementing the full Administration system, the real database should be audited to answer:
+- Exactly how many admin roles currently exist?
+- What is the exact name/slug/status of each role?
+- Which permissions belong to each role?
+- Which admin accounts have which roles?
+- Is there already a true all-access/super-admin role?
+- Which authorization middleware/services enforce these permissions today?
+- How are admin sessions stored and invalidated?
+- What audit-log contracts already exist?
+- What notification/email infrastructure already exists?
+- What frontend sections currently have real admin data contracts?
+
+Until those questions are answered from the actual project, role names and access levels remain UNKNOWN rather than guessed.
+
+END OF DOCUMENT
