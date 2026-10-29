@@ -150,3 +150,10 @@
 .admin-shared-shell main a[href*="/create"]:hover,.admin-shared-shell main a[href*="/groups"]:hover{border-color:var(--admin-color-primary);background:var(--admin-color-primary-soft);color:var(--admin-color-primary)}
 .admin-shared-shell main .status,.admin-shared-shell main .badge,.admin-shared-shell main .status-badge,.admin-shared-shell main .status-label{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border:1px solid var(--admin-color-border);border-radius:999px;background:var(--admin-color-bg);color:var(--admin-color-text-muted);font-size:12px;line-height:1.5}
 
+
+.admin-shared-shell .admin-skip-link,.admin-dashboard-page .admin-skip-link{inset-inline-start:calc(var(--admin-sidebar-width) + 12px)}
+.admin-dashboard-line-chart{display:block;width:100%;height:176px;overflow:visible}
+.admin-dashboard-line-chart-grid{stroke:var(--admin-color-border);stroke-width:1}
+.admin-dashboard-line-chart-line{fill:none;stroke:var(--admin-color-primary);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.admin-dashboard-line-chart-point{fill:var(--admin-color-surface);stroke:var(--admin-color-primary);stroke-width:2}
+.admin-dashboard-line-chart-labels{display:flex;justify-content:space-between;gap:6px;margin-top:4px;color:var(--admin-color-text-muted);font-size:10px}
