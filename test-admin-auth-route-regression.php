@@ -47,6 +47,8 @@ $adminIndex = $read('admin/index.php');
 $sharedAuth = $read('admin/includes/auth.php');
 $logout = $read('admin/logout.php');
 $htaccess = $read('.htaccess');
+$errorHandler = $read('app/Core/ErrorHandler.php');
+$errorResponder = $read('app/Core/AdminHttpErrorResponder.php');
 
 $check('Admin middleware exists', is_string($middleware));
 $check('Authorization service exists', is_string($authorization));
@@ -72,16 +74,34 @@ $check(
 $check(
     'Missing admin identity uses the browser/API response split',
     is_string($middleware)
-        && substr_count($middleware, 'if ($expectsJson)') >= 3
+        && substr_count($middleware, 'if ($expectsJson)') >= 2
         && str_contains($middleware, 'AdminAuth::id()')
 );
 
 $check(
-    'Permission denial preserves JSON 403 and gives browser requests HTTP 403',
+    'Permission denial uses the shared HTML/API responder with HTTP 403',
     is_string($middleware)
-        && preg_match('/Response::json\\(\\s*\\[.*?\\]\\s*,\\s*403\\s*\\);/s', $middleware) === 1
+        && str_contains($middleware, 'AdminHttpErrorResponder::respond(')
         && str_contains($middleware, "'دسترسی به بخش مدیریت مجاز نیست.'")
-        && str_contains($middleware, 'Response::text(')
+        && is_string($errorResponder)
+        && str_contains($errorResponder, 'Response::json(')
+        && str_contains($errorResponder, 'Content-Type')
+        && str_contains($errorResponder, 'text/html; charset=utf-8')
+);
+
+$check(
+    'Admin browser exceptions return HTML while API exceptions return JSON',
+    is_string($errorHandler)
+        && str_contains($errorHandler, '$isAdminBrowserRequest')
+        && str_contains($errorHandler, 'AdminHttpErrorResponder::respond(')
+        && str_contains($errorHandler, "'request_id' => AdminRequestContext::id()")
+);
+
+$check(
+    'Unhandled exception logging does not include the raw exception message',
+    is_string($errorHandler)
+        && !str_contains($errorHandler, "'message' => $exception->getMessage()")
+        && str_contains($errorHandler, "'request_id' => AdminRequestContext::id()")
 );
 
 $check(
