@@ -46,7 +46,37 @@ $adminName = trim($firstName . ' ' . $lastName);
 if ($adminName === '') {
     $adminName = 'مدیر سیستم';
 }
-$adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8');
+$adminInitials = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8')
+    . mb_substr($lastName, 0, 1, 'UTF-8');
+if ($adminInitials === '') {
+    $adminInitials = 'N';
+}
+
+/* Demo data is clearly labelled and replaced by repository metrics once the DB contract is ready. */
+$isDemoDashboard = $salesByPeriodStatus !== 'ready' || $salesByPeriod === [];
+if ($isDemoDashboard) {
+    $demoOrders = [8, 12, 9, 14, 18, 13, 20, 17, 24, 19, 23, 28, 21, 31];
+    $demoSales = [12, 18, 15, 21, 27, 23, 31, 29, 36, 33, 39, 42, 37, 48];
+    $salesByPeriod = [];
+    $today = new DateTimeImmutable('today');
+    foreach ($demoOrders as $index => $orderCount) {
+        $day = $today->modify('-' . (13 - $index) . ' days');
+        $netSales = $demoSales[$index] * 1000000;
+        $discount = (int) round($netSales * 0.04);
+        $salesByPeriod[] = [
+            'period' => $day->format('Y-m-d'),
+            'total_orders' => $orderCount,
+            'gross_sales' => $netSales + $discount,
+            'total_discount' => $discount,
+            'net_sales' => $netSales,
+        ];
+    }
+    $orders = ['total_orders' => 1284, 'total_amount' => 1874500000];
+    $payments = ['total_payments' => 1106, 'total_amount' => 1648200000];
+    $orderItems = ['total_quantity' => 3260, 'total_lines' => 2184];
+    $inventory = ['total_quantity' => 842, 'total_available_quantity' => 716];
+    $salesByPeriodStatus = 'demo';
+}
 ?>
 
 <!DOCTYPE html>
@@ -67,8 +97,8 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
             <span>نیواد <small>پنل مدیریت</small></span>
         </a>
         <div class="admin-dashboard-user" aria-label="حساب مدیر واردشده">
-            <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitial) ?></span>
-            <span class="admin-dashboard-user-name"><?= e($adminName) ?></span>
+            <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitials) ?></span>
+            <span class="admin-dashboard-user-copy"><span class="admin-dashboard-user-name"><?= e($adminName) ?></span><small>مدیر پنل</small></span>
         </div>
     </header>
 
@@ -129,7 +159,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                 <a class="admin-dashboard-nav-link" href="<?= e(url('/admin/settings')) ?>">تنظیمات رابط کاربری</a>
             </nav>
             <div class="admin-dashboard-account">
-                <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitial) ?></span>
+                <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitials) ?></span>
                 <span class="admin-dashboard-account-name"><?= e($adminName) ?></span>
                 <form method="post" action="<?= e(url('/admin/logout')) ?>">
                     <input type="hidden" name="csrf_token" value="<?= e(Csrf::token()) ?>">
@@ -148,6 +178,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                 <div class="admin-dashboard-date-chip">
                     <span aria-hidden="true">◷</span>
                     <span>روند ۱۴ روز اخیر</span>
+                    <?php if ($isDemoDashboard) { ?><span class="admin-dashboard-demo-badge">داده نمونه</span><?php } ?>
                 </div>
             </header>
 
@@ -189,7 +220,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                             <strong>داده‌های نمودار در دسترس نیست.</strong>
                             <span>دریافت روند فروش با خطا مواجه شد؛ سایر شاخص‌ها جداگانه نمایش داده می‌شوند.</span>
                         </div>
-                    <?php } elseif ($salesByPeriodStatus !== 'ready' || $salesByPeriod === []) { ?>
+                    <?php } elseif (!in_array($salesByPeriodStatus, ['ready', 'demo'], true) || $salesByPeriod === []) { ?>
                         <div class="admin-dashboard-state" role="status">
                             <strong>اتصال داده‌های دوره‌ای به View هنوز تأیید نشده یا برای این بازه داده‌ای وجود ندارد.</strong>
                             <span>با ثبت سفارش‌های جدید، روند فروش در این بخش نمایش داده می‌شود.</span>
@@ -223,7 +254,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                             <strong>داده‌های نمودار در دسترس نیست.</strong>
                             <span>برای جلوگیری از نمایش اطلاعات نادرست، نمودار سفارش‌ها موقتاً نمایش داده نمی‌شود.</span>
                         </div>
-                    <?php } elseif ($salesByPeriodStatus !== 'ready' || $salesByPeriod === []) { ?>
+                    <?php } elseif (!in_array($salesByPeriodStatus, ['ready', 'demo'], true) || $salesByPeriod === []) { ?>
                         <div class="admin-dashboard-state" role="status">
                             <strong>اتصال داده‌های دوره‌ای تأیید نشده یا سفارشی در این بازه ثبت نشده است.</strong>
                             <span>با ثبت سفارش، روند روزانه در این قسمت ظاهر می‌شود.</span>
@@ -255,7 +286,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                     </div>
                     <?php if ($salesByPeriodStatus === 'error') { ?>
                         <div class="admin-dashboard-state admin-dashboard-state-error" role="status"><strong>گزارش دوره‌ای در دسترس نیست.</strong><span>بعداً دوباره تلاش کنید.</span></div>
-                    <?php } elseif ($salesByPeriodStatus !== 'ready' || $salesByPeriod === []) { ?>
+                    <?php } elseif (!in_array($salesByPeriodStatus, ['ready', 'demo'], true) || $salesByPeriod === []) { ?>
                         <div class="admin-dashboard-state" role="status"><strong>اتصال داده‌های دوره‌ای به View تأیید نشده یا داده‌ای برای نمایش وجود ندارد.</strong><span>در این بازه هنوز سفارشی ثبت نشده است.</span></div>
                     <?php } else { ?>
                         <div class="admin-dashboard-table-wrap" tabindex="0" aria-label="جدول خلاصه دوره‌ای، برای مشاهده افقی قابل پیمایش است">
