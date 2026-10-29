@@ -41,6 +41,8 @@ $check('Dashboard has labelled demo data and 14-day sample series', str_contains
 $check('Dashboard charts accept live metrics when status is ready', str_contains($dashboard, '$salesByPeriodStatus = (string)($metrics[\'sales_by_period_status\'] ?? \'dependency\')') && str_contains($dashboard, "['ready', 'demo']"));
 $check('Admin typography uses the storefront Persian font family', str_contains($tokens, 'font-family: "Vazirmatn"') && str_contains($tokens, '--admin-font-family: "Vazirmatn"'));
 $check('Responsive CSS architecture remains split by breakpoint', str_contains($mainCss, './mobile/mobile.css') && str_contains($mainCss, './tablet/tablet.css') && str_contains($mainCss, './desktop/desktop.css'));
+$check('Breakpoint files remain free of nested media-query architecture', !str_contains($desktop, '@media') && !str_contains($tablet, '@media') && !str_contains($mobile, '@media'));
+$check('Semantic status colors match the storefront design system', str_contains($tokens, '--admin-color-success: #15803d;') && str_contains($tokens, '--admin-color-warning: #b45309;') && str_contains($tokens, '--admin-color-error: #b91c1c;'));
 $check('Navigation state continues to expose active page accessibly', str_contains($navigationJs, 'aria-current') && str_contains($navigationJs, 'closest("details")'));
 
 $failed = count(array_filter($checks, static fn (array $item): bool => !$item['passed']));
