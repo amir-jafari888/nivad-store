@@ -24,6 +24,9 @@
 - `app/Core/SensitiveDataRedactor.php`: central recursive redaction for passwords, tokens, secrets, cookies, payment identifiers, credentials, oversized values, unsupported values, and excessive nesting.
 - Connected audit snapshots, admin notification payloads, and shared foundation payloads to the central redactor.
 - `app/Services/AdminOperationPolicy.php`: pure policy for explicit confirmation, approval requirements, expiry, and separation of duties for sensitive actions.
+- `app/Services/AdminAccountPolicy.php`: account creation/password baseline, self-disable/delete protection, last-active-Super-Admin protection, and role-escalation rules. It is policy-only; the DB-backed account manager is still gated.
+- `app/Services/AdminSupportTicketPolicy.php`: validates ticket creation, message authorship/visibility, and lifecycle transitions; conversation persistence remains a DB/schema gate.
+- `app/Services/AdminSecurityEventPolicy.php`: canonical event classification for auth, permission, account, session, sensitive-data, bulk-job, and delivery events.
 - `app/Services/AdminNotificationPolicy.php`: event-key/severity validation, priority, configurable email threshold, rate-limit decision contract, and deterministic recipient-aware deduplication key.
 - `app/Services/AdminHealthCheckService.php`: non-invasive PHP/extensions/source readiness checks. It does not connect to MySQL or the network and reports database readiness as `blocked`.
 - `app/Services/AdminMediaStorageService.php`: validates image MIME/content/dimensions/size/hash and can store uploads under an explicitly configured private absolute path outside the web root. It does not write metadata to the DB.
@@ -31,8 +34,8 @@
 - `app/Services/AdminPreviewTokenService.php`: issues short-lived HMAC-signed preview tokens bound to a specific entity and admin identity; one-time/replay prevention still needs persistence.
 - `app/Services/AdminSavedViewValidator.php`: validates saved filter/sort structures and restricts fields/operators; query providers must still map fields to explicit per-module allowlists.
 - `app/Services/AdminContentPublishingPolicy.php`: validates publish-state transitions and requires explicit-timezone future schedules normalized to UTC; DB session timezone must be verified before persistence.
+- `app/Services/AdminReportExportService.php`: bounded CSV serialization with explicit safe field keys, Persian text support, and spreadsheet-formula injection protection; report-specific field schemas and route wiring remain gated.
 - `app/Core/AdminBulkOperationRegistry.php` and `app/Services/AdminBulkOperationPolicy.php`: allowlist bulk job types, bound batch sizes, require explicit confirmation, redact payloads, and require approval references for sensitive job classes. Actual approval state must be verified before a worker executes a job.
-- `app/Core/AdminSearchProviderInterface.php` and `app/Services/AdminGlobalSearchService.php`: permission-aware search orchestration with bounded results, deduplication, and strict internal-admin URL validation. DB-backed search providers and route/UI wiring remain gated.
 
 ### Gmail / notifications
 - `app/Services/GmailSmtpTransport.php`: Gmail-only SMTP transport using environment variables, TLS verification, header validation, and stable non-secret error codes. No SMTP connection is made unless `send()` is called.
@@ -58,7 +61,7 @@ Static inspection of `routes/api.php` found **161 named admin API routes**:
 Latest successful run on this branch:
 - Authentication/authorization regression: **21 PASS, 0 FAIL**
 - Shared foundation regression: **30 PASS, 0 FAIL**
-- Non-database foundation contracts: **39 PASS, 0 FAIL**
+- Non-database foundation contracts: **66 PASS, 0 FAIL**
 - Admin route contract audit: **7 PASS, 0 FAIL**
 - PHP lint: all files in the workflow passed.
 
