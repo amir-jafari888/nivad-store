@@ -47,12 +47,19 @@ jobs:
           php -l app/Services/AdminSavedViewValidator.php
           php -l app/Services/AdminGlobalSearchService.php
           php -l app/Services/AdminContentPublishingPolicy.php
+          php -l app/Services/AdminContentRevisionPolicy.php
           php -l app/Services/AdminReportExportService.php
+          php -l app/Services/AdminReportPolicy.php
           php -l app/Services/AdminBulkOperationPolicy.php
           php -l app/Core/AdminBulkOperationRegistry.php
           php -l app/Core/AdminSearchProviderInterface.php
+          php -l app/Services/AdminSearchPolicy.php
           php -l app/Services/AdminPreviewTokenService.php
           php -l app/Services/AdminOperationPolicy.php
+          php -l app/Services/AdminApprovalPolicy.php
+          php -l app/Services/AdminIncidentPolicy.php
+          php -l app/Services/AdminMediaLibraryPolicy.php
+          php -l app/Services/AdminEmailQueuePolicy.php
           php -l app/Services/GmailSmtpTransport.php
           php -l app/Middleware/AdminAuthMiddleware.php
           php -l app/Repositories/AdminFoundationRepository.php
@@ -60,6 +67,7 @@ jobs:
           php -l app/Repositories/AdminSessionRepository.php
           php -l app/Repositories/AuditLogRepository.php
           php -l app/Services/AdminActivityAuditService.php
+          php -l app/Services/AdminAuditDiffService.php
           php -l app/Services/AdminAuditSnapshotService.php
           php -l app/Services/AdminEmailOutboxWorker.php
           php -l app/Services/AdminFoundationService.php
@@ -69,6 +77,7 @@ jobs:
           php -l app/Services/AdminAccountPolicy.php
           php -l app/Services/AdminSupportTicketPolicy.php
           php -l app/Services/AdminSecurityEventPolicy.php
+          php -l app/Services/AdminSessionPolicy.php
           php -l app/Services/AdminSessionService.php
           php -l app/Services/AuthorizationService.php
           php -l test-admin-auth-route-regression.php
@@ -76,6 +85,7 @@ jobs:
           php -l test-admin-nondb-foundations.php
           php -l test-admin-route-contracts.php
           php -l test-admin-capability-contracts.php
+          php -l test-admin-capability-policies.php
 
       - name: Run authentication and authorization regression
         run: php test-admin-auth-route-regression.php
@@ -91,3 +101,6 @@ jobs:
 
       - name: Run admin route contract audit
         run: php test-admin-route-contracts.php
+
+      - name: Run admin capability policy regression
+        run: php test-admin-capability-policies.php
