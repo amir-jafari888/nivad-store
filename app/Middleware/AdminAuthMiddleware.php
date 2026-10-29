@@ -9,9 +9,7 @@ final class AdminAuthMiddleware implements MiddlewareInterface
         AdminRequestContext::publishResponseHeader();
 
         $service = new AdminAuthService();
-        $expectsJson = Request::acceptsJson()
-            || Request::isAjax()
-            || Request::isJson();
+        $expectsJson = AdminHttpErrorResponder::expectsJson();
 
         if (!$service->validateCurrentSession()) {
             if ($expectsJson) {
