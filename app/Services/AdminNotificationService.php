@@ -5,6 +5,7 @@ declare(strict_types=1);
 final class AdminNotificationService
 {
     private AdminNotificationRepository $repository;
+    private AdminNotificationPolicy $policy;
 
     private const SEVERITIES = [
         'info',
@@ -14,11 +15,15 @@ final class AdminNotificationService
     ];
 
     public function __construct(
-        ?AdminNotificationRepository $repository = null
+        ?AdminNotificationRepository $repository = null,
+        ?AdminNotificationPolicy $policy = null
     ) {
         $this->repository =
             $repository ??
             new AdminNotificationRepository();
+        $this->policy =
+            $policy ??
+            new AdminNotificationPolicy();
     }
 
     public function createForAdmins(
@@ -32,8 +37,8 @@ final class AdminNotificationService
         int|string|null $entityId = null,
         ?array $payload = null
     ): int {
-        $eventKey = trim($eventKey);
-        $severity = strtolower(trim($severity));
+        $eventKey = $this->policy->normalizeEventKey($eventKey);
+        $severity = $this->policy->normalizeSeverity($severity);
         $title = trim($title);
         $message = trim($message);
 
