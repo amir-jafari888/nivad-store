@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Closure;
-
 /**
  * Prevents request data from selecting an arbitrary admin actor ID.
  * System/background events should use a null actor explicitly; interactive
@@ -11,12 +9,12 @@ use Closure;
  */
 final class AdminActorContext
 {
-    private Closure $currentAdminIdProvider;
+    private \Closure $currentAdminIdProvider;
 
     public function __construct(?callable $currentAdminIdProvider = null)
     {
         $this->currentAdminIdProvider = $currentAdminIdProvider !== null
-            ? Closure::fromCallable($currentAdminIdProvider)
+            ? \Closure::fromCallable($currentAdminIdProvider)
             : static fn(): mixed => AdminAuth::id();
     }
 
