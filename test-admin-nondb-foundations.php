@@ -46,6 +46,7 @@ require_once __DIR__ . '/app/Services/AdminMediaStorageService.php';
 require_once __DIR__ . '/app/Services/AdminPreviewTokenService.php';
 require_once __DIR__ . '/app/Services/AdminSavedViewValidator.php';
 require_once __DIR__ . '/app/Services/AdminContentPublishingPolicy.php';
+require_once __DIR__ . '/app/Services/AdminReportExportService.php';
 require_once __DIR__ . '/app/Services/AdminBulkOperationPolicy.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
 
@@ -187,6 +188,25 @@ $expiredPreview = $previewService->verify($previewToken, 7, 'product', 'product-
 $tamperedPreview = $previewService->verify($previewToken . 'x', 7, 'product', 'product-15', 1500);
 adminNonDbCheck('Preview tokens verify signature, scope, actor and expiry', is_array($previewClaims) && $previewClaims['entity_id'] === 'product-15' && $wrongAdminPreview === null && $expiredPreview === null && $tamperedPreview === null);
 putenv('NIVAD_ADMIN_PREVIEW_SECRET');
+
+$csvService = new AdminReportExportService();
+$csv = $csvService->toCsv(
+    ['title' => 'عنوان', 'amount' => 'مبلغ'],
+    [
+        ['title' => '=HYPERLINK("https://evil.example","click")', 'amount' => 12],
+        ['title' => 'گوشی، مدل A', 'amount' => 0],
+    ]
+);
+$csvFormulaSafe = str_contains($csv, "'=HYPERLINK(");
+$csvPersianSafe = str_contains($csv, 'گوشی، مدل A');
+$csvRowLimitRejected = false;
+try {
+    $csvService->toCsv(['title' => 'Title'], array_fill(0, 10001, ['title' => 'row']), false);
+} catch (InvalidArgumentException $exception) {
+    $csvRowLimitRejected = true;
+}
+adminNonDbCheck('CSV export neutralizes spreadsheet formulas and preserves Persian text', $csvFormulaSafe && $csvPersianSafe && str_starts_with($csv, "\xEF\xBB\xBF"));
+adminNonDbCheck('CSV export enforces a hard row limit', $csvRowLimitRejected);
 
 $bulkPolicy = new AdminBulkOperationPolicy();
 $validBulk = $bulkPolicy->validate('catalog.products.status', ['ids' => [1, '2', 2], 'access_token' => 'never-store-this'], true);
