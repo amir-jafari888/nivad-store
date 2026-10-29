@@ -43,6 +43,8 @@ require_once __DIR__ . '/app/Services/AdminAuditSnapshotService.php';
 require_once __DIR__ . '/app/Services/AdminOperationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminSecurityEventPolicy.php';
 require_once __DIR__ . '/app/Services/AdminNotificationPolicy.php';
+require_once __DIR__ . '/app/Core/AdminEmailOutboxRepositoryInterface.php';
+require_once __DIR__ . '/app/Services/AdminEmailOutboxWorker.php';
 require_once __DIR__ . '/app/Services/AdminHealthCheckService.php';
 require_once __DIR__ . '/app/Services/AdminMediaStorageService.php';
 require_once __DIR__ . '/app/Services/AdminPreviewTokenService.php';
@@ -63,6 +65,48 @@ adminNonDbCheck('Every feature has a permission and dependency metadata', count(
 adminNonDbCheck('All feature permissions exist in the canonical permission catalog', $contract['permission_count'] >= 46 && count(array_filter($contract['errors'], static fn($error) => $error['code'] === 'permission_missing_from_catalog')) === 0);
 adminNonDbCheck('All feature dependencies exist and the dependency graph is acyclic', $contract['valid'] === true && $contract['dependency_edges_checked'] > 0);
 adminNonDbCheck('Feature contract validator does not access the database', $contract['database_accessed'] === false);
+
+$fakeOutboxRepository = new class implements AdminEmailOutboxRepositoryInterface {
+    public array $rows = [];
+    public array $sent = [];
+    public array $failed = [];
+
+    public function claimDue(int $limit): array
+    {
+        return array_slice($this->rows, 0, $limit);
+    }
+
+    public function markSent(int $outboxId, int $attemptCount, ?string $providerMessageId): bool
+    {
+        $this->sent[] = ['id' => $outboxId, 'attempts' => $attemptCount, 'message_id' => $providerMessageId];
+        return true;
+    }
+
+    public function markFailed(int $outboxId, int $attemptCount, string $errorCode, ?DateTimeImmutable $nextAttemptAt, bool $terminal): bool
+    {
+        $this->failed[] = ['id' => $outboxId, 'attempts' => $attemptCount, 'error_code' => $errorCode, 'next_attempt_at' => $nextAttemptAt?->getTimestamp(), 'terminal' => $terminal];
+        return true;
+    }
+};
+$fakeOutboxRepository->rows = [
+    ['id' => 10, 'attempts' => 0, 'recipient_email' => 'ok@example.com', 'subject' => 'Test', 'body_text' => 'Body'],
+    ['id' => 11, 'attempts' => 0, 'subject' => 'Malformed row'],
+    ['id' => 12, 'attempts' => 0, 'recipient_email' => 'throw@example.com', 'subject' => 'Test', 'body_text' => 'Body'],
+];
+$outboxWorker = new AdminEmailOutboxWorker(
+    $fakeOutboxRepository,
+    static function (string $email, string $subject, string $body, ?string $name = null): array {
+        if ($email === 'throw@example.com') {
+            throw new RuntimeException('simulated provider exception');
+        }
+        return ['success' => true, 'message_id' => 'test-message-1'];
+    },
+    static fn(): int => 1000
+);
+$outboxSummary = $outboxWorker->processBatch(20);
+adminNonDbCheck('Email outbox worker records successful deliveries', $outboxSummary['sent'] === 1 && count($fakeOutboxRepository->sent) === 1);
+adminNonDbCheck('Email outbox worker terminally handles malformed rows', $outboxSummary['invalid_rows'] === 1 && $fakeOutboxRepository->failed[0]['error_code'] === 'invalid_message' && $fakeOutboxRepository->failed[0]['terminal'] === true);
+adminNonDbCheck('Email outbox worker retries sender exceptions with backoff', $outboxSummary['retry_scheduled'] === 1 && $fakeOutboxRepository->failed[1]['next_attempt_at'] === 1060 && $fakeOutboxRepository->failed[1]['terminal'] === false);
 
 $accountPolicy = new AdminAccountPolicy();
 $validAdminCreate = $accountPolicy->validateCreate(
