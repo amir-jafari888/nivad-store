@@ -293,6 +293,19 @@ foreach (['NIVAD_GMAIL_SMTP_USER', 'NIVAD_GMAIL_SMTP_APP_PASSWORD', 'NIVAD_GMAIL
 $mailResult = (new GmailSmtpTransport())->send('admin@example.com', 'test', 'test body');
 adminNonDbCheck('Gmail transport fails closed without credentials and does not attempt delivery', $mailResult['success'] === false && $mailResult['error_code'] === 'smtp_not_configured');
 
+putenv('NIVAD_GMAIL_SMTP_USER=admin@example.com');
+putenv('NIVAD_GMAIL_SMTP_APP_PASSWORD=placeholder-app-password');
+putenv('NIVAD_GMAIL_SMTP_HOST=smtp.gmail.com');
+putenv('NIVAD_GMAIL_SMTP_PORT=587');
+$gmailTransport = new GmailSmtpTransport();
+$invalidMessage = $gmailTransport->send('admin@example.com', '', 'body');
+$invalidRecipient = $gmailTransport->send('not-an-email', 'Subject', 'body');
+adminNonDbCheck('Gmail transport rejects invalid message and recipient before network access', $invalidMessage['error_code'] === 'invalid_message' && $invalidRecipient['error_code'] === 'invalid_recipient');
+foreach (['NIVAD_GMAIL_SMTP_USER', 'NIVAD_GMAIL_SMTP_APP_PASSWORD', 'NIVAD_GMAIL_SMTP_HOST', 'NIVAD_GMAIL_SMTP_PORT'] as $key) {
+    putenv($key);
+    unset($_ENV[$key], $_SERVER[$key]);
+}
+
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
 echo "Mode: non-database contract/unit checks; no SQL, network, email, or application data changes.\n";
 
