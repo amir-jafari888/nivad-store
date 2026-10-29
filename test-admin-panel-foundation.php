@@ -89,7 +89,7 @@ adminFoundationCheck('Foundation repository includes incidents and approvals', s
 adminFoundationCheck('Approval decisions require a pending request and a different reviewer', str_contains($foundationRepository, "status = \'pending\'") && str_contains($foundationRepository, 'requested_by_admin_id <> :requester_guard'));
 adminFoundationCheck('Foundation repository includes media, support and analytics', str_contains($foundationRepository, 'admin_media_assets') && str_contains($foundationRepository, 'admin_support_tickets') && str_contains($foundationRepository, 'admin_analytics_events'));
 adminFoundationCheck('Foundation service validates payloads and redacts sensitive keys', str_contains($foundationService, 'private function redact(') && str_contains($foundationService, '[REDACTED]'));
-adminFoundationCheck('Media storage key rejects traversal patterns', str_contains($foundationService, "str_contains($storageKey, '..')") && str_contains($foundationService, "str_starts_with($storageKey, '/')"));
+adminFoundationCheck('Media storage key rejects traversal patterns', str_contains($foundationService, 'str_contains($storageKey, \'..\')') && str_contains($foundationService, 'str_starts_with($storageKey, \'/\')'));
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
 echo "Mode: static source/schema-contract validation only; SQL/runtime/DB/email/browser checks not performed.\n";
