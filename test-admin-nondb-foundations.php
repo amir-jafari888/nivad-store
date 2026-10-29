@@ -33,6 +33,7 @@ require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
 require_once __DIR__ . '/app/Core/AdminRequestContext.php';
 require_once __DIR__ . '/app/Services/AdminFeatureContractValidator.php';
 require_once __DIR__ . '/app/Services/AdminOperationPolicy.php';
+require_once __DIR__ . '/app/Services/AdminNotificationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminHealthCheckService.php';
 require_once __DIR__ . '/app/Services/AdminMediaStorageService.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
@@ -59,6 +60,15 @@ $redactedJson = json_encode($redacted, JSON_THROW_ON_ERROR);
 adminNonDbCheck('Central redactor removes secrets recursively', $redacted['password'] === '[REDACTED]' && $redacted['profile']['access_token'] === '[REDACTED]');
 adminNonDbCheck('Central redactor preserves non-sensitive values', $redacted['profile']['display_name'] === 'Nivad Admin' && $redacted['normal_value'] === 'safe');
 adminNonDbCheck('Central redactor output does not contain supplied secret values', !str_contains($redactedJson, 'never-log-this'));
+
+$notificationPolicy = new AdminNotificationPolicy();
+$notificationAllowed = $notificationPolicy->evaluate('order.status.changed', 'warning', 0, null, 1000);
+$notificationThrottled = $notificationPolicy->evaluate('order.status.changed', 'info', 3, null, 1000);
+$dedupeOne = $notificationPolicy->deduplicationKey('order.status.changed', 'order', 15, [9, 3, 9]);
+$dedupeTwo = $notificationPolicy->deduplicationKey('order.status.changed', 'order', 15, [3, 9]);
+adminNonDbCheck('Notification policy validates event keys and priorities', $notificationAllowed['allowed'] === true && $notificationAllowed['priority'] === 3);
+adminNonDbCheck('Notification policy identifies rate-limited events', $notificationThrottled['allowed'] === false && in_array('rate_limit_exceeded', $notificationThrottled['errors'], true));
+adminNonDbCheck('Notification deduplication keys are stable across recipient order and duplicates', hash_equals($dedupeOne, $dedupeTwo));
 
 $policy = new AdminOperationPolicy();
 $deniedSameReviewer = $policy->validateExecutionContext(
