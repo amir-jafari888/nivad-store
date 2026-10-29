@@ -33,6 +33,7 @@ jobs:
           php -l app/Services/AdminFeatureAccessService.php
           php -l app/Services/AdminFeatureContractValidator.php
           php -l app/Services/AdminHealthCheckService.php
+          php -l app/Services/AdminMediaStorageService.php
           php -l app/Services/AdminOperationPolicy.php
           php -l app/Services/GmailSmtpTransport.php
           php -l app/Middleware/AdminAuthMiddleware.php
