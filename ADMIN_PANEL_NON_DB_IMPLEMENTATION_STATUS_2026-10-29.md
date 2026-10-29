@@ -16,6 +16,7 @@
 - `app/Middleware/AdminRoutePermissionMiddleware.php`: resolves the named route to a feature and enforces the mapped permission; it validates the session first and fails closed on unmapped admin routes.
 - `app/Core/AdminRequestContext.php`: generates/validates a correlation ID and publishes `X-Request-ID` on protected responses. Persistence of that ID in the existing audit schema is not claimed.
 - `app/Core/AdminHttpErrorResponder.php` and `app/Core/ErrorHandler.php`: browser requests now receive a localized HTML error document while API/JSON requests receive JSON status responses; 500-level responses do not expose exception messages, and logs omit raw exception messages while recording a request ID.
+- `app/Services/AdminAuditSnapshotService.php`: produces centrally redacted before/after snapshots and a bounded deterministic field-level change list; connected to the audit writer. Database persistence is still gated.
 - `app/Core/AdminActorContext.php`: validates the current admin session before deriving an actor ID and rejects caller-supplied actor IDs that do not match the authenticated identity. Connected to foundation mutations, audit writing, and admin notification creation.
 
 ### Shared security controls
@@ -25,6 +26,7 @@
 - `app/Services/AdminNotificationPolicy.php`: event-key/severity validation, priority, configurable email threshold, rate-limit decision contract, and deterministic recipient-aware deduplication key.
 - `app/Services/AdminHealthCheckService.php`: non-invasive PHP/extensions/source readiness checks. It does not connect to MySQL or the network and reports database readiness as `blocked`.
 - `app/Services/AdminMediaStorageService.php`: validates image MIME/content/dimensions/size/hash and can store uploads under an explicitly configured private absolute path outside the web root. It does not write metadata to the DB.
+- `app/Services/AdminGlobalSearchService.php` and `app/Core/AdminSearchProviderInterface.php`: permission-aware provider orchestration, bounded queries/results, result normalization, deduplication, and rejection of external/unsafe result URLs. Product/order/customer providers and the route/UI remain pending.
 - `app/Services/AdminPreviewTokenService.php`: issues short-lived HMAC-signed preview tokens bound to a specific entity and admin identity; one-time/replay prevention still needs persistence.
 - `app/Services/AdminSavedViewValidator.php`: validates saved filter/sort structures and restricts fields/operators; query providers must still map fields to explicit per-module allowlists.
 - `app/Services/AdminContentPublishingPolicy.php`: validates publish-state transitions and requires explicit-timezone future schedules normalized to UTC; DB session timezone must be verified before persistence.
@@ -34,6 +36,7 @@
 ### Gmail / notifications
 - `app/Services/GmailSmtpTransport.php`: Gmail-only SMTP transport using environment variables, TLS verification, header validation, and stable non-secret error codes. No SMTP connection is made unless `send()` is called.
 - `AdminNotificationService` now applies the shared event/severity policy, redacts payloads, and validates/enqueues email requests through the outbox repository.
+- `GmailSmtpTransport` validates recipient, subject, display name and body bounds before opening a socket; credentials remain environment-only. No real delivery test was run.
 - Durable outbox processing, DB-backed deduplication/rate-limit state, retries, and real Gmail delivery are not claimed complete.
 
 ### Database-facing primitives prepared but NOT executed
