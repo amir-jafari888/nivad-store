@@ -31,6 +31,7 @@ jobs:
           php -l app/Core/AdminRouteFeatureMap.php
           php -l app/Core/AdminRoutePermissionMap.php
           php -l app/Core/AdminEmailOutboxRepositoryInterface.php
+          php -l app/Core/AdminFoundationRepositoryInterface.php
           php -l app/Core/AdminRequestContext.php
           php -l app/Core/AdminHttpErrorResponder.php
           php -l app/Core/ErrorHandler.php
