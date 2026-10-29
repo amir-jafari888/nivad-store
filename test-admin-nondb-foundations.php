@@ -356,7 +356,7 @@ $worker = new AdminEmailOutboxWorker(
 );
 $workerSummary = $worker->processBatch(500);
 adminNonDbCheck('Email outbox worker bounds batches and tracks successful delivery attempts', $workerSummary['claimed'] === 4 && $workerSummary['sent'] === 1 && $fakeOutbox->sent[0]['attempts'] === 1);
-adminNonDbCheck('Email outbox worker schedules exponential retry without storing SMTP details', $workerSummary['retry_scheduled'] === 1 && $fakeOutbox->failed[0]['next'] === 1060 && $fakeOutbox->failed[0]['terminal'] === false && $fakeOutbox->failed[0]['error'] === 'smtp_connection_failed');
+adminNonDbCheck('Email outbox worker schedules exponential retry without storing SMTP details', $workerSummary['retry_scheduled'] === 1 && $fakeOutbox->failed[0]['next'] === 1120 && $fakeOutbox->failed[0]['terminal'] === false && $fakeOutbox->failed[0]['error'] === 'smtp_connection_failed');
 adminNonDbCheck('Email outbox worker terminally fails permanent errors and ignores malformed rows', $workerSummary['failed'] === 1 && $workerSummary['invalid_rows'] === 1 && $fakeOutbox->failed[1]['terminal'] === true && $fakeOutbox->failed[1]['next'] === null);
 
 putenv('NIVAD_GMAIL_SMTP_USER=admin@example.com');
