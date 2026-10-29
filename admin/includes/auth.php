@@ -143,15 +143,27 @@ ob_start(static function (string $html) use ($currentAdmin): string {
         </div>
     </aside>';
 
+    $requestPath = parse_url((string)($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+    $pathParts = array_values(array_filter(
+        explode('/', trim(is_string($requestPath) ? $requestPath : '', '/')),
+        static fn (string $part): bool => $part !== ''
+    ));
+    $adminSection = strtolower((string)($pathParts[1] ?? 'dashboard'));
+    $adminSubpage = strtolower((string)($pathParts[2] ?? 'index'));
+    $adminSection = preg_replace('/[^a-z0-9-]/', '-', $adminSection) ?: 'dashboard';
+    $adminSubpage = preg_replace('/\\.php$/i', '', $adminSubpage);
+    $adminSubpage = preg_replace('/[^a-z0-9-]/', '-', (string)$adminSubpage) ?: 'index';
+    $adminPageClasses = 'admin-page admin-page-' . $adminSection . ' admin-page-' . $adminSection . '-' . $adminSubpage;
+
     $html = preg_replace_callback(
-        '/<body\b([^>]*)>/i',
-        static function (array $matches): string {
+        '/<body\\b([^>]*)>/i',
+        static function (array $matches) use ($adminPageClasses): string {
             $attributes = $matches[1];
-            if (preg_match('/\bclass\s*=\s*(["\'])(.*?)\1/i', $attributes, $classMatch) === 1) {
-                $classes = trim($classMatch[2] . ' admin-shared-shell');
+            if (preg_match('/\\bclass\\s*=\\s*(["\\'])(.*?)\\1/i', $attributes, $classMatch) === 1) {
+                $classes = trim($classMatch[2] . ' admin-shared-shell ' . $adminPageClasses);
                 $attributes = str_replace($classMatch[0], 'class="' . $classes . '"', $attributes);
             } else {
-                $attributes .= ' class="admin-shared-shell"';
+                $attributes .= ' class="admin-shared-shell ' . $adminPageClasses . '"';
             }
             return '<body' . $attributes . '>';
         },
