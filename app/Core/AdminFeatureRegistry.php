@@ -32,7 +32,7 @@ final class AdminFeatureRegistry
             'ADM-011' => self::feature('Catalog management', 'admin.products.manage', true, ['ADM-002', 'ADM-008', 'ADM-015'], 'commerce'),
             'ADM-012' => self::feature('Orders, payments, returns, refunds and coupons', 'admin.orders.manage', true, ['ADM-002', 'ADM-008', 'ADM-039'], 'commerce'),
             'ADM-013' => self::feature('Inventory, shipping and low-stock alerts', 'admin.inventory.manage', true, ['ADM-008', 'ADM-016'], 'commerce'),
-            'ADM-014' => self::feature('Storefront content management', 'admin.content.manage', true, ['ADM-015', 'ADM-032', 'ADM-033'], 'content'),
+            'ADM-014' => self::feature('Storefront content management', 'admin.content.manage', true, ['ADM-015', 'ADM-032'], 'content'),
             'ADM-015' => self::feature('Media library and file management', 'admin.media.manage', true, ['ADM-044'], 'content'),
             'ADM-016' => self::feature('In-app admin notification center', 'admin.notifications.view', true, ['ADM-018'], 'communications'),
             'ADM-017' => self::feature('Gmail SMTP delivery', 'admin.notifications.manage', true, ['ADM-016', 'ADM-018'], 'communications', ['gmail_smtp']),
