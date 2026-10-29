@@ -39,16 +39,17 @@ final class AdminFoundationRepository
             ]);
             $version = (int) $versionStmt->fetchColumn();
 
-            $stmt = $this->db->prepare(
-                'INSERT INTO admin_content_revisions (
+            $stmt = $this->db->prepare(<<<'SQL'
+                INSERT INTO admin_content_revisions (
                     entity_type, entity_id, version_number, status,
                     snapshot_json, scheduled_at, published_at, created_by_admin_id
                 ) VALUES (
                     :entity_type, :entity_id, :version_number, :status,
                     :snapshot_json, :scheduled_at,
-                    CASE WHEN :published_status = \'published\' THEN CURRENT_TIMESTAMP ELSE NULL END,
+                    CASE WHEN :published_status = 'published' THEN CURRENT_TIMESTAMP ELSE NULL END,
                     :created_by_admin_id
-                )'
+                )
+                SQL
             );
             $stmt->execute([
                 'entity_type' => $entityType,
@@ -129,23 +130,24 @@ final class AdminFoundationRepository
         ?string $resultJson = null,
         ?string $errorSummary = null
     ): bool {
-        $stmt = $this->db->prepare(
-            'UPDATE admin_operation_jobs
+        $stmt = $this->db->prepare(<<<'SQL'
+            UPDATE admin_operation_jobs
              SET status = :status,
                  progress_percent = :progress_percent,
                  result_json = :result_json,
                  error_summary = :error_summary,
                  started_at = CASE
-                    WHEN :started_status = \'running\'
+                    WHEN :started_status = 'running'
                     THEN COALESCE(started_at, CURRENT_TIMESTAMP)
                     ELSE started_at
                  END,
                  completed_at = CASE
-                    WHEN :completed_status IN (\'completed\', \'failed\', \'cancelled\')
+                    WHEN :completed_status IN ('completed', 'failed', 'cancelled')
                     THEN CURRENT_TIMESTAMP
                     ELSE completed_at
                  END
-             WHERE id = :id'
+             WHERE id = :id
+            SQL
         );
         $stmt->execute([
             'status' => $status,
@@ -168,8 +170,8 @@ final class AdminFoundationRepository
         ?string $description,
         ?string $contextJson
     ): int {
-        $stmt = $this->db->prepare(
-            'INSERT INTO admin_system_incidents (
+        $stmt = $this->db->prepare(<<<'SQL'
+            INSERT INTO admin_system_incidents (
                 incident_key, severity, status, source, title,
                 description, context_json, occurrence_count,
                 first_seen_at, last_seen_at
@@ -180,12 +182,13 @@ final class AdminFoundationRepository
             )
             ON DUPLICATE KEY UPDATE
                 severity = VALUES(severity),
-                status = IF(status = \'resolved\', \'open\', status),
+                status = IF(status = 'resolved', 'open', status),
                 title = VALUES(title),
                 description = VALUES(description),
                 context_json = VALUES(context_json),
                 occurrence_count = occurrence_count + 1,
-                last_seen_at = CURRENT_TIMESTAMP'
+                last_seen_at = CURRENT_TIMESTAMP
+            SQL
         );
         $stmt->execute([
             'incident_key' => $incidentKey,
@@ -246,15 +249,16 @@ final class AdminFoundationRepository
             return false;
         }
 
-        $stmt = $this->db->prepare(
-            'UPDATE admin_approval_requests
+        $stmt = $this->db->prepare(<<<'SQL'
+            UPDATE admin_approval_requests
              SET status = :status,
                  reviewed_by_admin_id = :reviewed_by_admin_id,
                  decision_note = :decision_note,
                  reviewed_at = CURRENT_TIMESTAMP
              WHERE id = :id
-               AND status = \'pending\'
-               AND requested_by_admin_id <> :requester_guard'
+               AND status = 'pending'
+               AND requested_by_admin_id <> :requester_guard
+            SQL
         );
         $stmt->execute([
             'status' => $decision,
