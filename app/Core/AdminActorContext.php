@@ -4,22 +4,33 @@ declare(strict_types=1);
 
 /**
  * Prevents request data from selecting an arbitrary admin actor ID.
- * System/background events should use a null actor explicitly; interactive
- * operations must derive the actor from the authenticated server-side session.
+ * Interactive operations require a validated server-side admin session.
+ * Background/system events should use a null actor explicitly.
  */
 final class AdminActorContext
 {
     private \Closure $currentAdminIdProvider;
+    private \Closure $sessionValidator;
 
-    public function __construct(?callable $currentAdminIdProvider = null)
-    {
+    public function __construct(
+        ?callable $currentAdminIdProvider = null,
+        ?callable $sessionValidator = null
+    ) {
         $this->currentAdminIdProvider = $currentAdminIdProvider !== null
             ? \Closure::fromCallable($currentAdminIdProvider)
             : static fn(): mixed => AdminAuth::id();
+
+        $this->sessionValidator = $sessionValidator !== null
+            ? \Closure::fromCallable($sessionValidator)
+            : static fn(): bool => (new AdminAuthService())->validateCurrentSession();
     }
 
     public function currentAdminId(): ?int
     {
+        if (!(($this->sessionValidator)())) {
+            return null;
+        }
+
         $value = ($this->currentAdminIdProvider)();
 
         if (is_int($value) && $value > 0) {
@@ -39,7 +50,7 @@ final class AdminActorContext
 
         if ($currentAdminId === null) {
             throw new AdminAuthenticationException(
-                'An authenticated admin session is required for this operation.'
+                'A validated admin session is required for this operation.'
             );
         }
 
