@@ -30,6 +30,8 @@ require_once __DIR__ . '/app/Core/Response.php';
 require_once __DIR__ . '/app/Core/AdminPermissionCatalog.php';
 require_once __DIR__ . '/app/Core/SensitiveDataRedactor.php';
 require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
+require_once __DIR__ . '/app/Core/AdminSearchProviderInterface.php';
+require_once __DIR__ . '/app/Services/AdminGlobalSearchService.php';
 require_once __DIR__ . '/app/Core/AdminRequestContext.php';
 require_once __DIR__ . '/app/Core/AdminActorContext.php';
 require_once __DIR__ . '/app/Core/Exceptions/AppException.php';
@@ -126,6 +128,43 @@ unset($_SERVER['HTTP_X_REQUEST_ID']);
 AdminRequestContext::resetForTests();
 
 putenv('NIVAD_ADMIN_PREVIEW_SECRET=test-preview-secret-32-bytes-minimum');
+$searchProvider = new class implements AdminSearchProviderInterface {
+    public int $calls = 0;
+
+    public function featureId(): string
+    {
+        return 'ADM-011';
+    }
+
+    public function search(string $query, int $limit): array
+    {
+        $this->calls++;
+        return [
+            ['id' => 1, 'type' => 'product', 'title' => 'Phone A', 'subtitle' => '128 GB', 'url' => '/admin/products/1', 'score' => 0.9],
+            ['id' => 2, 'type' => 'product', 'title' => 'Phone B', 'url' => 'https://evil.example/admin/products/2', 'score' => 0.8],
+            ['id' => 1, 'type' => 'product', 'title' => 'Duplicate Phone A', 'url' => '/admin/products/1', 'score' => 0.7],
+        ];
+    }
+};
+$searchService = new AdminGlobalSearchService(
+    [$searchProvider],
+    static fn(int $adminId, string $featureId): bool => $adminId === 7 && $featureId === 'ADM-011'
+);
+$searchResult = $searchService->search(7, 'phone', 10);
+adminNonDbCheck('Global search enforces feature access and rejects external result URLs', $searchResult['total'] === 1 && $searchResult['results'][0]['url'] === '/admin/products/1');
+adminNonDbCheck('Global search deduplicates results by type and ID', count($searchResult['results']) === 1);
+$deniedSearchProvider = new class implements AdminSearchProviderInterface {
+    public int $calls = 0;
+    public function featureId(): string { return 'ADM-011'; }
+    public function search(string $query, int $limit): array { $this->calls++; return []; }
+};
+$deniedSearch = new AdminGlobalSearchService(
+    [$deniedSearchProvider],
+    static fn(int $adminId, string $featureId): bool => false
+);
+$deniedSearchResult = $deniedSearch->search(7, 'phone');
+adminNonDbCheck('Global search never queries a provider without feature permission', $deniedSearchResult['total'] === 0 && $deniedSearchProvider->calls === 0);
+
 $previewService = new AdminPreviewTokenService();
 $previewToken = $previewService->issue('product', 'product-15', 7, 900, 1000);
 $previewClaims = $previewService->verify($previewToken, 7, 'product', 'product-15', 1500);
