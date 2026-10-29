@@ -59,19 +59,21 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     if ($adminName === '') {
         $adminName = 'مدیر سیستم';
     }
-    $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8');
+    $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8')
+        . ($lastName !== '' ? mb_substr($lastName, 0, 1, 'UTF-8') : '');
 
     $topbar = '
     <header class="admin-shared-topbar">
+        <button class="admin-shared-mobile-menu" type="button" data-admin-menu-toggle aria-controls="admin-sidebar" aria-expanded="false" aria-label="باز کردن منوی مدیریت"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
         <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
-        <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده">
+        <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده: ' . e($adminName) . '">
             <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
-            <span class="admin-shared-account-name">' . e($adminName) . '</span>
+            <span class="admin-shared-account-name"><span class="admin-shared-first-name">' . e($firstName !== '' ? $firstName : 'مدیر') . '</span><span class="admin-shared-last-name">' . e($lastName) . '</span></span>
         </div>
     </header>';
 
     $nav = '
-    <aside class="admin-shared-sidebar" aria-label="ناوبری پنل مدیریت">
+    <aside class="admin-shared-sidebar" id="admin-sidebar" data-admin-sidebar aria-label="ناوبری پنل مدیریت">
         <a class="admin-shared-brand" href="' . e(url('/admin')) . '">
             <span class="admin-shared-brand-mark" aria-hidden="true">N</span>
             <span>نیواد <small>مدیریت فروشگاه</small></span>
