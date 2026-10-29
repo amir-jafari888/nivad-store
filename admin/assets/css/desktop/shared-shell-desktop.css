@@ -80,3 +80,7 @@
 .admin-dashboard-date-chip{padding:6px 10px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);color:var(--admin-color-text-muted);font-size:12px}
 .admin-dashboard-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:22px;padding-top:14px;border-top:1px solid var(--admin-color-border);color:var(--admin-color-text-muted);font-size:12px}
 .admin-nav-backdrop{display:none}
+
+
+/* Legacy page header becomes a content toolbar, not a competing global header. */
+.admin-shared-shell>header:not(.admin-shared-topbar){display:flex;align-items:center;justify-content:space-between;gap:16px;margin-inline-start:264px;padding:18px 24px 0;border:0;background:transparent;box-shadow:none}
