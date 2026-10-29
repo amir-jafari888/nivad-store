@@ -28,6 +28,7 @@ function adminNonDbCheck(string $name, bool $condition): void
 require_once __DIR__ . '/app/Core/Request.php';
 require_once __DIR__ . '/app/Core/Response.php';
 require_once __DIR__ . '/app/Core/AdminPermissionCatalog.php';
+require_once __DIR__ . '/app/Core/SensitiveDataRedactor.php';
 require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
 require_once __DIR__ . '/app/Core/AdminRequestContext.php';
 require_once __DIR__ . '/app/Services/AdminFeatureContractValidator.php';
@@ -45,6 +46,19 @@ adminNonDbCheck('Every feature has a permission and dependency metadata', count(
 adminNonDbCheck('All feature permissions exist in the canonical permission catalog', $contract['permission_count'] >= 46 && count(array_filter($contract['errors'], static fn($error) => $error['code'] === 'permission_missing_from_catalog')) === 0);
 adminNonDbCheck('All feature dependencies exist and the dependency graph is acyclic', $contract['valid'] === true && $contract['dependency_edges_checked'] > 0);
 adminNonDbCheck('Feature contract validator does not access the database', $contract['database_accessed'] === false);
+
+$redacted = SensitiveDataRedactor::redact([
+    'password' => 'never-log-this',
+    'profile' => [
+        'access_token' => 'never-log-this-either',
+        'display_name' => 'Nivad Admin',
+    ],
+    'normal_value' => 'safe',
+]);
+$redactedJson = json_encode($redacted, JSON_THROW_ON_ERROR);
+adminNonDbCheck('Central redactor removes secrets recursively', $redacted['password'] === '[REDACTED]' && $redacted['profile']['access_token'] === '[REDACTED]');
+adminNonDbCheck('Central redactor preserves non-sensitive values', $redacted['profile']['display_name'] === 'Nivad Admin' && $redacted['normal_value'] === 'safe');
+adminNonDbCheck('Central redactor output does not contain supplied secret values', !str_contains($redactedJson, 'never-log-this'));
 
 $policy = new AdminOperationPolicy();
 $deniedSameReviewer = $policy->validateExecutionContext(
