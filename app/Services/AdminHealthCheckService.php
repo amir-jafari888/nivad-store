@@ -43,12 +43,15 @@ final class AdminHealthCheckService
             'app/Core/AdminHttpErrorResponder.php',
             'app/Core/AdminPermissionCatalog.php',
             'app/Core/AdminFeatureRegistry.php',
+            'app/Core/AdminCapabilityContractRegistry.php',
             'app/Core/AdminRoutePermissionMap.php',
             'app/Core/AdminFoundationRepositoryInterface.php',
             'app/Core/AdminEmailOutboxRepositoryInterface.php',
             'app/Middleware/AdminRoutePermissionMiddleware.php',
             'app/Services/AuthorizationService.php',
             'app/Services/AdminFeatureAccessService.php',
+            'app/Services/AdminFeatureContractValidator.php',
+            'app/Services/AdminCapabilityReadinessService.php',
             'app/Services/AdminActivityAuditService.php',
             'app/Services/AdminAuditSnapshotService.php',
             'app/Services/AdminFoundationService.php',
@@ -141,4 +144,4 @@ final class AdminHealthCheckService
 
         return is_string($value) ? trim($value) : '';
     }
-}
+} 
