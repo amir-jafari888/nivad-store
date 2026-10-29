@@ -26,7 +26,7 @@
 .admin-shared-account-name,.admin-dashboard-account-name{min-width:0;overflow-wrap:anywhere;font-size:13px}
 .admin-shared-account form,.admin-dashboard-account form{grid-column:1/-1;margin:0}
 .admin-shared-logout,.admin-dashboard-logout{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);background:var(--admin-color-surface);color:var(--admin-color-error);font:inherit;font-size:13px}
-.admin-shared-shell>main{width:auto;max-width:none;min-width:0;margin:0;padding:16px 12px}
+.admin-shared-shell main{width:auto;max-width:none;min-width:0;margin:0;padding:16px 12px}
 .admin-shared-shell h1,.admin-dashboard-main h1{font-size:21px;line-height:1.4;margin:0 0 5px}
 .admin-shared-shell h2,.admin-dashboard-main h2{font-size:16px;line-height:1.45}
 .admin-shared-shell article,.admin-shared-shell .card,.admin-shared-shell .panel,.admin-shared-shell .report-card{padding:13px;border-radius:var(--admin-radius-sm);box-shadow:none}
