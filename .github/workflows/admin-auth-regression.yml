@@ -53,6 +53,7 @@ jobs:
           php -l app/Repositories/AdminSessionRepository.php
           php -l app/Repositories/AuditLogRepository.php
           php -l app/Services/AdminActivityAuditService.php
+          php -l app/Services/AdminAuditSnapshotService.php
           php -l app/Services/AdminFoundationService.php
           php -l app/Services/AdminNotificationService.php
           php -l app/Services/AdminNotificationPolicy.php
