@@ -32,14 +32,6 @@ $formatDate = static function (mixed $value): string {
     }
 };
 
-$maxNetSales = 0.0;
-$maxOrders = 0.0;
-
-foreach ($salesByPeriod as $periodRow) {
-    $maxNetSales = max($maxNetSales, (float)($periodRow['net_sales'] ?? 0));
-    $maxOrders = max($maxOrders, (float)($periodRow['total_orders'] ?? 0));
-}
-
 $firstName = trim((string)($admin['first_name'] ?? ''));
 $lastName = trim((string)($admin['last_name'] ?? ''));
 $adminName = trim($firstName . ' ' . $lastName);
@@ -76,6 +68,13 @@ if ($isDemoDashboard) {
     $orderItems = ['total_quantity' => 3260, 'total_lines' => 2184];
     $inventory = ['total_quantity' => 842, 'total_available_quantity' => 716];
     $salesByPeriodStatus = 'demo';
+}
+
+$maxNetSales = 0.0;
+$maxOrders = 0.0;
+foreach ($salesByPeriod as $periodRow) {
+    $maxNetSales = max($maxNetSales, (float)($periodRow['net_sales'] ?? 0));
+    $maxOrders = max($maxOrders, (float)($periodRow['total_orders'] ?? 0));
 }
 ?>
 
