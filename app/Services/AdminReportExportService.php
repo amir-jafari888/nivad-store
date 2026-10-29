@@ -49,7 +49,7 @@ final class AdminReportExportService
                 fwrite($stream, "\xEF\xBB\xBF");
             }
 
-            fputcsv($stream, array_map([$this, 'safeCell'], $normalizedHeaders), ',', '"', '\\');
+            fputcsv($stream, array_map([$this, 'safeCell'], $normalizedHeaders), ',', '"', '');
 
             foreach ($rows as $row) {
                 if (!is_array($row)) {
@@ -57,14 +57,14 @@ final class AdminReportExportService
                 }
 
                 $values = [];
-                for ($index = 0; $index < count($normalizedHeaders); $index++) {
-                    $value = array_key_exists($index, $row)
-                        ? $row[$index]
+                foreach ($fieldKeys as $fieldKey) {
+                    $value = array_key_exists($fieldKey, $row)
+                        ? $row[$fieldKey]
                         : null;
                     $values[] = $this->safeCell($value);
                 }
 
-                fputcsv($stream, $values, ',', '"', '\\');
+                fputcsv($stream, $values, ',', '"', '');
             }
 
             rewind($stream);
