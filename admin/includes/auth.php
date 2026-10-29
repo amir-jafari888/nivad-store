@@ -136,6 +136,7 @@ ob_start(static function (string $html) use ($currentAdmin): string {
                     <a href="' . e(url('/admin/attributes')) . '">ویژگی‌ها</a>
                     <a href="' . e(url('/admin/product-types')) . '">نوع محصول</a>
                     <a href="' . e(url('/admin/specifications')) . '">مشخصات فنی</a>
+                    <a href="' . e(url('/admin/specifications/groups')) . '">گروه‌های مشخصات</a>
                 </div>
             </details>
             <details class="admin-shared-nav-group">
@@ -143,8 +144,12 @@ ob_start(static function (string $html) use ($currentAdmin): string {
                 <div class="admin-shared-submenu">
                     <a href="' . e(url('/admin/sliders')) . '">اسلایدرها</a>
                     <a href="' . e(url('/admin/discovery')) . '">دیسکاوری</a>
+                    <a href="' . e(url('/admin/discovery/tags')) . '">برچسب‌های دیسکاوری</a>
                     <a href="' . e(url('/admin/compatibility')) . '">سازگاری</a>
+                    <a href="' . e(url('/admin/compatibility/devices')) . '">دستگاه‌های سازگاری</a>
                     <a href="' . e(url('/admin/setups')) . '">ستاپ‌ها</a>
+                    <a href="' . e(url('/admin/setups/devices')) . '">دستگاه‌های Setup</a>
+                    <a href="' . e(url('/admin/setups/accessories')) . '">اکسسوری‌های Setup</a>
                 </div>
             </details>
             <details class="admin-shared-nav-group">
@@ -152,9 +157,14 @@ ob_start(static function (string $html) use ($currentAdmin): string {
                 <div class="admin-shared-submenu">
                     <a href="' . e(url('/admin/orders')) . '">سفارش‌ها</a>
                     <a href="' . e(url('/admin/payments')) . '">پرداخت‌ها</a>
+                    <a href="' . e(url('/admin/payments/attempts')) . '">تلاش‌های پرداخت</a>
                     <a href="' . e(url('/admin/coupons')) . '">کدهای تخفیف</a>
-                    <a href="' . e(url('/admin/inventory')) . '">موجودی و گردش انبار</a>
-                    <a href="' . e(url('/admin/shipping/shipments')) . '">ارسال</a>
+                    <a href="' . e(url('/admin/inventory')) . '">موجودی</a>
+                    <a href="' . e(url('/admin/inventory/movements')) . '">گردش موجودی</a>
+                    <a href="' . e(url('/admin/inventory/reservations')) . '">رزروهای موجودی</a>
+                    <a href="' . e(url('/admin/shipping/shipments')) . '">مرسوله‌ها</a>
+                    <a href="' . e(url('/admin/shipping/methods')) . '">روش‌های ارسال</a>
+                    <a href="' . e(url('/admin/shipping/zones')) . '">مناطق ارسال</a>
                 </div>
             </details>
             <details class="admin-shared-nav-group">
@@ -171,7 +181,11 @@ ob_start(static function (string $html) use ($currentAdmin): string {
             <details class="admin-shared-nav-group">
                 <summary>گزارش و ممیزی</summary>
                 <div class="admin-shared-submenu">
-                    <a href="' . e(url('/admin/reports')) . '">گزارش‌ها</a>
+                    <a href="' . e(url('/admin/reports')) . '">نمای کلی گزارش‌ها</a>
+                    <a href="' . e(url('/admin/reports/sales')) . '">گزارش فروش</a>
+                    <a href="' . e(url('/admin/reports/orders')) . '">گزارش سفارش‌ها</a>
+                    <a href="' . e(url('/admin/reports/products')) . '">گزارش محصولات</a>
+                    <a href="' . e(url('/admin/reports/categories')) . '">گزارش دسته‌بندی‌ها</a>
                     <a href="' . e(url('/admin/audit-logs')) . '">گزارش رویدادها</a>
                 </div>
             </details>
