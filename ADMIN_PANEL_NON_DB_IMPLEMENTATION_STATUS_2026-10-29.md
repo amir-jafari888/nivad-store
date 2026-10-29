@@ -12,8 +12,9 @@
 - `app/Services/AdminFeatureContractValidator.php`: validates feature metadata, permission references, dependency references, and cycles without a DB connection.
 - `app/Services/AdminFeatureAccessService.php`: connects a feature ID to `AuthorizationService`; unknown features fail closed.
 - `app/Core/AdminRouteFeatureMap.php`: explicit mapping for route families with a clear feature contract. Ambiguous/unregistered route families intentionally return no mapping.
+- `app/Core/AdminRoutePermissionMap.php`: exact-route permission contracts for all 14 routes that do not fit one canonical feature bucket; the route audit now finds zero routes without a permission contract.
 - `app/Middleware/AdminFeatureMiddleware.php`: authenticates the admin session before checking the feature permission.
-- `app/Middleware/AdminRoutePermissionMiddleware.php`: resolves the named route to a feature and enforces the mapped permission; it validates the session first and fails closed on unmapped admin routes.
+- `app/Middleware/AdminRoutePermissionMiddleware.php`: resolves the named route to an exact permission contract (feature-derived or exact-route override) and enforces it; it validates the session first and fails closed on unmapped admin routes. It is prepared but not globally attached until DB role assignments are reviewed.
 - `app/Core/AdminRequestContext.php`: generates/validates a correlation ID and publishes `X-Request-ID` on protected responses. Persistence of that ID in the existing audit schema is not claimed.
 - `app/Core/AdminHttpErrorResponder.php` and `app/Core/ErrorHandler.php`: browser requests now receive a localized HTML error document while API/JSON requests receive JSON status responses; 500-level responses do not expose exception messages, and logs omit raw exception messages while recording a request ID.
 - `app/Services/AdminAuditSnapshotService.php`: produces centrally redacted before/after snapshots and a bounded deterministic field-level change list; connected to the audit writer. Database persistence is still gated.
@@ -47,6 +48,7 @@
 ## Route audit result
 Static inspection of `routes/api.php` found **161 named admin API routes**:
 - All 161 include `AdminAuthMiddleware`.
+- All 161 now have an explicit permission contract (zero missing contracts).
 - All mutating admin API routes include `CsrfMiddleware`.
 - 14 route names do not belong to a canonical feature bucket, but now have explicit exact-route permission contracts in `app/Core/AdminRoutePermissionMap.php`: notification creation, reviews, questions/answers, and customer-user management. Their permissions are not inferred from a broad route prefix.
 - The existing route table has not yet been changed to apply granular feature middleware globally. Doing so before the target DB's role/permission assignments are verified could lock out legitimate admins or alter authorization unexpectedly.
@@ -56,7 +58,7 @@ Latest successful run on this branch:
 - Authentication/authorization regression: **21 PASS, 0 FAIL**
 - Shared foundation regression: **30 PASS, 0 FAIL**
 - Non-database foundation contracts: **39 PASS, 0 FAIL**
-- Admin route contract audit: **6 PASS, 0 FAIL**
+- Admin route contract audit: **7 PASS, 0 FAIL**
 - PHP lint: all files in the workflow passed.
 
 These are source/static/unit checks, not a live XAMPP/browser/database/Gmail integration run.
