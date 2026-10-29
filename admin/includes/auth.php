@@ -59,14 +59,18 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     if ($adminName === '') {
         $adminName = 'مدیر سیستم';
     }
-    $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8');
+    $adminInitials = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8')
+        . mb_substr($lastName, 0, 1, 'UTF-8');
+    if ($adminInitials === '') {
+        $adminInitials = 'N';
+    }
 
     $topbar = '
     <header class="admin-shared-topbar">
         <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
         <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده">
-            <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
-            <span class="admin-shared-account-name">' . e($adminName) . '</span>
+            <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitials) . '</span>
+            <span class="admin-shared-profile-copy"><span class="admin-shared-account-name">' . e($adminName) . '</span><small>مدیر پنل</small></span>
         </div>
     </header>';
 
@@ -130,7 +134,7 @@ ob_start(static function (string $html) use ($currentAdmin): string {
             <a class="admin-shared-nav-link" href="' . e(url('/admin/settings')) . '">تنظیمات رابط کاربری</a>
         </nav>
         <div class="admin-shared-account">
-            <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
+            <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitials) . '</span>
             <span class="admin-shared-account-name">' . e($adminName) . '</span>
             <form method="post" action="' . e(url('/admin/logout')) . '">
                 <input type="hidden" name="csrf_token" value="' . e(Csrf::token()) . '">
