@@ -65,6 +65,11 @@ final class AdminSavedViewValidator
             return null;
         }
 
+        // Accept a single sort descriptor as well as a list of descriptors.
+        if (array_key_exists('field', $sort)) {
+            $sort = [$sort];
+        }
+
         if (count($sort) > 5) {
             throw new InvalidArgumentException('At most 5 sort fields are allowed.');
         }
