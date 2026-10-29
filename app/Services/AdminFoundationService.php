@@ -311,28 +311,6 @@ final class AdminFoundationService
 
     private function redact(array $data): array
     {
-        $safe = [];
-
-        foreach ($data as $key => $value) {
-            $normalized = strtolower((string) $key);
-            foreach (self::SENSITIVE_KEY_PARTS as $part) {
-                if (str_contains($normalized, $part)) {
-                    $safe[$key] = '[REDACTED]';
-                    continue 2;
-                }
-            }
-
-            if (is_array($value)) {
-                $safe[$key] = $this->redact($value);
-            } elseif (is_scalar($value) || $value === null) {
-                $safe[$key] = is_string($value) && strlen($value) > 20000
-                    ? '[OMITTED: VALUE TOO LARGE]'
-                    : $value;
-            } else {
-                $safe[$key] = '[OMITTED: UNSUPPORTED VALUE]';
-            }
-        }
-
-        return $safe;
+        return SensitiveDataRedactor::redact($data);
     }
 }
