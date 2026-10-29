@@ -39,6 +39,8 @@ jobs:
           php -l app/Services/AdminHealthCheckService.php
           php -l app/Services/AdminMediaStorageService.php
           php -l app/Services/AdminSavedViewValidator.php
+          php -l app/Services/AdminGlobalSearchService.php
+          php -l app/Core/AdminSearchProviderInterface.php
           php -l app/Services/AdminPreviewTokenService.php
           php -l app/Services/AdminOperationPolicy.php
           php -l app/Services/GmailSmtpTransport.php
