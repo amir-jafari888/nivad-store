@@ -148,8 +148,10 @@ ob_start(static function (string $html) use ($currentAdmin): string {
         explode('/', trim(is_string($requestPath) ? $requestPath : '', '/')),
         static fn (string $part): bool => $part !== ''
     ));
-    $adminSection = strtolower((string)($pathParts[1] ?? 'dashboard'));
-    $adminSubpage = strtolower((string)($pathParts[2] ?? 'index'));
+    $adminIndex = array_search('admin', $pathParts, true);
+    $adminIndex = is_int($adminIndex) ? $adminIndex : 0;
+    $adminSection = strtolower((string)($pathParts[$adminIndex + 1] ?? 'dashboard'));
+    $adminSubpage = strtolower((string)($pathParts[$adminIndex + 2] ?? 'index'));
     $adminSection = preg_replace('/[^a-z0-9-]/', '-', $adminSection) ?: 'dashboard';
     $adminSubpage = preg_replace('/\.php$/i', '', $adminSubpage);
     $adminSubpage = preg_replace('/[^a-z0-9-]/', '-', (string)$adminSubpage) ?: 'index';
