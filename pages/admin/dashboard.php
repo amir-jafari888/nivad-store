@@ -50,6 +50,13 @@ $dashboardChartPeriods = [
 ];
 $maxDemoNetSales = max(array_column($dashboardChartPeriods, 'net_sales'));
 $maxDemoOrders = max(array_column($dashboardChartPeriods, 'total_orders'));
+$demoSalesLinePoints = [];
+foreach ($dashboardChartPeriods as $index => $row) {
+    $x = 20 + ($index * 40);
+    $y = 152 - (((float)$row['net_sales'] / max(1, $maxDemoNetSales)) * 120);
+    $demoSalesLinePoints[] = $x . ',' . round($y, 2);
+}
+
 
 $firstName = trim((string)($admin['first_name'] ?? ''));
 $lastName = trim((string)($admin['last_name'] ?? ''));
@@ -197,19 +204,26 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                         <div><p class="admin-dashboard-eyebrow">عملکرد مالی</p><h2>روند فروش خالص</h2></div>
                         <span class="admin-dashboard-panel-meta">داده نمایشی · آماده اتصال</span>
                     </div>
-                    <div class="admin-dashboard-chart" role="img" aria-label="نمودار نمونه فروش خالص در ۱۴ روز نمایشی">
-                        <div class="admin-dashboard-chart-bars">
-                            <?php foreach ($dashboardChartPeriods as $row) {
-                                $value = (float)$row['net_sales'];
-                                $height = $maxDemoNetSales > 0 ? max(3, ($value / $maxDemoNetSales) * 100) : 3;
+                    <div class="admin-dashboard-chart">
+                        <svg class="admin-dashboard-line-chart" viewBox="0 0 560 176" role="img" aria-label="نمودار خطی نمونه فروش خالص در ۱۴ روز نمایشی" preserveAspectRatio="none">
+                            <title>روند نمونه فروش خالص؛ داده‌ها نمایشی هستند</title>
+                            <g class="admin-dashboard-line-chart-grid" aria-hidden="true">
+                                <line x1="20" y1="32" x2="540" y2="32"></line>
+                                <line x1="20" y1="72" x2="540" y2="72"></line>
+                                <line x1="20" y1="112" x2="540" y2="112"></line>
+                                <line x1="20" y1="152" x2="540" y2="152"></line>
+                            </g>
+                            <polyline class="admin-dashboard-line-chart-line" points="<?= e(implode(' ', $demoSalesLinePoints)) ?>"></polyline>
+                            <?php foreach ($dashboardChartPeriods as $index => $row) {
+                                $x = 20 + ($index * 40);
+                                $y = 152 - (((float)$row['net_sales'] / max(1, $maxDemoNetSales)) * 120);
                                 ?>
-                                <div class="admin-dashboard-chart-column" title="<?= e($row['label'] . ': ' . $formatNumber($value) . ' واحد نمایشی') ?>">
-                                    <span class="admin-dashboard-chart-value"><?= e($formatNumber($value)) ?></span>
-                                    <span class="admin-dashboard-chart-bar" style="--bar-height: <?= e((string)$height) ?>%"></span>
-                                    <span class="admin-dashboard-chart-label"><?= e(str_replace('روز ', '', $row['label'])) ?></span>
-                                </div>
+                                <circle class="admin-dashboard-line-chart-point" cx="<?= e((string)$x) ?>" cy="<?= e((string)round($y, 2)) ?>" r="3.5">
+                                    <title><?= e($row['label'] . ': ' . $formatNumber($row['net_sales']) . ' واحد نمایشی') ?></title>
+                                </circle>
                             <?php } ?>
-                        </div>
+                        </svg>
+                        <div class="admin-dashboard-line-chart-labels" aria-hidden="true"><span>روز ۱</span><span>روز ۴</span><span>روز ۷</span><span>روز ۱۰</span><span>روز ۱۴</span></div>
                     </div>
                     <div class="admin-dashboard-chart-legend"><span class="admin-dashboard-legend-dot" aria-hidden="true"></span><span>مبالغ نمونه هستند؛ واحد و منبع واقعی پس از اتصال داده تعیین می‌شود.</span></div>
                 </article>
