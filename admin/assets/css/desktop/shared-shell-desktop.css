@@ -157,3 +157,10 @@
 .admin-dashboard-line-chart-line{fill:none;stroke:var(--admin-color-primary);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .admin-dashboard-line-chart-point{fill:var(--admin-color-surface);stroke:var(--admin-color-primary);stroke-width:2}
 .admin-dashboard-line-chart-labels{display:flex;justify-content:space-between;gap:6px;margin-top:4px;color:var(--admin-color-text-muted);font-size:10px}
+
+
+.admin-shared-shell>header:not(.admin-shared-topbar):has(>strong:only-child){display:none}
+.admin-shared-shell main>a[href$="/admin"],.admin-shared-shell main>a[href*="/admin/"]:not([href*="/create"]):not([href*="/groups"]){display:inline-flex;align-items:center;justify-content:center;min-height:36px;margin-block-end:12px;padding:7px 10px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-sm);background:var(--admin-color-surface);color:var(--admin-color-text-muted);font-size:12px;text-decoration:none}
+.admin-dashboard-chart-value,.admin-dashboard-chart-label{font-size:11px}
+.admin-dashboard-line-chart-labels{font-size:11px}
+
