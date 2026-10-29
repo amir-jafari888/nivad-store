@@ -46,10 +46,10 @@ final class AdminCapabilityContractRegistry
                 'create' => self::makeOperation('write', true, true, 'admin.notifications.manage'),
                 'queue_email' => self::makeOperation('write', true, true, 'admin.notifications.manage'),
             ]),
-            'content' => self::domain('ADM-032', 'admin.content.manage', [
-                'create_revision' => self::makeOperation('write', true),
-                'list_revisions' => self::makeOperation('read', false),
-                'preview' => self::makeOperation('read', false),
+            'content' => self::domain('ADM-014', 'admin.content.manage', [
+                'create_revision' => self::makeOperation('write', true, false, 'admin.content.manage'),
+                'list_revisions' => self::makeOperation('read', false, false, 'admin.content.manage'),
+                'preview' => self::makeOperation('read', false, false, 'admin.content.manage'),
                 'publish' => self::makeOperation('write', true, true, 'admin.content.publish'),
                 'schedule' => self::makeOperation('write', true, true, 'admin.content.publish'),
                 'rollback' => self::makeOperation('write', true, true, 'admin.content.publish'),
