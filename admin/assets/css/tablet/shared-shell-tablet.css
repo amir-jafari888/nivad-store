@@ -51,3 +51,16 @@
 
 /* Legacy page header becomes a content toolbar, not a competing global header. */
 .admin-shared-shell>header:not(.admin-shared-topbar){display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:16px 16px 0;border:0;background:transparent;box-shadow:none}
+
+
+/* Shared task-oriented page components — tablet. */
+.admin-shared-shell main>h1{font-size:23px;margin:0 0 16px}
+.admin-shared-shell main .toolbar,.admin-shared-shell main .admin-data-toolbar,.admin-shared-shell main .admin-data-bulk{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-block:0 13px}
+.admin-shared-shell main .reports-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.admin-shared-shell main .report-card{padding:15px}
+.admin-shared-shell main .field,.admin-shared-shell main .form-field,.admin-shared-shell main .form-group{gap:6px;margin-block:0 13px}
+.admin-shared-shell main input:not([type=checkbox]):not([type=radio]):not([type=hidden]),.admin-shared-shell main select,.admin-shared-shell main textarea{min-height:42px;padding:9px 11px;font-size:14px}
+.admin-shared-shell main button,.admin-shared-shell main input[type=submit],.admin-shared-shell main input[type=button]{min-height:42px;padding:9px 12px}
+.admin-shared-shell main .admin-data-field{flex:1 1 170px;min-width:150px}
+.admin-shared-shell main .admin-settings-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+
