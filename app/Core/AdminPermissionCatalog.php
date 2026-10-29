@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 final class AdminPermissionCatalog
 {
+    public const ADMIN_ACCESS = 'admin.access';
     public const DASHBOARD_VIEW = 'admin.dashboard.view';
     public const ADMINS_VIEW = 'admin.admins.view';
     public const ADMINS_MANAGE = 'admin.admins.manage';
@@ -61,6 +62,7 @@ final class AdminPermissionCatalog
     public static function definitions(): array
     {
         $definitions = [
+            self::ADMIN_ACCESS => ['admin_core', 'access', 'Access the authenticated admin application shell'],
             self::DASHBOARD_VIEW => ['dashboard', 'view', 'View operational dashboard'],
             self::ADMINS_VIEW => ['admins', 'view', 'View admin accounts'],
             self::ADMINS_MANAGE => ['admins', 'manage', 'Create, update, disable and restore admin accounts'],
