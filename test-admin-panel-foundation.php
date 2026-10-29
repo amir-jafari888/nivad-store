@@ -70,7 +70,7 @@ adminFoundationCheck('Permission catalog separates session view and revoke', in_
 adminFoundationCheck('Permission catalog includes sensitive-operation approvals', in_array(AdminPermissionCatalog::APPROVALS_DECIDE, $permissionNames, true));
 
 adminFoundationCheck('Audit repository persists old/new snapshots', str_contains($auditRepository, 'old_values') && str_contains($auditRepository, 'new_values') && str_contains($auditRepository, 'public function create('));
-adminFoundationCheck('Audit service records actor and request metadata', str_contains($auditService, 'AdminAuth::id()') && str_contains($auditService, 'Request::ip()') && str_contains($auditService, 'Request::userAgent()'));
+adminFoundationCheck('Audit service records actor and request metadata', str_contains($auditService, 'AdminActorContext') && str_contains($auditService, 'Request::ip()') && str_contains($auditService, 'Request::userAgent()'));
 adminFoundationCheck('Audit service redacts nested sensitive values', str_contains($auditService, 'SensitiveDataRedactor::encode(') && str_contains($redactor, '[REDACTED]'));
 adminFoundationCheck('Audit service bounds large values', str_contains($redactor, '[OMITTED: VALUE TOO LARGE]'));
 
