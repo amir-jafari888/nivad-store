@@ -53,6 +53,52 @@ ob_start(static function (string $html) use ($currentAdmin): string {
         return $html;
     }
 
+    /*
+     * Normalize legacy pages into the shared content region without changing
+     * their controller/service flow. A page that already has <main> is left
+     * structurally intact; a legacy form-only view gets a semantic main wrapper.
+     */
+    if (preg_match('/<main\\b/i', $html) !== 1) {
+        $html = preg_replace_callback(
+            '/(<body\\b[^>]*>)([\\s\\S]*?)(<\\/body>)/i',
+            static function (array $matches): string {
+                return $matches[1]
+                    . '<main id="main-content" class="admin-page-content">'
+                    . $matches[2]
+                    . '</main>'
+                    . $matches[3];
+            },
+            $html,
+            1
+        ) ?? $html;
+    }
+
+    $mainId = 'main-content';
+    $mainSeen = false;
+    $html = preg_replace_callback(
+        '/<main\\b([^>]*)>/i',
+        static function (array $matches) use (&$mainId, &$mainSeen): string {
+            if ($mainSeen) {
+                return $matches[0];
+            }
+            $mainSeen = true;
+            $attributes = $matches[1];
+            if (preg_match('/\\bid\\s*=\\s*(["\\\'])(.*?)\\1/i', $attributes, $idMatch) === 1) {
+                $mainId = $idMatch[2];
+                return $matches[0];
+            }
+            $mainId = 'main-content';
+            return '<main id="main-content"' . $attributes . '>';
+        },
+        $html,
+        1
+    ) ?? $html;
+
+    if (stripos($html, 'admin-skip-link') === false) {
+        $skipLink = '<a class="admin-skip-link" href="#' . e($mainId) . '">رفتن به محتوای اصلی</a>';
+        $html = preg_replace('/(<body\\b[^>]*>)/i', '$1' . $skipLink, $html, 1) ?? $html;
+    }
+
     $firstName = trim((string)($currentAdmin['first_name'] ?? ''));
     $lastName = trim((string)($currentAdmin['last_name'] ?? ''));
     $adminName = trim($firstName . ' ' . $lastName);
