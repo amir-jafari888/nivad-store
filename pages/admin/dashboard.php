@@ -32,14 +32,6 @@ $formatDate = static function (mixed $value): string {
     }
 };
 
-$maxNetSales = 0.0;
-$maxOrders = 0.0;
-
-foreach ($salesByPeriod as $periodRow) {
-    $maxNetSales = max($maxNetSales, (float)($periodRow['net_sales'] ?? 0));
-    $maxOrders = max($maxOrders, (float)($periodRow['total_orders'] ?? 0));
-}
-
 $dashboardChartPeriods = [
     ['label' => 'روز ۱', 'net_sales' => 18, 'total_orders' => 7],
     ['label' => 'روز ۲', 'net_sales' => 24, 'total_orders' => 9],
