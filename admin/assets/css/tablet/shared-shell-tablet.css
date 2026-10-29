@@ -27,3 +27,12 @@
 .admin-dashboard-chart-bars { height:160px; gap:4px; min-width:0; }
 .admin-dashboard-chart-value, .admin-dashboard-chart-label { font-size:9px; }
 .admin-dashboard-chart-legend { display:flex; align-items:center; gap:7px; margin-top:8px; font-size:10px; color:var(--admin-color-text-muted); }
+
+
+.admin-shared-shell main .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.admin-shared-shell main .summary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.admin-shared-shell main .summary-card { padding:12px; }
+.admin-shared-shell main .summary-value { font-size:20px; }
+.admin-shared-shell main .reports-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.admin-shared-shell main .report-card { min-height:130px; padding:13px; }
+.admin-shared-shell main .table-wrap, .admin-shared-shell main .admin-data-table-wrap { max-width:100%; overflow:auto; }
