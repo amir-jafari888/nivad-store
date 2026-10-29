@@ -10,7 +10,7 @@
 - `app/Core/AdminFeatureRegistry.php`: canonical registry for all 44 ADM feature IDs, required permission identifiers, dependencies, areas, and DB/external-dependency flags.
 - `app/Core/AdminPermissionCatalog.php`: canonical permission vocabulary now includes the legacy shell permission `admin.access` as well as the granular feature permissions.
 - `app/Services/AdminFeatureContractValidator.php`: validates feature metadata, permission references, dependency references, and cycles without a DB connection.
-- `app/Services/AdminFeatureAccessService.php`: connects a feature ID to `AuthorizationService`; unknown features fail closed.
+- `app/Services/AdminFeatureAccessService.php`: connects a feature ID to `AuthorizationService`; unknown features fail closed. The foundation service defers constructing this DB-backed authorization service until a bulk-job authorization decision is requested.
 - `app/Core/AdminRouteFeatureMap.php`: explicit mapping for route families with a clear feature contract. Ambiguous/unregistered route families intentionally return no mapping.
 - `app/Core/AdminRoutePermissionMap.php`: exact-route permission contracts for all 14 routes that do not fit one canonical feature bucket; the route audit now finds zero routes without a permission contract.
 - `app/Middleware/AdminFeatureMiddleware.php`: authenticates the admin session before checking the feature permission.
@@ -18,6 +18,8 @@
 - `app/Core/AdminRequestContext.php`: generates/validates a correlation ID and publishes `X-Request-ID` on protected responses. Persistence of that ID in the existing audit schema is not claimed.
 - `app/Core/AdminHttpErrorResponder.php` and `app/Core/ErrorHandler.php`: browser requests now receive a localized HTML error document while API/JSON requests receive JSON status responses; 500-level responses do not expose exception messages, and logs omit raw exception messages while recording a request ID.
 - `app/Services/AdminAuditSnapshotService.php`: produces centrally redacted before/after snapshots and a bounded deterministic field-level change list; connected to the audit writer. Database persistence is still gated.
+- `app/Core/AdminFoundationRepositoryInterface.php`: defines the persistence boundary for foundation workflows; `AdminFoundationRepository` implements it, and service contract tests use an in-memory fake without constructing a database connection.
+- `AdminFoundationService::updateOperation()` requires a validated admin actor. A future background worker must use its dedicated repository/worker path rather than bypassing this interactive service boundary.
 - `app/Core/AdminActorContext.php`: validates the current admin session before deriving an actor ID and rejects caller-supplied actor IDs that do not match the authenticated identity. Connected to foundation mutations, audit writing, and admin notification creation.
 
 ### Shared security controls
@@ -28,7 +30,7 @@
 - `app/Services/AdminSupportTicketPolicy.php`: validates ticket creation, message authorship/visibility, and lifecycle transitions; conversation persistence remains a DB/schema gate.
 - `app/Services/AdminSecurityEventPolicy.php`: canonical event classification for auth, permission, account, session, sensitive-data, bulk-job, and delivery events.
 - `app/Services/AdminNotificationPolicy.php`: event-key/severity validation, priority, configurable email threshold, rate-limit decision contract, and deterministic recipient-aware deduplication key.
-- `app/Services/AdminHealthCheckService.php`: non-invasive PHP/extensions/source readiness checks. It does not connect to MySQL or the network and reports database readiness as `blocked`.
+- `app/Services/AdminHealthCheckService.php`: non-invasive PHP/extensions/source readiness checks, including the newly connected repository/outbox contracts and services. It does not connect to MySQL or the network and reports database readiness as `blocked`.
 - `app/Services/AdminMediaStorageService.php`: validates image MIME/content/dimensions/size/hash and can store uploads under an explicitly configured private absolute path outside the web root. It does not write metadata to the DB.
 - `app/Services/AdminGlobalSearchService.php` and `app/Core/AdminSearchProviderInterface.php`: permission-aware provider orchestration, bounded queries/results, result normalization, deduplication, and rejection of external/unsafe result URLs. Product/order/customer providers and the route/UI remain pending.
 - `app/Services/AdminPreviewTokenService.php`: issues short-lived HMAC-signed preview tokens bound to a specific entity and admin identity; one-time/replay prevention still needs persistence.
@@ -65,7 +67,7 @@ Latest successful run on this branch:
 - Admin route contract audit: **7 PASS, 0 FAIL**
 - PHP lint: all files in the workflow passed.
 
-These are source/static/unit checks, not a live XAMPP/browser/database/Gmail integration run.
+These are source/static/unit checks, not a live XAMPP/browser/database/Gmail integration run. Foundation service tests use an in-memory repository fake; no SQL is executed.
 
 ## Explicit database gates — do not pass without review
 1. Read the actual local schema and current role/permission assignments.
@@ -73,9 +75,9 @@ These are source/static/unit checks, not a live XAMPP/browser/database/Gmail int
 3. Apply migration and permission seed only in a controlled target environment after review.
 4. Verify the actual Super Admin role slug/status/deletion state and permission matrix.
 5. Wire granular middleware to the existing 161 routes after validating the exact permission map and current role assignments. The middleware is prepared but is not globally attached to the route table yet.
-6. Run DB-backed tests for admin account lifecycle, sessions, audit persistence, notifications/outbox, content revisions, jobs, incidents, approvals, media metadata, support messages, and analytics.
+6. Implement/verify DB adapters and run DB-backed tests for admin account lifecycle and role assignment, session inventory/revocation, audit persistence, notification/read states/outbox, content revisions/scheduling, job claiming/state updates, incident resolution, approval state transitions, media metadata, support messages, and analytics. These portions remain paused until schema review.
 7. Configure Gmail app-password environment variables outside Git, then run a deliberate delivery test and verify outbox status/retry behavior.
 8. Configure `NIVAD_PRIVATE_STORAGE_PATH` outside the document root before accepting uploads; then connect returned metadata to the DB only after schema approval.
 
 ## Status interpretation
-This is a significant non-database foundation tranche, **not a claim that all 44 user-facing capabilities are finished**. Some capabilities depend on existing data/schema and others still need feature-specific routes, providers, UI, and integration tests. The DB execution boundary remains intact and `master` has not been merged.
+This is a significant non-database foundation tranche, **not a claim that all 44 user-facing capabilities are finished**. Remaining work is limited to schema-gated persistence/authorization and the feature-specific routes/providers/UI that depend on it; the search provider contract and pure service policies exist but do not yet query or mutate application data. The DB execution boundary remains intact and `master` has not been merged.
