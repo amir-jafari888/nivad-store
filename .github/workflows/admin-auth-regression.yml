@@ -94,6 +94,9 @@ jobs:
       - name: Run authentication and authorization regression
         run: php test-admin-auth-route-regression.php
 
+      - name: Run admin UI shell contracts
+        run: php test-admin-ui-contracts.php
+
       - name: Run shared foundation regression
         run: php test-admin-panel-foundation.php
 
@@ -108,6 +111,3 @@ jobs:
 
       - name: Run admin capability policy regression
         run: php test-admin-capability-policies.php
-
-      - name: Run admin UI shell contracts
-        run: php test-admin-ui-contracts.php
