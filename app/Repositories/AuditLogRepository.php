@@ -50,6 +50,52 @@ final class AuditLogRepository
         );
     }
 
+    public function create(array $event): int
+    {
+        $stmt = $this->db->prepare(
+            'INSERT INTO audit_logs (
+                admin_user_id,
+                action,
+                module,
+                entity_type,
+                entity_id,
+                description,
+                old_values,
+                new_values,
+                ip_address,
+                user_agent
+            ) VALUES (
+                :admin_user_id,
+                :action,
+                :module,
+                :entity_type,
+                :entity_id,
+                :description,
+                :old_values,
+                :new_values,
+                :ip_address,
+                :user_agent
+            )'
+        );
+
+        $stmt->execute([
+            'admin_user_id' => $event['admin_user_id'] ?? null,
+            'action' => (string) ($event['action'] ?? ''),
+            'module' => (string) ($event['module'] ?? ''),
+            'entity_type' => $event['entity_type'] ?? null,
+            'entity_id' => isset($event['entity_id'])
+                ? (string) $event['entity_id']
+                : null,
+            'description' => (string) ($event['description'] ?? ''),
+            'old_values' => $event['old_values'] ?? null,
+            'new_values' => $event['new_values'] ?? null,
+            'ip_address' => $event['ip_address'] ?? null,
+            'user_agent' => $event['user_agent'] ?? null,
+        ]);
+
+        return (int) $this->db->lastInsertId();
+    }
+
     public function count(): int
     {
         return (int)$this->db

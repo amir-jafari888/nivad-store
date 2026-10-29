@@ -188,6 +188,60 @@ final class AdminSessionRepository
         return $stmt->rowCount() === 1;
     }
 
+    /**
+     * Returns an administrative session inventory without exposing token hashes.
+     * Use permission checks in the controller/service entry point before calling.
+     */
+    public function findForMonitoring(
+        int $limit = 100,
+        ?int $adminUserId = null
+    ): array {
+        $limit = max(1, min(500, $limit));
+
+        if ($adminUserId !== null && $adminUserId < 1) {
+            return [];
+        }
+
+        $where = '';
+        $params = [];
+
+        if ($adminUserId !== null) {
+            $where = 'WHERE s.admin_user_id = :admin_user_id';
+            $params['admin_user_id'] = $adminUserId;
+        }
+
+        $sql = '
+            SELECT
+                s.id,
+                s.admin_user_id,
+                a.username,
+                a.email,
+                a.first_name,
+                a.last_name,
+                s.ip_address,
+                s.user_agent,
+                s.last_activity_at,
+                s.expires_at,
+                s.created_at,
+                s.revoked_at,
+                CASE
+                    WHEN s.revoked_at IS NOT NULL THEN \'revoked\'
+                    WHEN s.expires_at <= CURRENT_TIMESTAMP THEN \'expired\'
+                    ELSE \'active\'
+                END AS session_status
+            FROM admin_sessions AS s
+            LEFT JOIN admin_users AS a
+                ON a.id = s.admin_user_id
+            ' . $where . '
+            ORDER BY s.last_activity_at DESC, s.id DESC
+            LIMIT ' . $limit;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function deleteExpired(): int
     {
         $stmt = $this->db->prepare(
