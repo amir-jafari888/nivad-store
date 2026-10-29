@@ -80,3 +80,25 @@
 .admin-dashboard-chart-legend { display:flex; align-items:center; gap:7px; margin-top:10px; color:var(--admin-color-text-muted); font-size:11px; }
 .admin-dashboard-legend-dot { width:8px; height:8px; border-radius:2px; background:var(--admin-color-primary); }
 .admin-dashboard-legend-dot-secondary { background:var(--admin-color-text-muted); }
+
+
+/* Page-purpose patterns: list workspaces, entity detail, reports and relationship tools. */
+.admin-shared-shell main .toolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; margin-block:12px; }
+.admin-shared-shell main .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; align-items:stretch; }
+.admin-shared-shell main .grid>.item { display:grid; align-content:start; gap:5px; min-width:0; padding:12px; border:1px solid var(--admin-color-border); border-radius:8px; background:var(--admin-color-surface); }
+.admin-shared-shell main .item .label, .admin-shared-shell main .label { color:var(--admin-color-text-muted); font-size:12px; font-weight:500; }
+.admin-shared-shell main .item .value, .admin-shared-shell main .value { min-width:0; overflow-wrap:anywhere; font-size:13px; font-weight:600; }
+.admin-shared-shell main .summary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-block:16px; }
+.admin-shared-shell main .summary-card { min-width:0; padding:14px 16px; border:1px solid var(--admin-color-border); border-radius:10px; background:var(--admin-color-surface); }
+.admin-shared-shell main .summary-value { margin-top:6px; font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; }
+.admin-shared-shell main .reports-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.admin-shared-shell main .report-card { display:flex; flex-direction:column; align-items:flex-start; gap:8px; min-height:142px; text-decoration:none; transition:border-color var(--admin-transition),background var(--admin-transition); }
+.admin-shared-shell main .report-card:hover { border-color:var(--admin-color-primary); background:var(--admin-color-primary-soft); }
+.admin-shared-shell main .actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.admin-shared-shell main .action { display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 11px; border:1px solid var(--admin-color-border); border-radius:7px; color:var(--admin-color-text); text-decoration:none; font-size:12px; }
+.admin-shared-shell main .action:hover { border-color:var(--admin-color-primary); color:var(--admin-color-primary); }
+.admin-shared-shell main .status { display:inline-flex; align-items:center; max-width:100%; min-height:24px; padding:3px 8px; border:1px solid var(--admin-color-border); border-radius:5px; background:var(--admin-color-bg); color:var(--admin-color-text-muted); font-size:11px; font-weight:600; }
+.admin-shared-shell main .table-wrap, .admin-shared-shell main .admin-data-table-wrap { max-width:100%; overflow:auto; border:1px solid var(--admin-color-border); border-radius:9px; }
+.admin-shared-shell main .table-wrap table, .admin-shared-shell main .admin-data-table-wrap table { margin:0; }
+.admin-shared-shell main .message { margin-block:12px; padding:10px 12px; border:1px solid var(--admin-color-border); background:var(--admin-color-surface); font-size:12px; }
+.admin-shared-shell main .message a { font-weight:600; }
