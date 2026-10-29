@@ -57,18 +57,14 @@ final class AdminEmailOutboxWorker
                     (int) $candidateId > 0
                 ) {
                     $attempt = max(0, (int) ($row['attempts'] ?? 0)) + 1;
-                    $marked = $this->repository->markFailed(
+                    $this->repository->markFailed(
                         (int) $candidateId,
                         $attempt,
                         'invalid_message',
                         null,
                         true
                     );
-                    if (!$marked) {
-                        $summary['failed']++;
-                    } else {
-                        $summary['failed']++;
-                    }
+                    $summary['failed']++;
                 }
 
                 continue;
