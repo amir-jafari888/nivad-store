@@ -33,6 +33,7 @@ $navigationJs = $read('admin/assets/js/modules/navigation-state.js');
 $check('Shared authenticated shell keeps sidebar and header injection', str_contains($shell, 'admin-shared-sidebar') && str_contains($shell, 'admin-shared-topbar'));
 $check('Header uses first and last name and initials safely', str_contains($shell, "['first_name']") && str_contains($shell, "['last_name']") && str_contains($shell, '$adminInitials') && str_contains($shell, 'admin-shared-profile-copy'));
 $check('Shared shell assigns sanitized route context classes for page-level styling', str_contains($shell, '$adminPageClasses = \'admin-page admin-page-\' . $adminSection'));
+$check('Route styling supports deployments under a project base path', str_contains($shell, "array_search('admin', $pathParts, true)"));
 $check('Dashboard calculates chart scales after selecting real or demo data', strpos($dashboard, '$isDemoDashboard') < strpos($dashboard, '$maxNetSales = 0.0;'));
 $check('Desktop sidebar is anchored to the physical right edge', str_contains($desktop, 'right:0!important') && str_contains($desktop, 'padding-right: calc(var(--admin-sidebar-width)'));
 $check('Tablet layout keeps navigation in flow without overlay', str_contains($tablet, 'position:static!important') && str_contains($tablet, 'admin-shared-sidebar'));
