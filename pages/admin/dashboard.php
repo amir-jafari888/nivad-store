@@ -160,7 +160,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                 </div>
                 <div class="admin-dashboard-date-chip">
                     <span aria-hidden="true">◷</span>
-                    <span>روند ۱۴ روز اخیر</span>
+                    <span>نمونه نمودار · ۱۴ روز</span>
                 </div>
             </header>
 
