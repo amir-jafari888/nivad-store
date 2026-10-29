@@ -38,6 +38,7 @@ require_once __DIR__ . '/app/Core/AdminActorContext.php';
 require_once __DIR__ . '/app/Core/Exceptions/AppException.php';
 require_once __DIR__ . '/app/Core/Exceptions/AuthorizationException.php';
 require_once __DIR__ . '/app/Services/AdminFeatureContractValidator.php';
+require_once __DIR__ . '/app/Services/AdminAuditSnapshotService.php';
 require_once __DIR__ . '/app/Services/AdminOperationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminNotificationPolicy.php';
 require_once __DIR__ . '/app/Services/AdminHealthCheckService.php';
@@ -70,6 +71,16 @@ $redactedJson = json_encode($redacted, JSON_THROW_ON_ERROR);
 adminNonDbCheck('Central redactor removes secrets recursively', $redacted['password'] === '[REDACTED]' && $redacted['profile']['access_token'] === '[REDACTED]');
 adminNonDbCheck('Central redactor preserves non-sensitive values', $redacted['profile']['display_name'] === 'Nivad Admin' && $redacted['normal_value'] === 'safe');
 adminNonDbCheck('Central redactor output does not contain supplied secret values', !str_contains($redactedJson, 'never-log-this'));
+
+$snapshotService = new AdminAuditSnapshotService();
+$snapshot = $snapshotService->compare(
+    ['status' => 'draft', 'price' => 100, 'credentials' => ['password' => 'never-store-this']],
+    ['status' => 'published', 'price' => 120, 'new_field' => true, 'credentials' => ['password' => 'another-secret']]
+);
+$snapshotPaths = array_column($snapshot['changes'], 'path');
+$snapshotJson = json_encode($snapshot, JSON_THROW_ON_ERROR);
+adminNonDbCheck('Audit snapshot service produces before/after diffs', in_array('status', $snapshotPaths, true) && in_array('price', $snapshotPaths, true) && in_array('new_field', $snapshotPaths, true));
+adminNonDbCheck('Audit snapshot service redacts secrets before creating diffs', !str_contains($snapshotJson, 'never-store-this') && !str_contains($snapshotJson, 'another-secret') && str_contains($snapshotJson, '[REDACTED]'));
 
 $actorContext = new AdminActorContext(static fn() => 7, static fn() => true);
 adminNonDbCheck('Actor context uses the validated current admin identity', $actorContext->requireCurrentAdmin(7) === 7);
