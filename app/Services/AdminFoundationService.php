@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 final class AdminFoundationService
 {
-    private AdminFoundationRepository $repository;
+    private AdminFoundationRepositoryInterface $repository;
     private AdminActorContext $actors;
     private AdminSavedViewValidator $savedViewValidator;
     private AdminContentPublishingPolicy $contentPublishingPolicy;
@@ -21,7 +21,7 @@ final class AdminFoundationService
     ];
 
     public function __construct(
-        ?AdminFoundationRepository $repository = null,
+        ?AdminFoundationRepositoryInterface $repository = null,
         ?AdminActorContext $actors = null,
         ?AdminSavedViewValidator $savedViewValidator = null,
         ?AdminContentPublishingPolicy $contentPublishingPolicy = null,
