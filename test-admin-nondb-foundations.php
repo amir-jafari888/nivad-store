@@ -32,6 +32,7 @@ require_once __DIR__ . '/app/Core/SensitiveDataRedactor.php';
 require_once __DIR__ . '/app/Core/AdminFeatureRegistry.php';
 require_once __DIR__ . '/app/Core/AdminBulkOperationRegistry.php';
 require_once __DIR__ . '/app/Core/AdminSearchProviderInterface.php';
+require_once __DIR__ . '/app/Core/AdminEmailOutboxRepositoryInterface.php';
 require_once __DIR__ . '/app/Services/AdminGlobalSearchService.php';
 require_once __DIR__ . '/app/Core/AdminRequestContext.php';
 require_once __DIR__ . '/app/Core/AdminActorContext.php';
@@ -50,6 +51,7 @@ require_once __DIR__ . '/app/Services/AdminContentPublishingPolicy.php';
 require_once __DIR__ . '/app/Services/AdminReportExportService.php';
 require_once __DIR__ . '/app/Services/AdminBulkOperationPolicy.php';
 require_once __DIR__ . '/app/Services/GmailSmtpTransport.php';
+require_once __DIR__ . '/app/Services/AdminEmailOutboxWorker.php';
 
 $registry = AdminFeatureRegistry::all();
 $contract = (new AdminFeatureContractValidator())->validate();
@@ -320,6 +322,42 @@ foreach (['NIVAD_GMAIL_SMTP_USER', 'NIVAD_GMAIL_SMTP_APP_PASSWORD', 'NIVAD_GMAIL
 }
 $mailResult = (new GmailSmtpTransport())->send('admin@example.com', 'test', 'test body');
 adminNonDbCheck('Gmail transport fails closed without credentials and does not attempt delivery', $mailResult['success'] === false && $mailResult['error_code'] === 'smtp_not_configured');
+
+$fakeOutbox = new class implements AdminEmailOutboxRepositoryInterface {
+    public array $sent = [];
+    public array $failed = [];
+    public function claimDue(int $limit): array {
+        return [
+            ['id' => 1, 'attempts' => 0, 'recipient_email' => 'ok@example.com', 'subject' => 'Hello', 'body_text' => 'Body'],
+            ['id' => 2, 'attempts' => 1, 'recipient_email' => 'retry@example.com', 'subject' => 'Hello', 'body_text' => 'Body'],
+            ['id' => 3, 'attempts' => 0, 'recipient_email' => 'bad@example.com', 'subject' => 'Hello', 'body_text' => 'Body'],
+            ['id' => 0, 'attempts' => 0, 'recipient_email' => 'broken@example.com', 'subject' => 'Hello', 'body_text' => 'Body'],
+        ];
+    }
+    public function markSent(int $outboxId, int $attemptCount, ?string $providerMessageId): bool {
+        $this->sent[] = ['id' => $outboxId, 'attempts' => $attemptCount, 'message_id' => $providerMessageId];
+        return true;
+    }
+    public function markFailed(int $outboxId, int $attemptCount, string $errorCode, ?DateTimeImmutable $nextAttemptAt, bool $terminal): bool {
+        $this->failed[] = ['id' => $outboxId, 'attempts' => $attemptCount, 'error' => $errorCode, 'next' => $nextAttemptAt?->getTimestamp(), 'terminal' => $terminal];
+        return true;
+    }
+};
+$worker = new AdminEmailOutboxWorker(
+    $fakeOutbox,
+    static function (string $email): array {
+        return match ($email) {
+            'ok@example.com' => ['success' => true, 'message_id' => 'provider-id-1', 'error_code' => null],
+            'retry@example.com' => ['success' => false, 'message_id' => null, 'error_code' => 'smtp_connection_failed'],
+            default => ['success' => false, 'message_id' => null, 'error_code' => 'invalid_recipient'],
+        };
+    },
+    static fn(): int => 1000
+);
+$workerSummary = $worker->processBatch(500);
+adminNonDbCheck('Email outbox worker bounds batches and tracks successful delivery attempts', $workerSummary['claimed'] === 4 && $workerSummary['sent'] === 1 && $fakeOutbox->sent[0]['attempts'] === 1);
+adminNonDbCheck('Email outbox worker schedules exponential retry without storing SMTP details', $workerSummary['retry_scheduled'] === 1 && $fakeOutbox->failed[0]['next'] === 1060 && $fakeOutbox->failed[0]['terminal'] === false && $fakeOutbox->failed[0]['error'] === 'smtp_connection_failed');
+adminNonDbCheck('Email outbox worker terminally fails permanent errors and ignores malformed rows', $workerSummary['failed'] === 1 && $workerSummary['invalid_rows'] === 1 && $fakeOutbox->failed[1]['terminal'] === true && $fakeOutbox->failed[1]['next'] === null);
 
 putenv('NIVAD_GMAIL_SMTP_USER=admin@example.com');
 putenv('NIVAD_GMAIL_SMTP_APP_PASSWORD=placeholder-app-password');
