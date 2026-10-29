@@ -25,8 +25,10 @@ final class ErrorHandler
 
         if ($exception instanceof AppException) {
             $statusCode = $exception->statusCode();
-            $message = $exception->getMessage();
-            $errors = $exception->errors();
+            if ($statusCode < 500) {
+                $message = $exception->getMessage();
+                $errors = $exception->errors();
+            }
         }
 
         // Do not log the raw exception message: database/provider exceptions
