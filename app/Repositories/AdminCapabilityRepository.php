@@ -435,7 +435,7 @@ final class AdminCapabilityRepository
     {
         $stmt = $this->db->prepare(
             'SELECT 1 FROM product_variants
-             WHERE id = :variant_id AND product_id = :product_id AND deleted_at IS NULL
+             WHERE id = :variant_id AND product_id = :product_id AND status IN ("active", "out_of_stock") AND deleted_at IS NULL
              LIMIT 1'
         );
         $stmt->execute(['variant_id' => $variantId, 'product_id' => $productId]);
