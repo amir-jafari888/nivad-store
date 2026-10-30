@@ -47,7 +47,7 @@ require_once dirname(__DIR__) . '/includes/auth.php';
                 <select name="severity"><option value="info">اطلاع‌رسانی</option><option value="warning">هشدار</option><option value="critical">بحرانی</option></select>
             </label>
             <label class="admin-capability-form-wide">متن اعلان <textarea name="message" rows="2" required></textarea></label>
-            <button type="submit">ثبت اعلان عمومی</button>
+            <button type="submit">ثبت اعلان برای حساب مدیر فعلی</button>
         </form>
         <div class="admin-capability-list" data-capability-list="notifications"></div>
     </section>
