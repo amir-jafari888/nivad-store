@@ -194,12 +194,7 @@ final class AdminAccessService
 
     private function isSuperAdmin(int $adminId): bool
     {
-        foreach ($this->repository->admins(200) as $admin) {
-            if ((int)$admin['id'] === $adminId) {
-                return in_array('super-admin', explode(',', (string)($admin['role_slugs'] ?? '')), true);
-            }
-        }
-        return false;
+        return $this->repository->adminHasRoleSlug($adminId, 'super-admin');
     }
 
     private function ids(mixed $values): array
