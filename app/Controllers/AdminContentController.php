@@ -134,7 +134,7 @@ final class AdminContentController extends Controller
             $alt = isset($_POST['alt_text']) ? (string)$_POST['alt_text'] : null;
             $id = $this->service->uploadMedia($upload, $alt, $this->adminId());
             AdminAuditTrail::record($this->adminId(), 'upload', 'admin_media_assets', 'media_asset', $id, 'CMS media uploaded.');
-            $this->success(['id' => $id, 'url' => url('/api/content-media/' . $id)], 'تصویر بارگذاری شد.');
+            $this->success(['id' => $id, 'url' => url('/api/index.php?path=' . rawurlencode('/content-media/' . $id))], 'تصویر بارگذاری شد.');
         } catch (InvalidArgumentException $e) { $this->invalid($e); }
     }
 
