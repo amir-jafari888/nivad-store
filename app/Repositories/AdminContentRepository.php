@@ -190,8 +190,8 @@ final class AdminContentRepository
         if (!is_array($snapshot)) throw new RuntimeException('نسخه ذخیره‌شده قابل بازیابی نیست.');
         $this->db->beginTransaction();
         try {
-            $update = $this->db->prepare('UPDATE admin_cms_sections SET title = :title, content_json = :content, style_json = :style, is_visible = :visible, status = "draft", updated_by_admin_id = :admin_id WHERE id = :id AND deleted_at IS NULL');
-            $update->execute(['title' => (string)($snapshot['title'] ?? ''), 'content' => $this->json((array)($snapshot['content'] ?? [])), 'style' => $this->json((array)($snapshot['style'] ?? [])), 'visible' => !empty($snapshot['is_visible']) ? 1 : 0, 'admin_id' => $adminId, 'id' => $sectionId]);
+            $update = $this->db->prepare('UPDATE admin_cms_sections SET title = :title, content_json = :content, style_json = :style, is_visible = :visible, sort_order = :sort_order, status = "draft", updated_by_admin_id = :admin_id WHERE id = :id AND deleted_at IS NULL');
+            $update->execute(['title' => (string)($snapshot['title'] ?? ''), 'content' => $this->json((array)($snapshot['content'] ?? [])), 'style' => $this->json((array)($snapshot['style'] ?? [])), 'visible' => !empty($snapshot['is_visible']) ? 1 : 0, 'sort_order' => (int)($snapshot['sort_order'] ?? 10), 'admin_id' => $adminId, 'id' => $sectionId]);
             $this->db->commit();
             return $update->rowCount() > 0;
         } catch (Throwable $exception) {
@@ -245,7 +245,10 @@ final class AdminContentRepository
              AND (JSON_SEARCH(content_json, "one", :id) IS NOT NULL OR JSON_SEARCH(published_content_json, "one", :id) IS NOT NULL) LIMIT 1'
         );
         $stmt->execute(['id' => (string)$id]);
-        return $stmt->fetchColumn() !== false;
+        if ($stmt->fetchColumn() !== false) return true;
+        $history = $this->db->prepare('SELECT 1 FROM admin_content_revisions WHERE entity_type = "cms_section" AND JSON_SEARCH(snapshot_json, "one", :id) IS NOT NULL LIMIT 1');
+        $history->execute(['id' => (string)$id]);
+        return $history->fetchColumn() !== false;
     }
 
     public function publishedMedia(int $id): ?array
