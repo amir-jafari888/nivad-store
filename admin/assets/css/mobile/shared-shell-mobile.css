@@ -114,3 +114,7 @@
 .admin-dashboard-chart-value,.admin-dashboard-chart-label{font-size:10px}
 .admin-dashboard-line-chart-labels{font-size:10px}
 
+
+.admin-dashboard-period-comparison{grid-template-columns:minmax(0,1fr);gap:10px;margin-block:16px}
+.admin-dashboard-comparison-heading{display:grid;gap:4px}
+.admin-dashboard-comparison-values strong{font-size:20px}
