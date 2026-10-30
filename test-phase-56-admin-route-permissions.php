@@ -87,6 +87,7 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
         'admin.capabilities.tickets.messages.store',
         'admin.capabilities.tickets.update',
         'admin.capabilities.analytics.index',
+        'admin.capabilities.health.index',
         'admin.capabilities.preferences.index',
         'admin.capabilities.preferences.update',
         'admin.capabilities.saved-views.index',
