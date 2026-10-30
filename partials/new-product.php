@@ -4,9 +4,9 @@
     aria-labelledby="new-products-title">
     <div class="container">
         <div class="section-heading new-products-heading">
-            <span class="section-eyebrow"><?= e((string)($cmsContent['eyebrow'] ?? 'STORE CATALOG')) ?></span>
-            <h2 id="new-products-title"><?= e((string)($cmsContent['heading'] ?? 'محصولات فروشگاه')) ?></h2>
-            <p><?= e((string)($cmsContent['body'] ?? 'برای مشاهده نام، مشخصات و قیمت‌های به‌روز، فهرست محصولات فروشگاه را ببین.')) ?></p>
+            <span class="section-eyebrow" data-cms-field="eyebrow"><?= e((string)($cmsContent['eyebrow'] ?? 'STORE CATALOG')) ?></span>
+            <h2 id="new-products-title" data-cms-field="heading"><?= e((string)($cmsContent['heading'] ?? 'محصولات فروشگاه')) ?></h2>
+            <p data-cms-field="body"><?= e((string)($cmsContent['body'] ?? 'برای مشاهده نام، مشخصات و قیمت‌های به‌روز، فهرست محصولات فروشگاه را ببین.')) ?></p>
         </div>
 
         <div class="new-products-list" aria-live="polite">
