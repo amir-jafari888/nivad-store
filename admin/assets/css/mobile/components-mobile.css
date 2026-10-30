@@ -85,6 +85,6 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-capability-actions,.admin-capability-inline-form{display:grid;gap:8px}
 .admin-capability-ticket-detail{display:grid;gap:8px;padding-block:10px}
 .admin-capability-ticket-detail p{padding:8px;background:var(--admin-color-bg);border-radius:8px}
-.admin-capability-feedback{padding:10px 12px;border-radius:var(--admin-radius-md);background:var(--admin-color-primary-soft)}
-.admin-capability-feedback[data-state="error"]{color:var(--admin-color-error)}
+.admin-capabilities-feedback{padding:10px 12px;border-radius:var(--admin-radius-md);background:var(--admin-color-primary-soft)}
+.admin-capabilities-feedback[data-state="error"]{color:var(--admin-color-error)}
 .admin-capabilities-eyebrow{font-size:.75rem;letter-spacing:.08em;color:var(--admin-color-primary)}
