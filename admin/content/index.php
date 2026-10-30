@@ -14,7 +14,7 @@ if (!$adminAuth->can('admin.content.manage')) Response::redirect(url('/admin/acc
 <link rel="stylesheet" href="<?= e(url('/admin/assets/css/content-editor.css')) ?>">
 </head>
 <body class="admin-content-editor-page">
-<main id="main-content" class="admin-content-editor" data-admin-content-editor data-api-url="<?= e(url('/api/index.php')) ?>" data-preview-url="<?= e(url('/admin/content/preview.php')) ?>">
+<main id="main-content" class="admin-content-editor" data-admin-content-editor data-api-url="<?= e(url('/api/index.php')) ?>" data-admin-base="<?= e(url('/admin')) ?>" data-preview-url="<?= e(url('/admin/content/preview.php')) ?>">
 <header class="cms-editor-header">
  <div><p class="cms-editor-kicker">NIVAD / CONTENT STUDIO</p><h1>استودیوی مدیریت محتوا</h1><p>ساختار صفحات، سکشن‌ها، رسانه، نسخه‌ها و انتشار را از یک محیط مدیریت کن.</p></div>
  <div class="cms-editor-header-actions"><a href="<?= e(url('/admin')) ?>">بازگشت به پنل</a><button type="button" data-open-media>کتابخانه رسانه</button></div>
