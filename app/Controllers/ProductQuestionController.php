@@ -138,6 +138,7 @@ final class ProductQuestionController extends Controller
                 );
             }
 
+            (new AdminNotificationEventDispatcher())->dispatch('content.question.pending', 'پرسش جدید برای بررسی ثبت شد', 'یک پرسش جدید درباره محصول در انتظار بررسی است.', 'product_question', is_object($created) ? ($created->id ?? null) : (is_array($created) ? ($created['id'] ?? null) : null));
             $this->success(
                 $created,
                 'پرسش با موفقیت ثبت شد.'

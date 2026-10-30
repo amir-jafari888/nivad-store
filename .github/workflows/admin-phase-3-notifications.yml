@@ -1,0 +1,56 @@
+name: Admin Phase 3 Notification Center
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'app/Controllers/AdminCapabilityController.php'
+      - 'app/Controllers/OrderController.php'
+      - 'app/Controllers/PaymentController.php'
+      - 'app/Controllers/InventoryController.php'
+      - 'app/Controllers/ReviewController.php'
+      - 'app/Controllers/ProductQuestionController.php'
+      - 'app/Repositories/AdminNotificationCenterRepository.php'
+      - 'app/Repositories/PdoAdminEmailOutboxRepository.php'
+      - 'app/Services/AdminNotificationCenterService.php'
+      - 'app/Services/AdminNotificationEventDispatcher.php'
+      - 'app/Services/AdminNotificationPolicy.php'
+      - 'admin/notifications/**'
+      - 'routes/api.php'
+      - 'database/migrations/20261030_admin_notifications_phase3.sql'
+      - 'tests/phase-3-admin-notifications-contract.php'
+      - '.github/workflows/admin-phase-3-notifications.yml'
+
+jobs:
+  notification-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+      - name: Lint Phase 3 PHP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            app/Controllers/AdminCapabilityController.php
+            app/Controllers/OrderController.php
+            app/Controllers/PaymentController.php
+            app/Controllers/InventoryController.php
+            app/Controllers/ReviewController.php
+            app/Controllers/ProductQuestionController.php
+            app/Repositories/AdminNotificationCenterRepository.php
+            app/Repositories/PdoAdminEmailOutboxRepository.php
+            app/Services/AdminNotificationCenterService.php
+            app/Services/AdminNotificationEventDispatcher.php
+            admin/notifications/index.php
+            admin/notifications/send-customer.php
+            bin/process-admin-email-outbox.php
+            tests/phase-3-admin-notifications-contract.php
+          )
+          for file in "${files[@]}"; do php -l "$file"; done
+      - name: Run Phase 3 static contract checks
+        run: php tests/phase-3-admin-notifications-contract.php

@@ -109,6 +109,7 @@ final class ReviewController extends Controller
             );
         }
 
+        (new AdminNotificationEventDispatcher())->dispatch('content.review.pending', 'دیدگاه جدید برای بررسی ثبت شد', 'یک دیدگاه جدید در انتظار بررسی مدیر است.', 'review', is_object($review) ? ($review->id ?? null) : (is_array($review) ? ($review['id'] ?? null) : null));
         $this->success(
             ['review' => $review],
             'دیدگاه با موفقیت ثبت شد.'

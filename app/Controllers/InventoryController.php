@@ -153,6 +153,13 @@ final class InventoryController extends Controller
                 (int)$data['lowStockThreshold']
             );
 
+        $quantity = (int)$data['quantity'];
+        $threshold = (int)$data['lowStockThreshold'];
+        if ($quantity <= 0) {
+            (new AdminNotificationEventDispatcher())->dispatch('inventory.stock.out', 'موجودی محصول تمام شد', 'موجودی یک محصول به صفر رسیده است.', 'variant', $variantId, ['quantity' => $quantity]);
+        } elseif ($quantity <= $threshold) {
+            (new AdminNotificationEventDispatcher())->dispatch('inventory.stock.low', 'موجودی محصول رو به اتمام است', 'موجودی یک محصول به آستانه هشدار رسیده است.', 'variant', $variantId, ['quantity' => $quantity, 'threshold' => $threshold]);
+        }
         $this->success(
             $inventory,
             'Inventory با موفقیت ایجاد شد.'
@@ -227,6 +234,13 @@ final class InventoryController extends Controller
             );
         }
 
+        $quantity = (int)$data['quantity'];
+        $threshold = (int)$data['lowStockThreshold'];
+        if ($quantity <= 0) {
+            (new AdminNotificationEventDispatcher())->dispatch('inventory.stock.out', 'موجودی محصول تمام شد', 'موجودی یک محصول به صفر رسیده است.', 'inventory', $id, ['quantity' => $quantity]);
+        } elseif ($quantity <= $threshold) {
+            (new AdminNotificationEventDispatcher())->dispatch('inventory.stock.low', 'موجودی محصول رو به اتمام است', 'موجودی یک محصول به آستانه هشدار رسیده است.', 'inventory', $id, ['quantity' => $quantity, 'threshold' => $threshold]);
+        }
         $this->success(
             $updated,
             'Inventory بروزرسانی شد.'
