@@ -32,13 +32,31 @@ $formatDate = static function (mixed $value): string {
     }
 };
 
-$maxNetSales = 0.0;
-$maxOrders = 0.0;
-
-foreach ($salesByPeriod as $periodRow) {
-    $maxNetSales = max($maxNetSales, (float)($periodRow['net_sales'] ?? 0));
-    $maxOrders = max($maxOrders, (float)($periodRow['total_orders'] ?? 0));
+$dashboardChartPeriods = [
+    ['label' => 'روز ۱', 'net_sales' => 18, 'total_orders' => 7],
+    ['label' => 'روز ۲', 'net_sales' => 24, 'total_orders' => 9],
+    ['label' => 'روز ۳', 'net_sales' => 21, 'total_orders' => 6],
+    ['label' => 'روز ۴', 'net_sales' => 29, 'total_orders' => 11],
+    ['label' => 'روز ۵', 'net_sales' => 26, 'total_orders' => 8],
+    ['label' => 'روز ۶', 'net_sales' => 34, 'total_orders' => 13],
+    ['label' => 'روز ۷', 'net_sales' => 31, 'total_orders' => 10],
+    ['label' => 'روز ۸', 'net_sales' => 39, 'total_orders' => 15],
+    ['label' => 'روز ۹', 'net_sales' => 35, 'total_orders' => 12],
+    ['label' => 'روز ۱۰', 'net_sales' => 43, 'total_orders' => 17],
+    ['label' => 'روز ۱۱', 'net_sales' => 40, 'total_orders' => 14],
+    ['label' => 'روز ۱۲', 'net_sales' => 48, 'total_orders' => 19],
+    ['label' => 'روز ۱۳', 'net_sales' => 45, 'total_orders' => 16],
+    ['label' => 'روز ۱۴', 'net_sales' => 54, 'total_orders' => 21],
+];
+$maxDemoNetSales = max(array_column($dashboardChartPeriods, 'net_sales'));
+$maxDemoOrders = max(array_column($dashboardChartPeriods, 'total_orders'));
+$demoSalesLinePoints = [];
+foreach ($dashboardChartPeriods as $index => $row) {
+    $x = 20 + ($index * 40);
+    $y = 152 - (((float)$row['net_sales'] / max(1, $maxDemoNetSales)) * 120);
+    $demoSalesLinePoints[] = $x . ',' . round($y, 2);
 }
+
 
 $firstName = trim((string)($admin['first_name'] ?? ''));
 $lastName = trim((string)($admin['last_name'] ?? ''));
@@ -46,7 +64,8 @@ $adminName = trim($firstName . ' ' . $lastName);
 if ($adminName === '') {
     $adminName = 'مدیر سیستم';
 }
-$adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8');
+$adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8')
+    . ($lastName !== '' ? mb_substr($lastName, 0, 1, 'UTF-8') : '');
 ?>
 
 <!DOCTYPE html>
@@ -62,18 +81,19 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
 <body class="admin-dashboard-page">
     <a class="admin-skip-link" href="#main-content">رفتن به محتوای اصلی</a>
     <header class="admin-dashboard-topbar">
+        <button class="admin-dashboard-mobile-menu" type="button" data-admin-menu-toggle aria-controls="admin-sidebar" aria-expanded="false" aria-label="باز کردن منوی مدیریت"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
         <a class="admin-dashboard-brand" href="<?= e(url('/admin')) ?>" aria-label="نیواد، صفحه داشبورد">
             <span class="admin-dashboard-brand-mark" aria-hidden="true">N</span>
             <span>نیواد <small>پنل مدیریت</small></span>
         </a>
-        <div class="admin-dashboard-user" aria-label="حساب مدیر واردشده">
+        <div class="admin-dashboard-user" aria-label="حساب مدیر واردشده: <?= e($adminName) ?>">
             <span class="admin-dashboard-avatar" aria-hidden="true"><?= e($adminInitial) ?></span>
-            <span class="admin-dashboard-user-name"><?= e($adminName) ?></span>
+            <span class="admin-dashboard-user-name"><span><?= e($firstName !== '' ? $firstName : 'مدیر') ?></span><span><?= e($lastName) ?></span></span>
         </div>
     </header>
 
     <div class="admin-dashboard-shell">
-        <aside class="admin-dashboard-sidebar" aria-label="ناوبری مدیریت">
+        <aside class="admin-dashboard-sidebar" id="admin-sidebar" data-admin-sidebar aria-label="ناوبری مدیریت">
             <p class="admin-dashboard-nav-label">مدیریت فروشگاه</p>
             <nav class="admin-dashboard-nav">
                 <a class="admin-dashboard-nav-link" href="<?= e(url('/admin')) ?>" aria-current="page"><span aria-hidden="true">⌂</span> داشبورد</a>
@@ -87,6 +107,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                         <a href="<?= e(url('/admin/attributes')) ?>">ویژگی‌ها</a>
                         <a href="<?= e(url('/admin/product-types')) ?>">نوع محصول</a>
                         <a href="<?= e(url('/admin/specifications')) ?>">مشخصات فنی</a>
+                        <a href="<?= e(url('/admin/specifications/groups')) ?>">گروه‌های مشخصات</a>
                     </div>
                 </details>
                 <details class="admin-dashboard-nav-group">
@@ -95,7 +116,10 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                         <a href="<?= e(url('/admin/sliders')) ?>">اسلایدرها</a>
                         <a href="<?= e(url('/admin/discovery')) ?>">دیسکاوری</a>
                         <a href="<?= e(url('/admin/compatibility')) ?>">سازگاری</a>
+                        <a href="<?= e(url('/admin/compatibility/devices')) ?>">دستگاه‌های سازگاری</a>
                         <a href="<?= e(url('/admin/setups')) ?>">ستاپ‌ها</a>
+                        <a href="<?= e(url('/admin/setups/devices.php')) ?>">دستگاه‌های Setup</a>
+                        <a href="<?= e(url('/admin/setups/accessories.php')) ?>">اکسسوری‌های Setup</a>
                     </div>
                 </details>
                 <details class="admin-dashboard-nav-group">
@@ -103,9 +127,14 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                     <div class="admin-dashboard-nav-submenu">
                         <a href="<?= e(url('/admin/orders')) ?>">سفارش‌ها</a>
                         <a href="<?= e(url('/admin/payments')) ?>">پرداخت‌ها</a>
+                        <a href="<?= e(url('/admin/payments/attempts.php')) ?>">تلاش‌های پرداخت</a>
                         <a href="<?= e(url('/admin/coupons')) ?>">کدهای تخفیف</a>
-                        <a href="<?= e(url('/admin/inventory')) ?>">موجودی و گردش انبار</a>
-                        <a href="<?= e(url('/admin/shipping/shipments')) ?>">ارسال و روش‌های ارسال</a>
+                        <a href="<?= e(url('/admin/inventory')) ?>">موجودی</a>
+                        <a href="<?= e(url('/admin/inventory/movements.php')) ?>">گردش موجودی</a>
+                        <a href="<?= e(url('/admin/inventory/reservations.php')) ?>">رزروهای موجودی</a>
+                        <a href="<?= e(url('/admin/shipping/shipments')) ?>">مرسوله‌ها</a>
+                        <a href="<?= e(url('/admin/shipping/methods.php')) ?>">روش‌های ارسال</a>
+                        <a href="<?= e(url('/admin/shipping/zones.php')) ?>">مناطق ارسال</a>
                     </div>
                 </details>
                 <details class="admin-dashboard-nav-group">
@@ -122,7 +151,11 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                 <details class="admin-dashboard-nav-group">
                     <summary>گزارش و ممیزی</summary>
                     <div class="admin-dashboard-nav-submenu">
-                        <a href="<?= e(url('/admin/reports')) ?>">گزارش‌های فروش</a>
+                        <a href="<?= e(url('/admin/reports')) ?>">نمای کلی گزارش‌ها</a>
+                        <a href="<?= e(url('/admin/reports/sales')) ?>">گزارش فروش</a>
+                        <a href="<?= e(url('/admin/reports/orders')) ?>">گزارش سفارش‌ها</a>
+                        <a href="<?= e(url('/admin/reports/products')) ?>">گزارش محصولات</a>
+                        <a href="<?= e(url('/admin/reports/categories')) ?>">گزارش دسته‌بندی‌ها</a>
                         <a href="<?= e(url('/admin/audit-logs')) ?>">گزارش رویدادها</a>
                     </div>
                 </details>
@@ -147,7 +180,7 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                 </div>
                 <div class="admin-dashboard-date-chip">
                     <span aria-hidden="true">◷</span>
-                    <span>روند ۱۴ روز اخیر</span>
+                    <span>نمونه نمودار · ۱۴ روز</span>
                 </div>
             </header>
 
@@ -178,73 +211,56 @@ $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UT
                 </article>
             </section>
 
-            <section class="admin-dashboard-chart-grid" aria-label="روند عملکرد">
+            <section class="admin-dashboard-chart-grid" aria-label="روند عملکرد فروشگاه">
                 <article class="admin-dashboard-panel admin-dashboard-sales-panel">
                     <div class="admin-dashboard-panel-heading">
                         <div><p class="admin-dashboard-eyebrow">عملکرد مالی</p><h2>روند فروش خالص</h2></div>
-                        <span class="admin-dashboard-panel-meta">۱۴ روز اخیر</span>
+                        <span class="admin-dashboard-panel-meta">داده نمایشی · آماده اتصال</span>
                     </div>
-                    <?php if ($salesByPeriodStatus === 'error') { ?>
-                        <div class="admin-dashboard-state admin-dashboard-state-error" role="status">
-                            <strong>داده‌های نمودار در دسترس نیست.</strong>
-                            <span>دریافت روند فروش با خطا مواجه شد؛ سایر شاخص‌ها جداگانه نمایش داده می‌شوند.</span>
-                        </div>
-                    <?php } elseif ($salesByPeriodStatus !== 'ready' || $salesByPeriod === []) { ?>
-                        <div class="admin-dashboard-state" role="status">
-                            <strong>اتصال داده‌های دوره‌ای به View هنوز تأیید نشده یا برای این بازه داده‌ای وجود ندارد.</strong>
-                            <span>با ثبت سفارش‌های جدید، روند فروش در این بخش نمایش داده می‌شود.</span>
-                        </div>
-                    <?php } else { ?>
-                        <div class="admin-dashboard-chart" role="img" aria-label="نمودار میله‌ای فروش خالص روزانه در ۱۴ روز اخیر">
-                            <div class="admin-dashboard-chart-bars">
-                                <?php foreach ($salesByPeriod as $row) {
-                                    $value = max(0, (float)($row['net_sales'] ?? 0));
-                                    $height = $maxNetSales > 0 ? max(3, ($value / $maxNetSales) * 100) : 3;
-                                    ?>
-                                    <div class="admin-dashboard-chart-column" title="<?= e($formatDate($row['period'] ?? null) . ': ' . $formatNumber($value)) ?>">
-                                        <span class="admin-dashboard-chart-value"><?= e($formatNumber($value)) ?></span>
-                                        <span class="admin-dashboard-chart-bar" style="--bar-height: <?= e((string)$height) ?>%"></span>
-                                        <span class="admin-dashboard-chart-label"><?= e($formatDate($row['period'] ?? null)) ?></span>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                    <div class="admin-dashboard-chart-legend"><span class="admin-dashboard-legend-dot" aria-hidden="true"></span><span>فروش خالص بر اساس مبلغ سفارش‌ها</span></div>
+                    <div class="admin-dashboard-chart">
+                        <svg class="admin-dashboard-line-chart" viewBox="0 0 560 176" role="img" aria-label="نمودار خطی نمونه فروش خالص در ۱۴ روز نمایشی" preserveAspectRatio="none">
+                            <title>روند نمونه فروش خالص؛ داده‌ها نمایشی هستند</title>
+                            <g class="admin-dashboard-line-chart-grid" aria-hidden="true">
+                                <line x1="20" y1="32" x2="540" y2="32"></line>
+                                <line x1="20" y1="72" x2="540" y2="72"></line>
+                                <line x1="20" y1="112" x2="540" y2="112"></line>
+                                <line x1="20" y1="152" x2="540" y2="152"></line>
+                            </g>
+                            <polyline class="admin-dashboard-line-chart-line" points="<?= e(implode(' ', $demoSalesLinePoints)) ?>"></polyline>
+                            <?php foreach ($dashboardChartPeriods as $index => $row) {
+                                $x = 20 + ($index * 40);
+                                $y = 152 - (((float)$row['net_sales'] / max(1, $maxDemoNetSales)) * 120);
+                                ?>
+                                <circle class="admin-dashboard-line-chart-point" cx="<?= e((string)$x) ?>" cy="<?= e((string)round($y, 2)) ?>" r="3.5">
+                                    <title><?= e($row['label'] . ': ' . $formatNumber($row['net_sales']) . ' واحد نمایشی') ?></title>
+                                </circle>
+                            <?php } ?>
+                        </svg>
+                        <div class="admin-dashboard-line-chart-labels" aria-hidden="true"><span>روز ۱</span><span>روز ۴</span><span>روز ۷</span><span>روز ۱۰</span><span>روز ۱۴</span></div>
+                    </div>
+                    <div class="admin-dashboard-chart-legend"><span class="admin-dashboard-legend-dot" aria-hidden="true"></span><span>مبالغ نمونه هستند؛ واحد و منبع واقعی پس از اتصال داده تعیین می‌شود.</span></div>
                 </article>
 
                 <article class="admin-dashboard-panel admin-dashboard-orders-panel">
                     <div class="admin-dashboard-panel-heading">
                         <div><p class="admin-dashboard-eyebrow">حجم سفارش‌ها</p><h2>سفارش‌های روزانه</h2></div>
-                        <span class="admin-dashboard-panel-meta">۱۴ روز اخیر</span>
+                        <span class="admin-dashboard-panel-meta">داده نمایشی · آماده اتصال</span>
                     </div>
-                    <?php if ($salesByPeriodStatus === 'error') { ?>
-                        <div class="admin-dashboard-state admin-dashboard-state-error" role="status">
-                            <strong>داده‌های نمودار در دسترس نیست.</strong>
-                            <span>برای جلوگیری از نمایش اطلاعات نادرست، نمودار سفارش‌ها موقتاً نمایش داده نمی‌شود.</span>
+                    <div class="admin-dashboard-chart" role="img" aria-label="نمودار نمونه تعداد سفارش‌ها در ۱۴ روز نمایشی">
+                        <div class="admin-dashboard-chart-bars">
+                            <?php foreach ($dashboardChartPeriods as $row) {
+                                $value = (float)$row['total_orders'];
+                                $height = $maxDemoOrders > 0 ? max(3, ($value / $maxDemoOrders) * 100) : 3;
+                                ?>
+                                <div class="admin-dashboard-chart-column" title="<?= e($row['label'] . ': ' . $formatNumber($value) . ' سفارش نمایشی') ?>">
+                                    <span class="admin-dashboard-chart-value"><?= e($formatNumber($value)) ?></span>
+                                    <span class="admin-dashboard-chart-bar admin-dashboard-chart-bar-secondary" style="--bar-height: <?= e((string)$height) ?>%"></span>
+                                    <span class="admin-dashboard-chart-label"><?= e(str_replace('روز ', '', $row['label'])) ?></span>
+                                </div>
+                            <?php } ?>
                         </div>
-                    <?php } elseif ($salesByPeriodStatus !== 'ready' || $salesByPeriod === []) { ?>
-                        <div class="admin-dashboard-state" role="status">
-                            <strong>اتصال داده‌های دوره‌ای تأیید نشده یا سفارشی در این بازه ثبت نشده است.</strong>
-                            <span>با ثبت سفارش، روند روزانه در این قسمت ظاهر می‌شود.</span>
-                        </div>
-                    <?php } else { ?>
-                        <div class="admin-dashboard-chart" role="img" aria-label="نمودار میله‌ای تعداد سفارش‌های روزانه در ۱۴ روز اخیر">
-                            <div class="admin-dashboard-chart-bars">
-                                <?php foreach ($salesByPeriod as $row) {
-                                    $value = max(0, (float)($row['total_orders'] ?? 0));
-                                    $height = $maxOrders > 0 ? max(3, ($value / $maxOrders) * 100) : 3;
-                                    ?>
-                                    <div class="admin-dashboard-chart-column" title="<?= e($formatDate($row['period'] ?? null) . ': ' . $formatNumber($value)) ?>">
-                                        <span class="admin-dashboard-chart-value"><?= e($formatNumber($value)) ?></span>
-                                        <span class="admin-dashboard-chart-bar admin-dashboard-chart-bar-secondary" style="--bar-height: <?= e((string)$height) ?>%"></span>
-                                        <span class="admin-dashboard-chart-label"><?= e($formatDate($row['period'] ?? null)) ?></span>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                    <div class="admin-dashboard-chart-legend"><span class="admin-dashboard-legend-dot admin-dashboard-legend-dot-secondary" aria-hidden="true"></span><span>تعداد سفارش‌ها در هر روز</span></div>
+                    </div>
+                    <div class="admin-dashboard-chart-legend"><span class="admin-dashboard-legend-dot admin-dashboard-legend-dot-secondary" aria-hidden="true"></span><span>تعداد سفارش‌ها در داده نمایشی؛ آماده جایگزینی با سری زمانی واقعی.</span></div>
                 </article>
             </section>
 
