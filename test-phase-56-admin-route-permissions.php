@@ -46,6 +46,7 @@ $paths = [
     'access_service' => $root . '/app/Services/AdminAccessService.php',
     'access_repository' => $root . '/app/Repositories/AdminAccessRepository.php',
     'access_page' => $root . '/admin/access/index.php',
+    'access_denied_page' => $root . '/admin/access-denied.php',
     'access_js' => $root . '/admin/assets/js/modules/access-center.js',
     'customer_support_controller' => $root . '/app/Controllers/CustomerSupportController.php',
     'customer_support_page' => $root . '/pages/account/support.php',
@@ -158,6 +159,8 @@ p56Check('Admin access service protects the Super Admin role', is_string($source
 p56Check('Admin access UI is connected to the API module', is_string($sources['access_page']) && is_string($sources['access_js']));
 p56Check('Admin access page requires an Access permission', is_string($sources['access_page']) && str_contains($sources['access_page'], '$adminAuth->canAll(') && str_contains($sources['access_page'], '$adminAuth->authorize('));
 p56Check('Admin capability page requires at least one capability permission', is_string($sources['capability_page']) && str_contains($sources['capability_page'], '$adminAuth->canAny(') && str_contains($sources['capability_page'], '$adminAuth->authorize('));
+p56Check('Unauthorized Admin access/capability pages redirect to the dedicated denial page', is_string($sources['access_page']) && is_string($sources['capability_page']) && str_contains($sources['access_page'], '/admin/access-denied.php') && str_contains($sources['capability_page'], '/admin/access-denied.php'));
+p56Check('Dedicated denial page is authenticated and uses only the Admin display name', is_string($sources['access_denied_page']) && str_contains($sources['access_denied_page'], "\$currentAdmin['first_name']") && str_contains($sources['access_denied_page'], "\$currentAdmin['last_name']") && !str_contains($sources['access_denied_page'], "\$currentAdmin['email']") && !str_contains($sources['access_denied_page'], "\$currentAdmin['username']"));
 p56Check('RBAC assignment list excludes inactive permissions', is_file($root . '/app/Repositories/AdminAccessRepository.php') && str_contains((string)file_get_contents($root . '/app/Repositories/AdminAccessRepository.php'), 'WHERE status = "active" AND deleted_at IS NULL'));
 p56Check('Access module is registered in Admin main.js', is_file($root . '/admin/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/admin/assets/js/main.js'), 'access-center.js'));
 p56Check('Admin session monitoring is scoped to the current account and excludes the current session', is_string($sources['access_repository']) && is_string($sources['capability_controller']) && str_contains((string)file_get_contents($root . '/app/Repositories/AdminSessionRepository.php'), 'current_token_hash'));
