@@ -6,8 +6,7 @@ declare(strict_types=1);
  * Secure private image storage independent of the database.
  *
  * Requires NIVAD_PRIVATE_STORAGE_PATH to point outside the web document root.
- * Returns a storage key and verified metadata; persistence of that metadata
- * into the application's database is a separate, currently gated step.
+ * Returns a private storage key and verified metadata for the CMS media repository.
  */
 final class AdminMediaStorageService
 {
@@ -73,6 +72,19 @@ final class AdminMediaStorageService
         }
 
         return $metadata;
+    }
+
+    public function deleteStoredFile(string $storageKey): void
+    {
+        if (!preg_match('#^[0-9]{4}/[0-9]{2}/[a-f0-9]{48}\\.(?:jpg|png|webp)$#', $storageKey)) {
+            return;
+        }
+        $root = realpath($this->privateStorageRoot());
+        if ($root === false) return;
+        $candidate = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $storageKey);
+        $realPath = realpath($candidate);
+        if ($realPath === false || !str_starts_with($realPath, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)) return;
+        if (is_file($realPath)) @unlink($realPath);
     }
 
     /**
