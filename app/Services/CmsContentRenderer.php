@@ -55,8 +55,8 @@ final class CmsContentRenderer
 
             if ($pageKey === 'home') {
                 usort($sections, static function (array $a, array $b): int {
-                    $aOrder = !empty($a['has_published_version']) ? (int)($a['published_sort_order'] ?? $a['sort_order']) : (int)$a['sort_order'];
-                    $bOrder = !empty($b['has_published_version']) ? (int)($b['published_sort_order'] ?? $b['sort_order']) : (int)$b['sort_order'];
+                    $aOrder = (int)($a['published_sort_order'] ?? $a['sort_order']);
+                    $bOrder = (int)($b['published_sort_order'] ?? $b['sort_order']);
                     return $aOrder <=> $bOrder ?: ((int)$a['id'] <=> (int)$b['id']);
                 });
                 foreach ($sections as $section) {
