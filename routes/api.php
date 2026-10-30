@@ -2857,6 +2857,11 @@ return static function (Router $router): void {
     $router->get('/admin/capabilities/health', [AdminCapabilityController::class, 'health'], $adminCapabilityRead, 'admin.capabilities.health.index');
     $router->get('/admin/capabilities/search', [AdminCapabilityController::class, 'globalSearch'], $adminCapabilityRead, 'admin.capabilities.search.index');
     $router->post('/analytics/product-event', [ProductAnalyticsController::class, 'store'], [CsrfMiddleware::class], 'analytics.product-event.store');
+    $router->get('/support/tickets', [CustomerSupportController::class, 'index'], [AuthMiddleware::class], 'support.tickets.index');
+    $router->get('/support/tickets/{id}', [CustomerSupportController::class, 'show'], [AuthMiddleware::class], 'support.tickets.show');
+    $router->post('/support/tickets', [CustomerSupportController::class, 'store'], [AuthMiddleware::class, CsrfMiddleware::class], 'support.tickets.store');
+    $router->post('/support/tickets/{id}/messages', [CustomerSupportController::class, 'reply'], [AuthMiddleware::class, CsrfMiddleware::class], 'support.tickets.messages.store');
+
 
     $router->get('/admin/capabilities/preferences', [AdminCapabilityController::class, 'preferences'], $adminCapabilityRead, 'admin.capabilities.preferences.index');
     $router->put('/admin/capabilities/preferences', [AdminCapabilityController::class, 'savePreference'], $adminCapabilityWrite, 'admin.capabilities.preferences.update');
