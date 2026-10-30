@@ -30,7 +30,7 @@ $canUseCapabilities = $adminAuth->canAny([
     'admin.capabilities.saved-views.index',
     'admin.capabilities.revisions.index',
 ]);
-$canManageContent = $adminAuth->canAny(['admin.content.manage', 'admin.media.manage']);
+$canManageContent = $adminAuth->can('admin.content.manage');
 $canManageAccess = $adminAuth->canAny([
     'admin.access.admins.index',
     'admin.access.roles.index',
