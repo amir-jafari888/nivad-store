@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$root = __DIR__;
+$root = dirname(__DIR__);
 $checks = [];
 $check = static function (string $name, bool $ok) use (&$checks): void {
     $checks[] = [$name, $ok];
