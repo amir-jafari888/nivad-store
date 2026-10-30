@@ -15,7 +15,7 @@ $accessPageReadPermissions = [
 ];
 
 if (!$adminAuth->canAll($accessPageReadPermissions)) {
-    $adminAuth->authorize('admin.access.admins.index');
+    Response::redirect(url('/admin/access-denied.php'));
 }
 
 ?><!doctype html>
