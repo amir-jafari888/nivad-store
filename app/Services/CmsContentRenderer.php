@@ -37,8 +37,8 @@ final class CmsContentRenderer
     {
         try {
             foreach (self::repository()->sections($pageKey) as $section) {
-                if (($section['section_key'] ?? '') !== $sectionKey || ($section['status'] ?? '') !== 'published' || (int)($section['is_visible'] ?? 0) !== 1) continue;
-                echo self::renderMarkup($section['title'], $section['published_content'] ?: $section['content'], $section['published_style'] ?: $section['style'], $section['section_type'], $section['id']);
+                if (($section['section_key'] ?? '') !== $sectionKey || empty($section['has_published_version']) || (int)($section['published_is_visible'] ?? 0) !== 1) continue;
+                echo self::renderMarkup($section['title'], $section['published_content'], $section['published_style'], $section['section_type'], $section['id']);
                 return true;
             }
         } catch (Throwable $exception) {
@@ -54,13 +54,18 @@ final class CmsContentRenderer
             if ($sections === []) return false;
 
             if ($pageKey === 'home') {
+                usort($sections, static function (array $a, array $b): int {
+                    $aOrder = !empty($a['has_published_version']) ? (int)($a['published_sort_order'] ?? $a['sort_order']) : (int)$a['sort_order'];
+                    $bOrder = !empty($b['has_published_version']) ? (int)($b['published_sort_order'] ?? $b['sort_order']) : (int)$b['sort_order'];
+                    return $aOrder <=> $bOrder ?: ((int)$a['id'] <=> (int)$b['id']);
+                });
                 foreach ($sections as $section) {
                     $key = (string)$section['section_key'];
                     $type = (string)$section['section_type'];
-                    if (($section['status'] ?? '') === 'published') {
-                        if ((int)($section['is_visible'] ?? 0) !== 1) continue;
-                        $section['content'] = $section['published_content'] ?: $section['content'];
-                        $section['style'] = $section['published_style'] ?: $section['style'];
+                    if (!empty($section['has_published_version'])) {
+                        if ((int)($section['published_is_visible'] ?? 0) !== 1) continue;
+                        $section['content'] = $section['published_content'];
+                        $section['style'] = $section['published_style'];
                         if (isset(self::NATIVE_HOME_COMPONENTS[$key]) && !in_array($key, self::GENERIC_HOME_SECTIONS, true)) {
                             self::renderNativeHomeSection($section, self::NATIVE_HOME_COMPONENTS[$key]);
                         } else {
@@ -68,11 +73,8 @@ final class CmsContentRenderer
                         }
                         continue;
                     }
-                    // Until an administrator publishes a draft, preserve the
-                    // original PHP section and all of its existing interactions.
-                    if (isset(self::NATIVE_HOME_COMPONENTS[$key])) {
-                        self::renderOriginalHomeSection(self::NATIVE_HOME_COMPONENTS[$key]);
-                    }
+                    // Draft changes never replace the published/legacy storefront.
+                    if (isset(self::NATIVE_HOME_COMPONENTS[$key])) self::renderOriginalHomeSection(self::NATIVE_HOME_COMPONENTS[$key]);
                 }
                 return true;
             }
@@ -80,14 +82,14 @@ final class CmsContentRenderer
             // Content pages switch atomically: every registered section must be
             // published before the legacy page is replaced, avoiding partial pages.
             foreach ($sections as $section) {
-                if (($section['status'] ?? '') !== 'published') return false;
+                if (empty($section['has_published_version'])) return false;
             }
             foreach ($sections as $section) {
-                if ((int)($section['is_visible'] ?? 0) !== 1) continue;
+                if ((int)($section['published_is_visible'] ?? 0) !== 1) continue;
                 echo self::renderMarkup(
                     (string)$section['title'],
-                    $section['published_content'] ?: $section['content'],
-                    $section['published_style'] ?: $section['style'],
+                    $section['published_content'],
+                    $section['published_style'],
                     (string)$section['section_type'],
                     $section['id']
                 );
