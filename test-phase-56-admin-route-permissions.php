@@ -148,6 +148,9 @@ p56Check('Access module is registered in Admin main.js', is_file($root . '/admin
 p56Check('Admin session monitoring is scoped to the current account and excludes the current session', is_string($sources['access_repository']) && is_string($sources['capability_controller']) && str_contains((string)file_get_contents($root . '/app/Repositories/AdminSessionRepository.php'), 'current_token_hash'));
 p56Check('Global search uses prepared queries over the supported entity tables', is_string($sources['capability_repository']) && str_contains($sources['capability_repository'], 'globalSearch(string $term)') && str_contains($sources['capability_repository'], 'FROM products') && str_contains($sources['capability_repository'], 'FROM orders') && str_contains($sources['capability_repository'], 'FROM users'));
 p56Check('Unhandled server exceptions are reported as Admin incidents', is_file($root . '/app/Core/ErrorHandler.php') && str_contains((string)file_get_contents($root . '/app/Core/ErrorHandler.php'), 'recordIncident('));
+p56Check('Public product analytics collector is CSRF-protected', is_file($root . '/app/Controllers/ProductAnalyticsController.php') && str_contains((string)file_get_contents($root . '/routes/api.php'), 'analytics.product-event.store') && str_contains((string)file_get_contents($root . '/routes/api.php'), '[CsrfMiddleware::class]'));
+p56Check('Product detail analytics module is registered', is_file($root . '/assets/js/modules/product-analytics.js') && str_contains((string)file_get_contents($root . '/assets/js/main.js'), 'product-analytics.js'));
+p56Check('Storefront exposes a CSRF token for analytics writes', is_file($root . '/partials/header.php') && str_contains((string)file_get_contents($root . '/partials/header.php'), 'name="csrf-token"'));
 
 echo '<hr><strong>STATIC PASS: ' . $passed . ' | STATIC FAIL: ' . $failed . ' | DB BLOCKED: ' . $blocked . "</strong><br>\n";
 
