@@ -123,8 +123,15 @@ final class AdminContentService
 
     public function uploadMedia(array $upload, ?string $alt, int $adminId): int
     {
-        $storage = (new AdminMediaStorageService())->storeUploadedFile($upload);
-        return $this->repository->createMedia($storage, $alt, $adminId);
+        if ($alt !== null && mb_strlen($alt) > 500) throw new InvalidArgumentException('متن جایگزین تصویر بیش از حد مجاز است.');
+        $storageService = new AdminMediaStorageService();
+        $storage = $storageService->storeUploadedFile($upload);
+        try {
+            return $this->repository->createMedia($storage, $alt, $adminId);
+        } catch (Throwable $exception) {
+            $storageService->deleteStoredFile((string)$storage['storage_key']);
+            throw $exception;
+        }
     }
 
     public function updateMedia(int $id, ?string $alt, int $adminId): bool
