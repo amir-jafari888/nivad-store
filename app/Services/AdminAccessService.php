@@ -131,7 +131,7 @@ final class AdminAccessService
                 throw new InvalidArgumentException('تخصیص نقش Super Admin از این رابط مجاز نیست.');
             }
         }
-        if ($targetId === $actorId && $this->isSuperAdmin($targetId) && !$this->repository->hasOtherActiveSuperAdmin($targetId)) {
+        if ($this->isSuperAdmin($targetId) && !$this->repository->hasOtherActiveSuperAdmin($targetId)) {
             throw new InvalidArgumentException('نمی‌توان دسترسی Super Admin آخرین مدیر را حذف کرد.');
         }
         $this->repository->replaceAdminRoles($targetId, $roleIds);
@@ -196,7 +196,7 @@ final class AdminAccessService
     {
         foreach ($this->repository->admins(200) as $admin) {
             if ((int)$admin['id'] === $adminId) {
-                return str_contains((string)($admin['role_names'] ?? ''), 'Super Admin');
+                return in_array('super-admin', explode(',', (string)($admin['role_slugs'] ?? '')), true);
             }
         }
         return false;
