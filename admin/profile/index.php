@@ -14,8 +14,6 @@ if ($displayName === '') {
     $displayName = 'نام مدیر ثبت نشده';
 }
 $adminId = isset($admin['id']) ? (int)$admin['id'] : null;
-$username = trim((string)($admin['username'] ?? ''));
-$email = trim((string)($admin['email'] ?? ''));
 $status = trim((string)($admin['status'] ?? ''));
 $lastLoginAt = trim((string)($admin['last_login_at'] ?? ''));
 $createdAt = trim((string)($admin['created_at'] ?? ''));
@@ -59,14 +57,6 @@ $createdAt = trim((string)($admin['created_at'] ?? ''));
                 <div>
                     <dt>شناسه مدیر</dt>
                     <dd><?= $adminId !== null && $adminId > 0 ? e((string)$adminId) : 'در دسترس نیست' ?></dd>
-                </div>
-                <div>
-                    <dt>نام کاربری</dt>
-                    <dd><?= e($username !== '' ? $username : 'ثبت نشده') ?></dd>
-                </div>
-                <div>
-                    <dt>ایمیل حساب</dt>
-                    <dd><?= e($email !== '' ? $email : 'ثبت نشده') ?></dd>
                 </div>
                 <div>
                     <dt>وضعیت حساب</dt>
