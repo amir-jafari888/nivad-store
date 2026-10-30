@@ -213,6 +213,30 @@ final class AdminAccessService
         return true;
     }
 
+
+    public function effectivePermissions(int $adminId): array
+    {
+        if ($adminId < 1) {
+            throw new InvalidArgumentException('شناسه مدیر نامعتبر است.');
+        }
+
+        if ($this->repository->adminById($adminId) === null) {
+            throw new InvalidArgumentException('مدیر پیدا نشد.');
+        }
+
+        return $this->repository->effectivePermissionsForAdmin($adminId);
+    }
+
+    public function adminSecuritySnapshot(int $adminId): ?array
+    {
+        return $this->repository->adminSecuritySnapshot($adminId);
+    }
+
+    public function roleSecuritySnapshot(int $roleId): ?array
+    {
+        return $this->repository->roleSecuritySnapshot($roleId);
+    }
+
     private function isSuperAdmin(int $adminId): bool
     {
         return $this->repository->adminHasRoleSlug($adminId, 'super-admin');
