@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS admin_cms_sections (
     style_json LONGTEXT NOT NULL,
     published_content_json LONGTEXT NULL,
     published_style_json LONGTEXT NULL,
+    published_is_visible TINYINT(1) NULL DEFAULT NULL,
+    published_sort_order INT NULL DEFAULT NULL,
     scheduled_at DATETIME NULL,
     published_at DATETIME NULL,
     created_by_admin_id BIGINT UNSIGNED NULL,
