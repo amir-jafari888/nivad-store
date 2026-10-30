@@ -45,7 +45,7 @@ $preferences = adminRedesignRead('admin/assets/js/modules/admin-preferences.js')
 $navigationState = adminRedesignRead('admin/assets/js/modules/navigation-state.js');
 
 adminRedesignCheck(str_contains($dashboardEntry, "pages/admin/dashboard.php"), 'Direct /admin entry reuses the shared dashboard view');
-adminRedesignCheck(str_contains($dashboardView, "first_name") && str_contains($dashboardView, "last_name"), 'Dashboard identity uses first and last name fields');
+adminRedesignCheck(str_contains($authInclude, "first_name") && str_contains($authInclude, "last_name"), 'Shared authenticated shell identity uses first and last name fields');
 adminRedesignCheck(!str_contains($dashboardView, "['email']") && !str_contains($dashboardView, "['username']"), 'Dashboard does not expose email or username as the display-name fallback');
 adminRedesignCheck(str_contains($dashboardView, 'admin-dashboard-main') && str_contains($authInclude, 'admin-shared-nav-group') && str_contains($authInclude, 'admin-shared-sidebar'), 'Dashboard and authenticated pages share grouped mega-navigation');
 adminRedesignCheck(str_contains($authInclude, "url('/admin/settings')") && is_file($root . '/admin/settings/index.php'), 'Shared navigation points to an implemented settings page');
