@@ -124,6 +124,29 @@ final class AdminCapabilityRepository
         $touch->execute(['id' => $incidentId]);
     }
 
+    public function notifyTicketCreated(int $ticketId, string $ticketNumber, string $subject): void
+    {
+        if ($ticketId < 1) return;
+        $adminIds = $this->db->query(
+            'SELECT id FROM admin_users WHERE status = "active" AND deleted_at IS NULL'
+        )->fetchAll(PDO::FETCH_COLUMN);
+
+        foreach ($adminIds as $adminId) {
+            $adminId = (int)$adminId;
+            $this->createNotification([
+                'recipient_admin_user_id' => $adminId,
+                'category' => 'customer_support',
+                'severity' => 'info',
+                'title' => 'New support ticket: ' . mb_substr($ticketNumber, 0, 50),
+                'message' => mb_substr($subject, 0, 500),
+                'source_type' => 'support_ticket',
+                'source_id' => $ticketId,
+                'dedupe_key' => hash('sha256', 'support-ticket:' . $ticketId . ':' . $adminId),
+                'expires_at' => null,
+            ]);
+        }
+    }
+
     public function incidents(string $status = '', int $limit = 100): array
     {
         $limit = max(1, min(200, $limit));
