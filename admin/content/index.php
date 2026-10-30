@@ -62,7 +62,7 @@ if (!$adminAuth->can('admin.content.manage')) Response::redirect(url('/admin/acc
    </section>
    <section class="cms-tab-panel" data-tab-panel="items">
     <div class="cms-items-heading"><div><h3>کارت‌ها و آیتم‌های سکشن</h3><p>برای سکشن‌های چندآیتمی، کارت اضافه کن و محتوای هرکدام را مستقل ویرایش کن.</p></div><button type="button" data-add-item>+ افزودن آیتم</button></div>
-    <div class="cms-items-list" data-items-list></div>
+    <div class="cms-native-items-notice" data-native-items-notice hidden></div><div class="cms-items-list" data-items-list></div>
    </section>
    <footer class="cms-editor-footer">
     <span data-save-feedback role="status" aria-live="polite">تغییرات فقط در پیش‌نویس ذخیره می‌شوند.</span>
