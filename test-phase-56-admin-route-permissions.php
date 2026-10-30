@@ -156,7 +156,7 @@ p56Check('Admin mutation audit trail helper exists', is_file($root . '/app/Servi
 
 p56Check('Admin access service protects the Super Admin role', is_string($sources['access_service']) && str_contains($sources['access_service'], 'super-admin'));
 p56Check('Admin access UI is connected to the API module', is_string($sources['access_page']) && is_string($sources['access_js']));
-p56Check('Admin access page requires an Access permission', is_string($sources['access_page']) && str_contains($sources['access_page'], '$adminAuth->canAny(') && str_contains($sources['access_page'], '$adminAuth->authorize('));
+p56Check('Admin access page requires an Access permission', is_string($sources['access_page']) && str_contains($sources['access_page'], '$adminAuth->canAll(') && str_contains($sources['access_page'], '$adminAuth->authorize('));
 p56Check('Admin capability page requires at least one capability permission', is_string($sources['capability_page']) && str_contains($sources['capability_page'], '$adminAuth->canAny(') && str_contains($sources['capability_page'], '$adminAuth->authorize('));
 p56Check('RBAC assignment list excludes inactive permissions', is_file($root . '/app/Repositories/AdminAccessRepository.php') && str_contains((string)file_get_contents($root . '/app/Repositories/AdminAccessRepository.php'), 'WHERE status = "active" AND deleted_at IS NULL'));
 p56Check('Access module is registered in Admin main.js', is_file($root . '/admin/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/admin/assets/js/main.js'), 'access-center.js'));
