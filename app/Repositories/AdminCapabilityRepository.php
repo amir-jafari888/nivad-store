@@ -78,7 +78,8 @@ final class AdminCapabilityRepository
             'INSERT INTO admin_notifications
                 (recipient_admin_user_id, category, severity, title, message, source_type, source_id, dedupe_key, expires_at)
              VALUES
-                (:recipient, :category, :severity, :title, :message, :source_type, :source_id, :dedupe_key, :expires_at)'
+                (:recipient, :category, :severity, :title, :message, :source_type, :source_id, :dedupe_key, :expires_at)
+             ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)'
         );
         $stmt->execute([
             'recipient' => $data['recipient_admin_user_id'],
@@ -92,6 +93,35 @@ final class AdminCapabilityRepository
             'expires_at' => $data['expires_at'],
         ]);
         return (int)$this->db->lastInsertId();
+    }
+
+    public function notifyIncident(int $incidentId, string $title, string $description): void
+    {
+        if ($incidentId < 1) return;
+        $adminIds = $this->db->query(
+            'SELECT id FROM admin_users WHERE status = "active" AND deleted_at IS NULL'
+        )->fetchAll(PDO::FETCH_COLUMN);
+        $bucket = (int)floor(time() / 600);
+
+        foreach ($adminIds as $adminId) {
+            $adminId = (int)$adminId;
+            $this->createNotification([
+                'recipient_admin_user_id' => $adminId,
+                'category' => 'errors',
+                'severity' => 'critical',
+                'title' => mb_substr($title, 0, 255),
+                'message' => $description !== '' ? $description : 'A critical system incident was recorded.',
+                'source_type' => 'incident',
+                'source_id' => $incidentId,
+                'dedupe_key' => hash('sha256', 'incident:' . $incidentId . ':' . $adminId . ':' . $bucket),
+                'expires_at' => null,
+            ]);
+        }
+
+        $touch = $this->db->prepare(
+            'UPDATE admin_incidents SET last_notification_at = CURRENT_TIMESTAMP WHERE id = :id'
+        );
+        $touch->execute(['id' => $incidentId]);
     }
 
     public function incidents(string $status = '', int $limit = 100): array
