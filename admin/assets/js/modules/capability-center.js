@@ -111,6 +111,26 @@ const adminCapabilityCenter = () => {
       title: row => row.ticket_number + " · " + row.subject,
       details: row => "وضعیت: " + row.status + " · اولویت: " + row.priority + " · مشتری: " + (row.user_id || "ثبت نشده") + " · آخرین تغییر: " + row.updated_at,
       action: row => {
+        const wrap = node("div", undefined, "admin-capability-ticket-detail");
+        const controls = node("div", undefined, "admin-capability-actions");
+        const status = document.createElement("select");
+        [["open","باز"],["pending_customer","منتظر مشتری"],["pending_admin","منتظر مدیر"],["resolved","حل‌شده"],["closed","بسته"]].forEach(([value,label]) => {
+          const option = node("option", label); option.value = value; option.selected = value === row.status; status.append(option);
+        });
+        const priority = document.createElement("select");
+        [["low","کم"],["normal","عادی"],["high","زیاد"],["urgent","فوری"]].forEach(([value,label]) => {
+          const option = node("option", label); option.value = value; option.selected = value === row.priority; priority.append(option);
+        });
+        const update = node("button", "ثبت وضعیت و اولویت"); update.type = "button";
+        update.addEventListener("click", async () => {
+          try {
+            await request("/tickets/" + row.id, { method: "PATCH", body: JSON.stringify({
+              status: status.value, priority: priority.value, assigned_admin_id: row.assigned_admin_id || null
+            }) });
+            await loadTickets(); setFeedback("تیکت به‌روزرسانی شد.");
+          } catch (error) { setFeedback(error.message, true); }
+        });
+        controls.append(status, priority, update);
         const details = document.createElement("details");
         const summary = node("summary", "مشاهده پیام‌ها و پاسخ");
         const content = node("div", undefined, "admin-capability-ticket-detail");
@@ -139,7 +159,9 @@ const adminCapabilityCenter = () => {
             content.append(form); details.dataset.loaded = "true";
           } catch (error) { setFeedback(error.message, true); }
         });
-        details.append(summary, content); return details;
+        details.append(summary, content);
+        wrap.append(controls, details);
+        return wrap;
       }
     });
   };
