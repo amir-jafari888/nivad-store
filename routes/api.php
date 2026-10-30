@@ -2830,6 +2830,7 @@ return static function (Router $router): void {
     $router->get('/admin/access/admins', [AdminAccessController::class, 'admins'], $adminCapabilityRead, 'admin.access.admins.index');
     $router->post('/admin/access/admins', [AdminAccessController::class, 'createAdmin'], $adminCapabilityWrite, 'admin.access.admins.store');
     $router->patch('/admin/access/admins/{id}', [AdminAccessController::class, 'updateAdmin'], $adminCapabilityWrite, 'admin.access.admins.update');
+    $router->delete('/admin/access/admins/{id}', [AdminAccessController::class, 'deleteAdmin'], $adminCapabilityWrite, 'admin.access.admins.destroy');
     $router->put('/admin/access/admins/{id}/roles', [AdminAccessController::class, 'assignAdminRoles'], $adminCapabilityWrite, 'admin.access.admins.roles.update');
 
     $router->get('/admin/access/roles', [AdminAccessController::class, 'roles'], $adminCapabilityRead, 'admin.access.roles.index');
