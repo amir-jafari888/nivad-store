@@ -46,6 +46,7 @@ $overviewService = $read('app/Services/AdminDashboardOverviewService.php');
 $healthService = $read('app/Services/AdminSystemHealthService.php');
 
 $check('Admin design token file exists', $tokens !== '');
+$check('Unused dark theme module has been removed after the Light-only decision', !is_file($root . '/admin/assets/js/modules/theme.js'));
 $check('Admin palette stays aligned with storefront primary/background/surface tokens',
     preg_match('/--admin-color-primary:\s*(#[0-9a-f]{6})/i', $tokens, $adminPrimary) === 1
     && preg_match('/--color-primary:\s*(#[0-9a-f]{6})/i', $storeTokens, $storePrimary) === 1
@@ -67,7 +68,7 @@ $check('Shared shell profile exposes first and last name separately', str_contai
 $check('Dashboard includes both an accessible SVG trend chart and a compact bar chart', str_contains($dashboard, 'admin-dashboard-line-chart') && str_contains($dashboard, '<polyline') && str_contains($dashboard, 'admin-dashboard-chart-bar'));
 $check('Dashboard profile exposes first and last name separately', str_contains($dashboard, '<span><?= e($firstName !==') && str_contains($dashboard, '<span><?= e($lastName) ?></span>'));
 $check('Dashboard charts use real report rows and the current 14-day query', str_contains($dashboard, '$salesByPeriod') && str_contains($metricsService, 'salesRevenueByPeriod($currentQuery)') && str_contains($dashboard, '۱۴ روز اخیر'));
-$check('Dashboard separates all-time KPI data from current and previous 14-day comparisons', str_contains($metricsService, 'period_comparison') && str_contains($metricsService, "modify('-13 days')") && str_contains($metricsService, "modify('-27 days')") && str_contains($metricsService, "unset($allTimeData['from_date'], $allTimeData['to_date'])"));
+$check('Dashboard separates all-time KPI data from current and previous 14-day comparisons', str_contains($metricsService, 'period_comparison') && str_contains($metricsService, "modify('-13 days')") && str_contains($metricsService, "modify('-27 days')") && str_contains($metricsService, 'unset($allTimeData[\'from_date\'], $allTimeData[\'to_date\'])'));
 $check('Dashboard view displays period comparisons and audit event references', str_contains($dashboard, 'admin-dashboard-period-comparison') && str_contains($dashboard, 'شناسه رویداد: #'));
 $check('Action queue sorts items by explicit priority', str_contains($overviewService, "'critical' => 0") && str_contains($overviewService, 'usort($queueItems'));
 $check('System health checks required PHP extensions and database connectivity', str_contains($healthService, "['pdo', 'pdo_mysql', 'json', 'mbstring']") && str_contains($healthService, "query('SELECT 1')"));
