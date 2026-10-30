@@ -39,8 +39,7 @@ $canManageAccess = $adminAuth->canAny([
 ]);
 
 /*
- * Shared authenticated-admin shell.
- * Dashboard keeps its own shell; all other admin pages receive this RTL shell.
+ * Shared authenticated-admin shell for dashboard and internal admin pages.
  */
 ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch, $canUseCapabilities, $canManageAccess): string {
     if (stripos($html, '</head>') !== false) {
@@ -99,6 +98,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
 
     $topbar = '
     <header class="admin-shared-topbar">
+        <button type="button" class="admin-shared-mobile-menu" data-admin-menu-toggle aria-controls="admin-shared-sidebar" aria-expanded="false" aria-label="باز کردن منوی مدیریت">☰</button>
         <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
         ' . $search . '
         <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده">
@@ -115,7 +115,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         : '';
 
     $nav = '
-    <aside class="admin-shared-sidebar" aria-label="ناوبری پنل مدیریت">
+    <aside id="admin-shared-sidebar" class="admin-shared-sidebar" data-admin-sidebar aria-label="ناوبری پنل مدیریت">
         <a class="admin-shared-brand" href="' . e(url('/admin')) . '">
             <span class="admin-shared-brand-mark" aria-hidden="true">N</span>
             <span>نیواد <small>مدیریت فروشگاه</small></span>
