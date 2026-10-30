@@ -62,3 +62,11 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-operations-card a[aria-disabled=true]{color:var(--admin-color-text-muted);text-decoration:none;cursor:default}
 .admin-operations-footer{color:var(--admin-color-text-muted)}
 .admin-operations-footer strong{color:var(--admin-color-text)}
+
+
+.admin-capabilities-main{max-width:var(--admin-content-width);margin-inline:auto;padding:24px;gap:20px}
+.admin-capabilities-header,.admin-capability-panel-heading{flex-direction:row;align-items:center;justify-content:space-between}
+.admin-capabilities-header h1{font-size:1.8rem}
+.admin-capability-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+.admin-capability-form-wide{grid-column:1/-1}
+.admin-capability-actions{grid-template-columns:minmax(140px,220px) auto;align-items:center}
