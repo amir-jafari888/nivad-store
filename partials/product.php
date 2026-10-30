@@ -1,3 +1,4 @@
+<?php $cmsContent = CmsContentRenderer::activeContent(); ?>
 <section
     class="products section"
     aria-labelledby="products-title"
@@ -7,7 +8,7 @@
 
     <div class="container products-shell">
         <header class="products-heading">
-            <h2 id="products-title">محصولات منتخب</h2>
+            <h2 id="products-title"><?= e((string)($cmsContent['heading'] ?? 'محصولات منتخب')) ?></h2>
             <div class="products-navigation" aria-label="کنترل اسلایدر محصولات">
                 <button type="button" class="products-nav-button" data-products-prev aria-label="محصولات قبلی" disabled>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"></path></svg>
