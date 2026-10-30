@@ -83,6 +83,14 @@ require_once dirname(__DIR__) . '/includes/auth.php';
         <div class="admin-capability-list" data-capability-list="analytics"></div>
     </section>
 
+    <section class="admin-capability-panel" aria-labelledby="admin-health-title">
+        <div class="admin-capability-panel-heading">
+            <div><h2 id="admin-health-title">سلامت سیستم</h2><p>Probe فقط‌خواندنی برای PHP و اتصال دیتابیس؛ سرویس‌های خارجی در این گزارش بررسی نمی‌شوند.</p></div>
+            <button type="button" data-capability-refresh="health">بررسی مجدد</button>
+        </div>
+        <div class="admin-capability-list" data-capability-list="health"></div>
+    </section>
+
     <section class="admin-capability-panel" aria-labelledby="admin-preferences-title">
         <div class="admin-capability-panel-heading">
             <div><h2 id="admin-preferences-title">تنظیمات شخصی مدیر</h2><p>تنظیمات در حساب مدیر ذخیره می‌شوند، نه فقط در مرورگر.</p></div>
