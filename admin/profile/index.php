@@ -14,6 +14,11 @@ if ($displayName === '') {
     $displayName = 'نام مدیر ثبت نشده';
 }
 $adminId = isset($admin['id']) ? (int)$admin['id'] : null;
+$username = trim((string)($admin['username'] ?? ''));
+$email = trim((string)($admin['email'] ?? ''));
+$status = trim((string)($admin['status'] ?? ''));
+$lastLoginAt = trim((string)($admin['last_login_at'] ?? ''));
+$createdAt = trim((string)($admin['created_at'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -54,6 +59,26 @@ $adminId = isset($admin['id']) ? (int)$admin['id'] : null;
                 <div>
                     <dt>شناسه مدیر</dt>
                     <dd><?= $adminId !== null && $adminId > 0 ? e((string)$adminId) : 'در دسترس نیست' ?></dd>
+                </div>
+                <div>
+                    <dt>نام کاربری</dt>
+                    <dd><?= e($username !== '' ? $username : 'ثبت نشده') ?></dd>
+                </div>
+                <div>
+                    <dt>ایمیل حساب</dt>
+                    <dd><?= e($email !== '' ? $email : 'ثبت نشده') ?></dd>
+                </div>
+                <div>
+                    <dt>وضعیت حساب</dt>
+                    <dd><?= e($status !== '' ? $status : 'نامشخص') ?></dd>
+                </div>
+                <div>
+                    <dt>آخرین ورود ثبت‌شده</dt>
+                    <dd><?= e($lastLoginAt !== '' ? $lastLoginAt : 'ثبت نشده') ?></dd>
+                </div>
+                <div>
+                    <dt>تاریخ ایجاد حساب</dt>
+                    <dd><?= e($createdAt !== '' ? $createdAt : 'در دسترس نیست') ?></dd>
                 </div>
             </dl>
         </section>
