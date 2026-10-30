@@ -111,6 +111,7 @@ if (
     }
 }
 
+phase2Check('Base admin access permission is defined and seeded', is_string($catalog) && str_contains($catalog, 'ADMIN_ACCESS') && is_string($seed) && str_contains($seed, "SELECT 'admin.access' AS name"));
 phase2Check('Super Admin bypass requires the canonical active, non-deleted role slug', is_string($authorization) && str_contains($authorization, "=== 'super-admin'") && str_contains($authorization, "=== 'active'") && str_contains($authorization, "'deleted_at'] ?? null) === null"));
 phase2Check('Authorization rejects invalid admin IDs and unknown permission definitions', is_string($authorization) && str_contains($authorization, 'REASON_INVALID_ADMIN_USER') && str_contains($authorization, 'REASON_PERMISSION_NOT_FOUND'));
 phase2Check('Permission lookup excludes inactive and deleted permission definitions', is_string($permissionRepository) && str_contains($permissionRepository, "status = :status") && str_contains($permissionRepository, 'deleted_at IS NULL'));
