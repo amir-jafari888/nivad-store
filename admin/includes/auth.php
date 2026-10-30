@@ -76,8 +76,8 @@ ob_start(static function (string $html) use ($currentAdmin): string {
         <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
         <div class="admin-global-search" data-admin-global-search>
             <label class="admin-global-search-label" for="admin-global-search-input">جست‌وجوی سراسری</label>
-            <input id="admin-global-search-input" type="search" placeholder="جست‌وجوی محصول، سفارش، مشتری یا تیکت…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="admin-global-search-results">
-            <ul id="admin-global-search-results" class="admin-global-search-results" role="listbox" hidden></ul>
+            <input id="admin-global-search-input" type="search" placeholder="جست‌وجوی محصول، سفارش، مشتری یا تیکت…" autocomplete="off" aria-autocomplete="list" aria-controls="admin-global-search-results">
+            <ul id="admin-global-search-results" class="admin-global-search-results" role="list" hidden></ul>
             <span class="admin-global-search-shortcut" aria-hidden="true">Ctrl K</span>
         </div>
         <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده">
