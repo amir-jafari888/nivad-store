@@ -131,6 +131,9 @@ final class AdminAccessService
 
     public function assignAdminRoles(int $targetId, int $actorId, array $input): bool
     {
+        if ($targetId === $actorId) {
+            throw new InvalidArgumentException('تغییر نقش حساب مدیر فعلی از این رابط مجاز نیست.');
+        }
         $target = $this->repository->adminById($targetId);
         if ($target === null || $target['deleted_at'] !== null) return false;
         $roleIds = $this->ids($input['role_ids'] ?? []);
