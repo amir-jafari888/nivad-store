@@ -4,8 +4,6 @@
 -- Email/Gmail delivery is intentionally excluded.
 -- Apply after 20261030_001_admin_route_permissions.sql.
 
-START TRANSACTION;
-
 CREATE TABLE IF NOT EXISTS admin_notifications (
     id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     recipient_admin_user_id BIGINT(20) UNSIGNED DEFAULT NULL,
@@ -194,5 +192,3 @@ CREATE TABLE IF NOT EXISTS admin_content_revisions (
         FOREIGN KEY (actor_admin_id) REFERENCES admin_users (id)
         ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-COMMIT;
