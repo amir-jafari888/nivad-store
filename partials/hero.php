@@ -1,3 +1,4 @@
+<?php $cmsContent = CmsContentRenderer::activeContent(); ?>
 <main>
     <section class="hero section" aria-labelledby="hero-title">
         <div class="container">
@@ -13,21 +14,21 @@
                         <div class="hero-slide__overlay" aria-hidden="true"></div>
 
                         <div class="hero-slide__content">
-                            <span class="hero-eyebrow">انتخاب هوشمند</span>
+                            <span class="hero-eyebrow" data-cms-field="eyebrow"><?= e((string)($cmsContent['eyebrow'] ?? 'انتخاب هوشمند')) ?></span>
 
                             <h1 id="hero-title" class="hero-title">
-                                گوشی مناسب تو، همین‌جاست
+                                <?= e((string)($cmsContent['heading'] ?? 'گوشی مناسب تو، همین‌جاست')) ?>
                             </h1>
 
                             <p class="hero-description">
-                                مدل‌ها و امکانات را مقایسه کن و انتخابت را با خیال راحت انجام بده.
+                                <?= e((string)($cmsContent['body'] ?? 'مدل‌ها و امکانات را مقایسه کن و انتخابت را با خیال راحت انجام بده.')) ?>
                             </p>
 
                             <div class="hero-actions">
                                 <a
-                                    href="<?= e(url('/pages/store/products/index.php')) ?>"
+                                    href="<?= e(url((string)($cmsContent['button_url'] ?? '/pages/store/products/index.php'))) ?>"
                                     class="hero-button hero-button-primary">
-                                    مشاهده محصولات
+                                    <?= e((string)($cmsContent['button_label'] ?? 'مشاهده محصولات')) ?>
                                 </a>
 
                                 <a
