@@ -236,6 +236,16 @@ final class AdminCapabilityController extends Controller
         $this->success(['deleted' => true], 'نمای ذخیره‌شده حذف شد.');
     }
 
+    public function globalSearch(): never
+    {
+        try {
+            $items = $this->service->globalSearch((string)Request::query('q', ''));
+            $this->success(['items' => $items], 'نتایج جست‌وجوی سراسری دریافت شدند.');
+        } catch (InvalidArgumentException $exception) {
+            $this->invalid($exception);
+        }
+    }
+
     public function health(): never
     {
         $checks = [
