@@ -56,5 +56,11 @@ jobs:
             tests/phase-4-incident-detection-contract.php
           )
           for file in "${files[@]}"; do php -l "$file"; done
+      - name: Lint browser modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module --check < assets/js/modules/client-error-monitor.js
+          node --input-type=module --check < admin/assets/js/modules/admin-incidents.js
       - name: Run Phase 4 static contracts
         run: php tests/phase-4-incident-detection-contract.php

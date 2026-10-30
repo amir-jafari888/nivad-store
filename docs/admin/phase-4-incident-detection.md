@@ -154,6 +154,7 @@ Status legend:
 ## Current gate
 - Implementation branch: feature/admin-phase-4-incident-detection-2026-10-30
 - PR: #53 (stacked on Phase 3 PR #52)
-- Phase 4 static contract suite: 32/32 PASS on the latest verified run before the most recent follow-up commit.
+- Phase 4 GitHub Actions run #5: 32/32 static contract checks PASS; PHP lint PASS.
 - Target database migration and runtime integration: NOT RUN.
+- The shared Admin Panel Foundation Regression has a pre-existing `AdminAccountPolicy::validateCreate()` undefined-method failure; the same failure was reproduced on the Phase 3 base commit before Phase 4.
 - LOCK: NO.
