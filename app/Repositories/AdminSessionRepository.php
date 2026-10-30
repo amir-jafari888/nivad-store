@@ -226,6 +226,80 @@ final class AdminSessionRepository
         return $stmt->rowCount() === 1;
     }
 
+    public function activeForAllAdmins(string $currentTokenHash): array
+    {
+        if ($currentTokenHash === '') {
+            return [];
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT s.id, s.admin_user_id,
+                    COALESCE(
+                        NULLIF(TRIM(CONCAT(COALESCE(a.first_name, ""), " ", COALESCE(a.last_name, ""))), ""),
+                        CONCAT("مدیر #", a.id)
+                    ) AS admin_name,
+                    s.ip_address, s.user_agent, s.last_activity_at, s.expires_at, s.created_at
+             FROM admin_sessions s
+             INNER JOIN admin_users a ON a.id = s.admin_user_id
+             WHERE a.status = "active"
+               AND a.deleted_at IS NULL
+               AND s.revoked_at IS NULL
+               AND s.expires_at > CURRENT_TIMESTAMP
+               AND s.session_token_hash <> :current_token_hash
+             ORDER BY s.last_activity_at DESC, s.id DESC'
+        );
+        $stmt->execute(['current_token_hash' => $currentTokenHash]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function activeSessionOwner(int $sessionId, string $currentTokenHash): ?array
+    {
+        if ($sessionId < 1 || $currentTokenHash === '') {
+            return null;
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT s.id, s.admin_user_id
+             FROM admin_sessions s
+             INNER JOIN admin_users a ON a.id = s.admin_user_id
+             WHERE s.id = :id
+               AND s.session_token_hash <> :current_token_hash
+               AND s.revoked_at IS NULL
+               AND s.expires_at > CURRENT_TIMESTAMP
+               AND a.status = "active"
+               AND a.deleted_at IS NULL
+             LIMIT 1'
+        );
+        $stmt->execute([
+            'id' => $sessionId,
+            'current_token_hash' => $currentTokenHash,
+        ]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function revokeByIdForAnyAdmin(int $sessionId, string $currentTokenHash): bool
+    {
+        if ($sessionId < 1 || $currentTokenHash === '') {
+            return false;
+        }
+
+        $stmt = $this->db->prepare(
+            'UPDATE admin_sessions
+             SET revoked_at = CURRENT_TIMESTAMP
+             WHERE id = :id
+               AND session_token_hash <> :current_token_hash
+               AND revoked_at IS NULL
+               AND expires_at > CURRENT_TIMESTAMP
+             LIMIT 1'
+        );
+        $stmt->execute([
+            'id' => $sessionId,
+            'current_token_hash' => $currentTokenHash,
+        ]);
+        return $stmt->rowCount() === 1;
+    }
+
     public function deleteExpired(): int
     {
         $stmt = $this->db->prepare(
