@@ -42,7 +42,7 @@ $formatComparison = static function (mixed $current, mixed $previous): string {
     if (!is_numeric($current) || !is_numeric($previous)) return 'مقایسه در دسترس نیست';
     $current = (float)$current;
     $previous = (float)$previous;
-    if ($previous === 0.0) return $current === 0.0 ? 'بدون تغییر نسبت به مبنای صفر' : 'دوره قبل بدون داده';
+    if ($previous === 0.0) return $current === 0.0 ? 'بدون تغییر؛ هر دو دوره صفر هستند' : 'مقدار دوره قبل صفر است؛ درصد قابل محاسبه نیست';
     $change = (($current - $previous) / abs($previous)) * 100;
     $direction = $change > 0 ? 'افزایش' : ($change < 0 ? 'کاهش' : 'بدون تغییر');
     return $direction . ' ' . number_format(abs($change), 1) . '٪';
