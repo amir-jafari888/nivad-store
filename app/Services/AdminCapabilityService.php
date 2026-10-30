@@ -103,7 +103,16 @@ final class AdminCapabilityService
         $contextJson = $safeContext !== []
             ? json_encode($safeContext, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
             : null;
-        $fingerprint = hash('sha256', strtolower(trim($source)) . '|' . strtolower(trim($title)));
+        $fingerprintMaterial = implode('|', [
+            strtolower(trim($source)),
+            strtolower(trim($title)),
+            strtolower((string) ($safeContext['route_path'] ?? $safeContext['page'] ?? '')),
+            strtolower((string) ($safeContext['exception_type'] ?? '')),
+            strtolower((string) ($safeContext['file'] ?? '')),
+            (string) ($safeContext['line'] ?? ''),
+            strtolower((string) ($safeContext['event_type'] ?? '')),
+        ]);
+        $fingerprint = hash('sha256', $fingerprintMaterial);
         $incidentId = $this->repository->recordIncident([
             'fingerprint' => $fingerprint,
             'source' => mb_substr(trim($source), 0, 100),

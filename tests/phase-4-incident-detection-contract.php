@@ -38,6 +38,12 @@ $check('Capture failures do not replace the original request', str_contains($cap
 $check('Context is redacted before persistence', str_contains($capture, 'SensitiveDataRedactor::redact'));
 $check('Canonical foundation incident table is used', str_contains($capRepo, 'admin_system_incidents') && !str_contains($capRepo, 'FROM admin_incidents'));
 $check('Occurrence count and last-seen are updated', str_contains($capRepo, 'occurrence_count = occurrence_count + 1') && str_contains($capRepo, 'last_seen_at = CURRENT_TIMESTAMP'));
+$check('Incident grouping distinguishes route and exception context', str_contains($read('app/Services/AdminCapabilityService.php'), '$safeContext[\'route_path\']') && str_contains($read('app/Services/AdminCapabilityService.php'), '$safeContext[\'exception_type\']'));
+$check('Incident timeline redacts legacy context before returning it', str_contains($detectRepo, 'SensitiveDataRedactor::redact'));
+$check('Incident list does not expose raw context JSON', str_contains($capRepo, 'i.incident_key') && !str_contains(substr($capRepo, strpos($capRepo, 'public function incidents('), strpos($capRepo, 'public function countIncidentsByStatus(')), 'i.*'));
+$check('SMTP transport failures are reported as external-service incidents', str_contains($read('app/Services/AdminEmailOutboxWorker.php'), 'captureExternalFailure'));
+$check('Database failure reporting is available to caught service exceptions', str_contains($read('app/Core/Database.php'), 'public static function reportFailure') && str_contains($read('app/Controllers/PaymentController.php'), 'Database::reportFailure'));
+$check('Payment failure events are captured without storing provider messages', str_contains($read('app/Controllers/PaymentController.php'), 'payment.failure'));
 $check('Incident timeline events are persisted', str_contains($capRepo, 'admin_incident_events'));
 $check('Timeline query is bounded and ordered', str_contains($detectRepo, 'ORDER BY occurred_at DESC, id DESC') && str_contains($detectRepo, 'min(200'));
 $check('Frequency analysis is time-windowed and grouped', str_contains($detectRepo, 'min(720') && str_contains($detectRepo, 'GROUP BY source, severity'));

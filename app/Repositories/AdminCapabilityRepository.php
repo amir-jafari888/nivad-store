@@ -157,7 +157,10 @@ final class AdminCapabilityRepository
     public function incidents(string $status = '', int $limit = 100): array
     {
         $limit = max(1, min(200, $limit));
-        $sql = 'SELECT i.*, m.assigned_admin_id, m.last_notification_at,
+        $sql = 'SELECT i.id, i.incident_key, i.severity, i.status, i.source, i.title,
+                       i.description, i.occurrence_count, i.first_seen_at, i.last_seen_at,
+                       i.resolved_by_admin_id, i.resolved_at, i.created_at, i.updated_at,
+                       m.assigned_admin_id, m.last_notification_at,
                        a.first_name AS assigned_first_name, a.last_name AS assigned_last_name
                 FROM admin_system_incidents i
                 LEFT JOIN admin_incident_metadata m ON m.incident_id = i.id

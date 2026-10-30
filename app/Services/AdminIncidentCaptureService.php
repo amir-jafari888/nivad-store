@@ -23,7 +23,8 @@ final class AdminIncidentCaptureService
             $safe = SensitiveDataRedactor::redact($context);
             $safe['request_id'] = AdminRequestContext::id();
             $safe['request_method'] = Request::method();
-            $safe['route_path'] = is_string($path) ? mb_substr($path, 0, 255) : '/';
+            $fallbackPath = $safe['page'] ?? (is_string($path) ? $path : '/');
+            $safe['route_path'] = mb_substr((string) ($safe['route_path'] ?? $fallbackPath), 0, 255);
 
             (new AdminCapabilityService())->recordIncident(
                 mb_substr(trim($source), 0, 100),

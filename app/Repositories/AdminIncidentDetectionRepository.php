@@ -31,7 +31,16 @@ final class AdminIncidentDetectionRepository
              LIMIT ' . $limit
         );
         $stmt->execute(['incident_id' => $incidentId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($items as &$item) {
+            if (!is_string($item['context_json'] ?? null)) continue;
+            $decoded = json_decode($item['context_json'], true);
+            $item['context_json'] = is_array($decoded)
+                ? json_encode(SensitiveDataRedactor::redact($decoded), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                : null;
+        }
+        unset($item);
+        return $items;
     }
 
     public function analysis(int $hours = 24): array

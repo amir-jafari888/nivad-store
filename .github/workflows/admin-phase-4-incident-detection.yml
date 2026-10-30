@@ -12,6 +12,7 @@ on:
       - 'app/Repositories/AdminIncidentDetectionRepository.php'
       - 'app/Services/AdminCapabilityService.php'
       - 'app/Services/AdminIncidentCaptureService.php'
+      - 'app/Services/AdminEmailOutboxWorker.php'
       - 'routes/api.php'
       - 'app/Core/AdminRoutePermissionMap.php'
       - 'database/migrations/20261030_admin_incident_detection_phase4.sql'
