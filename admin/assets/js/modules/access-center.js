@@ -127,7 +127,13 @@ const adminAccessCenter = () => {
           await loadAdmins(); say("نقش‌های مدیر به‌روزرسانی شدند.");
         } catch (error) { say(error.message, true); }
       });
-      article.append(status, update, el("small", "تخصیص نقش"), roleSelect, assign);
+      const remove = el("button", "غیرفعال‌سازی و لغو نشست‌ها"); remove.type = "button";
+      remove.addEventListener("click", async () => {
+        if (!window.confirm("حساب این مدیر غیرفعال شود و تمام نشست‌های او لغو شوند؟")) return;
+        try { await request("/admins/" + admin.id, "DELETE"); await refresh(); say("حساب مدیر غیرفعال و نشست‌ها لغو شدند."); }
+        catch (error) { say(error.message, true); }
+      });
+      article.append(status, update, el("small", "تخصیص نقش"), roleSelect, assign, remove);
       target.append(article);
     });
   };
