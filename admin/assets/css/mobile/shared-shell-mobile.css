@@ -120,3 +120,5 @@
 .admin-dashboard-comparison-values strong{font-size:20px}
 
 .admin-profile-details{grid-template-columns:minmax(0,1fr)}
+
+.admin-nav-open{overflow:hidden}
