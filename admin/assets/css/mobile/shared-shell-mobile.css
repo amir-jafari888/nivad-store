@@ -118,3 +118,5 @@
 .admin-dashboard-period-comparison{grid-template-columns:minmax(0,1fr);gap:10px;margin-block:16px}
 .admin-dashboard-comparison-heading{display:grid;gap:4px}
 .admin-dashboard-comparison-values strong{font-size:20px}
+
+.admin-profile-details{grid-template-columns:minmax(0,1fr)}
