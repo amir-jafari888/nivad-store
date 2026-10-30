@@ -4,6 +4,11 @@ declare(strict_types=1);
 $pageTitle = 'شرایط استفاده | نیواد';
 $metaDescription = 'شرایط عمومی استفاده از امکانات فروشگاه نیواد؛ نسخه نهایی باید پیش از انتشار توسط مالک کسب‌وکار تأیید شود.';
 include_once __DIR__ . '/../../partials/header.php';
+
+if (CmsContentRenderer::renderPage('terms')) {
+    include_once __DIR__ . '/../../partials/footer.php';
+    return;
+}
 ?>
 
 <main class="content-page" id="main-content">
