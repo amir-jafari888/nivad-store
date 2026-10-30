@@ -170,6 +170,50 @@ final class AdminCapabilityService
         return $this->repository->updateTicket($id, $status, $priority, $assignedAdminId);
     }
 
+    public function recordProductEvent(array $input): int
+    {
+        $event = (string)($input['event_name'] ?? '');
+        $allowedEvents = ['product_view', 'variant_select', 'add_to_cart', 'wishlist_add'];
+        $productId = (int)($input['product_id'] ?? 0);
+        $variantId = isset($input['variant_id']) && (int)$input['variant_id'] > 0
+            ? (int)$input['variant_id']
+            : null;
+
+        if (!in_array($event, $allowedEvents, true) || $productId < 1) {
+            throw new InvalidArgumentException('رویداد یا شناسه محصول نامعتبر است.');
+        }
+        if (!$this->repository->productExists($productId)) {
+            throw new InvalidArgumentException('محصول فعال پیدا نشد.');
+        }
+        if ($variantId !== null && !$this->repository->variantBelongsToProduct($variantId, $productId)) {
+            throw new InvalidArgumentException('مدل انتخاب‌شده متعلق به این محصول نیست.');
+        }
+
+        Session::start();
+        $sessionId = Session::id();
+        $now = time();
+        $rate = Session::get('_product_analytics_rate', []);
+        if (!is_array($rate)) $rate = [];
+        $rate = array_values(array_filter($rate, static fn($timestamp): bool => is_int($timestamp) && $timestamp > ($now - 60)));
+        if (count($rate) >= 60) {
+            throw new InvalidArgumentException('تعداد رویدادهای ثبت‌شده در این نشست بیش از حد مجاز است.');
+        }
+        $rate[] = $now;
+        Session::set('_product_analytics_rate', $rate);
+
+        return $this->repository->recordProductEvent([
+            'event_name' => $event,
+            'product_id' => $productId,
+            'variant_id' => $variantId,
+            'user_id' => Auth::id(),
+            'visitor_hash' => hash('sha256', 'visitor|' . $sessionId . '|' . Request::userAgent()),
+            'session_hash' => hash('sha256', 'session|' . $sessionId),
+            'search_term_hash' => null,
+            'source' => 'product-detail',
+            'context_json' => null,
+        ]);
+    }
+
     public function analytics(string $from, string $to, int $limit = 50): array
     {
         $start = $this->date($from);
