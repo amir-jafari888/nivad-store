@@ -30,7 +30,7 @@ $sections = [
         'title' => 'پایش و تحلیل',
         'description' => 'اعلان‌های مدیریتی، رخدادها، سلامت سیستم و رفتار مشتری.',
         'items' => [
-            ['id' => 'admin-notifications', 'title' => 'مرکز اعلان مدیران', 'status' => 'API و UI پایه اضافه شده / تست دیتابیس واقعی باقی', 'detail' => 'اعلان شخصی مدیر، فهرست، خواندن و ایجاد دستی فعال شده؛ رخدادهای بحرانی نیز اعلان deduplicated برای مدیران فعال تولید می‌کنند. رویدادهای فروش هنوز متصل نیستند.', 'href' => url('/admin/capabilities/index.php#admin-notifications')],
+            ['id' => 'admin-notifications', 'title' => 'مرکز اعلان مدیران', 'status' => 'API و UI پایه اضافه شده / تست دیتابیس واقعی باقی', 'detail' => 'اعلان شخصی مدیر، فهرست و خواندن فعال است؛ رخدادهای بحرانی و تیکت‌های جدید مشتری برای مدیران فعال اعلان deduplicated تولید می‌کنند. رویدادهای فروش هنوز متصل نیستند.', 'href' => url('/admin/capabilities/index.php#admin-notifications')],
             ['id' => 'incidents', 'title' => 'مدیریت رخدادها', 'status' => 'ثبت رخدادهای بحرانی پایه اضافه شده / پوشش ناقص', 'detail' => 'Unhandled Server Exception با deduplication ثبت می‌شود و وضعیت قابل تغییر است؛ Error Handlerهای مدیریت‌شده، notification خودکار و تست runtime باقی است.', 'href' => url('/admin/capabilities/index.php#admin-incidents-title')],
             ['id' => 'system-health', 'title' => 'سلامت سیستم', 'status' => 'Probe پایه PHP و دیتابیس اضافه شده / ناقص', 'detail' => 'وضعیت PHP، اتصال دیتابیس و timezone بررسی می‌شود؛ دیسک، صف‌ها، cron، درگاه پرداخت و سرویس‌های خارجی هنوز probe ندارند.', 'href' => '#system-health'],
             ['id' => 'product-analytics', 'title' => 'تحلیل رفتار محصول', 'status' => 'Collector و گزارش پایه اضافه شده / پوشش ناقص', 'detail' => 'بازدید، انتخاب مدل، افزودن به سبد و علاقه‌مندی در صفحه جزئیات ثبت می‌شود؛ سایر صفحات، checkout، تبدیل و funnel هنوز پوشش داده نشده‌اند.', 'href' => url('/admin/capabilities/index.php#admin-analytics-title')],
@@ -41,7 +41,7 @@ $sections = [
         'title' => 'مشتریان و پشتیبانی',
         'description' => 'رسیدگی به درخواست‌های مشتری و ارتباطات داخل پنل.',
         'items' => [
-            ['id' => 'support-center', 'title' => 'مرکز پشتیبانی و تیکت', 'status' => 'Schema در دیتابیس طبق گزارش اجرا شده / API و UI در حال اتصال', 'detail' => 'ایجاد تیکت، پیام داخلی/پاسخ مدیر و تغییر وضعیت اضافه شده؛ اتصال به کانال ورودی مشتری و اعلان خودکار باقی است.', 'href' => url('/admin/capabilities/index.php#admin-tickets-title')],
+            ['id' => 'support-center', 'title' => 'مرکز پشتیبانی و تیکت', 'status' => 'Schema در دیتابیس طبق گزارش اجرا شده / API و UI در حال اتصال', 'detail' => 'ثبت تیکت توسط مشتری، پاسخ مشتری، پیام داخلی/پاسخ مدیر، تغییر وضعیت و تخصیص مسئول اضافه شده؛ اعلان داخلی برای تیکت جدید فعال است. اتصال به اعلان‌های دیگر و SLA باقی است.', 'href' => url('/admin/capabilities/index.php#admin-tickets-title')],
             ['id' => 'questions', 'title' => 'پرسش‌های محصول', 'status' => 'موجود', 'detail' => 'از ماژول فعلی پرسش و پاسخ استفاده می‌شود.', 'href' => url('/admin/questions')],
             ['id' => 'reviews', 'title' => 'دیدگاه‌ها', 'status' => 'موجود', 'detail' => 'ماژول فعلی مدیریت دیدگاه و رسانه حفظ می‌شود.', 'href' => url('/admin/reviews')],
         ],
