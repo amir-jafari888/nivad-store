@@ -54,7 +54,8 @@ const adminAccessCenter = () => {
     target.replaceChildren();
     (data.items || []).forEach(session => {
       const article = el("article", undefined, "admin-access-row");
-      article.append(el("strong", "نشست #" + session.id + " · " + (session.ip_address || "IP نامشخص")));
+      article.append(el("strong", "نشست #" + session.id + " · " + (session.admin_name || "مدیر نامشخص")));
+      article.append(el("p", "IP: " + (session.ip_address || "ثبت نشده")));
       article.append(el("p", "آخرین فعالیت: " + session.last_activity_at + " · انقضا: " + session.expires_at));
       article.append(el("p", session.user_agent || "User-Agent ثبت نشده"));
       const revoke = el("button", "لغو نشست"); revoke.type = "button";
