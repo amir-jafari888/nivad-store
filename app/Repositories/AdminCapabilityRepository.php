@@ -13,7 +13,7 @@ final class AdminCapabilityRepository
 
     public function adminExists(int $adminId): bool
     {
-        $stmt = $this->db->prepare('SELECT 1 FROM admin_users WHERE id = :id AND status = "active" AND deleted_at IS NULL LIMIT 1');
+        $stmt = $this->db->prepare('SELECT 1 FROM admin_users WHERE id = :id AND status IN ("active", "out_of_stock") AND deleted_at IS NULL LIMIT 1');
         $stmt->execute(['id' => $adminId]);
         return $stmt->fetchColumn() !== false;
     }
