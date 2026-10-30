@@ -6,6 +6,21 @@ require_once dirname(__DIR__, 2) . '/app/Core/Bootstrap.php';
 Bootstrap::boot();
 require_once dirname(__DIR__) . '/includes/auth.php';
 
+$capabilityPagePermissions = [
+    'admin.capabilities.notifications.index',
+    'admin.capabilities.incidents.index',
+    'admin.capabilities.tickets.index',
+    'admin.capabilities.analytics.index',
+    'admin.capabilities.health.index',
+    'admin.capabilities.preferences.index',
+    'admin.capabilities.saved-views.index',
+    'admin.capabilities.revisions.index',
+];
+
+if (!$adminAuth->canAny($capabilityPagePermissions)) {
+    $adminAuth->authorize('admin.capabilities.notifications.index');
+}
+
 ?><!doctype html>
 <html lang="fa" dir="rtl">
 <head>
