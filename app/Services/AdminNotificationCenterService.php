@@ -93,10 +93,13 @@ final class AdminNotificationCenterService
         foreach ($this->repository->activeAdmins() as $admin) {
             $all = $this->repository->preferences((int)$admin['id']);
             $preference = $all[$eventKey] ?? $all['*'];
-            if (!$preference['in_app_enabled']) continue;
             if (self::SEVERITY_RANK[$severity] < self::SEVERITY_RANK[$preference['minimum_severity']]) continue;
-            if ($this->isQuietNow($preference)) continue;
-            $admin['email_enabled'] = (bool)$preference['email_enabled'];
+            $inAppEnabled = (bool)$preference['in_app_enabled'];
+            $emailEnabled = (bool)$preference['email_enabled'];
+            if ($emailEnabled && $this->isQuietNow($preference)) $emailEnabled = false;
+            if (!$inAppEnabled && !$emailEnabled) continue;
+            $admin['in_app_enabled'] = $inAppEnabled;
+            $admin['email_enabled'] = $emailEnabled;
             $recipients[] = $admin;
         }
         if ($recipients === []) return 0;

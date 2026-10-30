@@ -256,7 +256,9 @@ final class AdminNotificationCenterRepository
                  VALUES (:notification_id, :admin_id, :email, :subject, :body, "pending")'
             );
             foreach ($recipients as $recipient) {
-                $recipientInsert->execute(['notification_id' => $notificationId, 'admin_id' => (int)$recipient['id']]);
+                if (!empty($recipient['in_app_enabled'])) {
+                    $recipientInsert->execute(['notification_id' => $notificationId, 'admin_id' => (int)$recipient['id']]);
+                }
                 if (($policy['email_enabled'] ?? false) && !empty($recipient['email_enabled']) && !empty($recipient['email'])) {
                     $outboxInsert->execute([
                         'notification_id' => $notificationId, 'admin_id' => (int)$recipient['id'],
