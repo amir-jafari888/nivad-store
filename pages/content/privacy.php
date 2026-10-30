@@ -4,6 +4,11 @@ declare(strict_types=1);
 $pageTitle = 'حریم خصوصی | نیواد';
 $metaDescription = 'اطلاعات عمومی درباره استفاده از داده‌ها هنگام استفاده از امکانات فروشگاه نیواد؛ متن نهایی نیازمند تأیید مالک کسب‌وکار است.';
 include_once __DIR__ . '/../../partials/header.php';
+
+if (CmsContentRenderer::renderPage('privacy')) {
+    include_once __DIR__ . '/../../partials/footer.php';
+    return;
+}
 ?>
 
 <main class="content-page" id="main-content">
