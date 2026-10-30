@@ -247,6 +247,49 @@ final class AdminAccessRepository
         return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
+    public function roleAssignedToActiveAdmin(int $roleId): bool
+    {
+        $stmt = $this->db->prepare(
+            'SELECT 1
+             FROM admin_user_roles ur
+             INNER JOIN admin_users a ON a.id = ur.admin_user_id
+             WHERE ur.role_id = :role_id
+               AND a.status = "active"
+               AND a.deleted_at IS NULL
+             LIMIT 1'
+        );
+        $stmt->execute(['role_id' => $roleId]);
+        return $stmt->fetchColumn() !== false;
+    }
+
+    public function softDeleteAdmin(int $adminId): bool
+    {
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare(
+                'UPDATE admin_users
+                 SET status = "inactive", deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+                 WHERE id = :id AND deleted_at IS NULL'
+            );
+            $stmt->execute(['id' => $adminId]);
+            if ($stmt->rowCount() !== 1) {
+                $this->db->rollBack();
+                return false;
+            }
+            $sessions = $this->db->prepare(
+                'UPDATE admin_sessions
+                 SET revoked_at = CURRENT_TIMESTAMP
+                 WHERE admin_user_id = :admin_id AND revoked_at IS NULL'
+            );
+            $sessions->execute(['admin_id' => $adminId]);
+            $this->db->commit();
+            return true;
+        } catch (Throwable $exception) {
+            if ($this->db->inTransaction()) $this->db->rollBack();
+            throw $exception;
+        }
+    }
+
     public function hasOtherActiveSuperAdmin(int $excludingAdminId): bool
     {
         $stmt = $this->db->prepare(
