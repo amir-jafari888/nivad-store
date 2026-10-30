@@ -73,6 +73,7 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
     $routeNames = array_values(array_unique($matches[1] ?? []));
 
     p56Check('Every Admin API auth middleware has a route permission middleware', $authCount > 0 && $authCount === $permissionCount);
+    p56Check('Shared capability read/write middleware arrays enforce both Admin authentication and route permission checks', str_contains($sources['routes'], '$adminCapabilityRead = [') && str_contains($sources['routes'], '$adminCapabilityWrite = [') && substr_count($sources['routes'], '$adminCapabilityRead,') >= 1 && substr_count($sources['routes'], '$adminCapabilityWrite,') >= 1);
     $duplicateNames = array_values(array_diff_assoc($matches[1] ?? [], array_unique($matches[1] ?? [])));
     $knownDuplicateNames = ['admin.variant-attributes.index', 'admin.variant-attributes.store', 'admin.variant-attributes.destroy'];
     p56Check('Admin API route permission names include the 18 capability routes', count($routeNames) >= 190);
