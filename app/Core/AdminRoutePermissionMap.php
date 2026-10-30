@@ -32,6 +32,7 @@ final class AdminRoutePermissionMap
         'admin.access.sessions.index' => 'admin.sessions.view',
         'admin.access.sessions.destroy' => 'admin.sessions.revoke',
         'admin.access.admins.index' => 'admin.admins.view',
+        'admin.access.admins.effective-permissions' => 'admin.permissions.manage',
         'admin.access.admins.store' => 'admin.admins.manage',
         'admin.access.admins.update' => 'admin.admins.manage',
         'admin.access.admins.destroy' => 'admin.admins.manage',
