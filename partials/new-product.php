@@ -15,7 +15,7 @@
             </p>
         </div>
 
-        <a href="<?= e(url((string)($cmsContent['button_url'] ?? '/products'))) ?>" class="new-products-more">
+        <a href="<?= e(url((string)($cmsContent['button_url'] ?? '/products'))) ?>" class="new-products-more" data-cms-field="button_label">
             <?= e((string)($cmsContent['button_label'] ?? 'مشاهده همه محصولات')) ?>
             <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M5 12h14" />
