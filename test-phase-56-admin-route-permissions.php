@@ -75,7 +75,7 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
     p56Check('Every Admin API auth middleware has a route permission middleware', $authCount > 0 && $authCount === $permissionCount);
     $duplicateNames = array_values(array_diff_assoc($matches[1] ?? [], array_unique($matches[1] ?? [])));
     $knownDuplicateNames = ['admin.variant-attributes.index', 'admin.variant-attributes.store', 'admin.variant-attributes.destroy'];
-    p56Check('Admin API route permission names include the 18 capability routes', count($routeNames) >= 189);
+    p56Check('Admin API route permission names include the 18 capability routes', count($routeNames) >= 190);
     p56Check('Only the three pre-existing variant-attribute route names are duplicated', array_values(array_unique($duplicateNames)) === $knownDuplicateNames);
     p56Check('Route permission middleware rejects unnamed Admin routes', str_contains($sources['middleware'], '$routeName === null') && str_contains($sources['middleware'], '$service->authorize('));
     p56Check('Authorization service is called through AdminAuthService', str_contains($sources['auth_service'], 'public function authorize(') && str_contains($sources['auth_service'], 'Authorization::authorize('));
@@ -93,6 +93,7 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
         'admin.capabilities.tickets.update',
         'admin.capabilities.analytics.index',
         'admin.capabilities.health.index',
+        'admin.capabilities.search.index',
         'admin.capabilities.preferences.index',
         'admin.capabilities.preferences.update',
         'admin.capabilities.saved-views.index',
@@ -145,6 +146,8 @@ p56Check('Admin access service protects the Super Admin role', is_string($source
 p56Check('Admin access UI is connected to the API module', is_string($sources['access_page']) && is_string($sources['access_js']));
 p56Check('Access module is registered in Admin main.js', is_file($root . '/admin/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/admin/assets/js/main.js'), 'access-center.js'));
 p56Check('Admin session monitoring is scoped to the current account and excludes the current session', is_string($sources['access_repository']) && is_string($sources['capability_controller']) && str_contains((string)file_get_contents($root . '/app/Repositories/AdminSessionRepository.php'), 'current_token_hash'));
+p56Check('Global search uses prepared queries over the supported entity tables', is_string($sources['capability_repository']) && str_contains($sources['capability_repository'], 'globalSearch(string $term)') && str_contains($sources['capability_repository'], 'FROM products') && str_contains($sources['capability_repository'], 'FROM orders') && str_contains($sources['capability_repository'], 'FROM users'));
+p56Check('Unhandled server exceptions are reported as Admin incidents', is_file($root . '/app/Core/ErrorHandler.php') && str_contains((string)file_get_contents($root . '/app/Core/ErrorHandler.php'), 'recordIncident('));
 
 echo '<hr><strong>STATIC PASS: ' . $passed . ' | STATIC FAIL: ' . $failed . ' | DB BLOCKED: ' . $blocked . "</strong><br>\n";
 
