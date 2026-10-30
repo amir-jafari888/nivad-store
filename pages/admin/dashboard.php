@@ -13,6 +13,8 @@ $orderItems = is_array($metrics['order_items'] ?? null) ? $metrics['order_items'
 $inventory = is_array($metrics['inventory'] ?? null) ? $metrics['inventory'] : [];
 $salesByPeriod = is_array($metrics['sales_by_period'] ?? null) ? $metrics['sales_by_period'] : [];
 $salesByPeriodStatus = (string)($metrics['sales_by_period_status'] ?? 'dependency');
+$periodComparison = is_array($metrics['period_comparison'] ?? null) ? $metrics['period_comparison'] : [];
+$period = is_array($metrics['period'] ?? null) ? $metrics['period'] : [];
 
 $activity = is_array($overview['activity'] ?? null) ? $overview['activity'] : [];
 $activityItems = is_array($activity['items'] ?? null) ? $activity['items'] : [];
@@ -35,6 +37,15 @@ $formatDateTime = static function (mixed $value): string {
     if (!is_string($value) || $value === '') return 'زمان نامشخص';
     try { return (new DateTimeImmutable($value))->format('Y/m/d H:i'); }
     catch (Throwable $exception) { return 'زمان نامشخص'; }
+};
+$formatComparison = static function (mixed $current, mixed $previous): string {
+    if (!is_numeric($current) || !is_numeric($previous)) return 'مقایسه در دسترس نیست';
+    $current = (float)$current;
+    $previous = (float)$previous;
+    if ($previous === 0.0) return $current === 0.0 ? 'بدون تغییر نسبت به مبنای صفر' : 'دوره قبل بدون داده';
+    $change = (($current - $previous) / abs($previous)) * 100;
+    $direction = $change > 0 ? 'افزایش' : ($change < 0 ? 'کاهش' : 'بدون تغییر');
+    return $direction . ' ' . number_format(abs($change), 1) . '٪';
 };
 $statusText = static fn(string $status): string => match ($status) {
     'ok' => 'سالم',
@@ -115,6 +126,29 @@ $quickActions[] = ['label' => 'تنظیمات پنل', 'detail' => 'شخصی‌�
                 <p class="admin-dashboard-kpi-value"><?= e($formatNumber($inventory['total_quantity'] ?? null)) ?></p>
                 <p class="admin-dashboard-kpi-foot">موجودی در دسترس: <strong><?= e($formatNumber($inventory['total_available_quantity'] ?? null)) ?></strong></p>
             </article>
+        </section>
+
+        <section class="admin-dashboard-period-comparison" aria-label="مقایسه عملکرد دوره‌ای">
+            <div class="admin-dashboard-comparison-heading">
+                <h2>مقایسه ۱۴ روز اخیر با ۱۴ روز قبل</h2>
+                <p><?= e((string)($period['from'] ?? '—')) ?> تا <?= e((string)($period['to'] ?? '—')) ?> در برابر <?= e((string)($period['previous_from'] ?? '—')) ?> تا <?= e((string)($period['previous_to'] ?? '—')) ?></p>
+            </div>
+            <?php foreach ([
+                'orders' => 'سفارش‌ها',
+                'payments' => 'پرداخت‌ها',
+                'items' => 'تعداد کالاهای سفارش‌شده',
+                'sales' => 'مبلغ سفارش‌ها',
+            ] as $key => $label) {
+                $comparison = is_array($periodComparison[$key] ?? null) ? $periodComparison[$key] : [];
+                $currentValue = $comparison['current'] ?? null;
+                $previousValue = $comparison['previous'] ?? null;
+            ?>
+                <article class="admin-dashboard-comparison-card">
+                    <h3><?= e($label) ?></h3>
+                    <p class="admin-dashboard-comparison-values"><strong><?= e($formatNumber($currentValue)) ?></strong><span>دوره قبل: <?= e($formatNumber($previousValue)) ?></span></p>
+                    <p class="admin-dashboard-comparison-delta"><?= e($formatComparison($currentValue, $previousValue)) ?></p>
+                </article>
+            <?php } ?>
         </section>
 
         <section class="admin-dashboard-chart-grid" aria-label="روند عملکرد">
@@ -225,6 +259,7 @@ $quickActions[] = ['label' => 'تنظیمات پنل', 'detail' => 'شخصی‌�
                                         <strong><?= e((string)($item['description'] ?? 'عملیات مدیریتی ثبت شد.')) ?></strong>
                                         <span><?= e((string)($item['admin_name'] ?? 'مدیر')) ?> · <?= e((string)($item['module'] ?? '')) ?> / <?= e((string)($item['action'] ?? '')) ?></span>
                                         <time datetime="<?= e((string)($item['created_at'] ?? '')) ?>"><?= e($formatDateTime($item['created_at'] ?? null)) ?></time>
+                                        <small class="admin-dashboard-activity-reference">شناسه رویداد: #<?= e((string)($item['id'] ?? '—')) ?></small>
                                     </div>
                                 </li>
                             <?php } ?>
@@ -249,7 +284,7 @@ $quickActions[] = ['label' => 'تنظیمات پنل', 'detail' => 'شخصی‌�
                             <?php foreach ($queueItems as $item) { ?>
                                 <li>
                                     <a href="<?= e((string)$item['href']) ?>">
-                                        <span><strong><?= e((string)$item['title']) ?></strong><small><?= e((string)$item['detail']) ?></small></span>
+                                        <span><strong><?= e((string)$item['title']) ?></strong><small><?= e((string)$item['detail']) ?></small><small class="admin-dashboard-queue-priority" data-priority="<?= e((string)($item['priority'] ?? 'low')) ?>">اولویت: <?= e((string)($item['priority_label'] ?? 'عادی')) ?></small></span>
                                         <b><?= e($formatNumber($item['count'] ?? 0)) ?></b>
                                     </a>
                                 </li>
@@ -268,16 +303,16 @@ $quickActions[] = ['label' => 'تنظیمات پنل', 'detail' => 'شخصی‌�
                     <span class="admin-dashboard-health-status" data-status="<?= e((string)($health['status'] ?? 'unknown')) ?>"><?= ($health['status'] ?? '') === 'healthy' ? 'سالم' : 'نیازمند بررسی' ?></span>
                 </div>
                 <ul class="admin-dashboard-health-list">
-                    <?php foreach (['php' => 'PHP', 'database' => 'پایگاه داده', 'timezone' => 'منطقه زمانی'] as $key => $label) {
+                    <?php foreach (['php' => 'نسخه PHP', 'pdo' => 'افزونه PDO', 'pdo_mysql' => 'درایور MySQL برای PDO', 'json' => 'افزونه JSON', 'mbstring' => 'افزونه MBString', 'database' => 'اتصال پایگاه داده', 'timezone' => 'منطقه زمانی'] as $key => $label) {
                         $check = is_array($healthChecks[$key] ?? null) ? $healthChecks[$key] : ['status' => 'unknown'];
                     ?>
                         <li>
-                            <span><?= e($label) ?><?php if ($key === 'php' && isset($check['version'])) { ?><small><?= e((string)$check['version']) ?></small><?php } ?><?php if ($key === 'timezone' && isset($check['value'])) { ?><small><?= e((string)$check['value']) ?></small><?php } ?></span>
+                            <span><?= e($label) ?><?php if ($key === 'php' && isset($check['version'])) { ?><small><?= e((string)$check['version']) ?></small><?php } ?><?php if ($key === 'timezone' && isset($check['value'])) { ?><small><?= e((string)$check['value']) ?></small><?php } ?><?php if ($key === 'database' && isset($check['duration_ms'])) { ?><small><?= e((string)$check['duration_ms']) ?> ms</small><?php } ?></span>
                             <b data-status="<?= e((string)($check['status'] ?? 'unknown')) ?>"><?= e($statusText((string)($check['status'] ?? 'unknown'))) ?></b>
                         </li>
                     <?php } ?>
                 </ul>
-                <p class="admin-dashboard-health-note">این بررسی فقط PHP، اتصال پایه دیتابیس و منطقه زمانی را پوشش می‌دهد؛ سلامت Queue، Cron، درگاه پرداخت و سرویس‌های خارجی در این گزارش ادعا نمی‌شود.</p>
+                <p class="admin-dashboard-health-note">این بررسی نسخه PHP، افزونه‌های موردنیاز، اتصال پایگاه داده و منطقه زمانی را پوشش می‌دهد. سلامت سرویس‌های خارجی، Queue و Cron تا زمان اتصال به probe واقعی در این گزارش ادعا نمی‌شود.</p>
             </article>
 
             <article class="admin-dashboard-panel admin-dashboard-quick-actions-panel">
