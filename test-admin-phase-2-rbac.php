@@ -46,6 +46,8 @@ $accessController = $read('app/Controllers/AdminAccessController.php');
 $reauth = $read('app/Services/AdminReauthenticationService.php');
 $accessJs = $read('admin/assets/js/modules/access-center.js');
 $sessionService = $read('app/Services/AdminSessionService.php');
+$sessionRepository = $read('app/Repositories/AdminSessionRepository.php');
+$authService = $read('app/Services/AdminAuthService.php');
 $authAudit = $read('app/Services/AdminAuthenticationAuditService.php');
 $deniedPage = $read('admin/access-denied.php');
 $catalog = $read('app/Core/AdminPermissionCatalog.php');
@@ -130,6 +132,9 @@ phase2Check('Effective permission report is exposed through controller and UI', 
 phase2Check('Account and role security snapshots are recorded around mutations', is_string($accessController) && str_contains($accessController, 'adminSecuritySnapshot') && str_contains($accessController, 'roleSecuritySnapshot') && str_contains($accessController, 'AdminAuditTrail::record'));
 phase2Check('Admin session inventory and cross-admin revocation contracts exist', is_string($sessionService) && str_contains($sessionService, 'activeForAllAdmins') && str_contains($sessionService, 'revokeByIdForAnyAdmin'));
 phase2Check('Authentication audit covers success, failure, logout and invalid session events', is_string($authAudit) && str_contains($authAudit, 'login_succeeded') && str_contains($authAudit, 'login_failed') && str_contains($authAudit, 'admin.auth.logout') && str_contains($authAudit, 'session_invalid'));
+phase2Check('Logout invokes the authentication audit before clearing the session', is_string($authService) && str_contains($authService, '$this->audit->logout($adminUserId)'));
+phase2Check('Admin session history endpoint and UI are connected', is_string($accessController) && str_contains($accessController, 'public function sessionsHistory') && is_string($routes) && str_contains($routes, 'admin.access.sessions.history') && is_string($accessJs) && str_contains($accessJs, 'loadSessionHistory'));
+phase2Check('Session history exposes status transitions without username/email fields', is_string($sessionRepository) && str_contains($sessionRepository, 'session_status') && str_contains($sessionRepository, 'AS admin_name') && !str_contains($sessionRepository, 'a.username') && !str_contains($sessionRepository, 'a.email'));
 phase2Check('Dedicated authenticated 403 page exists and avoids exposing account identifiers', is_string($deniedPage) && str_contains($deniedPage, '403') && !str_contains($deniedPage, "\$currentAdmin['email']") && !str_contains($deniedPage, "\$currentAdmin['username']"));
 
 echo '<hr><strong>PHASE 2 STATIC RESULT: PASS=' . $passed . ' | FAIL=' . $failed . ' | LOCK=NO</strong><br>' . "\n";
