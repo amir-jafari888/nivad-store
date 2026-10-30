@@ -68,6 +68,24 @@ final class AdminCapabilityService
         ]);
     }
 
+    public function countIncidentsByStatus(string $status): int
+    {
+        if (!in_array($status, self::INCIDENT_STATUSES, true)) {
+            throw new InvalidArgumentException('وضعیت رخداد نامعتبر است.');
+        }
+        return $this->repository->countIncidentsByStatus($status);
+    }
+
+    public function countTicketsByStatuses(array $statuses): int
+    {
+        foreach ($statuses as $status) {
+            if (!is_string($status) || !in_array($status, self::TICKET_STATUSES, true)) {
+                throw new InvalidArgumentException('وضعیت تیکت نامعتبر است.');
+            }
+        }
+        return $this->repository->countTicketsByStatuses($statuses);
+    }
+
     public function incidents(string $status = '', int $limit = 100): array
     {
         if ($status !== '' && !in_array($status, self::INCIDENT_STATUSES, true)) {
