@@ -106,7 +106,7 @@ final class CmsContentRenderer
     private static function image(int $id, string $alt): string
     {
         if ($id < 1) return '';
-        return '<img class="cms-live-section__image" src="' . self::e(url('/content-media/' . $id)) . '" alt="' . self::e($alt) . '" loading="lazy" decoding="async">';
+        return '<img class="cms-live-section__image" src="' . self::e(url('/api/content-media/' . $id)) . '" alt="' . self::e($alt) . '" loading="lazy" decoding="async">';
     }
 
     private static function safeUrl(string $url): string
