@@ -75,3 +75,12 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-operations-card a[aria-disabled=true]{color:var(--admin-color-text-muted);text-decoration:none;cursor:default}
 .admin-operations-footer{color:var(--admin-color-text-muted)}
 .admin-operations-footer strong{color:var(--admin-color-text)}
+
+
+.admin-capabilities-main{max-width:var(--admin-content-width);margin-inline:auto;padding:32px;gap:24px}
+.admin-capability-panel{padding:24px}
+.admin-capability-form{grid-template-columns:repeat(3,minmax(0,1fr));align-items:end}
+.admin-capability-form-wide{grid-column:1/-1}
+.admin-capability-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+.admin-capability-row{align-content:start}
+.admin-capability-ticket-detail{grid-column:1/-1}
