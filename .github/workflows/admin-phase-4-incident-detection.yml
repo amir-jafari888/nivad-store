@@ -1,0 +1,54 @@
+name: Admin Phase 4 Incident Detection
+
+on:
+  pull_request:
+    branches:
+      - feature/admin-phase-3-notifications-2026-10-30
+    paths:
+      - 'app/Core/**'
+      - 'app/Controllers/AdminIncidentController.php'
+      - 'app/Controllers/IncidentCaptureController.php'
+      - 'app/Repositories/AdminCapabilityRepository.php'
+      - 'app/Repositories/AdminIncidentDetectionRepository.php'
+      - 'app/Services/AdminCapabilityService.php'
+      - 'app/Services/AdminIncidentCaptureService.php'
+      - 'routes/api.php'
+      - 'app/Core/AdminRoutePermissionMap.php'
+      - 'database/migrations/20261030_admin_incident_detection_phase4.sql'
+      - 'assets/js/**'
+      - 'admin/capabilities/index.php'
+      - 'admin/assets/js/**'
+      - 'admin/incidents/**'
+      - 'tests/phase-4-incident-detection-contract.php'
+      - '.github/workflows/admin-phase-4-incident-detection.yml'
+
+jobs:
+  incident-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+      - name: Lint Phase 4 PHP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            app/Core/ErrorHandler.php
+            app/Core/Response.php
+            app/Core/Database.php
+            app/Controllers/PaymentController.php
+            app/Controllers/AdminIncidentController.php
+            app/Controllers/IncidentCaptureController.php
+            app/Repositories/AdminCapabilityRepository.php
+            app/Repositories/AdminIncidentDetectionRepository.php
+            app/Services/AdminCapabilityService.php
+            app/Services/AdminIncidentCaptureService.php
+            tests/phase-4-incident-detection-contract.php
+          )
+          for file in "${files[@]}"; do php -l "$file"; done
+      - name: Run Phase 4 static contracts
+        run: php tests/phase-4-incident-detection-contract.php

@@ -211,15 +211,13 @@ final class Response
         int $status = 400,
         array $errors = []
     ): never {
+        AdminIncidentCaptureService::captureHttp($status, 'http.response');
         self::json(
-            [
-                'success' => false,
-                'message' => $message,
-                'errors' => $errors,
-            ],
+            ['success' => false, 'message' => $message, 'errors' => $errors],
             $status
         );
     }
+
 
     public static function validationError(
         array $errors = [],

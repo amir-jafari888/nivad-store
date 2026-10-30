@@ -2852,6 +2852,9 @@ return static function (Router $router): void {
     $router->get('/admin/capabilities/notification-policies', [AdminCapabilityController::class, 'notificationPolicies'], $adminCapabilityRead, 'admin.capabilities.notification-policies.index');
     $router->put('/admin/capabilities/notification-policies', [AdminCapabilityController::class, 'saveNotificationPolicy'], $adminCapabilityWrite, 'admin.capabilities.notification-policies.update');
 
+    $router->get('/admin/capabilities/incidents/analysis', [AdminIncidentController::class, 'analysis'], $adminCapabilityRead, 'admin.capabilities.incidents.analysis');
+    $router->get('/admin/capabilities/incidents/{id}/timeline', [AdminIncidentController::class, 'timeline'], $adminCapabilityRead, 'admin.capabilities.incidents.timeline');
+    $router->get('/admin/capabilities/jobs/health', [AdminIncidentController::class, 'jobs'], $adminCapabilityRead, 'admin.capabilities.jobs.health');
     $router->get('/admin/capabilities/incidents', [AdminCapabilityController::class, 'incidents'], $adminCapabilityRead, 'admin.capabilities.incidents.index');
     $router->patch('/admin/capabilities/incidents/{id}', [AdminCapabilityController::class, 'updateIncident'], $adminCapabilityWrite, 'admin.capabilities.incidents.update');
 
@@ -2864,6 +2867,7 @@ return static function (Router $router): void {
     $router->get('/admin/capabilities/product-analytics', [AdminCapabilityController::class, 'analytics'], $adminCapabilityRead, 'admin.capabilities.analytics.index');
     $router->get('/admin/capabilities/health', [AdminCapabilityController::class, 'health'], $adminCapabilityRead, 'admin.capabilities.health.index');
     $router->get('/admin/capabilities/search', [AdminCapabilityController::class, 'globalSearch'], $adminCapabilityRead, 'admin.capabilities.search.index');
+    $router->post('/incident/client', [IncidentCaptureController::class, 'client'], [CsrfMiddleware::class], 'incident.client.capture');
     $router->post('/analytics/product-event', [ProductAnalyticsController::class, 'store'], [CsrfMiddleware::class], 'analytics.product-event.store');
     $router->get('/support/tickets', [CustomerSupportController::class, 'index'], [AuthMiddleware::class], 'support.tickets.index');
     $router->get('/support/tickets/{id}', [CustomerSupportController::class, 'show'], [AuthMiddleware::class], 'support.tickets.show');

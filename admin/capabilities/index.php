@@ -40,6 +40,7 @@ if (!$adminAuth->canAny($capabilityPagePermissions)) {
             <p>مدیریت اعلان‌ها، رخدادها، تیکت‌ها، تحلیل محصولات و تنظیمات شخصی مدیر.</p>
         </div>
         <a href="<?= e(url('/admin/operations')) ?>">بازگشت به نقشه قابلیت‌ها</a>
+        <a href="<?= e(url('/admin/incidents/index.php')) ?>">مدیریت رخدادها</a>
     </header>
 
     <p class="admin-capabilities-feedback" data-capability-feedback role="status" aria-live="polite">در حال آماده‌سازی مرکز عملیات…</p>

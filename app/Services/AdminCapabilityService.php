@@ -99,8 +99,9 @@ final class AdminCapabilityService
         if (!in_array($severity, self::SEVERITIES, true) || trim($source) === '' || trim($title) === '') {
             throw new InvalidArgumentException('اطلاعات رخداد نامعتبر است.');
         }
-        $contextJson = $context !== []
-            ? json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
+        $safeContext = SensitiveDataRedactor::redact($context);
+        $contextJson = $safeContext !== []
+            ? json_encode($safeContext, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
             : null;
         $fingerprint = hash('sha256', strtolower(trim($source)) . '|' . strtolower(trim($title)));
         $incidentId = $this->repository->recordIncident([
@@ -108,16 +109,12 @@ final class AdminCapabilityService
             'source' => mb_substr(trim($source), 0, 100),
             'severity' => $severity,
             'title' => mb_substr(trim($title), 0, 255),
-            'description' => trim($description) !== '' ? $description : null,
+            'description' => trim($description) !== '' ? mb_substr($description, 0, 5000) : null,
             'context_json' => $contextJson,
         ]);
         if ($severity === 'critical') {
             try {
-                $this->repository->notifyIncident(
-                    $incidentId,
-                    trim($title),
-                    trim($description)
-                );
+                $this->repository->notifyIncident($incidentId, trim($title), trim($description));
             } catch (Throwable $notificationFailure) {
                 Logger::error('Incident was recorded but Admin notification delivery failed.', [
                     'incident_id' => $incidentId,
@@ -127,7 +124,6 @@ final class AdminCapabilityService
         }
         return $incidentId;
     }
-
     public function updateIncident(int $id, string $status, ?int $assignedAdminId, int $actorAdminId): bool
     {
         if ($id < 1 || !in_array($status, self::INCIDENT_STATUSES, true)) {
