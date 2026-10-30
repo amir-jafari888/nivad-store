@@ -50,8 +50,10 @@ if (!$adminAuth->canAll($accessPageReadPermissions)) {
     <section class="admin-access-panel">
         <h2>پایش نشست‌های مدیران</h2>
         <p>نشست جاری از فهرست حذف شده است؛ نشست‌های فعال سایر مدیران قابل مشاهده و لغو هستند.</p>
-        <button type="button" data-access-refresh-sessions>به‌روزرسانی نشست‌ها</button>
+        <button type="button" data-access-refresh-sessions>به‌روزرسانی نشست‌های فعال</button>
+        <button type="button" data-access-history-sessions>مشاهده تاریخچه نشست‌ها</button>
         <div data-access-list="sessions" class="admin-access-list"></div>
+        <div data-access-list="session-history" class="admin-access-list" aria-live="polite"></div>
     </section>
 
     <section class="admin-access-panel">
