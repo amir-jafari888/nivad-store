@@ -57,11 +57,11 @@ cmsCheck('CMS repository publishes draft snapshots independently', str_contains(
 cmsCheck('CMS repository blocks deleting referenced or historical media', str_contains($repository, 'isMediaReferenced') && str_contains($repository, 'admin_content_revisions'));
 cmsCheck('CMS renderer preserves homepage native modules', str_contains($renderer, 'NATIVE_HOME_COMPONENTS') && str_contains($renderer, 'renderOriginalHomeSection'));
 cmsCheck('CMS renderer separates draft from published storefront data', str_contains($renderer, 'has_published_version') && str_contains($renderer, 'published_is_visible'));
-cmsCheck('CMS renderer uses semantic H1 for page introductions', str_contains($renderer, "$headingTag = $type === 'intro' ? 'h1' : 'h2'"));
+cmsCheck('CMS renderer uses semantic H1 for page introductions', str_contains($renderer, '$headingTag = $type === \'intro\' ? \'h1\' : \'h2\''));
 cmsCheck('CMS renderer supports FAQ disclosure semantics', str_contains($renderer, 'cms-faq-list') && str_contains($renderer, '<details><summary>'));
 cmsCheck('CMS media delivery restricts public files to published references', str_contains($repository, 'publishedMedia') && str_contains($repository, 'published_content_json IS NOT NULL'));
 cmsCheck('CMS controller exposes CRUD, publish, schedule, revisions and media', str_contains($controller, 'createSection') && str_contains($controller, 'publish') && str_contains($controller, 'schedule') && str_contains($controller, 'restoreRevision') && str_contains($controller, 'uploadMedia'));
-cmsCheck('CMS API routes are CSRF protected for writes', str_contains($routes, 'admin.content.sections.store') && str_contains($routes, 'admin.media.store') && str_contains('CsrfMiddleware::class', 'CsrfMiddleware::class'));
+cmsCheck('CMS API routes are CSRF protected for writes', str_contains($routes, '$adminCapabilityWrite = [') && str_contains($routes, 'CsrfMiddleware::class'));
 cmsCheck('CMS routes have explicit view, manage and publish permissions', str_contains($permissionMap, "'admin.content.sections.publish' => 'admin.content.publish'") && str_contains($permissionMap, "'admin.media.index' => 'admin.media.view'"));
 cmsCheck('CMS preview listens for same-origin live updates', str_contains($preview, "event.source!==parent") && str_contains($preview, "event.data?.type!=='cms-preview'"));
 cmsCheck('CMS editor posts preview updates without page reload', str_contains($editor, "postMessage({type:'cms-preview'") && str_contains($editor, "addEventListener('input',preview)"));
