@@ -76,7 +76,7 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
     p56Check('Shared capability read/write middleware arrays enforce both Admin authentication and route permission checks', str_contains($sources['routes'], '$adminCapabilityRead = [') && str_contains($sources['routes'], '$adminCapabilityWrite = [') && substr_count($sources['routes'], '$adminCapabilityRead,') >= 1 && substr_count($sources['routes'], '$adminCapabilityWrite,') >= 1);
     $duplicateNames = array_values(array_diff_assoc($matches[1] ?? [], array_unique($matches[1] ?? [])));
     $knownDuplicateNames = ['admin.variant-attributes.index', 'admin.variant-attributes.store', 'admin.variant-attributes.destroy'];
-    p56Check('Admin API route permission names include all new Admin modules', count($routeNames) >= 190);
+    p56Check('Admin API route permission names include all new Admin modules', count($routeNames) >= 191);
     p56Check('Only the three pre-existing variant-attribute route names are duplicated', array_values(array_unique($duplicateNames)) === $knownDuplicateNames);
     p56Check('Route permission middleware rejects unnamed Admin routes', str_contains($sources['middleware'], '$routeName === null') && str_contains($sources['middleware'], '$service->authorize('));
     p56Check('Authorization service is called through AdminAuthService', str_contains($sources['auth_service'], 'public function authorize(') && str_contains($sources['auth_service'], 'Authorization::authorize('));
@@ -105,6 +105,7 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
         'admin.access.admins.index',
         'admin.access.admins.store',
         'admin.access.admins.update',
+        'admin.access.admins.destroy',
         'admin.access.admins.roles.update',
         'admin.access.roles.index',
         'admin.access.roles.store',
