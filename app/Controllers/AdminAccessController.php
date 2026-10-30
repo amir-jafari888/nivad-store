@@ -124,6 +124,13 @@ final class AdminAccessController extends Controller
         $this->success(['items' => $items], 'نشست‌های فعال مدیران دریافت شدند.');
     }
 
+    public function sessionsHistory(): never
+    {
+        $this->actorId();
+        $items = (new AdminSessionService())->findForMonitoring(200);
+        $this->success(['items' => $items], 'تاریخچه نشست‌های نگهداری‌شده دریافت شد.');
+    }
+
     public function revokeSession(array $parameters = []): never
     {
         $this->requireReauthentication('admin.session.revoke');
