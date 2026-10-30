@@ -304,4 +304,97 @@ final class AdminAccessRepository
         $stmt->execute(['admin_id' => $excludingAdminId]);
         return (int)$stmt->fetchColumn() > 0;
     }
+
+    /**
+     * Returns the permissions that AuthorizationService would effectively
+     * grant to an active administrator, including the Super Admin bypass.
+     * Passwords, emails and session tokens are intentionally excluded.
+     */
+    public function effectivePermissionsForAdmin(int $adminId): array
+    {
+        if ($adminId < 1) {
+            return [];
+        }
+
+        $admin = $this->adminById($adminId);
+        if ($admin === null || ($admin['status'] ?? null) !== 'active' || ($admin['deleted_at'] ?? null) !== null) {
+            return [];
+        }
+
+        if ($this->adminHasRoleSlug($adminId, 'super-admin')) {
+            $stmt = $this->db->query(
+                'SELECT p.id, p.name, p.slug, p.description, p.module, p.action,
+                        "Super Admin" AS granted_by
+                 FROM admin_permissions p
+                 WHERE p.status = "active" AND p.deleted_at IS NULL
+                 ORDER BY p.module, p.action, p.name'
+            );
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT p.id, p.name, p.slug, p.description, p.module, p.action,
+                    GROUP_CONCAT(DISTINCT r.name ORDER BY r.name SEPARATOR ", ") AS granted_by
+             FROM admin_users a
+             INNER JOIN admin_user_roles ur ON ur.admin_user_id = a.id
+             INNER JOIN admin_roles r ON r.id = ur.role_id
+                AND r.status = "active" AND r.deleted_at IS NULL
+             INNER JOIN admin_role_permissions rp ON rp.role_id = r.id
+             INNER JOIN admin_permissions p ON p.id = rp.permission_id
+                AND p.status = "active" AND p.deleted_at IS NULL
+             WHERE a.id = :admin_id
+               AND a.status = "active"
+               AND a.deleted_at IS NULL
+             GROUP BY p.id, p.name, p.slug, p.description, p.module, p.action
+             ORDER BY p.module, p.action, p.name'
+        );
+        $stmt->execute(['admin_id' => $adminId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Minimal before/after audit snapshot for account security changes.
+     */
+    public function adminSecuritySnapshot(int $adminId): ?array
+    {
+        if ($adminId < 1) {
+            return null;
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT a.id, a.status,
+                    GROUP_CONCAT(DISTINCT r.slug ORDER BY r.slug SEPARATOR ",") AS role_slugs
+             FROM admin_users a
+             LEFT JOIN admin_user_roles ur ON ur.admin_user_id = a.id
+             LEFT JOIN admin_roles r ON r.id = ur.role_id
+             WHERE a.id = :admin_id
+             GROUP BY a.id, a.status
+             LIMIT 1'
+        );
+        $stmt->execute(['admin_id' => $adminId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function roleSecuritySnapshot(int $roleId): ?array
+    {
+        if ($roleId < 1) {
+            return null;
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT r.id, r.slug, r.status,
+                    GROUP_CONCAT(DISTINCT p.name ORDER BY p.name SEPARATOR ",") AS permission_names
+             FROM admin_roles r
+             LEFT JOIN admin_role_permissions rp ON rp.role_id = r.id
+             LEFT JOIN admin_permissions p ON p.id = rp.permission_id
+             WHERE r.id = :role_id
+             GROUP BY r.id, r.slug, r.status
+             LIMIT 1'
+        );
+        $stmt->execute(['role_id' => $roleId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
 }

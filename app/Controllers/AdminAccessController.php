@@ -23,6 +23,15 @@ final class AdminAccessController extends Controller
         return Request::isJson() ? Request::json() : $_POST;
     }
 
+    private function requireReauthentication(string $action): void
+    {
+        $payload = $this->payload();
+        (new AdminReauthenticationService())->requireCurrentPassword(
+            (string)($payload['reauth_password'] ?? ''),
+            $action
+        );
+    }
+
     private function invalid(InvalidArgumentException $exception): never
     {
         $this->error($exception->getMessage(), 422);
@@ -35,9 +44,11 @@ final class AdminAccessController extends Controller
 
     public function createAdmin(): never
     {
+        $this->requireReauthentication('admin.create');
         try {
             $id = $this->service->createAdmin($this->payload());
-            AdminAuditTrail::record($this->actorId(), 'create', 'admin_users', 'admin_user', $id, 'Admin account created.', null, ['status' => 'active']);
+            $after = $this->service->adminSecuritySnapshot($id);
+            AdminAuditTrail::record($this->actorId(), 'create', 'admin_users', 'admin_user', $id, 'Admin account created.', null, $after);
             $this->success(['id' => $id], 'مدیر جدید ایجاد شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -48,14 +59,18 @@ final class AdminAccessController extends Controller
 
     public function updateAdmin(array $parameters = []): never
     {
+        $this->requireReauthentication('admin.update');
         try {
+            $targetId = (int)($parameters['id'] ?? 0);
+            $before = $this->service->adminSecuritySnapshot($targetId);
             $updated = $this->service->updateAdmin(
-                (int)($parameters['id'] ?? 0),
+                $targetId,
                 $this->actorId(),
                 $this->payload()
             );
             if (!$updated) $this->error('مدیر پیدا نشد.', 404);
-            AdminAuditTrail::record($this->actorId(), 'update', 'admin_users', 'admin_user', (int)($parameters['id'] ?? 0), 'Admin account updated.');
+            $after = $this->service->adminSecuritySnapshot($targetId);
+            AdminAuditTrail::record($this->actorId(), 'update', 'admin_users', 'admin_user', $targetId, 'Admin account security state updated.', $before, $after);
             $this->success(['updated' => true], 'اطلاعات مدیر به‌روزرسانی شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -66,11 +81,15 @@ final class AdminAccessController extends Controller
 
     public function deleteAdmin(array $parameters = []): never
     {
+        $this->requireReauthentication('admin.delete');
         try {
             $adminId = $this->actorId();
-            $deleted = $this->service->deleteAdmin((int)($parameters['id'] ?? 0), $adminId);
+            $targetId = (int)($parameters['id'] ?? 0);
+            $before = $this->service->adminSecuritySnapshot($targetId);
+            $deleted = $this->service->deleteAdmin($targetId, $adminId);
             if (!$deleted) $this->error('مدیر پیدا نشد.', 404);
-            AdminAuditTrail::record($adminId, 'soft_delete', 'admin_users', 'admin_user', (int)($parameters['id'] ?? 0), 'Admin account soft-deleted and sessions revoked.');
+            $after = $this->service->adminSecuritySnapshot($targetId);
+            AdminAuditTrail::record($adminId, 'soft_delete', 'admin_users', 'admin_user', $targetId, 'Admin account soft-deleted and sessions revoked.', $before, $after);
             $this->success(['deleted' => true], 'حساب مدیر غیرفعال و نشست‌های او لغو شدند.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -79,14 +98,18 @@ final class AdminAccessController extends Controller
 
     public function assignAdminRoles(array $parameters = []): never
     {
+        $this->requireReauthentication('admin.roles.assign');
         try {
+            $targetId = (int)($parameters['id'] ?? 0);
+            $before = $this->service->adminSecuritySnapshot($targetId);
             $updated = $this->service->assignAdminRoles(
-                (int)($parameters['id'] ?? 0),
+                $targetId,
                 $this->actorId(),
                 $this->payload()
             );
             if (!$updated) $this->error('مدیر پیدا نشد.', 404);
-            AdminAuditTrail::record($this->actorId(), 'assign_roles', 'admin_users', 'admin_user', (int)($parameters['id'] ?? 0), 'Admin roles reassigned.');
+            $after = $this->service->adminSecuritySnapshot($targetId);
+            AdminAuditTrail::record($this->actorId(), 'assign_roles', 'admin_users', 'admin_user', $targetId, 'Admin roles reassigned.', $before, $after);
             $this->success(['updated' => true], 'نقش‌های مدیر به‌روزرسانی شدند.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -102,8 +125,16 @@ final class AdminAccessController extends Controller
         $this->success(['items' => $items], 'نشست‌های فعال مدیران دریافت شدند.');
     }
 
+    public function sessionsHistory(): never
+    {
+        $this->actorId();
+        $items = (new AdminSessionService())->findForMonitoring(200);
+        $this->success(['items' => $items], 'تاریخچه نشست‌های نگهداری‌شده دریافت شد.');
+    }
+
     public function revokeSession(array $parameters = []): never
     {
+        $this->requireReauthentication('admin.session.revoke');
         $adminId = $this->actorId();
         Session::start();
         $tokenHash = hash('sha256', Session::id());
@@ -137,9 +168,11 @@ final class AdminAccessController extends Controller
 
     public function createRole(): never
     {
+        $this->requireReauthentication('admin.role.create');
         try {
             $id = $this->service->createRole($this->payload());
-            AdminAuditTrail::record($this->actorId(), 'create', 'admin_roles', 'admin_role', $id, 'Admin role created.');
+            $after = $this->service->roleSecuritySnapshot($id);
+            AdminAuditTrail::record($this->actorId(), 'create', 'admin_roles', 'admin_role', $id, 'Admin role created.', null, $after);
             $this->success(['id' => $id], 'نقش جدید ایجاد شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -150,10 +183,14 @@ final class AdminAccessController extends Controller
 
     public function updateRole(array $parameters = []): never
     {
+        $this->requireReauthentication('admin.role.update');
         try {
-            $updated = $this->service->updateRole((int)($parameters['id'] ?? 0), $this->payload());
+            $roleId = (int)($parameters['id'] ?? 0);
+            $before = $this->service->roleSecuritySnapshot($roleId);
+            $updated = $this->service->updateRole($roleId, $this->payload());
             if (!$updated) $this->error('نقش پیدا نشد.', 404);
-            AdminAuditTrail::record($this->actorId(), 'update', 'admin_roles', 'admin_role', (int)($parameters['id'] ?? 0), 'Admin role updated.');
+            $after = $this->service->roleSecuritySnapshot($roleId);
+            AdminAuditTrail::record($this->actorId(), 'update', 'admin_roles', 'admin_role', $roleId, 'Admin role security state updated.', $before, $after);
             $this->success(['updated' => true], 'نقش به‌روزرسانی شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -165,6 +202,17 @@ final class AdminAccessController extends Controller
     public function permissions(): never
     {
         $this->success(['items' => $this->service->permissions()], 'مجوزها دریافت شدند.');
+    }
+
+    public function effectivePermissions(array $parameters = []): never
+    {
+        try {
+            $adminId = (int)($parameters['id'] ?? 0);
+            $items = $this->service->effectivePermissions($adminId);
+            $this->success(['items' => $items], 'دسترسی مؤثر مدیر دریافت شد.');
+        } catch (InvalidArgumentException $exception) {
+            $this->invalid($exception);
+        }
     }
 
     public function rolePermissions(array $parameters = []): never
@@ -179,13 +227,17 @@ final class AdminAccessController extends Controller
 
     public function assignRolePermissions(array $parameters = []): never
     {
+        $this->requireReauthentication('admin.permissions.assign');
         try {
+            $roleId = (int)($parameters['id'] ?? 0);
+            $before = $this->service->roleSecuritySnapshot($roleId);
             $updated = $this->service->assignRolePermissions(
-                (int)($parameters['id'] ?? 0),
+                $roleId,
                 $this->payload()
             );
             if (!$updated) $this->error('نقش پیدا نشد.', 404);
-            AdminAuditTrail::record($this->actorId(), 'assign_permissions', 'admin_roles', 'admin_role', (int)($parameters['id'] ?? 0), 'Admin role permissions reassigned.');
+            $after = $this->service->roleSecuritySnapshot($roleId);
+            AdminAuditTrail::record($this->actorId(), 'assign_permissions', 'admin_roles', 'admin_role', $roleId, 'Admin role permissions reassigned.', $before, $after);
             $this->success(['updated' => true], 'مجوزهای نقش به‌روزرسانی شدند.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);

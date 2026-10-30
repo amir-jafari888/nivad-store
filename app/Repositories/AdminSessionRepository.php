@@ -326,10 +326,10 @@ final class AdminSessionRepository
             SELECT
                 s.id,
                 s.admin_user_id,
-                a.username,
-                a.email,
-                a.first_name,
-                a.last_name,
+                COALESCE(
+                    NULLIF(TRIM(CONCAT(COALESCE(a.first_name, ""), " ", COALESCE(a.last_name, ""))), ""),
+                    CONCAT("مدیر #", a.id)
+                ) AS admin_name,
                 s.ip_address,
                 s.user_agent,
                 s.last_activity_at,

@@ -14,13 +14,56 @@ const adminAccessCenter = () => {
     url.searchParams.set("path", "/admin/access" + path);
     return url.toString();
   };
+  const requestReauthentication = () => new Promise(resolve => {
+    const dialog = document.createElement("dialog");
+    const form = document.createElement("form");
+    form.method = "dialog";
+    const title = el("h2", "تأیید مجدد هویت");
+    const description = el("p", "برای اجرای تغییر امنیتی، رمز عبور فعلی حساب خود را وارد کنید.");
+    const input = document.createElement("input");
+    input.type = "password";
+    input.name = "reauth_password";
+    input.autocomplete = "current-password";
+    input.required = true;
+    input.maxLength = 1024;
+    input.setAttribute("aria-label", "رمز عبور فعلی");
+    const cancel = el("button", "انصراف");
+    cancel.type = "button";
+    const confirm = el("button", "تأیید و ادامه");
+    confirm.type = "submit";
+    let settled = false;
+    const finish = value => {
+      if (settled) return;
+      settled = true;
+      dialog.close();
+      dialog.remove();
+      resolve(value);
+    };
+    cancel.addEventListener("click", () => finish(null));
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      finish(input.value);
+    });
+    dialog.addEventListener("cancel", event => {
+      event.preventDefault();
+      finish(null);
+    });
+    form.append(title, description, input, cancel, confirm);
+    dialog.append(form);
+    root.append(dialog);
+    dialog.showModal();
+    input.focus();
+  });
+
   const request = async (path, method = "GET", body = null) => {
     const headers = { Accept: "application/json" };
     const options = { method, credentials: "same-origin", headers };
     if (method !== "GET") {
+      const reauthPassword = await requestReauthentication();
+      if (!reauthPassword) throw new Error("تأیید مجدد هویت لغو شد؛ تغییری انجام نشد.");
       headers["Content-Type"] = "application/json";
       headers["X-CSRF-TOKEN"] = csrf;
-      options.body = JSON.stringify(body || {});
+      options.body = JSON.stringify({ ...(body || {}), reauth_password: reauthPassword });
     }
     const response = await fetch(urlFor(path), options);
     const result = await response.json();
@@ -66,6 +109,24 @@ const adminAccessCenter = () => {
       article.append(revoke); target.append(article);
     });
     if (!(data.items || []).length) target.append(el("p", "نشست فعال دیگری وجود ندارد."));
+  };
+
+  const loadSessionHistory = async () => {
+    const data = await request("/sessions/history");
+    const target = root.querySelector('[data-access-list="session-history"]');
+    target.replaceChildren();
+    (data.items || []).forEach(session => {
+      const article = el("article", undefined, "admin-access-row");
+      const statusLabels = { active: "فعال", revoked: "لغوشده", expired: "منقضی‌شده" };
+      article.append(el("strong", "نشست #" + session.id + " · " + (session.admin_name || "مدیر نامشخص")));
+      article.append(el("p", "وضعیت: " + (statusLabels[session.session_status] || "نامشخص")));
+      article.append(el("p", "شروع: " + (session.created_at || "نامشخص") + " · آخرین فعالیت: " + (session.last_activity_at || "نامشخص")));
+      article.append(el("p", "انقضا: " + (session.expires_at || "نامشخص") + " · لغو: " + (session.revoked_at || "ندارد")));
+      article.append(el("p", "IP: " + (session.ip_address || "ثبت نشده")));
+      article.append(el("p", session.user_agent || "User-Agent ثبت نشده"));
+      target.append(article);
+    });
+    if (!(data.items || []).length) target.append(el("p", "رکوردی در تاریخچه نگهداری‌شده نشست‌ها وجود ندارد."));
   };
 
   const loadRoles = async () => {
@@ -116,6 +177,21 @@ const adminAccessCenter = () => {
           await loadAdmins(); say("وضعیت مدیر به‌روزرسانی شد.");
         } catch (error) { say(error.message, true); }
       });
+      const effective = el("button", "نمایش دسترسی مؤثر");
+      effective.type = "button";
+      const effectiveList = el("div", undefined, "admin-access-effective-permissions");
+      effective.addEventListener("click", async () => {
+        try {
+          const access = await request("/admins/" + admin.id + "/effective-permissions");
+          effectiveList.replaceChildren();
+          (access.items || []).forEach(permission => {
+            const line = el("p", permission.name + " · " + (permission.granted_by || "نقش نامشخص"));
+            effectiveList.append(line);
+          });
+          if (!(access.items || []).length) effectiveList.append(el("p", "برای این مدیر مجوز فعالی ثبت نشده است."));
+          say("گزارش دسترسی مؤثر دریافت شد.");
+        } catch (error) { say(error.message, true); }
+      });
       const roleSelect = document.createElement("select"); roleSelect.multiple = true;
       const assigned = String(admin.role_slugs || "").split(",");
       roles.filter(role => role.slug !== "super-admin" && role.status === "active").forEach(role => {
@@ -134,7 +210,7 @@ const adminAccessCenter = () => {
         try { await request("/admins/" + admin.id, "DELETE"); await refresh(); say("حساب مدیر غیرفعال و نشست‌ها لغو شدند."); }
         catch (error) { say(error.message, true); }
       });
-      article.append(status, update, el("small", "تخصیص نقش"), roleSelect, assign, remove);
+      article.append(status, update, el("small", "تخصیص نقش"), roleSelect, assign, remove, effective, effectiveList);
       target.append(article);
     });
   };
@@ -185,6 +261,7 @@ const adminAccessCenter = () => {
   };
 
   root.querySelector("[data-access-refresh-sessions]")?.addEventListener("click", () => loadSessions().catch(error => say(error.message, true)));
+  root.querySelector("[data-access-history-sessions]")?.addEventListener("click", () => loadSessionHistory().catch(error => say(error.message, true)));
 
   root.querySelector("[data-access-role-select]")?.addEventListener("change", () => {
     loadRolePermissionSelection().catch(error => say(error.message, true));
