@@ -2825,6 +2825,18 @@ return static function (Router $router): void {
         CsrfMiddleware::class,
     ];
 
+    $router->get('/admin/access/admins', [AdminAccessController::class, 'admins'], $adminCapabilityRead, 'admin.access.admins.index');
+    $router->post('/admin/access/admins', [AdminAccessController::class, 'createAdmin'], $adminCapabilityWrite, 'admin.access.admins.store');
+    $router->patch('/admin/access/admins/{id}', [AdminAccessController::class, 'updateAdmin'], $adminCapabilityWrite, 'admin.access.admins.update');
+    $router->put('/admin/access/admins/{id}/roles', [AdminAccessController::class, 'assignAdminRoles'], $adminCapabilityWrite, 'admin.access.admins.roles.update');
+
+    $router->get('/admin/access/roles', [AdminAccessController::class, 'roles'], $adminCapabilityRead, 'admin.access.roles.index');
+    $router->post('/admin/access/roles', [AdminAccessController::class, 'createRole'], $adminCapabilityWrite, 'admin.access.roles.store');
+    $router->patch('/admin/access/roles/{id}', [AdminAccessController::class, 'updateRole'], $adminCapabilityWrite, 'admin.access.roles.update');
+    $router->get('/admin/access/permissions', [AdminAccessController::class, 'permissions'], $adminCapabilityRead, 'admin.access.permissions.index');
+    $router->get('/admin/access/roles/{id}/permissions', [AdminAccessController::class, 'rolePermissions'], $adminCapabilityRead, 'admin.access.roles.permissions.show');
+    $router->put('/admin/access/roles/{id}/permissions', [AdminAccessController::class, 'assignRolePermissions'], $adminCapabilityWrite, 'admin.access.roles.permissions.update');
+
     $router->get('/admin/capabilities/notifications', [AdminCapabilityController::class, 'notifications'], $adminCapabilityRead, 'admin.capabilities.notifications.index');
     $router->post('/admin/capabilities/notifications', [AdminCapabilityController::class, 'createNotification'], $adminCapabilityWrite, 'admin.capabilities.notifications.store');
     $router->patch('/admin/capabilities/notifications/{id}/read', [AdminCapabilityController::class, 'markNotificationRead'], $adminCapabilityWrite, 'admin.capabilities.notifications.read');
