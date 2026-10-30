@@ -77,6 +77,29 @@ final class AdminAccessController extends Controller
         }
     }
 
+    public function sessions(): never
+    {
+        $adminId = $this->actorId();
+        Session::start();
+        $tokenHash = hash('sha256', Session::id());
+        $items = (new AdminSessionService())->activeForAdmin($adminId, $tokenHash);
+        $this->success(['items' => $items], 'نشست‌های فعال دیگر دریافت شدند.');
+    }
+
+    public function revokeSession(array $parameters = []): never
+    {
+        $adminId = $this->actorId();
+        Session::start();
+        $tokenHash = hash('sha256', Session::id());
+        $revoked = (new AdminSessionService())->revokeByIdForAdmin(
+            (int)($parameters['id'] ?? 0),
+            $adminId,
+            $tokenHash
+        );
+        if (!$revoked) $this->error('نشست پیدا نشد، منقضی شده یا نشست فعلی است.', 404);
+        $this->success(['revoked' => true], 'نشست انتخاب‌شده لغو شد.');
+    }
+
     public function roles(): never
     {
         $this->success(['items' => $this->service->roles()], 'نقش‌ها دریافت شدند.');
