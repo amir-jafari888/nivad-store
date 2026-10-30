@@ -19,7 +19,7 @@ final class AdminContentRepository
     public function sections(string $pageKey, bool $includeDeleted = false): array
     {
         $sql = 'SELECT s.*, p.page_key FROM admin_cms_sections s INNER JOIN admin_cms_pages p ON p.id = s.page_id WHERE p.page_key = :page_key';
-        if (!$includeDeleted) $sql .= ' AND s.deleted_at IS NULL';
+        $sql .= $includeDeleted ? ' AND s.deleted_at IS NOT NULL' : ' AND s.deleted_at IS NULL';
         $sql .= ' ORDER BY s.sort_order, s.id';
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['page_key' => $pageKey]);
