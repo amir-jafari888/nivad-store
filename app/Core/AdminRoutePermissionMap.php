@@ -30,6 +30,7 @@ final class AdminRoutePermissionMap
 
         // Admin access management routes (Phase 2).
         'admin.access.sessions.index' => 'admin.sessions.view',
+        'admin.access.sessions.history' => 'admin.sessions.view',
         'admin.access.sessions.destroy' => 'admin.sessions.revoke',
         'admin.access.admins.index' => 'admin.admins.view',
         'admin.access.admins.effective-permissions' => 'admin.permissions.manage',
