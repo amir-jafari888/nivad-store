@@ -83,7 +83,7 @@ final class AdminCapabilityService
             ? json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
             : null;
         $fingerprint = hash('sha256', strtolower(trim($source)) . '|' . strtolower(trim($title)));
-        return $this->repository->recordIncident([
+        $incidentId = $this->repository->recordIncident([
             'fingerprint' => $fingerprint,
             'source' => mb_substr(trim($source), 0, 100),
             'severity' => $severity,
@@ -91,6 +91,21 @@ final class AdminCapabilityService
             'description' => trim($description) !== '' ? $description : null,
             'context_json' => $contextJson,
         ]);
+        if ($severity === 'critical') {
+            try {
+                $this->repository->notifyIncident(
+                    $incidentId,
+                    trim($title),
+                    trim($description)
+                );
+            } catch (Throwable $notificationFailure) {
+                Logger::error('Incident was recorded but Admin notification delivery failed.', [
+                    'incident_id' => $incidentId,
+                    'exception_type' => get_class($notificationFailure),
+                ]);
+            }
+        }
+        return $incidentId;
     }
 
     public function updateIncident(int $id, string $status, ?int $assignedAdminId, int $actorAdminId): bool
