@@ -48,7 +48,14 @@ final class AdminCapabilityRepository
                AND (recipient_admin_user_id = :admin_id OR recipient_admin_user_id IS NULL)'
         );
         $stmt->execute(['id' => $notificationId, 'admin_id' => $adminId]);
-        return $stmt->rowCount() > 0;
+        $check = $this->db->prepare(
+            'SELECT 1 FROM admin_notifications
+             WHERE id = :id
+               AND (recipient_admin_user_id = :admin_id OR recipient_admin_user_id IS NULL)
+             LIMIT 1'
+        );
+        $check->execute(['id' => $notificationId, 'admin_id' => $adminId]);
+        return $check->fetchColumn() !== false;
     }
 
     public function createNotification(array $data): int
@@ -139,7 +146,9 @@ final class AdminCapabilityRepository
             'actor' => $actorAdminId,
             'id' => $id,
         ]);
-        return $stmt->rowCount() > 0;
+        $check = $this->db->prepare('SELECT 1 FROM admin_incidents WHERE id = :id LIMIT 1');
+        $check->execute(['id' => $id]);
+        return $check->fetchColumn() !== false;
     }
 
     public function tickets(string $status = '', int $limit = 100): array
@@ -263,7 +272,9 @@ final class AdminCapabilityRepository
             'closed' => $status === 'closed' ? 1 : 0,
             'id' => $id,
         ]);
-        return $stmt->rowCount() > 0;
+        $check = $this->db->prepare('SELECT 1 FROM admin_support_tickets WHERE id = :id LIMIT 1');
+        $check->execute(['id' => $id]);
+        return $check->fetchColumn() !== false;
     }
 
     public function analytics(string $from, string $to, int $limit = 50): array
