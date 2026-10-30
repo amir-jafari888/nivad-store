@@ -47,7 +47,8 @@ final class AdminAccessController extends Controller
         $this->requireReauthentication('admin.create');
         try {
             $id = $this->service->createAdmin($this->payload());
-            AdminAuditTrail::record($this->actorId(), 'create', 'admin_users', 'admin_user', $id, 'Admin account created.', null, ['status' => 'active']);
+            $after = $this->service->adminSecuritySnapshot($id);
+            AdminAuditTrail::record($this->actorId(), 'create', 'admin_users', 'admin_user', $id, 'Admin account created.', null, $after);
             $this->success(['id' => $id], 'مدیر جدید ایجاد شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -170,7 +171,8 @@ final class AdminAccessController extends Controller
         $this->requireReauthentication('admin.role.create');
         try {
             $id = $this->service->createRole($this->payload());
-            AdminAuditTrail::record($this->actorId(), 'create', 'admin_roles', 'admin_role', $id, 'Admin role created.');
+            $after = $this->service->roleSecuritySnapshot($id);
+            AdminAuditTrail::record($this->actorId(), 'create', 'admin_roles', 'admin_role', $id, 'Admin role created.', null, $after);
             $this->success(['id' => $id], 'نقش جدید ایجاد شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
