@@ -13,9 +13,9 @@ $cmsContent = CmsContentRenderer::activeContent();
 
     <div class="home-discovery__inner">
         <div class="home-discovery__copy">
-            <span class="home-discovery__eyebrow"><?= e((string)($cmsContent['eyebrow'] ?? 'NIVAD SMART DISCOVERY')) ?></span>
-            <h2 id="home-discovery-title"><?= e((string)($cmsContent['heading'] ?? 'نمی‌دونی کدوم محصول به کارت میاد؟')) ?></h2>
-            <p class="home-discovery__description"><?= e((string)($cmsContent['body'] ?? 'نیازت رو انتخاب کن؛ محصولات مناسب خودت رو پیدا کن.')) ?></p>
+            <span class="home-discovery__eyebrow" data-cms-field="eyebrow"><?= e((string)($cmsContent['eyebrow'] ?? 'NIVAD SMART DISCOVERY')) ?></span>
+            <h2 id="home-discovery-title" data-cms-field="heading"><?= e((string)($cmsContent['heading'] ?? 'نمی‌دونی کدوم محصول به کارت میاد؟')) ?></h2>
+            <p class="home-discovery__description" data-cms-field="body"><?= e((string)($cmsContent['body'] ?? 'نیازت رو انتخاب کن؛ محصولات مناسب خودت رو پیدا کن.')) ?></p>
 
             <ul class="home-discovery__benefits" aria-label="مزیت‌های کشف هوشمند">
                 <li>
