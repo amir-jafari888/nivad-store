@@ -28,6 +28,7 @@ final class AdminContentService
         $type = AdminContentRegistry::sectionType((string)($input['section_type'] ?? 'custom'));
         $title = $this->text((string)($input['title'] ?? ''), 160, 'عنوان سکشن');
         $content = AdminContentRegistry::validateContent((array)($input['content'] ?? []));
+        $this->validateMediaReferences($content);
         $style = AdminContentRegistry::validateStyle((array)($input['style'] ?? []));
         $key = strtolower(trim((string)($input['section_key'] ?? '')));
         if ($key === '') $key = $type . '-' . bin2hex(random_bytes(5));
@@ -43,6 +44,7 @@ final class AdminContentService
         if (!$before) return false;
         $title = $this->text((string)($input['title'] ?? $before['title']), 160, 'عنوان سکشن');
         $content = AdminContentRegistry::validateContent((array)($input['content'] ?? $before['content']));
+        $this->validateMediaReferences($content);
         $style = AdminContentRegistry::validateStyle((array)($input['style'] ?? $before['style']));
         $visible = array_key_exists('is_visible', $input) ? (bool)$input['is_visible'] : (bool)$before['is_visible'];
         $updated = $this->repository->updateSection($id, $title, $content, $style, $visible, $adminId);
@@ -58,7 +60,8 @@ final class AdminContentService
 
     public function schedule(int $id, string $dateTime, int $adminId): bool
     {
-        $date = new DateTimeImmutable($dateTime);
+        try { $date = new DateTimeImmutable($dateTime, new DateTimeZone('UTC')); }
+        catch (Throwable $exception) { throw new InvalidArgumentException('زمان انتشار معتبر نیست.'); }
         if ($date->getTimestamp() <= time()) throw new InvalidArgumentException('زمان انتشار باید در آینده باشد.');
         return $this->repository->scheduleSection($id, $date->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'), $adminId);
     }
@@ -111,6 +114,7 @@ final class AdminContentService
 
     public function updateMedia(int $id, ?string $alt, int $adminId): bool
     {
+        if ($alt !== null && mb_strlen($alt) > 500) throw new InvalidArgumentException('متن جایگزین تصویر بیش از حد مجاز است.');
         return $this->repository->updateMedia($id, $alt, $adminId);
     }
 
@@ -123,6 +127,28 @@ final class AdminContentService
     public function mediaFile(int $id): ?array
     {
         return $this->repository->publishedMedia($id);
+    }
+
+    public function publishDue(): int
+    {
+        return $this->repository->publishDueSections();
+    }
+
+    private function validateMediaReferences(array $content): void
+    {
+        $walk = function (array $node) use (&$walk): void {
+            foreach ($node as $key => $value) {
+                if ($key === 'image_id' && $value !== null && $value !== '') {
+                    $id = filter_var($value, FILTER_VALIDATE_INT);
+                    if ($id === false || $id < 1 || $this->repository->mediaById((int)$id) === null) {
+                        throw new InvalidArgumentException('تصویر انتخاب‌شده در کتابخانه رسانه فعال نیست.');
+                    }
+                } elseif (is_array($value)) {
+                    $walk($value);
+                }
+            }
+        };
+        $walk($content);
     }
 
     private function text(string $value, int $max, string $label): string
