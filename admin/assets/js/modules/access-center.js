@@ -48,6 +48,25 @@ const adminAccessCenter = () => {
       });
     });
   };
+  const loadSessions = async () => {
+    const data = await request("/sessions");
+    const target = root.querySelector('[data-access-list="sessions"]');
+    target.replaceChildren();
+    (data.items || []).forEach(session => {
+      const article = el("article", undefined, "admin-access-row");
+      article.append(el("strong", "نشست #" + session.id + " · " + (session.ip_address || "IP نامشخص")));
+      article.append(el("p", "آخرین فعالیت: " + session.last_activity_at + " · انقضا: " + session.expires_at));
+      article.append(el("p", session.user_agent || "User-Agent ثبت نشده"));
+      const revoke = el("button", "لغو نشست"); revoke.type = "button";
+      revoke.addEventListener("click", async () => {
+        try { await request("/sessions/" + session.id, "DELETE"); await loadSessions(); say("نشست لغو شد."); }
+        catch (error) { say(error.message, true); }
+      });
+      article.append(revoke); target.append(article);
+    });
+    if (!(data.items || []).length) target.append(el("p", "نشست فعال دیگری وجود ندارد."));
+  };
+
   const loadRoles = async () => {
     const data = await request("/roles");
     roles = data.items || [];
@@ -158,6 +177,8 @@ const adminAccessCenter = () => {
     await loadPermissions();
   };
 
+  root.querySelector("[data-access-refresh-sessions]")?.addEventListener("click", () => loadSessions().catch(error => say(error.message, true)));
+
   root.querySelector("[data-access-role-select]")?.addEventListener("change", () => {
     loadRolePermissionSelection().catch(error => say(error.message, true));
   });
@@ -193,7 +214,7 @@ const adminAccessCenter = () => {
     await request("/roles/" + roleId + "/permissions", "PUT", { permission_ids: ids });
   });
 
-  refresh().then(() => say("اطلاعات دسترسی‌ها دریافت شد.")).catch(error => say(error.message, true));
+  refresh().then(() => loadSessions()).then(() => say("اطلاعات دسترسی‌ها دریافت شد.")).catch(error => say(error.message, true));
 };
 
 export default adminAccessCenter;
