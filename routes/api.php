@@ -11,14 +11,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/attributes',
         [ProductAttributeController::class, 'index'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.attributes.index'
     );
 
     $router->get(
         '/admin/attributes/{id}',
         [ProductAttributeController::class, 'show'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.attributes.show'
     );
 
@@ -27,6 +29,7 @@ return static function (Router $router): void {
         [ProductAttributeController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attributes.store'
@@ -37,6 +40,7 @@ return static function (Router $router): void {
         [ProductAttributeController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attributes.update'
@@ -47,6 +51,7 @@ return static function (Router $router): void {
         [ProductAttributeController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attributes.destroy'
@@ -60,14 +65,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/attributes/{attributeId}/values',
         [ProductAttributeValueController::class, 'index'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.attribute-values.index'
     );
 
     $router->get(
         '/admin/attribute-values/{id}',
         [ProductAttributeValueController::class, 'show'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.attribute-values.show'
     );
 
@@ -76,6 +83,7 @@ return static function (Router $router): void {
         [ProductAttributeValueController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attribute-values.store'
@@ -86,6 +94,7 @@ return static function (Router $router): void {
         [ProductAttributeValueController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attribute-values.update'
@@ -96,6 +105,7 @@ return static function (Router $router): void {
         [ProductAttributeValueController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attribute-values.destroy'
@@ -109,14 +119,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/variants/{id}',
         [ProductVariantController::class, 'show'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.variants.show'
     );
 
     $router->get(
         '/admin/products/{productId}/variants',
         [ProductVariantController::class, 'byProduct'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.products.variants'
     );
 
@@ -125,6 +137,7 @@ return static function (Router $router): void {
         [ProductVariantController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variants.store'
@@ -135,6 +148,7 @@ return static function (Router $router): void {
         [ProductVariantController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variants.update'
@@ -145,6 +159,7 @@ return static function (Router $router): void {
         [ProductVariantController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variants.destroy'
@@ -158,7 +173,8 @@ return static function (Router $router): void {
     $router->get(
         '/admin/variants/{variantId}/attributes',
         [ProductVariantAttributeController::class, 'index'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.variant-attributes.index'
     );
 
@@ -167,6 +183,7 @@ return static function (Router $router): void {
         [ProductVariantAttributeController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variant-attributes.store'
@@ -177,6 +194,7 @@ return static function (Router $router): void {
         [ProductVariantAttributeController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variant-attributes.destroy'
@@ -189,7 +207,8 @@ return static function (Router $router): void {
     $router->get(
         '/admin/attributes/active',
         [ProductAttributeController::class, 'active'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.attributes.active'
     );
 
@@ -198,6 +217,7 @@ return static function (Router $router): void {
         [ProductAttributeController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attributes.restore'
@@ -208,6 +228,7 @@ return static function (Router $router): void {
         [ProductAttributeController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attributes.status'
@@ -221,7 +242,8 @@ return static function (Router $router): void {
     $router->get(
         '/admin/attributes/{attributeId}/values/active',
         [ProductAttributeValueController::class, 'active'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.attribute-values.active'
     );
 
@@ -230,6 +252,7 @@ return static function (Router $router): void {
         [ProductAttributeValueController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attribute-values.restore'
@@ -240,6 +263,7 @@ return static function (Router $router): void {
         [ProductAttributeValueController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.attribute-values.status'
@@ -253,14 +277,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/products/{productId}/variants/active',
         [ProductVariantController::class, 'activeByProduct'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.products.variants.active'
     );
 
     $router->get(
         '/admin/products/{productId}/variant-default',
         [ProductVariantController::class, 'defaultByProduct'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.products.variant-default'
     );
 
@@ -269,6 +295,7 @@ return static function (Router $router): void {
         [ProductVariantController::class, 'setDefault'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variants.default.set'
@@ -279,6 +306,7 @@ return static function (Router $router): void {
         [ProductVariantController::class, 'clearDefault'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variants.default.clear'
@@ -289,6 +317,7 @@ return static function (Router $router): void {
         [ProductVariantController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variants.restore'
@@ -299,6 +328,7 @@ return static function (Router $router): void {
         [ProductVariantController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variants.status'
@@ -314,6 +344,7 @@ return static function (Router $router): void {
         [ProductController::class, 'index'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.products.index'
     );
@@ -324,6 +355,7 @@ return static function (Router $router): void {
         [ProductController::class, 'show'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.products.show'
     );
@@ -334,6 +366,7 @@ return static function (Router $router): void {
         [ProductController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.products.store'
@@ -345,6 +378,7 @@ return static function (Router $router): void {
         [ProductController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.products.update'
@@ -356,6 +390,7 @@ return static function (Router $router): void {
         [ProductController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.products.destroy'
@@ -367,6 +402,7 @@ return static function (Router $router): void {
         [ProductController::class, 'active'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.products.active'
     );
@@ -376,6 +412,7 @@ return static function (Router $router): void {
         [ProductController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.products.restore'
@@ -387,6 +424,7 @@ return static function (Router $router): void {
         [ProductController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.products.status'
@@ -405,6 +443,7 @@ return static function (Router $router): void {
         [CategoryController::class, 'index'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.categories.index'
     );
@@ -414,6 +453,7 @@ return static function (Router $router): void {
         [CategoryController::class, 'active'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.categories.active'
     );
@@ -423,6 +463,7 @@ return static function (Router $router): void {
         [CategoryController::class, 'show'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.categories.show'
     );
@@ -432,6 +473,7 @@ return static function (Router $router): void {
         [CategoryController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.categories.store'
@@ -442,6 +484,7 @@ return static function (Router $router): void {
         [CategoryController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.categories.update'
@@ -452,6 +495,7 @@ return static function (Router $router): void {
         [CategoryController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.categories.destroy'
@@ -462,6 +506,7 @@ return static function (Router $router): void {
         [CategoryController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.categories.restore'
@@ -472,6 +517,7 @@ return static function (Router $router): void {
         [CategoryController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.categories.status'
@@ -490,6 +536,7 @@ return static function (Router $router): void {
         [BrandController::class, 'index'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.brands.index'
     );
@@ -499,6 +546,7 @@ return static function (Router $router): void {
         [BrandController::class, 'active'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.brands.active'
     );
@@ -508,6 +556,7 @@ return static function (Router $router): void {
         [BrandController::class, 'show'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.brands.show'
     );
@@ -517,6 +566,7 @@ return static function (Router $router): void {
         [BrandController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.brands.store'
@@ -527,6 +577,7 @@ return static function (Router $router): void {
         [BrandController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.brands.update'
@@ -537,6 +588,7 @@ return static function (Router $router): void {
         [BrandController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.brands.destroy'
@@ -547,6 +599,7 @@ return static function (Router $router): void {
         [BrandController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.brands.restore'
@@ -557,6 +610,7 @@ return static function (Router $router): void {
         [BrandController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.brands.status'
@@ -572,6 +626,7 @@ return static function (Router $router): void {
         [ProductVariantAttributeController::class, 'index'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.variant-attributes.index'
     );
@@ -582,6 +637,7 @@ return static function (Router $router): void {
         [ProductVariantAttributeController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variant-attributes.store'
@@ -593,6 +649,7 @@ return static function (Router $router): void {
         [ProductVariantAttributeController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.variant-attributes.destroy'
@@ -608,6 +665,7 @@ return static function (Router $router): void {
         [ProductSpecificationController::class, 'index'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.product-specifications.index'
     );
@@ -618,6 +676,7 @@ return static function (Router $router): void {
         [ProductSpecificationController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.product-specifications.store'
@@ -629,6 +688,7 @@ return static function (Router $router): void {
         [ProductSpecificationController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.product-specifications.update'
@@ -640,6 +700,7 @@ return static function (Router $router): void {
         [ProductSpecificationController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.product-specifications.destroy'
@@ -655,6 +716,7 @@ return static function (Router $router): void {
         [ProductMediaController::class, 'index'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.product-media.index'
     );
@@ -665,6 +727,7 @@ return static function (Router $router): void {
         [ProductMediaController::class, 'indexByVariant'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.variant-media.index'
     );
@@ -675,6 +738,7 @@ return static function (Router $router): void {
         [ProductMediaController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.product-media.store'
@@ -686,6 +750,7 @@ return static function (Router $router): void {
         [ProductMediaController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.product-media.update'
@@ -697,6 +762,7 @@ return static function (Router $router): void {
         [ProductMediaController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.product-media.destroy'
@@ -709,14 +775,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/inventory/{id}',
         [InventoryController::class, 'show'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory.show'
     );
 
     $router->get(
         '/admin/variants/{variantId}/inventory',
         [InventoryController::class, 'byVariant'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory.by-variant'
     );
 
@@ -725,6 +793,7 @@ return static function (Router $router): void {
         [InventoryController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.inventory.store'
@@ -735,6 +804,7 @@ return static function (Router $router): void {
         [InventoryController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.inventory.update'
@@ -747,14 +817,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/inventory-movements/{id}',
         [InventoryMovementController::class, 'show'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory-movements.show'
     );
 
     $router->get(
         '/admin/variants/{variantId}/inventory-movements',
         [InventoryMovementController::class, 'byVariant'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory-movements.by-variant'
     );
 
@@ -763,6 +835,7 @@ return static function (Router $router): void {
         [InventoryMovementController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.inventory-movements.store'
@@ -776,35 +849,40 @@ return static function (Router $router): void {
     $router->get(
         '/admin/inventory-reservations/{id}',
         [InventoryReservationController::class, 'show'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory-reservations.show'
     );
 
     $router->get(
         '/admin/variants/{variantId}/inventory-reservations',
         [InventoryReservationController::class, 'byVariant'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory-reservations.by-variant'
     );
 
     $router->get(
         '/admin/variants/{variantId}/inventory-reservations/active',
         [InventoryReservationController::class, 'activeByVariant'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory-reservations.active-by-variant'
     );
 
     $router->get(
         '/admin/carts/{cartId}/inventory-reservations',
         [InventoryReservationController::class, 'byCart'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory-reservations.by-cart'
     );
 
     $router->get(
         '/admin/orders/{orderId}/inventory-reservations',
         [InventoryReservationController::class, 'byOrder'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.inventory-reservations.by-order'
     );
 
@@ -813,6 +891,7 @@ return static function (Router $router): void {
         [InventoryReservationController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.inventory-reservations.store'
@@ -823,6 +902,7 @@ return static function (Router $router): void {
         [InventoryReservationController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.inventory-reservations.status'
@@ -1076,6 +1156,7 @@ return static function (Router $router): void {
         [OrderController::class, 'adminIndex'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.orders.index'
     );
@@ -1085,6 +1166,7 @@ return static function (Router $router): void {
         [OrderController::class, 'adminShow'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.orders.show'
     );
@@ -1094,6 +1176,7 @@ return static function (Router $router): void {
         [OrderController::class, 'adminStatus'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.orders.status'
@@ -1158,28 +1241,32 @@ return static function (Router $router): void {
     $router->get(
         '/admin/payments',
         [PaymentAdminController::class, 'index'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.payments.index'
     );
 
     $router->get(
         '/admin/payments/attempts',
         [PaymentAdminController::class, 'attempts'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.payments.attempts'
     );
 
     $router->get(
         '/admin/payments/attempts/{id}',
         [PaymentAdminController::class, 'attemptShow'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.payments.attempts.show'
     );
 
     $router->get(
         '/admin/payments/{id}',
         [PaymentAdminController::class, 'show'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.payments.show'
     );
 
@@ -1220,6 +1307,7 @@ return static function (Router $router): void {
         [ReturnController::class, 'adminIndex'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.returns.index'
     );
@@ -1229,6 +1317,7 @@ return static function (Router $router): void {
         [ReturnController::class, 'adminShow'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.returns.show'
     );
@@ -1238,6 +1327,7 @@ return static function (Router $router): void {
         [ReturnController::class, 'adminStatus'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.returns.status'
@@ -1248,6 +1338,7 @@ return static function (Router $router): void {
         [ReturnController::class, 'adminRefunds'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.returns.refunds'
     );
@@ -1257,6 +1348,7 @@ return static function (Router $router): void {
         [ReturnController::class, 'adminCreateRefund'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.refunds.store'
@@ -1267,6 +1359,7 @@ return static function (Router $router): void {
         [ReturnController::class, 'adminRefundStatus'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.refunds.status'
@@ -1296,7 +1389,8 @@ return static function (Router $router): void {
     $router->get(
         '/admin/discovery/tags',
         [DiscoveryController::class, 'adminTags'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.discovery.tags.index'
     );
 
@@ -1305,6 +1399,7 @@ return static function (Router $router): void {
         [DiscoveryController::class, 'storeTag'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.discovery.tags.store'
@@ -1315,6 +1410,7 @@ return static function (Router $router): void {
         [DiscoveryController::class, 'updateTag'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.discovery.tags.update'
@@ -1325,6 +1421,7 @@ return static function (Router $router): void {
         [DiscoveryController::class, 'destroyTag'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.discovery.tags.destroy'
@@ -1357,6 +1454,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminIndex'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.compatibility.index'
     );
@@ -1428,6 +1526,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'adminIndex'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.collections.index'
     );
@@ -1437,6 +1536,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'adminShow'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.collections.show'
     );
@@ -1446,6 +1546,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.collections.store'
@@ -1456,6 +1557,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.collections.update'
@@ -1466,6 +1568,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.collections.destroy'
@@ -1476,6 +1579,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.collections.restore'
@@ -1486,6 +1590,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.collections.status'
@@ -1496,6 +1601,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'attachProduct'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.collections.products.attach'
@@ -1506,6 +1612,7 @@ return static function (Router $router): void {
         [CollectionController::class, 'detachProduct'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.collections.products.detach'
@@ -1547,6 +1654,7 @@ return static function (Router $router): void {
         [SliderController::class, 'adminIndex'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.sliders.index'
     );
@@ -1556,6 +1664,7 @@ return static function (Router $router): void {
         [SliderController::class, 'adminShow'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.sliders.show'
     );
@@ -1565,6 +1674,7 @@ return static function (Router $router): void {
         [SliderController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.sliders.store'
@@ -1575,6 +1685,7 @@ return static function (Router $router): void {
         [SliderController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.sliders.update'
@@ -1585,6 +1696,7 @@ return static function (Router $router): void {
         [SliderController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.sliders.destroy'
@@ -1595,6 +1707,7 @@ return static function (Router $router): void {
         [SliderController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.sliders.restore'
@@ -1605,6 +1718,7 @@ return static function (Router $router): void {
         [SliderController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.sliders.status'
@@ -1620,6 +1734,7 @@ return static function (Router $router): void {
         [CouponController::class, 'index'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.coupons.index'
     );
@@ -1630,6 +1745,7 @@ return static function (Router $router): void {
         [CouponController::class, 'show'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.coupons.show'
     );
@@ -1640,6 +1756,7 @@ return static function (Router $router): void {
         [CouponController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.coupons.store'
@@ -1651,6 +1768,7 @@ return static function (Router $router): void {
         [CouponController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.coupons.update'
@@ -1662,6 +1780,7 @@ return static function (Router $router): void {
         [CouponController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.coupons.destroy'
@@ -1673,6 +1792,7 @@ return static function (Router $router): void {
         [CouponController::class, 'restore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.coupons.restore'
@@ -1684,6 +1804,7 @@ return static function (Router $router): void {
         [CouponController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.coupons.status'
@@ -1694,6 +1815,7 @@ return static function (Router $router): void {
         [ReviewController::class, 'adminIndex'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.reviews.index'
     );
@@ -1703,6 +1825,7 @@ return static function (Router $router): void {
         [ReviewController::class, 'adminShow'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.reviews.show'
     );
@@ -1712,6 +1835,7 @@ return static function (Router $router): void {
         [ReviewController::class, 'adminStatus'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.reviews.status'
@@ -1722,6 +1846,7 @@ return static function (Router $router): void {
         [ReviewController::class, 'adminNote'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.reviews.note'
@@ -1778,6 +1903,7 @@ return static function (Router $router): void {
         [ProductQuestionController::class, 'adminIndex'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.questions.index'
     );
@@ -1787,6 +1913,7 @@ return static function (Router $router): void {
         [ProductQuestionController::class, 'adminShow'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.questions.show'
     );
@@ -1796,6 +1923,7 @@ return static function (Router $router): void {
         [ProductQuestionController::class, 'adminStatus'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.questions.status'
@@ -1806,6 +1934,7 @@ return static function (Router $router): void {
         [ProductQuestionController::class, 'adminNote'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.questions.note'
@@ -1816,6 +1945,7 @@ return static function (Router $router): void {
         [ProductAnswerController::class, 'adminStore'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.questions.answers.store'
@@ -1826,6 +1956,7 @@ return static function (Router $router): void {
         [ProductAnswerController::class, 'adminStatus'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.answers.status'
@@ -1900,6 +2031,7 @@ return static function (Router $router): void {
         [NotificationController::class, 'adminCreate'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.notifications.create'
@@ -1931,6 +2063,7 @@ return static function (Router $router): void {
         [ReportController::class, 'show'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.reports.show'
     );
@@ -1940,6 +2073,7 @@ return static function (Router $router): void {
         [AdminController::class, 'reports'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.reports.index'
     );
@@ -1949,6 +2083,7 @@ return static function (Router $router): void {
         [AdminController::class, 'salesReports'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.reports.sales'
     );
@@ -1958,6 +2093,7 @@ return static function (Router $router): void {
         [AdminController::class, 'orderReports'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.reports.orders'
     );
@@ -1967,6 +2103,7 @@ return static function (Router $router): void {
         [AdminController::class, 'productReports'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.reports.products'
     );
@@ -1976,6 +2113,7 @@ return static function (Router $router): void {
         [AdminController::class, 'categoryReports'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.reports.categories'
     );
@@ -1993,6 +2131,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminMappings'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
         ],
         'admin.compatibility.mappings'
     );
@@ -2002,6 +2141,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminStoreMapping'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.compatibility.mappings.store'
@@ -2012,6 +2152,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminUpdateMapping'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.compatibility.mappings.update'
@@ -2022,6 +2163,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminDeleteMapping'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.compatibility.mappings.destroy'
@@ -2030,7 +2172,8 @@ return static function (Router $router): void {
     $router->get(
         '/admin/compatibility/devices',
         [CompatibilityController::class, 'adminDevices'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.compatibility.devices'
     );
 
@@ -2039,6 +2182,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminStoreDevice'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.compatibility.devices.store'
@@ -2049,6 +2193,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminUpdateDevice'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.compatibility.devices.update'
@@ -2059,6 +2204,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminDeleteDevice'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.compatibility.devices.destroy'
@@ -2069,6 +2215,7 @@ return static function (Router $router): void {
         [CompatibilityController::class, 'adminStatusDevice'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.compatibility.devices.status'
@@ -2082,7 +2229,8 @@ return static function (Router $router): void {
     $router->get(
         '/admin/audit-logs',
         [AuditLogController::class, 'index'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.audit-logs.index'
     );
 
@@ -2094,14 +2242,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/users',
         [UserAdminController::class, 'index'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.users.index'
     );
 
     $router->get(
         '/admin/users/{id}',
         [UserAdminController::class, 'show'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.users.show'
     );
 
@@ -2110,6 +2260,7 @@ return static function (Router $router): void {
         [UserAdminController::class, 'status'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.users.status'
@@ -2123,7 +2274,8 @@ return static function (Router $router): void {
     $router->get(
         '/admin/shipping/methods',
         [ShippingAdminController::class, 'index'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.shipping.methods.index'
     );
 
@@ -2132,6 +2284,7 @@ return static function (Router $router): void {
         [ShippingAdminController::class, 'store'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.shipping.methods.store'
@@ -2142,6 +2295,7 @@ return static function (Router $router): void {
         [ShippingAdminController::class, 'update'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.shipping.methods.update'
@@ -2152,6 +2306,7 @@ return static function (Router $router): void {
         [ShippingAdminController::class, 'destroy'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.shipping.methods.destroy'
@@ -2160,14 +2315,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/shipping/zones',
         [ShippingAdminController::class, 'zones'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.shipping.zones'
     );
 
     $router->get(
         '/admin/shipping/zones/{id}',
         [ShippingAdminController::class, 'zoneShow'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.shipping.zones.show'
     );
 
@@ -2176,6 +2333,7 @@ return static function (Router $router): void {
         [ShippingAdminController::class, 'zoneStatus'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.shipping.zones.status'
@@ -2184,14 +2342,16 @@ return static function (Router $router): void {
     $router->get(
         '/admin/shipping/shipments',
         [ShippingAdminController::class, 'shipments'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.shipping.shipments'
     );
 
     $router->get(
         '/admin/shipping/shipments/{id}',
         [ShippingAdminController::class, 'shipmentShow'],
-        [AdminAuthMiddleware::class],
+        [AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class],
         'admin.shipping.shipments.show'
     );
 
@@ -2200,6 +2360,7 @@ return static function (Router $router): void {
         [ShippingAdminController::class, 'shipmentStatus'],
         [
             AdminAuthMiddleware::class,
+            AdminRoutePermissionMiddleware::class,
             CsrfMiddleware::class,
         ],
         'admin.shipping.shipments.status'
