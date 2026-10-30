@@ -2828,6 +2828,7 @@ return static function (Router $router): void {
     $router->get('/admin/access/sessions', [AdminAccessController::class, 'sessions'], $adminCapabilityRead, 'admin.access.sessions.index');
     $router->delete('/admin/access/sessions/{id}', [AdminAccessController::class, 'revokeSession'], $adminCapabilityWrite, 'admin.access.sessions.destroy');
     $router->get('/admin/access/admins', [AdminAccessController::class, 'admins'], $adminCapabilityRead, 'admin.access.admins.index');
+    $router->get('/admin/access/admins/{id}/effective-permissions', [AdminAccessController::class, 'effectivePermissions'], $adminCapabilityRead, 'admin.access.admins.effective-permissions');
     $router->post('/admin/access/admins', [AdminAccessController::class, 'createAdmin'], $adminCapabilityWrite, 'admin.access.admins.store');
     $router->patch('/admin/access/admins/{id}', [AdminAccessController::class, 'updateAdmin'], $adminCapabilityWrite, 'admin.access.admins.update');
     $router->delete('/admin/access/admins/{id}', [AdminAccessController::class, 'deleteAdmin'], $adminCapabilityWrite, 'admin.access.admins.destroy');
