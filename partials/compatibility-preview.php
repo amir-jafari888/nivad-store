@@ -9,13 +9,13 @@ $cmsContent = CmsContentRenderer::activeContent();
 <section class="home-compatibility-preview" aria-labelledby="home-compatibility-preview-title">
   <div class="home-compatibility-preview__inner">
     <div class="home-compatibility-preview__copy">
-      <span class="home-compatibility-preview__eyebrow">
+      <span class="home-compatibility-preview__eyebrow" data-cms-field="eyebrow">
         <span class="home-compatibility-preview__eyebrow-mark" aria-hidden="true">✦</span>
         <?= e((string)($cmsContent['eyebrow'] ?? 'NIVAD COMPATIBILITY FINDER')) ?>
       </span>
 
-      <h2 id="home-compatibility-preview-title"><?= e((string)($cmsContent['heading'] ?? 'قبل از خرید، از سازگاری مطمئن شو.')) ?></h2>
-      <p class="home-compatibility-preview__description">
+      <h2 id="home-compatibility-preview-title" data-cms-field="heading"><?= e((string)($cmsContent['heading'] ?? 'قبل از خرید، از سازگاری مطمئن شو.')) ?></h2>
+      <p class="home-compatibility-preview__description" data-cms-field="body">
         <?= e((string)($cmsContent['body'] ?? 'مدل دستگاهت رو انتخاب کن و لوازم جانبی مرتبط باهاش رو پیدا کن؛ با اطلاعات شفاف‌تر، انتخاب مطمئن‌تری داشته باش.')) ?>
       </p>
 
