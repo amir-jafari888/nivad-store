@@ -431,7 +431,7 @@ final class AdminCapabilityRepository
         );
         $products->execute(['name' => $pattern, 'sku' => $pattern]);
         foreach ($products->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $results[] = ['type' => 'product', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail'], 'href' => url('/admin/products')];
+            $results[] = ['type' => 'product', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail']];
         }
 
         $orders = $this->db->prepare(
@@ -442,7 +442,7 @@ final class AdminCapabilityRepository
         );
         $orders->execute(['number' => $pattern, 'recipient' => $pattern, 'phone' => $pattern]);
         foreach ($orders->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $results[] = ['type' => 'order', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail'], 'href' => url('/admin/orders')];
+            $results[] = ['type' => 'order', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail']];
         }
 
         $users = $this->db->prepare(
@@ -455,7 +455,7 @@ final class AdminCapabilityRepository
         );
         $users->execute(['first_name' => $pattern, 'last_name' => $pattern, 'email' => $pattern, 'phone' => $pattern]);
         foreach ($users->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $results[] = ['type' => 'customer', 'id' => (int)$row['id'], 'label' => trim($row['label']) ?: ('Customer #' . $row['id']), 'detail' => $row['detail'], 'href' => url('/admin/users')];
+            $results[] = ['type' => 'customer', 'id' => (int)$row['id'], 'label' => trim($row['label']) ?: ('Customer #' . $row['id']), 'detail' => $row['detail']];
         }
 
         $tickets = $this->db->prepare(
@@ -466,7 +466,7 @@ final class AdminCapabilityRepository
         );
         $tickets->execute(['number' => $pattern, 'subject' => $pattern]);
         foreach ($tickets->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $results[] = ['type' => 'ticket', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail'], 'href' => url('/admin/capabilities/index.php#admin-tickets-title')];
+            $results[] = ['type' => 'ticket', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail']];
         }
 
         return array_slice($results, 0, 20);
