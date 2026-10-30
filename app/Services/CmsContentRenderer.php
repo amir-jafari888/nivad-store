@@ -3,19 +3,37 @@
 declare(strict_types=1);
 
 /**
- * Storefront renderer for published CMS sections. Only structured content is
- * rendered; HTML and executable attributes are never accepted from the editor.
+ * Storefront renderer for structured CMS content. Existing interactive storefront
+ * modules remain the renderers for their native sections; CMS controls their
+ * copy and outer design while retaining live catalog/discovery integrations.
  */
 final class CmsContentRenderer
 {
     private static ?AdminContentRepository $repository = null;
+
+    private const NATIVE_HOME_COMPONENTS = [
+        'hero' => 'hero.php',
+        'categories' => 'categories.php',
+        'discovery' => 'discovery.php',
+        'products' => 'product.php',
+        'setup-preview' => 'setup-preview.php',
+        'compatibility-preview' => 'compatibility-preview.php',
+        'new-products' => 'new-product.php',
+        'smart-bundle' => 'smart-bundle.php',
+    ];
+
+    public static function activeContent(): array
+    {
+        $section = $GLOBALS['cms_active_section'] ?? null;
+        return is_array($section) && is_array($section['content'] ?? null) ? $section['content'] : [];
+    }
 
     public static function renderSection(string $pageKey, string $sectionKey): bool
     {
         try {
             foreach (self::repository()->sections($pageKey) as $section) {
                 if (($section['section_key'] ?? '') !== $sectionKey || ($section['status'] ?? '') !== 'published' || (int)($section['is_visible'] ?? 0) !== 1) continue;
-                echo self::renderMarkup($section['title'], $section['content'] ?? [], $section['style'] ?? [], $section['section_type'] ?? 'custom', $section['id'] ?? 0);
+                echo self::renderMarkup($section['title'], $section['published_content'] ?: $section['content'], $section['published_style'] ?: $section['style'], $section['section_type'], $section['id']);
                 return true;
             }
         } catch (Throwable $exception) {
@@ -28,10 +46,46 @@ final class CmsContentRenderer
     {
         try {
             $sections = self::repository()->sections($pageKey);
-            $published = array_values(array_filter($sections, static fn(array $section): bool => ($section['status'] ?? '') === 'published' && (int)($section['is_visible'] ?? 0) === 1));
-            if ($published === []) return false;
-            foreach ($published as $section) {
-                echo self::renderMarkup($section['title'], $section['published_content'] ?: $section['content'], $section['published_style'] ?: $section['style'], $section['section_type'], $section['id']);
+            if ($sections === []) return false;
+
+            if ($pageKey === 'home') {
+                foreach ($sections as $section) {
+                    $key = (string)$section['section_key'];
+                    $type = (string)$section['section_type'];
+                    if (($section['status'] ?? '') === 'published') {
+                        if ((int)($section['is_visible'] ?? 0) !== 1) continue;
+                        $section['content'] = $section['published_content'] ?: $section['content'];
+                        $section['style'] = $section['published_style'] ?: $section['style'];
+                        if (isset(self::NATIVE_HOME_COMPONENTS[$key])) {
+                            self::renderNativeHomeSection($section, self::NATIVE_HOME_COMPONENTS[$key]);
+                        } else {
+                            echo self::renderMarkup($section['title'], $section['content'], $section['style'], $type, $section['id']);
+                        }
+                        continue;
+                    }
+                    // Until an administrator publishes a draft, preserve the
+                    // original PHP section and all of its existing interactions.
+                    if (isset(self::NATIVE_HOME_COMPONENTS[$key])) {
+                        self::renderOriginalHomeSection(self::NATIVE_HOME_COMPONENTS[$key]);
+                    }
+                }
+                return true;
+            }
+
+            // Content pages switch atomically: every registered section must be
+            // published before the legacy page is replaced, avoiding partial pages.
+            foreach ($sections as $section) {
+                if (($section['status'] ?? '') !== 'published') return false;
+            }
+            foreach ($sections as $section) {
+                if ((int)($section['is_visible'] ?? 0) !== 1) continue;
+                echo self::renderMarkup(
+                    (string)$section['title'],
+                    $section['published_content'] ?: $section['content'],
+                    $section['published_style'] ?: $section['style'],
+                    (string)$section['section_type'],
+                    $section['id']
+                );
             }
             return true;
         } catch (Throwable $exception) {
@@ -51,30 +105,57 @@ final class CmsContentRenderer
         );
     }
 
-    private static function repository(): AdminContentRepository
+    private static function renderOriginalHomeSection(string $file): void
     {
-        if (self::$repository === null) self::$repository = new AdminContentRepository();
-        return self::$repository;
+        $path = dirname(__DIR__, 2) . '/partials/' . $file;
+        if (!is_file($path)) return;
+        $GLOBALS['cms_active_section'] = null;
+        include $path;
+        unset($GLOBALS['cms_active_section']);
+    }
+
+    private static function renderNativeHomeSection(array $section, string $file): void
+    {
+        $path = dirname(__DIR__, 2) . '/partials/' . $file;
+        if (!is_file($path)) {
+            echo self::renderMarkup($section['title'], $section['content'], $section['style'], $section['section_type'], $section['id']);
+            return;
+        }
+        $styleAttribute = self::styleAttribute((array)$section['style']);
+        $GLOBALS['cms_active_section'] = $section;
+        ob_start();
+        include $path;
+        $component = (string)ob_get_clean();
+        unset($GLOBALS['cms_active_section']);
+        echo '<div class="cms-native-section" data-cms-native="' . self::e((string)$section['section_key']) . '" data-cms-section="' . (int)$section['id'] . '"' . $styleAttribute . '>' . $component . '</div>';
+    }
+
+    private static function styleAttribute(array $style): string
+    {
+        $style = AdminContentRegistry::validateStyle($style);
+        $vars = [];
+        foreach ([
+            'background' => '--cms-background',
+            'gradient_from' => '--cms-gradient-from',
+            'gradient_to' => '--cms-gradient-to',
+            'color' => '--cms-color',
+            'muted_color' => '--cms-muted',
+            'accent_color' => '--cms-accent',
+        ] as $key => $property) {
+            if (isset($style[$key])) $vars[] = $property . ':' . $style[$key];
+        }
+        if (isset($style['gradient_angle'])) $vars[] = '--cms-gradient-angle:' . (int)$style['gradient_angle'] . 'deg';
+        foreach (['padding_top' => 'padding-top', 'padding_bottom' => 'padding-bottom', 'radius' => 'radius', 'container_width' => 'container-width'] as $key => $property) {
+            if (isset($style[$key])) $vars[] = '--cms-' . $property . ':' . (float)$style[$key] . 'px';
+        }
+        if (isset($style['text_align'])) $vars[] = '--cms-text-align:' . $style['text_align'];
+        return $vars ? ' style="' . self::e(implode(';', $vars)) . '"' : '';
     }
 
     private static function renderMarkup(string $title, array $content, array $style, string $type, int|string $id): string
     {
-        $style = AdminContentRegistry::validateStyle($style);
-        $vars = [];
-        if (isset($style['background'])) $vars[] = '--cms-background:' . $style['background'];
-        if (isset($style['gradient_from'])) $vars[] = '--cms-gradient-from:' . $style['gradient_from'];
-        if (isset($style['gradient_to'])) $vars[] = '--cms-gradient-to:' . $style['gradient_to'];
-        if (isset($style['gradient_angle'])) $vars[] = '--cms-gradient-angle:' . (int)$style['gradient_angle'] . 'deg';
-        if (isset($style['color'])) $vars[] = '--cms-color:' . $style['color'];
-        if (isset($style['muted_color'])) $vars[] = '--cms-muted:' . $style['muted_color'];
-        if (isset($style['accent_color'])) $vars[] = '--cms-accent:' . $style['accent_color'];
-        if (isset($style['padding_top'])) $vars[] = '--cms-padding-top:' . (float)$style['padding_top'] . 'px';
-        if (isset($style['padding_bottom'])) $vars[] = '--cms-padding-bottom:' . (float)$style['padding_bottom'] . 'px';
-        if (isset($style['radius'])) $vars[] = '--cms-radius:' . (float)$style['radius'] . 'px';
-        if (isset($style['container_width'])) $vars[] = '--cms-container-width:' . (float)$style['container_width'] . 'px';
-        if (isset($style['text_align'])) $vars[] = '--cms-text-align:' . $style['text_align'];
+        $styleAttribute = self::styleAttribute($style);
         $classes = 'cms-live-section cms-live-section--' . preg_replace('/[^a-z0-9_-]/', '', $type);
-        $styleAttribute = $vars ? ' style="' . self::e(implode(';', $vars)) . '"' : '';
         $html = '<section class="' . self::e($classes) . '" data-cms-section="' . self::e((string)$id) . '"' . $styleAttribute . '><div class="cms-live-section__inner">';
         if (!empty($content['eyebrow'])) $html .= '<p class="cms-live-section__eyebrow">' . self::e((string)$content['eyebrow']) . '</p>';
         $heading = (string)($content['heading'] ?? $title);
@@ -115,6 +196,12 @@ final class CmsContentRenderer
         if (str_starts_with($url, '/') && !str_starts_with($url, '//')) return url($url);
         if (preg_match('/^https:\/\/[a-z0-9.-]+(?::[0-9]+)?(?:\/[^\s]*)?$/i', $url)) return $url;
         return '#';
+    }
+
+    private static function repository(): AdminContentRepository
+    {
+        if (self::$repository === null) self::$repository = new AdminContentRepository();
+        return self::$repository;
     }
 
     private static function e(string $value): string
