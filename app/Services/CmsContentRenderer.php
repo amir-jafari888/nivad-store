@@ -202,11 +202,21 @@ final class CmsContentRenderer
         $html = '<section class="' . self::e($classes) . '" data-cms-section="' . self::e((string)$id) . '"' . $styleAttribute . '><div class="cms-live-section__inner">';
         if (!empty($content['eyebrow'])) $html .= '<p class="cms-live-section__eyebrow">' . self::e((string)$content['eyebrow']) . '</p>';
         $heading = (string)($content['heading'] ?? $title);
-        if ($heading !== '') $html .= '<h2 class="cms-live-section__heading">' . self::e($heading) . '</h2>';
+        $headingTag = $type === 'intro' ? 'h1' : 'h2';
+        if ($heading !== '') $html .= '<' . $headingTag . ' class="cms-live-section__heading">' . self::e($heading) . '</' . $headingTag . '>';
         if (!empty($content['body'])) $html .= '<p class="cms-live-section__body">' . nl2br(self::e((string)$content['body'])) . '</p>';
         if (!empty($content['image_id'])) $html .= self::image((int)$content['image_id'], (string)($content['image_alt'] ?? $heading));
         $items = is_array($content['items'] ?? null) ? $content['items'] : [];
-        if ($items !== []) {
+        if ($items !== [] && $type === 'faq') {
+            $html .= '<div class="cms-faq-list">';
+            foreach ($items as $item) {
+                if (!is_array($item)) continue;
+                $html .= '<details><summary>' . self::e((string)($item['title'] ?? '')) . '</summary>';
+                if (!empty($item['body'])) $html .= '<p>' . self::e((string)$item['body']) . '</p>';
+                $html .= '</details>';
+            }
+            $html .= '</div>';
+        } elseif ($items !== []) {
             $html .= '<div class="cms-live-section__grid">';
             foreach ($items as $item) {
                 if (!is_array($item)) continue;
