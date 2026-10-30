@@ -21,6 +21,11 @@ final class AuditLogService
             ->findAll($limit);
     }
 
+    public function recentAdminActivity(int $limit = 8): array
+    {
+        return $this->repository->recentAdminActivity($limit);
+    }
+
     public function record(
         ?int $adminUserId,
         string $action,
