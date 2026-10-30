@@ -61,13 +61,13 @@ final class AdminContentRegistry
 
     public static function validateStyle(array $style): array
     {
-        $allowed = ['background', 'background_type', 'gradient_from', 'gradient_to', 'gradient_angle', 'color', 'muted_color', 'accent_color', 'padding_top', 'padding_bottom', 'radius', 'text_align', 'container_width', 'overlay_opacity'];
+        $allowed = ['background', 'background_type', 'gradient_from', 'gradient_to', 'gradient_angle', 'color', 'muted_color', 'accent_color', 'padding_top', 'padding_bottom', 'radius', 'text_align', 'container_width', 'overlay_opacity', 'heading_size', 'body_size', 'gap', 'card_radius', 'border_color', 'shadow'];
         $clean = [];
         foreach ($style as $key => $value) {
             if (!in_array($key, $allowed, true)) {
                 throw new InvalidArgumentException('ویژگی ظاهری ناشناخته است: ' . (string)$key);
             }
-            if (in_array($key, ['background', 'gradient_from', 'gradient_to', 'color', 'muted_color', 'accent_color'], true)) {
+            if (in_array($key, ['background', 'gradient_from', 'gradient_to', 'color', 'muted_color', 'accent_color', 'border_color'], true)) {
                 if (!is_string($value) || !preg_match('/^(#[0-9a-fA-F]{3,8}|rgba?\([0-9.,%\s]+\))$/', $value)) {
                     throw new InvalidArgumentException('رنگ یا مقدار گرادیان معتبر نیست.');
                 }
@@ -83,6 +83,14 @@ final class AdminContentRegistry
                 }
                 $clean[$key] = (int)$value;
                 continue;
+            } elseif (in_array($key, ['heading_size', 'body_size', 'gap', 'card_radius'], true)) {
+                $min = $key === 'heading_size' ? 16 : ($key === 'body_size' ? 12 : 0);
+                $max = $key === 'heading_size' ? 72 : ($key === 'body_size' ? 32 : ($key === 'gap' ? 64 : 40));
+                if (!is_numeric($value) || (float)$value < $min || (float)$value > $max) throw new InvalidArgumentException('مقدار تایپوگرافی یا فاصله خارج از محدوده مجاز است.');
+                $clean[$key] = (float)$value;
+                continue;
+            } elseif ($key === 'shadow') {
+                if (!in_array($value, ['none', 'soft', 'medium'], true)) throw new InvalidArgumentException('نوع سایه معتبر نیست.');
             } elseif ($key === 'overlay_opacity') {
                 if (!is_numeric($value) || (float)$value < 0 || (float)$value > 1) {
                     throw new InvalidArgumentException('شفافیت Overlay باید بین صفر و یک باشد.');
