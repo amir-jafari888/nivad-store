@@ -144,3 +144,6 @@ JOIN (
     UNION ALL SELECT 'terms','review','content','بازبینی شرایط',60,JSON_OBJECT('heading','بازبینی شرایط','body','نسخه نهایی باید شامل تاریخ اجرا، اطلاعات مسئول کسب‌وکار و مفاد حقوقی تأییدشده باشد. تا پیش از این تأیید، این صفحه نباید به‌عنوان مشاوره حقوقی یا سند حقوقی کامل تلقی شود.')
 ) AS seed ON seed.page_key = p.page_key
 WHERE NOT EXISTS (SELECT 1 FROM admin_cms_sections s WHERE s.page_id = p.id AND s.section_key = seed.section_key);
+
+-- Preserve the current storefront order/visibility until each draft section is published.
+UPDATE admin_cms_sections SET published_sort_order = sort_order, published_is_visible = is_visible WHERE published_sort_order IS NULL;
