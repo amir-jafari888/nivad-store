@@ -1,0 +1,56 @@
+name: Admin Phase 2 RBAC Security
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "app/Core/AdminRoutePermissionMap.php"
+      - "app/Services/AdminReauthenticationService.php"
+      - "app/Services/AdminAccessService.php"
+      - "app/Repositories/AdminAccessRepository.php"
+      - "app/Controllers/AdminAccessController.php"
+      - "routes/api.php"
+      - "admin/access/**"
+      - "admin/assets/js/modules/access-center.js"
+      - "test-admin-phase-2-rbac.php"
+      - ".github/workflows/admin-phase-2-rbac-security.yml"
+  push:
+    branches:
+      - "feature/admin-phase-2-rbac-security-2026-10-30"
+    paths:
+      - "app/Core/AdminRoutePermissionMap.php"
+      - "app/Services/AdminReauthenticationService.php"
+      - "app/Services/AdminAccessService.php"
+      - "app/Repositories/AdminAccessRepository.php"
+      - "app/Controllers/AdminAccessController.php"
+      - "routes/api.php"
+      - "admin/access/**"
+      - "admin/assets/js/modules/access-center.js"
+      - "test-admin-phase-2-rbac.php"
+      - ".github/workflows/admin-phase-2-rbac-security.yml"
+
+jobs:
+  rbac-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+      - name: PHP syntax checks
+        run: |
+          php -l app/Core/AdminRoutePermissionMap.php
+          php -l app/Repositories/AdminAccessRepository.php
+          php -l app/Services/AdminAccessService.php
+          php -l app/Services/AdminReauthenticationService.php
+          php -l app/Controllers/AdminAccessController.php
+          php -l routes/api.php
+          php -l test-admin-phase-2-rbac.php
+      - name: Run Phase 2 RBAC and security contract test
+        run: php test-admin-phase-2-rbac.php
+      - name: Run existing route permission regression
+        run: php test-phase-56-admin-route-permissions.php
