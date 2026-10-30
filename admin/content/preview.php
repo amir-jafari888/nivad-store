@@ -2,8 +2,8 @@
 declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/app/Core/Bootstrap.php';
 Bootstrap::boot();
-require_once dirname(__DIR__) . '/includes/auth.php';
-if (!$adminAuth->can('admin.content.manage')) { http_response_code(403); exit('Forbidden'); }
+$adminAuth = new AdminAuthService();
+if (!$adminAuth->validateCurrentSession() || !$adminAuth->can('admin.content.manage')) { http_response_code(403); exit('Forbidden'); }
 ?><!doctype html>
 <html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="<?= e(url('/assets/css/main.css')) ?>">
@@ -14,7 +14,7 @@ if (!$adminAuth->can('admin.content.manage')) { http_response_code(403); exit('F
  const root=document.querySelector('[data-preview-root]');
  const safeUrl=value=>{const v=String(value||'').trim();return v.startsWith('/')&&!v.startsWith('//')?v:(/^https:\/\/[a-z0-9.-]+(?::[0-9]+)?(?:\/[^\s]*)?$/i.test(v)?v:'#')};
  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n};
- const image=(id,alt)=>{if(!Number.isInteger(Number(id))||Number(id)<1)return null;const n=el('img','cms-live-section__image');n.src='<?= e(url('/api/content-media/')) ?>'+Number(id);n.alt=String(alt||'');return n};
+ const image=(id,alt)=>{if(!Number.isInteger(Number(id))||Number(id)<1)return null;const n=el('img','cms-live-section__image');n.src='<?= e(url('/api/admin/media/')) ?>'+Number(id);n.alt=String(alt||'');return n};
  const render=data=>{
   const section=el('section','cms-live-section cms-live-section--'+String(data.section_type||'custom').replace(/[^a-z0-9_-]/g,''));
   const style=data.style||{}, vars={background:'--cms-background',gradient_from:'--cms-gradient-from',gradient_to:'--cms-gradient-to',color:'--cms-color',muted_color:'--cms-muted',accent_color:'--cms-accent'};
