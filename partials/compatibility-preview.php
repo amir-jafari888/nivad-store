@@ -4,19 +4,19 @@
  * This visual preview does not request or imply live compatibility results.
  */
 $compatibilityFinderUrl = url('/pages/store/compatibility.php');
+$cmsContent = CmsContentRenderer::activeContent();
 ?>
 <section class="home-compatibility-preview" aria-labelledby="home-compatibility-preview-title">
   <div class="home-compatibility-preview__inner">
     <div class="home-compatibility-preview__copy">
       <span class="home-compatibility-preview__eyebrow">
         <span class="home-compatibility-preview__eyebrow-mark" aria-hidden="true">✦</span>
-        NIVAD COMPATIBILITY FINDER
+        <?= e((string)($cmsContent['eyebrow'] ?? 'NIVAD COMPATIBILITY FINDER')) ?>
       </span>
 
-      <h2 id="home-compatibility-preview-title">قبل از خرید،<br class="home-compatibility-preview__desktop-break"> از سازگاری مطمئن شو.</h2>
+      <h2 id="home-compatibility-preview-title"><?= e((string)($cmsContent['heading'] ?? 'قبل از خرید، از سازگاری مطمئن شو.')) ?></h2>
       <p class="home-compatibility-preview__description">
-        مدل دستگاهت رو انتخاب کن و لوازم جانبی مرتبط باهاش رو پیدا کن؛
-        با اطلاعات شفاف‌تر، انتخاب مطمئن‌تری داشته باش.
+        <?= e((string)($cmsContent['body'] ?? 'مدل دستگاهت رو انتخاب کن و لوازم جانبی مرتبط باهاش رو پیدا کن؛ با اطلاعات شفاف‌تر، انتخاب مطمئن‌تری داشته باش.')) ?>
       </p>
 
       <ul class="home-compatibility-preview__benefits" aria-label="مزیت‌های بررسی سازگاری">
@@ -41,8 +41,8 @@ $compatibilityFinderUrl = url('/pages/store/compatibility.php');
       </ul>
 
       <div class="home-compatibility-preview__actions">
-        <a class="home-compatibility-preview__cta" href="<?= e($compatibilityFinderUrl) ?>">
-          <span>بررسی سازگاری دستگاه من</span>
+        <a class="home-compatibility-preview__cta" href="<?= e(url((string)($cmsContent['button_url'] ?? '/pages/store/compatibility.php'))) ?>">
+          <span><?= e((string)($cmsContent['button_label'] ?? 'بررسی سازگاری دستگاه من')) ?></span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
         </a>
         <span class="home-compatibility-preview__action-note">از انتخاب دستگاه تا پیدا کردن محصولات مرتبط، در یک مسیر ساده.</span>
