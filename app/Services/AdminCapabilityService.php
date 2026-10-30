@@ -104,6 +104,50 @@ final class AdminCapabilityService
         return $this->repository->updateIncident($id, $status, $assignedAdminId, $actorAdminId);
     }
 
+    public function customerTickets(int $userId): array
+    {
+        if ($userId < 1) throw new InvalidArgumentException('نشست مشتری معتبر نیست.');
+        return $this->repository->customerTickets($userId);
+    }
+
+    public function customerTicket(int $ticketId, int $userId): ?array
+    {
+        if ($ticketId < 1 || $userId < 1) return null;
+        return $this->repository->customerTicket($ticketId, $userId);
+    }
+
+    public function createCustomerTicket(int $userId, array $input): int
+    {
+        $subject = trim((string)($input['subject'] ?? ''));
+        $message = trim((string)($input['message'] ?? ''));
+        $category = trim((string)($input['category'] ?? 'general')) ?: 'general';
+        $priority = (string)($input['priority'] ?? 'normal');
+        if ($userId < 1 || $subject === '' || mb_strlen($subject) > 255 || $message === '' || mb_strlen($message) > 20000) {
+            throw new InvalidArgumentException('موضوع و متن تیکت الزامی و باید در محدوده مجاز باشند.');
+        }
+        if (!preg_match('/^[a-z][a-z0-9_-]{1,79}$/', $category)) {
+            throw new InvalidArgumentException('دسته‌بندی تیکت نامعتبر است.');
+        }
+        if (!in_array($priority, ['low', 'normal', 'high'], true)) {
+            throw new InvalidArgumentException('اولویت تیکت نامعتبر است.');
+        }
+        return $this->repository->createCustomerTicket($userId, [
+            'category' => $category,
+            'priority' => $priority,
+            'subject' => $subject,
+            'message' => $message,
+        ]);
+    }
+
+    public function addCustomerTicketMessage(int $ticketId, int $userId, string $message): int
+    {
+        $message = trim($message);
+        if ($ticketId < 1 || $userId < 1 || $message === '' || mb_strlen($message) > 20000) {
+            throw new InvalidArgumentException('متن پیام تیکت نامعتبر است.');
+        }
+        return $this->repository->addCustomerTicketMessage($ticketId, $userId, $message);
+    }
+
     public function tickets(string $status = '', int $limit = 100): array
     {
         if ($status !== '' && !in_array($status, self::TICKET_STATUSES, true)) {
