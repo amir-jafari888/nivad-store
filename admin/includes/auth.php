@@ -19,11 +19,29 @@ if ($currentAdmin === null) {
     Response::redirect(url('/admin/auth/login.php'));
 }
 
+$canUseGlobalSearch = $adminAuth->can('admin.capabilities.search.index');
+$canUseCapabilities = $adminAuth->canAny([
+    'admin.capabilities.notifications.index',
+    'admin.capabilities.incidents.index',
+    'admin.capabilities.tickets.index',
+    'admin.capabilities.analytics.index',
+    'admin.capabilities.health.index',
+    'admin.capabilities.preferences.index',
+    'admin.capabilities.saved-views.index',
+    'admin.capabilities.revisions.index',
+]);
+$canManageAccess = $adminAuth->canAny([
+    'admin.access.admins.index',
+    'admin.access.roles.index',
+    'admin.access.permissions.index',
+    'admin.access.sessions.index',
+]);
+
 /*
  * Shared authenticated-admin shell.
  * Dashboard keeps its own shell; all other admin pages receive this RTL shell.
  */
-ob_start(static function (string $html) use ($currentAdmin): string {
+ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch, $canUseCapabilities, $canManageAccess): string {
     if (stripos($html, '</head>') !== false) {
         $assets = '';
 
@@ -71,20 +89,30 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     }
     $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8');
 
-    $topbar = '
-    <header class="admin-shared-topbar">
-        <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
+    $search = $canUseGlobalSearch ? '
         <div class="admin-global-search" data-admin-global-search>
             <label class="admin-global-search-label" for="admin-global-search-input">جست‌وجوی سراسری</label>
             <input id="admin-global-search-input" type="search" placeholder="جست‌وجوی محصول، سفارش، مشتری یا تیکت…" autocomplete="off" aria-autocomplete="list" aria-controls="admin-global-search-results">
             <ul id="admin-global-search-results" class="admin-global-search-results" role="list" hidden></ul>
             <span class="admin-global-search-shortcut" aria-hidden="true">Ctrl K</span>
-        </div>
+        </div>' : '';
+
+    $topbar = '
+    <header class="admin-shared-topbar">
+        <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
+        ' . $search . '
         <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده">
             <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
             <span class="admin-shared-account-name">' . e($adminName) . '</span>
         </div>
     </header>';
+
+    $capabilityLink = $canUseCapabilities
+        ? '<a class="admin-shared-nav-link" href="' . e(url('/admin/capabilities/index.php')) . '">مرکز عملیات ادمین</a>'
+        : '';
+    $accessLink = $canManageAccess
+        ? '<a class="admin-shared-nav-link" href="' . e(url('/admin/access/index.php')) . '">مدیریت مدیران و دسترسی‌ها</a>'
+        : '';
 
     $nav = '
     <aside class="admin-shared-sidebar" aria-label="ناوبری پنل مدیریت">
@@ -144,8 +172,8 @@ ob_start(static function (string $html) use ($currentAdmin): string {
                 </div>
             </details>
             <a class="admin-shared-nav-link" href="' . e(url('/admin/operations')) . '">نقشه قابلیت‌های پنل</a>
-            <a class="admin-shared-nav-link" href="' . e(url('/admin/capabilities/index.php')) . '">مرکز عملیات ادمین</a>
-            <a class="admin-shared-nav-link" href="' . e(url('/admin/access/index.php')) . '">مدیریت مدیران و دسترسی‌ها</a>
+            ' . $capabilityLink . '
+            ' . $accessLink . '
             <a class="admin-shared-nav-link" href="' . e(url('/admin/settings')) . '">تنظیمات رابط کاربری</a>
         </nav>
         <div class="admin-shared-account">
