@@ -4,25 +4,22 @@ const adminGlobalSearch = () => {
   if (!root || root.dataset.bound === "true") return;
   root.dataset.bound = "true";
   const input = root.querySelector("input[type=search]");
-  const results = root.querySelector("[role=listbox]");
+  const results = root.querySelector("[role=list]");
   const apiUrl = document.querySelector('meta[name="admin-api-url"]')?.content || "";
   let timer = 0;
   let requestId = 0;
 
   const close = () => {
     results.hidden = true;
-    input.setAttribute("aria-expanded", "false");
   };
   const open = () => {
     if (!results.childElementCount) return;
     results.hidden = false;
-    input.setAttribute("aria-expanded", "true");
   };
   const clear = () => results.replaceChildren();
   const showMessage = message => {
     clear();
     const item = document.createElement("li");
-    item.setAttribute("role", "option");
     item.textContent = message;
     results.append(item);
     open();
@@ -45,7 +42,6 @@ const adminGlobalSearch = () => {
       }
       items.forEach(result => {
         const item = document.createElement("li");
-        item.setAttribute("role", "option");
         const link = document.createElement("a");
         link.href = result.href;
         const title = document.createElement("strong");
