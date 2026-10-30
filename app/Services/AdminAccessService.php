@@ -217,12 +217,15 @@ final class AdminAccessService
 
     private function ids(mixed $values): array
     {
-        if (!is_array($values)) return [];
+        if (!is_array($values) || count($values) > 500) {
+            throw new InvalidArgumentException('فهرست شناسه‌ها معتبر نیست.');
+        }
         $ids = [];
         foreach ($values as $value) {
-            if (filter_var($value, FILTER_VALIDATE_INT) && (int)$value > 0) {
-                $ids[] = (int)$value;
+            if (!filter_var($value, FILTER_VALIDATE_INT) || (int)$value < 1) {
+                throw new InvalidArgumentException('یک یا چند شناسه انتخاب‌شده نامعتبر است.');
             }
+            $ids[] = (int)$value;
         }
         return array_values(array_unique($ids));
     }
