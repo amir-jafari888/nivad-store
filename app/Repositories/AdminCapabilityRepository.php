@@ -310,6 +310,24 @@ final class AdminCapabilityRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function productExists(int $productId): bool
+    {
+        $stmt = $this->db->prepare('SELECT 1 FROM products WHERE id = :id AND status = "active" AND deleted_at IS NULL LIMIT 1');
+        $stmt->execute(['id' => $productId]);
+        return $stmt->fetchColumn() !== false;
+    }
+
+    public function variantBelongsToProduct(int $variantId, int $productId): bool
+    {
+        $stmt = $this->db->prepare(
+            'SELECT 1 FROM product_variants
+             WHERE id = :variant_id AND product_id = :product_id AND deleted_at IS NULL
+             LIMIT 1'
+        );
+        $stmt->execute(['variant_id' => $variantId, 'product_id' => $productId]);
+        return $stmt->fetchColumn() !== false;
+    }
+
     public function recordProductEvent(array $data): int
     {
         $stmt = $this->db->prepare(
