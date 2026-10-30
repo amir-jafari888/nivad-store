@@ -19,6 +19,7 @@ RewriteRule ^budget-optimizer/?$ pages/store/budget-optimizer/index.php [L,QSA]
 RewriteRule ^setup/?$ pages/store/setup.php [L,QSA]
 
 # Customer Commerce
+RewriteRule ^account/support/?$ pages/account/support.php [L,QSA]
 RewriteRule ^cart/?$ pages/shop/cart.php [L,QSA]
 RewriteRule ^wishlist/?$ pages/shop/wishlist.php [L,QSA]
 RewriteRule ^checkout/?$ pages/shop/checkout.php [L,QSA]
