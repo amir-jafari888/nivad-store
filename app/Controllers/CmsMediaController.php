@@ -8,6 +8,18 @@ final class CmsMediaController extends Controller
     {
         $id = (int)($parameters['id'] ?? 0);
         $asset = (new AdminContentService())->mediaFile($id);
+        $this->stream($asset, $id);
+    }
+
+    public function adminShow(array $parameters = []): never
+    {
+        $id = (int)($parameters['id'] ?? 0);
+        $asset = (new AdminContentRepository())->mediaById($id);
+        $this->stream($asset, $id);
+    }
+
+    private function stream(?array $asset, int $id): never
+    {
         if (!$asset) {
             http_response_code(404);
             exit;
