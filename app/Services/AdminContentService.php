@@ -34,7 +34,7 @@ final class AdminContentService
         if ($key === '') $key = $type . '-' . bin2hex(random_bytes(5));
         if (!preg_match('/^[a-z][a-z0-9_-]{1,79}$/', $key)) throw new InvalidArgumentException('کلید سکشن معتبر نیست.');
         $id = $this->repository->createSection($pageKey, $key, $type, $title, $content, $style, $adminId);
-        $this->repository->saveRevision($id, ['title' => $title, 'content' => $content, 'style' => $style, 'is_visible' => true], $adminId);
+        $this->repository->saveRevision($id, ['title' => $title, 'content' => $content, 'style' => $style, 'is_visible' => true, 'sort_order' => 10], $adminId);
         return $id;
     }
 
@@ -48,7 +48,7 @@ final class AdminContentService
         $style = AdminContentRegistry::validateStyle((array)($input['style'] ?? $before['style']));
         $visible = array_key_exists('is_visible', $input) ? (bool)$input['is_visible'] : (bool)$before['is_visible'];
         $updated = $this->repository->updateSection($id, $title, $content, $style, $visible, $adminId);
-        if ($updated) $this->repository->saveRevision($id, ['title' => $title, 'content' => $content, 'style' => $style, 'is_visible' => $visible], $adminId);
+        if ($updated) $this->repository->saveRevision($id, ['title' => $title, 'content' => $content, 'style' => $style, 'is_visible' => $visible, 'sort_order' => (int)$before['sort_order']], $adminId);
         return $updated;
     }
 
@@ -70,13 +70,18 @@ final class AdminContentService
     {
         $section = $this->repository->section($id);
         if (!$section) return false;
-        $this->repository->saveRevision($id, ['title' => $section['title'], 'content' => $section['content'], 'style' => $section['style'], 'is_visible' => (bool)$section['is_visible']], $adminId);
+        $this->repository->saveRevision($id, ['title' => $section['title'], 'content' => $section['content'], 'style' => $section['style'], 'is_visible' => (bool)$section['is_visible'], 'sort_order' => (int)$section['sort_order']], $adminId);
         return $this->repository->softDeleteSection($id, $adminId);
     }
 
     public function restoreDeleted(int $id, int $adminId): bool
     {
-        return $this->repository->restoreSection($id, $adminId);
+        $restored = $this->repository->restoreSection($id, $adminId);
+        if ($restored) {
+            $section = $this->repository->section($id);
+            if ($section) $this->repository->saveRevision($id, ['title' => $section['title'], 'content' => $section['content'], 'style' => $section['style'], 'is_visible' => (bool)$section['is_visible'], 'sort_order' => (int)$section['sort_order']], $adminId);
+        }
+        return $restored;
     }
 
     public function reorder(string $pageKey, array $ids, int $adminId): void
@@ -97,7 +102,7 @@ final class AdminContentService
         if (!$this->repository->section($id)) return false;
         $before = $this->repository->section($id);
         $ok = $this->repository->restoreRevision($id, $revisionId, $adminId);
-        if ($ok) $this->repository->saveRevision($id, ['title' => $before['title'], 'content' => $before['content'], 'style' => $before['style'], 'is_visible' => (bool)$before['is_visible']], $adminId);
+        if ($ok) { $restored = $this->repository->section($id); if ($restored) $this->repository->saveRevision($id, ['title' => $restored['title'], 'content' => $restored['content'], 'style' => $restored['style'], 'is_visible' => (bool)$restored['is_visible'], 'sort_order' => (int)$restored['sort_order']], $adminId); }
         return $ok;
     }
 
