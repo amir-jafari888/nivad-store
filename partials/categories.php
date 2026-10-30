@@ -9,11 +9,11 @@
     <div class="container">
 
         <div class="section-heading">
-            <span class="section-eyebrow">
+            <span class="section-eyebrow" data-cms-field="eyebrow">
                 <?= e((string)($cmsContent['eyebrow'] ?? 'CATEGORIES')) ?>
             </span>
 
-            <h2 id="categories-title">
+            <h2 id="categories-title" data-cms-field="heading">
                 <?= e((string)($cmsContent['heading'] ?? 'دسته‌بندی‌ها')) ?>
             </h2>
 
