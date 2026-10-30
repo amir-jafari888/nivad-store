@@ -401,6 +401,60 @@ final class AdminCapabilityRepository
         return $stmt->rowCount() > 0;
     }
 
+    public function globalSearch(string $term): array
+    {
+        $pattern = '%' . $term . '%';
+        $results = [];
+
+        $products = $this->db->prepare(
+            'SELECT id, name AS label, sku AS detail
+             FROM products
+             WHERE deleted_at IS NULL AND (name LIKE :name OR sku LIKE :sku)
+             ORDER BY name ASC LIMIT 6'
+        );
+        $products->execute(['name' => $pattern, 'sku' => $pattern]);
+        foreach ($products->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $results[] = ['type' => 'product', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail'], 'href' => url('/admin/products')];
+        }
+
+        $orders = $this->db->prepare(
+            'SELECT id, order_number AS label, CONCAT(recipient_name, " · ", recipient_phone) AS detail
+             FROM orders
+             WHERE order_number LIKE :number OR recipient_name LIKE :recipient OR recipient_phone LIKE :phone
+             ORDER BY id DESC LIMIT 6'
+        );
+        $orders->execute(['number' => $pattern, 'recipient' => $pattern, 'phone' => $pattern]);
+        foreach ($orders->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $results[] = ['type' => 'order', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail'], 'href' => url('/admin/orders')];
+        }
+
+        $users = $this->db->prepare(
+            'SELECT id, CONCAT(COALESCE(first_name, ""), " ", COALESCE(last_name, "")) AS label,
+                    CONCAT(COALESCE(email, ""), " · ", COALESCE(phone, "")) AS detail
+             FROM users
+             WHERE deleted_at IS NULL
+               AND (first_name LIKE :first_name OR last_name LIKE :last_name OR email LIKE :email OR phone LIKE :phone)
+             ORDER BY id DESC LIMIT 6'
+        );
+        $users->execute(['first_name' => $pattern, 'last_name' => $pattern, 'email' => $pattern, 'phone' => $pattern]);
+        foreach ($users->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $results[] = ['type' => 'customer', 'id' => (int)$row['id'], 'label' => trim($row['label']) ?: ('Customer #' . $row['id']), 'detail' => $row['detail'], 'href' => url('/admin/users')];
+        }
+
+        $tickets = $this->db->prepare(
+            'SELECT id, ticket_number AS label, subject AS detail
+             FROM admin_support_tickets
+             WHERE ticket_number LIKE :number OR subject LIKE :subject
+             ORDER BY updated_at DESC LIMIT 6'
+        );
+        $tickets->execute(['number' => $pattern, 'subject' => $pattern]);
+        foreach ($tickets->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $results[] = ['type' => 'ticket', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail'], 'href' => url('/admin/capabilities/index.php#admin-tickets-title')];
+        }
+
+        return array_slice($results, 0, 20);
+    }
+
     public function revisions(string $entityType, int $entityId, int $limit = 50): array
     {
         $limit = max(1, min(100, $limit));
