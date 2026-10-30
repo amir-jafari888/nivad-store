@@ -63,3 +63,28 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-operations-card a[aria-disabled=true]{color:var(--admin-color-text-muted);text-decoration:none;cursor:default}
 .admin-operations-footer{color:var(--admin-color-text-muted)}
 .admin-operations-footer strong{color:var(--admin-color-text)}
+
+
+.admin-capabilities-main{display:grid;gap:16px;padding:16px;max-width:100%;margin-inline:auto}
+.admin-capabilities-header,.admin-capability-panel-heading{display:flex;flex-direction:column;gap:12px}
+.admin-capabilities-header h1{margin:4px 0;font-size:1.45rem}
+.admin-capabilities-header p,.admin-capability-panel-heading p{color:var(--admin-color-text-muted);line-height:1.8}
+.admin-capabilities-header>a{align-self:flex-start}
+.admin-capability-panel{min-width:0;padding:16px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-lg);background:var(--admin-color-surface);box-shadow:var(--admin-shadow-card)}
+.admin-capability-panel h2{margin:0;font-size:1.1rem}
+.admin-capability-panel-heading button,.admin-capability-form button,.admin-capability-row button{min-height:40px;padding:8px 12px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);background:var(--admin-color-primary);color:#fff;cursor:pointer}
+.admin-capability-form{display:grid;grid-template-columns:1fr;gap:12px;margin-block:16px}
+.admin-capability-form label{display:grid;gap:6px;font-size:.9rem}
+.admin-capability-form input,.admin-capability-form select,.admin-capability-form textarea,.admin-capability-actions select,.admin-capability-inline-form textarea{width:100%;min-width:0;padding:10px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);background:var(--admin-color-bg);color:var(--admin-color-text);font:inherit}
+.admin-capability-form textarea,.admin-capability-inline-form textarea{resize:vertical}
+.admin-capability-form button{justify-self:start}
+.admin-capability-list{display:grid;gap:10px}
+.admin-capability-row{display:grid;gap:8px;padding:12px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);overflow-wrap:anywhere}
+.admin-capability-row p{margin:0;color:var(--admin-color-text-muted);line-height:1.8}
+.admin-capability-empty{color:var(--admin-color-text-muted)}
+.admin-capability-actions,.admin-capability-inline-form{display:grid;gap:8px}
+.admin-capability-ticket-detail{display:grid;gap:8px;padding-block:10px}
+.admin-capability-ticket-detail p{padding:8px;background:var(--admin-color-bg);border-radius:8px}
+.admin-capability-feedback{padding:10px 12px;border-radius:var(--admin-radius-md);background:var(--admin-color-primary-soft)}
+.admin-capability-feedback[data-state="error"]{color:var(--admin-color-error)}
+.admin-capabilities-eyebrow{font-size:.75rem;letter-spacing:.08em;color:var(--admin-color-primary)}
