@@ -97,3 +97,8 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-global-search{width:min(36vw,460px)}
 .admin-global-search-shortcut{display:block;position:absolute;inset-inline-end:10px;inset-block-end:9px;padding:2px 6px;border:1px solid var(--admin-color-border);border-radius:5px;color:var(--admin-color-text-muted);font-size:.7rem;pointer-events:none}
 .admin-global-search input{padding-inline-end:74px}
+
+.admin-access-denied-main{min-height:calc(100vh - 120px);padding:48px}
+.admin-access-denied-card{max-width:720px;padding:48px}
+.admin-access-denied-card h1{font-size:1.9rem}
+.admin-access-denied-code{width:88px;height:88px;font-size:1.75rem}
