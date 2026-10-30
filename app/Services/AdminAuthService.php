@@ -210,6 +210,8 @@ final class AdminAuthService
 
     public function logout(): never
     {
+        $adminUserId = AdminAuth::id();
+        $this->audit->logout($adminUserId);
         $this->clearAuthenticatedSession();
 
         Response::success(
