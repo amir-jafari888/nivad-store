@@ -34,6 +34,7 @@ $canManageAccess = $adminAuth->canAny([
     'admin.access.admins.index',
     'admin.access.roles.index',
     'admin.access.permissions.index',
+    'admin.access.roles.permissions.show',
     'admin.access.sessions.index',
 ]);
 
