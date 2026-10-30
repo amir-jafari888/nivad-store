@@ -5,6 +5,8 @@ INSERT INTO admin_permissions (name, slug, description, module, action, status)
 SELECT candidate.name, candidate.slug, candidate.description,
        candidate.module, candidate.action, candidate.status
 FROM (
+SELECT 'admin.access' AS name, 'admin.access' AS slug, 'Access authenticated Admin application shell' AS description, 'admin_core' AS module, 'access' AS action, 'active' AS status
+UNION ALL
 SELECT 'admin.dashboard.view' AS name, 'admin.dashboard.view' AS slug, 'View operational dashboard' AS description, 'dashboard' AS module, 'view' AS action, 'active' AS status
 UNION ALL
 SELECT 'admin.admins.view' AS name, 'admin.admins.view' AS slug, 'View admin accounts' AS description, 'admins' AS module, 'view' AS action, 'active' AS status
