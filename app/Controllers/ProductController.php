@@ -160,6 +160,24 @@ final class ProductController extends Controller
                 $data['isFeatured']
             );
 
+        $adminId = AdminAuth::id();
+        if ($adminId !== null) {
+            AdminAuditTrail::record($adminId, 'create', 'products', 'product', $product->id, 'Product created through Admin API.');
+            try {
+                (new AdminCapabilityService())->createRevision($adminId, [
+                    'entity_type' => 'product',
+                    'entity_id' => $product->id,
+                    'snapshot' => get_object_vars($product),
+                    'change_summary' => 'Initial product snapshot.',
+                ]);
+            } catch (Throwable $revisionFailure) {
+                Logger::error('Product was created but initial revision snapshot could not be stored.', [
+                    'product_id' => $product->id,
+                    'exception_type' => get_class($revisionFailure),
+                ]);
+            }
+        }
+
         $this->success(
             $product,
             'محصول با موفقیت ایجاد شد.',
@@ -300,6 +318,7 @@ final class ProductController extends Controller
 
         $adminId = AdminAuth::id();
         if ($adminId !== null) {
+            AdminAuditTrail::record($adminId, 'update', 'products', 'product', $id, 'Product updated through Admin API.');
             try {
                 (new AdminCapabilityService())->createRevision($adminId, [
                     'entity_type' => 'product',
@@ -307,14 +326,6 @@ final class ProductController extends Controller
                     'snapshot' => get_object_vars($updated),
                     'change_summary' => 'Product updated through Admin API.',
                 ]);
-                AdminAuditTrail::record(
-                    $adminId,
-                    'update',
-                    'products',
-                    'product',
-                    $id,
-                    'Product updated through Admin API.'
-                );
             } catch (Throwable $revisionFailure) {
                 Logger::error('Product update succeeded but revision snapshot could not be stored.', [
                     'product_id' => $id,
