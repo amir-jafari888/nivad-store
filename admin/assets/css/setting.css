@@ -94,3 +94,39 @@ html[data-admin-density="compact"] table th,
 html[data-admin-density="compact"] table td {
   padding-block: var(--admin-space-1);
 }
+
+/* Phase 57 — dashboard operational modules and read-only admin identity. */
+.admin-dashboard-main{max-width:1600px;margin-inline:auto;padding:var(--admin-space-6);min-width:0}
+.admin-dashboard-operations-stack{display:grid;align-content:start;gap:var(--admin-space-4);min-width:0}
+.admin-dashboard-ops-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--admin-space-4);margin-top:var(--admin-space-6)}
+.admin-dashboard-activity-list,.admin-dashboard-queue-list,.admin-dashboard-health-list{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.admin-dashboard-activity-list li{display:grid;grid-template-columns:10px minmax(0,1fr);gap:var(--admin-space-3);padding-block:var(--admin-space-3);border-bottom:1px solid var(--admin-color-border)}
+.admin-dashboard-activity-list li:last-child,.admin-dashboard-queue-list li:last-child,.admin-dashboard-health-list li:last-child{border-bottom:0}
+.admin-dashboard-activity-marker{width:8px;height:8px;margin-top:7px;border-radius:50%;background:var(--admin-color-primary)}
+.admin-dashboard-activity-copy{display:grid;gap:4px;min-width:0}
+.admin-dashboard-activity-copy strong{overflow-wrap:anywhere;font-size:var(--admin-font-size-sm)}
+.admin-dashboard-activity-copy span,.admin-dashboard-activity-copy time{color:var(--admin-color-text-muted);font-size:12px;overflow-wrap:anywhere}
+.admin-dashboard-queue-list li{border-bottom:1px solid var(--admin-color-border)}
+.admin-dashboard-queue-list a{display:flex;align-items:center;justify-content:space-between;gap:var(--admin-space-3);padding-block:var(--admin-space-3);color:var(--admin-color-text);text-decoration:none}
+.admin-dashboard-queue-list a:hover{color:var(--admin-color-primary)}
+.admin-dashboard-queue-list a>span{display:grid;gap:4px;min-width:0}
+.admin-dashboard-queue-list strong{font-size:var(--admin-font-size-sm)}
+.admin-dashboard-queue-list small{color:var(--admin-color-text-muted);font-size:12px;overflow-wrap:anywhere}
+.admin-dashboard-queue-list b{flex:0 0 auto;min-width:36px;padding:6px 9px;border-radius:var(--admin-radius-md);background:var(--admin-color-primary-soft);color:var(--admin-color-primary);text-align:center}
+.admin-dashboard-queue-empty,.admin-dashboard-health-note,.admin-dashboard-inline-warning{color:var(--admin-color-text-muted);font-size:var(--admin-font-size-sm);line-height:1.7}
+.admin-dashboard-inline-warning{color:var(--admin-color-warning)}
+.admin-dashboard-health-list li{display:flex;align-items:center;justify-content:space-between;gap:var(--admin-space-3);padding-block:var(--admin-space-3);border-bottom:1px solid var(--admin-color-border)}
+.admin-dashboard-health-list li>span{display:grid;gap:3px;font-weight:700}
+.admin-dashboard-health-list small{color:var(--admin-color-text-muted);font-size:12px;font-weight:400;overflow-wrap:anywhere}
+.admin-dashboard-health-list b,.admin-dashboard-health-status{color:var(--admin-color-success);font-size:var(--admin-font-size-sm)}
+.admin-dashboard-health-list b[data-status="error"],.admin-dashboard-health-status[data-status="degraded"]{color:var(--admin-color-error)}
+.admin-dashboard-health-list b[data-status="unknown"]{color:var(--admin-color-warning)}
+.admin-dashboard-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--admin-space-3)}
+.admin-dashboard-quick-actions a{display:grid;gap:5px;min-width:0;padding:var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);color:var(--admin-color-text);text-decoration:none}
+.admin-dashboard-quick-actions a:hover{border-color:var(--admin-color-primary);background:var(--admin-color-primary-soft)}
+.admin-dashboard-quick-actions strong{font-size:var(--admin-font-size-sm)}
+.admin-dashboard-quick-actions span{color:var(--admin-color-text-muted);font-size:12px;overflow-wrap:anywhere}
+.admin-profile-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--admin-space-4);margin:var(--admin-space-4) 0 0}
+.admin-profile-details>div{padding:var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md)}
+.admin-profile-details dt{color:var(--admin-color-text-muted);font-size:var(--admin-font-size-sm)}
+.admin-profile-details dd{margin:var(--admin-space-2) 0 0;font-weight:700;overflow-wrap:anywhere}
