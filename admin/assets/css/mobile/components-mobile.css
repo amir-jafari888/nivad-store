@@ -118,3 +118,13 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-global-search-results li a{display:grid;gap:4px;padding:10px;border-radius:8px;color:var(--admin-color-text);text-decoration:none}
 .admin-global-search-results li a:hover,.admin-global-search-results li a:focus-visible{background:var(--admin-color-primary-soft)}
 .admin-global-search-results small{color:var(--admin-color-text-muted);overflow-wrap:anywhere}
+
+/* Dedicated permission-denied state */
+.admin-access-denied-main{min-height:calc(100dvh - 120px);display:grid;place-items:center;padding:20px}
+.admin-access-denied-card{display:grid;justify-items:center;gap:12px;width:100%;max-width:620px;padding:24px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-xl);background:var(--admin-color-surface);box-shadow:var(--admin-shadow-floating);backdrop-filter:blur(12px);text-align:center}
+.admin-access-denied-code{display:grid;place-items:center;width:76px;height:76px;border:1px solid var(--admin-color-error);border-radius:24px;color:var(--admin-color-error);font-size:1.5rem;font-weight:800}
+.admin-access-denied-eyebrow{margin:0;color:var(--admin-color-primary);font-size:.72rem;font-weight:700;letter-spacing:.1em}
+.admin-access-denied-card h1{margin:0;font-size:1.35rem}
+.admin-access-denied-message,.admin-access-denied-help{margin:0;line-height:1.9;color:var(--admin-color-text-muted)}
+.admin-access-denied-message{color:var(--admin-color-text);font-weight:700}
+.admin-access-denied-action{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:8px;padding:10px 18px;border-radius:var(--admin-radius-md);background:var(--admin-color-primary);color:#fff;text-decoration:none;font-weight:700}
