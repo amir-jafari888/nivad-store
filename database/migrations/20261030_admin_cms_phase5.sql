@@ -106,7 +106,8 @@ SET s.content_json = CASE p.page_key
  WHEN 'privacy' THEN JSON_OBJECT('eyebrow','حریم خصوصی','heading','حریم خصوصی','body','این صفحه توضیحی عمومی درباره داده‌هایی است که ممکن است هنگام استفاده از امکانات فروشگاه وارد کنید. متن نهایی این سیاست باید با پیکربندی واقعی سامانه و الزامات حقوقی کسب‌وکار تطبیق داده و توسط مسئول مربوط تأیید شود.')
  WHEN 'terms' THEN JSON_OBJECT('eyebrow','قوانین فروشگاه','heading','شرایط استفاده','body','با استفاده از امکانات فروشگاه، لازم است اطلاعات نمایش‌داده‌شده در هر مرحله را با دقت بررسی کنید. این متن چارچوب عمومی است و جایگزین شرایط حقوقی نهایی و تأییدشده کسب‌وکار نیست.')
  ELSE s.content_json END
-WHERE s.section_key = 'intro';
+WHERE s.section_key = 'intro'
+  AND JSON_UNQUOTE(JSON_EXTRACT(s.content_json, '$.body')) LIKE 'محتوای صفحه % قابل ویرایش است.';
 
 INSERT INTO admin_cms_sections (page_id, section_key, section_type, title, sort_order, status, content_json, style_json, created_by_admin_id, updated_by_admin_id)
 SELECT p.id, seed.section_key, seed.section_type, seed.title, seed.sort_order, 'draft',
