@@ -54,7 +54,7 @@ final class AdminAccessRepository
         $stmt = $this->db->query(
             'SELECT id, name, slug, description, module, action, status
              FROM admin_permissions
-             WHERE deleted_at IS NULL
+             WHERE status = "active" AND deleted_at IS NULL
              ORDER BY module, action, name
              LIMIT ' . $limit
         );
