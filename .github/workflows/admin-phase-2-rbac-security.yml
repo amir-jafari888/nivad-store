@@ -8,6 +8,10 @@ on:
       - "app/Core/AdminRoutePermissionMap.php"
       - "app/Services/AdminReauthenticationService.php"
       - "app/Services/AdminAccessService.php"
+      - "app/Services/AdminAuthService.php"
+      - "app/Repositories/AdminSessionRepository.php"
+      - "database/seeds/20261029_admin_permission_catalog.sql"
+      - "admin/access/index.php"
       - "app/Repositories/AdminAccessRepository.php"
       - "app/Controllers/AdminAccessController.php"
       - "routes/api.php"
@@ -46,6 +50,9 @@ jobs:
           php -l app/Core/AdminRoutePermissionMap.php
           php -l app/Repositories/AdminAccessRepository.php
           php -l app/Services/AdminAccessService.php
+          php -l app/Services/AdminAuthService.php
+          php -l app/Repositories/AdminSessionRepository.php
+          php -l admin/access/index.php
           php -l app/Services/AdminReauthenticationService.php
           php -l app/Controllers/AdminAccessController.php
           php -l routes/api.php
