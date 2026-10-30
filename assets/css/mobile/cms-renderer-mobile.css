@@ -15,3 +15,8 @@
 /* Native homepage modules retain their existing interactions under CMS styling. */
 .cms-native-section{padding-block:var(--cms-padding-top,0px) var(--cms-padding-bottom,0px);background:var(--cms-background,transparent);background-image:linear-gradient(var(--cms-gradient-angle,135deg),var(--cms-gradient-from,transparent),var(--cms-gradient-to,transparent));color:var(--cms-color,inherit);border-radius:var(--cms-radius,0);overflow:hidden}
 .cms-native-section .cms-live-section__image{width:min(100% - 32px,var(--cms-container-width,1200px));margin:16px auto;display:block}
+
+.cms-faq-list{display:grid;gap:10px;margin-block:22px}
+.cms-faq-list details{padding:16px 18px;border:1px solid color-mix(in srgb,currentColor 16%,transparent);border-radius:14px;background:color-mix(in srgb,#fff 8%,transparent)}
+.cms-faq-list summary{cursor:pointer;font-weight:800;line-height:1.8}
+.cms-faq-list details p{margin:12px 0 0;color:var(--cms-muted,currentColor);line-height:2}
