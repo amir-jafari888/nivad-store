@@ -41,6 +41,7 @@ jobs:
           php -l admin/profile/index.php
           php -l app/Controllers/AdminController.php
           php -l app/Controllers/AdminCapabilityController.php
+          php -l app/Services/AdminDashboardMetricsService.php
           php -l app/Services/AdminDashboardOverviewService.php
           php -l app/Services/AdminSystemHealthService.php
           php -l app/Services/AdminCapabilityService.php
@@ -49,8 +50,11 @@ jobs:
           php -l app/Services/AuditLogService.php
           php -l test-phase-57-admin-core-experience.php
           php -l test-admin-dashboard-redesign.php
+          php -l test-admin-ui-shell-contracts.php
           php -l test-admin-role-audit.php
       - name: Run read-only admin redesign contract test
         run: php test-admin-dashboard-redesign.php
       - name: Run Phase 57 core experience contract test
         run: php test-phase-57-admin-core-experience.php
+      - name: Run admin UI shell contract test
+        run: php test-admin-ui-shell-contracts.php
