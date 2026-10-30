@@ -25,7 +25,7 @@ if ($adminName === '') {
         <header class="admin-settings-heading">
             <div>
                 <h1>تنظیمات پنل</h1>
-                <p>تنظیمات شخصی نمایش پنل؛ این گزینه‌ها فقط در همین مرورگر ذخیره می‌شوند.</p>
+                <p>ترجیحات رابط در حساب مدیر ذخیره می‌شوند و یک نسخه محلی برای بارگذاری سریع‌تر و حالت عدم دسترسی موقت به API در همین مرورگر نگه‌داری می‌شود.</p>
             </div>
             <span class="admin-settings-current-user"><?= e($adminName) ?></span>
         </header>
@@ -68,6 +68,12 @@ if ($adminName === '') {
                 <button type="button" class="admin-settings-reset" data-admin-preferences-reset>بازنشانی</button>
                 <p class="admin-settings-feedback" data-admin-preferences-feedback role="status" aria-live="polite"></p>
             </div>
+            <section class="admin-settings-section" aria-labelledby="admin-settings-theme-title">
+                <div>
+                    <h2 id="admin-settings-theme-title">پوسته پنل</h2>
+                    <p>پنل مدیریت نیواد در مسیر فعلی محصول با پوسته روشن ارائه می‌شود؛ کنترل پوسته تیره در این نسخه فعال نیست.</p>
+                </div>
+            </section>
         </form>
     </main>
 </body>

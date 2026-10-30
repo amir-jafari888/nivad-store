@@ -1,0 +1,66 @@
+name: Admin Capability Foundation Integrity
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'app/Controllers/AdminAccessController.php'
+      - 'app/Controllers/AdminCapabilityController.php'
+      - 'app/Controllers/CustomerSupportController.php'
+      - 'app/Controllers/ProductAnalyticsController.php'
+      - 'app/Services/AdminAccessService.php'
+      - 'app/Services/AdminCapabilityService.php'
+      - 'app/Services/AdminAuditTrail.php'
+      - 'app/Services/AuditLogService.php'
+      - 'app/Repositories/AdminAccessRepository.php'
+      - 'app/Repositories/AdminCapabilityRepository.php'
+      - 'app/Repositories/AdminSessionRepository.php'
+      - 'app/Services/AdminSessionService.php'
+      - 'routes/api.php'
+      - 'admin/**'
+      - 'pages/account/support.php'
+      - 'assets/js/modules/account-support.js'
+      - 'assets/js/modules/product-analytics.js'
+      - 'assets/js/main.js'
+      - 'partials/header.php'
+      - 'test-phase-56-admin-route-permissions.php'
+      - '.github/workflows/admin-capability-foundation.yml'
+  push:
+    branches: [feature/admin-master-ideas-foundation]
+
+jobs:
+  admin-capability-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Lint PHP application and Admin source
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            php -l "$file"
+          done < <(find app/Controllers app/Services app/Repositories app/Core admin pages/account -type f -name '*.php' -print0)
+
+      - name: Check JavaScript modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            node --check --input-type=module < "$file"
+          done < <(find admin/assets/js assets/js/modules -type f -name '*.js' -print0)
+
+      - name: Run read-only Phase 56 contracts
+        run: php test-phase-56-admin-route-permissions.php

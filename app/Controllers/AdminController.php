@@ -6,39 +6,31 @@ final class AdminController extends Controller
 {
     public function dashboard(): never
     {
-        $service =
-            new AdminAuthService();
+        $service = new AdminAuthService();
 
-        if (
-            !$service->validateCurrentSession()
-        ) {
-            Response::redirect(
-                url('/admin/login')
-            );
+        if (!$service->validateCurrentSession()) {
+            Response::redirect(url('/admin/login'));
         }
 
-        $admin =
-            $service->currentSafe();
-
+        $admin = $service->currentSafe();
         if ($admin === null) {
-            Response::redirect(
-                url('/admin/login')
-            );
+            Response::redirect(url('/admin/login'));
         }
 
-        $metricsService =
-            new AdminDashboardMetricsService();
+        $overviewService = new AdminDashboardOverviewService();
+        $permissions = $overviewService->permissions($service);
+        $metrics = (new AdminDashboardMetricsService())->metrics();
+        $overview = $overviewService->overview($permissions);
 
-        $metrics =
-            $metricsService->metrics();
+        // Register the same authenticated shell used by direct Admin pages.
+        require_once dirname(__DIR__, 2) . '/admin/includes/auth.php';
 
-        $this->view(
-            'admin.dashboard',
-            [
-                'admin' => $admin,
-                'metrics' => $metrics,
-            ]
-        );
+        $this->view('admin.dashboard', [
+            'admin' => $admin,
+            'metrics' => $metrics,
+            'overview' => $overview,
+            'permissions' => $permissions,
+        ]);
     }
 
     public function reports(): never

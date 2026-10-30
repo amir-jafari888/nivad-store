@@ -82,6 +82,46 @@ final class AdminSessionService
             );
     }
 
+    public function activeForAdmin(int $adminUserId, string $currentTokenHash): array
+    {
+        if ($adminUserId < 1 || $currentTokenHash === '') {
+            return [];
+        }
+        return $this->sessions->activeForAdmin($adminUserId, $currentTokenHash);
+    }
+
+    public function revokeByIdForAdmin(int $sessionId, int $adminUserId, string $currentTokenHash): bool
+    {
+        if ($sessionId < 1 || $adminUserId < 1 || $currentTokenHash === '') {
+            return false;
+        }
+        return $this->sessions->revokeByIdForAdmin($sessionId, $adminUserId, $currentTokenHash);
+    }
+
+    public function activeForAllAdmins(string $currentTokenHash): array
+    {
+        if ($currentTokenHash === '') {
+            return [];
+        }
+        return $this->sessions->activeForAllAdmins($currentTokenHash);
+    }
+
+    public function activeSessionOwner(int $sessionId, string $currentTokenHash): ?array
+    {
+        if ($sessionId < 1 || $currentTokenHash === '') {
+            return null;
+        }
+        return $this->sessions->activeSessionOwner($sessionId, $currentTokenHash);
+    }
+
+    public function revokeByIdForAnyAdmin(int $sessionId, string $currentTokenHash): bool
+    {
+        if ($sessionId < 1 || $currentTokenHash === '') {
+            return false;
+        }
+        return $this->sessions->revokeByIdForAnyAdmin($sessionId, $currentTokenHash);
+    }
+
     public function findForMonitoring(
         int $limit = 100,
         ?int $adminUserId = null
