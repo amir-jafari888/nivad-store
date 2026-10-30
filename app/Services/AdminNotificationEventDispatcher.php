@@ -17,6 +17,11 @@ final class AdminNotificationEventDispatcher
 
     public function dispatch(string $eventKey, string $title, string $message, ?string $entityType = null, int|string|null $entityId = null, ?array $payload = null, ?int $actorAdminId = null): int
     {
-        return $this->notifications->publishEvent($eventKey, $title, $message, $entityType, $entityId, $payload, $actorAdminId);
+        try {
+            return $this->notifications->publishEvent($eventKey, $title, $message, $entityType, $entityId, $payload, $actorAdminId);
+        } catch (Throwable $exception) {
+            error_log('Admin notification dispatch failed: ' . get_class($exception));
+            return 0;
+        }
     }
 }

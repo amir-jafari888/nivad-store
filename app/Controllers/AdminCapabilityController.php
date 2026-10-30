@@ -33,18 +33,10 @@ final class AdminCapabilityController extends Controller
     public function notifications(): never
     {
         try {
-            $filters = [
-                'unread' => (string)Request::query('unread', '') === '1',
-                'severity' => (string)Request::query('severity', ''),
-                'event_key' => (string)Request::query('event_key', ''),
-                'acknowledged' => (string)Request::query('acknowledged', ''),
-                'from' => (string)Request::query('from', ''),
-                'to' => (string)Request::query('to', ''),
-            ];
-            $data = (new AdminNotificationCenterService())->inbox(
-                $this->adminId(), $filters,
+            $data = $this->service->notifications(
+                $this->adminId(),
                 (int)Request::query('limit', 50),
-                (int)Request::query('offset', 0)
+                (string)Request::query('unread', '') === '1'
             );
             $this->success($data, 'اعلان‌های مدیریتی دریافت شدند.');
         } catch (InvalidArgumentException $exception) {
@@ -55,19 +47,8 @@ final class AdminCapabilityController extends Controller
     public function createNotification(): never
     {
         try {
-            $adminId = $this->adminId();
-            $data = $this->payload();
-            $id = (new AdminNotificationCenterService())->publishEvent(
-                (string)($data['event_key'] ?? 'admin.manual.created'),
-                (string)($data['title'] ?? ''),
-                (string)($data['message'] ?? ''),
-                isset($data['entity_type']) ? (string)$data['entity_type'] : null,
-                $data['entity_id'] ?? null,
-                isset($data['payload']) && is_array($data['payload']) ? $data['payload'] : null,
-                $adminId
-            );
-            if ($id < 1) $this->error('سیاست اعلان اجازه ثبت این رویداد را نداد.', 429);
-            AdminAuditTrail::record($adminId, 'create', 'admin_notifications', 'admin_notification', $id, 'Admin notification created.');
+            $id = $this->service->createNotification($this->adminId(), $this->payload());
+            AdminAuditTrail::record($this->adminId(), 'create', 'admin_notifications', 'admin_notification', $id, 'Admin notification created.');
             $this->success(['id' => $id], 'اعلان مدیریتی ثبت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -77,11 +58,11 @@ final class AdminCapabilityController extends Controller
     public function markNotificationRead(array $parameters = []): never
     {
         try {
-            $id = (int)($parameters['id'] ?? 0);
-            $adminId = $this->adminId();
-            $updated = (new AdminNotificationCenterService())->markRead($id, $adminId);
-            if (!$updated) $this->error('اعلان پیدا نشد یا دسترسی به آن مجاز نیست.', 404);
-            AdminAuditTrail::record($adminId, 'mark_read', 'admin_notifications', 'admin_notification', $id, 'Admin notification marked as read.');
+            $updated = $this->service->markNotificationRead((int)($parameters['id'] ?? 0), $this->adminId());
+            if (!$updated) {
+                $this->error('اعلان پیدا نشد یا قبلاً خوانده شده است.', 404);
+            }
+            AdminAuditTrail::record($this->adminId(), 'mark_read', 'admin_notifications', 'admin_notification', (int)($parameters['id'] ?? 0), 'Admin notification marked as read.');
             $this->success(['updated' => true], 'اعلان خوانده‌شده ثبت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
