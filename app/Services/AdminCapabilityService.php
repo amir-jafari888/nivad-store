@@ -146,12 +146,26 @@ final class AdminCapabilityService
         if (!in_array($priority, ['low', 'normal', 'high'], true)) {
             throw new InvalidArgumentException('اولویت تیکت نامعتبر است.');
         }
-        return $this->repository->createCustomerTicket($userId, [
+        $ticketId = $this->repository->createCustomerTicket($userId, [
             'category' => $category,
             'priority' => $priority,
             'subject' => $subject,
             'message' => $message,
         ]);
+        try {
+            $ticket = $this->repository->customerTicket($ticketId, $userId);
+            $this->repository->notifyTicketCreated(
+                $ticketId,
+                (string)($ticket['ticket_number'] ?? $ticketId),
+                $subject
+            );
+        } catch (Throwable $notificationFailure) {
+            Logger::error('Customer support ticket was created but Admin notification failed.', [
+                'ticket_id' => $ticketId,
+                'exception_type' => get_class($notificationFailure),
+            ]);
+        }
+        return $ticketId;
     }
 
     public function addCustomerTicketMessage(int $ticketId, int $userId, string $message): int
