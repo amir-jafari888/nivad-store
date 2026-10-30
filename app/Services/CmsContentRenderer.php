@@ -164,16 +164,19 @@ final class CmsContentRenderer
     {
         $style = AdminContentRegistry::validateStyle($style);
         $vars = [];
+        if (($style['background_type'] ?? 'transparent') === 'solid' && isset($style['background'])) $vars[] = '--cms-background:' . $style['background'];
+        else $vars[] = '--cms-background:transparent';
+        $gradientEnabled = ($style['background_type'] ?? 'transparent') === 'gradient';
         foreach ([
-            'background' => '--cms-background',
             'gradient_from' => '--cms-gradient-from',
             'gradient_to' => '--cms-gradient-to',
             'color' => '--cms-color',
             'muted_color' => '--cms-muted',
             'accent_color' => '--cms-accent',
         ] as $key => $property) {
-            if (isset($style[$key])) $vars[] = $property . ':' . $style[$key];
+            if ($gradientEnabled && isset($style[$key])) $vars[] = $property . ':' . $style[$key];
         }
+        if (!$gradientEnabled) { $vars[] = '--cms-gradient-from:transparent'; $vars[] = '--cms-gradient-to:transparent'; }
         if (isset($style['gradient_angle'])) $vars[] = '--cms-gradient-angle:' . (int)$style['gradient_angle'] . 'deg';
         foreach (['padding_top' => 'padding-top', 'padding_bottom' => 'padding-bottom', 'radius' => 'radius', 'container_width' => 'container-width'] as $key => $property) {
             if (isset($style[$key])) $vars[] = '--cms-' . $property . ':' . (float)$style[$key] . 'px';
