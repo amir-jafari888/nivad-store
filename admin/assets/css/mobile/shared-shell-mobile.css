@@ -54,7 +54,6 @@
 .admin-dashboard-footer{display:grid;gap:5px;margin-top:16px}
 .admin-nav-backdrop{position:fixed;inset:0;z-index:940;display:none;padding:0;border:0;background:rgba(17,24,39,.32)}
 .admin-nav-open .admin-nav-backdrop{display:block}
-@media (prefers-reduced-motion:reduce){.admin-shared-sidebar,.admin-dashboard-sidebar{transition:none}}
 
 
 /* Legacy page header becomes a content toolbar, not a competing global header. */
@@ -115,3 +114,11 @@
 .admin-dashboard-chart-value,.admin-dashboard-chart-label{font-size:10px}
 .admin-dashboard-line-chart-labels{font-size:10px}
 
+
+.admin-dashboard-period-comparison{grid-template-columns:minmax(0,1fr);gap:10px;margin-block:16px}
+.admin-dashboard-comparison-heading{display:grid;gap:4px}
+.admin-dashboard-comparison-values strong{font-size:20px}
+
+.admin-profile-details{grid-template-columns:minmax(0,1fr)}
+
+.admin-nav-open{overflow:hidden}

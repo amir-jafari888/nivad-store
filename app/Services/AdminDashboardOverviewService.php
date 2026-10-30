@@ -65,6 +65,8 @@ final class AdminDashboardOverviewService
                 $outOfStock = $this->reports->inventoryOutOfStockSummary($query);
                 $queueItems[] = [
                     'key' => 'low_stock',
+                    'priority' => 'low',
+                    'priority_label' => 'عادی',
                     'title' => 'موجودی نزدیک به حد هشدار',
                     'count' => (int)($lowStock['low_stock_records'] ?? 0),
                     'href' => url('/admin/inventory/index.php'),
@@ -72,6 +74,8 @@ final class AdminDashboardOverviewService
                 ];
                 $queueItems[] = [
                     'key' => 'out_of_stock',
+                    'priority' => 'critical',
+                    'priority_label' => 'فوری',
                     'title' => 'Variantهای ناموجود',
                     'count' => (int)($outOfStock['out_of_stock_records'] ?? 0),
                     'href' => url('/admin/inventory/index.php'),
@@ -87,6 +91,8 @@ final class AdminDashboardOverviewService
             try {
                 $queueItems[] = [
                     'key' => 'open_incidents',
+                    'priority' => 'high',
+                    'priority_label' => 'بالا',
                     'title' => 'رخدادهای باز سیستم',
                     'count' => $this->capabilities->countIncidentsByStatus('open'),
                     'href' => url('/admin/capabilities/index.php#admin-incidents-title'),
@@ -102,6 +108,8 @@ final class AdminDashboardOverviewService
             try {
                 $queueItems[] = [
                     'key' => 'support_tickets',
+                    'priority' => 'normal',
+                    'priority_label' => 'متوسط',
                     'title' => 'تیکت‌های منتظر اقدام مدیر',
                     'count' => $this->capabilities->countTicketsByStatuses(['open', 'pending_admin']),
                     'href' => url('/admin/capabilities/index.php#admin-tickets-title'),
@@ -111,6 +119,15 @@ final class AdminDashboardOverviewService
                 $queueErrors[] = 'tickets';
             }
         }
+
+        $priorityOrder = ['critical' => 0, 'high' => 1, 'normal' => 2, 'low' => 3];
+        usort($queueItems, static function (array $left, array $right) use ($priorityOrder): int {
+            $priority = ($priorityOrder[$left['priority'] ?? 'low'] ?? 3)
+                <=> ($priorityOrder[$right['priority'] ?? 'low'] ?? 3);
+            return $priority !== 0
+                ? $priority
+                : ((int)($right['count'] ?? 0) <=> (int)($left['count'] ?? 0));
+        });
 
         $queueStatus = $queueSources === 0
             ? 'restricted'

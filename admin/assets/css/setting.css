@@ -106,7 +106,7 @@
 }
 
 
-/* Browser-local interface preferences; no server-side settings are implied. */
+/* Admin preferences synchronize to the authenticated account and retain a browser-local fallback. */
 html[data-admin-font-scale="large"] {
   font-size: 18px;
 }
@@ -150,3 +150,21 @@ html[data-admin-density="compact"] table td {
 .admin-profile-details>div{padding:var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md)}
 .admin-profile-details dt{color:var(--admin-color-text-muted);font-size:var(--admin-font-size-sm)}
 .admin-profile-details dd{margin:var(--admin-space-2) 0 0;font-weight:700;overflow-wrap:anywhere}
+
+
+/* Dashboard period comparison and traceability. */
+.admin-dashboard-period-comparison{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--admin-space-3);margin-block:var(--admin-space-5)}
+.admin-dashboard-comparison-heading{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:var(--admin-space-3)}
+.admin-dashboard-comparison-heading h2{margin:0;font-size:var(--admin-font-size-lg)}
+.admin-dashboard-comparison-heading p,.admin-dashboard-comparison-card small{margin:0;color:var(--admin-color-text-muted);font-size:12px}
+.admin-dashboard-comparison-card{min-width:0;padding:var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);background:var(--admin-color-surface)}
+.admin-dashboard-comparison-card h3{margin:0 0 var(--admin-space-2);font-size:var(--admin-font-size-sm)}
+.admin-dashboard-comparison-values{display:grid;gap:3px;margin:0}
+.admin-dashboard-comparison-values strong{font-size:22px}
+.admin-dashboard-comparison-values span,.admin-dashboard-comparison-delta{color:var(--admin-color-text-muted);font-size:12px}
+.admin-dashboard-comparison-delta{margin:var(--admin-space-2) 0}
+.admin-dashboard-activity-reference{color:var(--admin-color-text-muted);font-size:11px}
+.admin-dashboard-queue-priority{font-weight:700}
+.admin-dashboard-queue-priority[data-priority="critical"]{color:var(--admin-color-error)}
+.admin-dashboard-queue-priority[data-priority="high"]{color:var(--admin-color-warning)}
+.admin-dashboard-queue-priority[data-priority="normal"]{color:var(--admin-color-info)}

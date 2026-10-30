@@ -96,7 +96,7 @@ phase57Check(
 phase57Check(
     str_contains($shell, 'admin-shared-sidebar')
         && str_contains($shell, 'admin/profile/index.php')
-        && !str_contains($shell, "stripos($html, 'admin-dashboard-page') !== false")
+        && !str_contains($shell, 'stripos($html, \'admin-dashboard-page\') !== false')
         && str_contains($controller, '/admin/includes/auth.php')
         && str_contains($view, 'admin-dashboard-main')
         && !str_contains($view, 'admin-dashboard-sidebar'),

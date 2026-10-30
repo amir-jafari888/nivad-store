@@ -116,10 +116,15 @@ const navigationState = () => {
       if (mobileQuery.matches) {
         setOpen(false);
       } else {
+        const wasOpen = document.body.classList.contains("admin-nav-open");
         document.body.classList.remove("admin-nav-open");
         sidebar.removeAttribute("aria-hidden");
         sidebar.inert = false;
         toggles.forEach((toggle) => toggle.setAttribute("aria-expanded", "false"));
+        if (wasOpen && lastFocused && typeof lastFocused.focus === "function") {
+          lastFocused.focus({ preventScroll: true });
+        }
+        lastFocused = null;
       }
     };
 

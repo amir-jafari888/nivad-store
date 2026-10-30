@@ -49,7 +49,7 @@ adminRedesignCheck(str_contains($authInclude, "first_name") && str_contains($aut
 adminRedesignCheck(!str_contains($dashboardView, "['email']") && !str_contains($dashboardView, "['username']"), 'Dashboard does not expose email or username as the display-name fallback');
 adminRedesignCheck(str_contains($dashboardView, 'admin-dashboard-main') && str_contains($authInclude, 'admin-shared-nav-group') && str_contains($authInclude, 'admin-shared-sidebar'), 'Dashboard and authenticated pages share grouped mega-navigation');
 adminRedesignCheck(str_contains($authInclude, "url('/admin/settings')") && is_file($root . '/admin/settings/index.php'), 'Shared navigation points to an implemented settings page');
-adminRedesignCheck(str_contains($authInclude, 'use ($nav, $topbar)'), 'Shared shell closure captures both navigation and topbar safely');
+adminRedesignCheck(str_contains($authInclude, 'use ($nav, $topbar, $skipLink)'), 'Shared shell closure captures both navigation and topbar safely');
 adminRedesignCheck(str_contains($logout, 'Csrf::verify') && str_contains($logout, 'Request::isPost') && str_contains($logout, 'AdminAuth::logout'), 'Direct logout endpoint enforces POST and CSRF before clearing admin auth');
 adminRedesignCheck(str_contains($htaccess, 'RewriteRule ^admin/logout/?$ admin/logout.php'), 'Apache rewrite points /admin/logout to the direct endpoint');
 adminRedesignCheck(!str_contains($mainJs, 'modules/theme.js') && !str_contains($mainJs, 'adminTheme()'), 'Theme toggle module is no longer initialized');
