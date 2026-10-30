@@ -23,6 +23,10 @@ on:
     branches:
       - "feature/admin-phase-2-rbac-security-2026-10-30"
     paths:
+      - "app/Services/AdminAuthService.php"
+      - "app/Repositories/AdminSessionRepository.php"
+      - "database/seeds/20261029_admin_permission_catalog.sql"
+      - "admin/access/index.php"
       - "app/Core/AdminRoutePermissionMap.php"
       - "app/Services/AdminReauthenticationService.php"
       - "app/Services/AdminAccessService.php"
