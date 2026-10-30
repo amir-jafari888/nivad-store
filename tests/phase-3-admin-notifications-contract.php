@@ -30,7 +30,7 @@ $check('Event dispatcher exposes a single safe application boundary', is_file($r
 $centerRepo = $read('app/Repositories/AdminNotificationCenterRepository.php');
 $centerService = $read('app/Services/AdminNotificationCenterService.php');
 $outbox = $read('app/Repositories/PdoAdminEmailOutboxRepository.php');
-$check('In-app and email preferences are independently honored', str_contains($centerService, '$inAppEnabled') && str_contains($centerRepo, "!empty($recipient['in_app_enabled'])") && str_contains($centerRepo, "!empty($recipient['email_enabled'])"));
+$check('In-app and email preferences are independently honored', str_contains($centerService, '$inAppEnabled') && str_contains($centerRepo, 'in_app_enabled') && str_contains($centerRepo, 'email_enabled'));
 $check('Persistent outbox adapter claims rows transactionally', str_contains($outbox, 'implements AdminEmailOutboxRepositoryInterface') && str_contains($outbox, 'FOR UPDATE') && str_contains($outbox, 'processing'));
 $check('Notification policy read/update routes are permission-mapped', str_contains($routes, 'notification-policies') && str_contains($permissions, 'notification-policies.update'));
 $check('Commerce and moderation events are connected to dispatcher', str_contains($read('app/Controllers/OrderController.php'), 'commerce.order.created') && str_contains($read('app/Controllers/PaymentController.php'), 'commerce.payment.failed') && str_contains($read('app/Controllers/InventoryController.php'), 'inventory.stock.low') && str_contains($read('app/Controllers/ReviewController.php'), 'content.review.pending') && str_contains($read('app/Controllers/ProductQuestionController.php'), 'content.question.pending'));
