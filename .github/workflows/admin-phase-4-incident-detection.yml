@@ -13,6 +13,7 @@ on:
       - 'app/Services/AdminCapabilityService.php'
       - 'app/Services/AdminIncidentCaptureService.php'
       - 'app/Services/AdminEmailOutboxWorker.php'
+      - 'app/Controllers/IncidentCaptureController.php'
       - 'routes/api.php'
       - 'app/Core/AdminRoutePermissionMap.php'
       - 'database/migrations/20261030_admin_incident_detection_phase4.sql'
@@ -48,6 +49,10 @@ jobs:
             app/Repositories/AdminIncidentDetectionRepository.php
             app/Services/AdminCapabilityService.php
             app/Services/AdminIncidentCaptureService.php
+            app/Services/AdminEmailOutboxWorker.php
+            app/Core/AdminRoutePermissionMap.php
+            routes/api.php
+            admin/incidents/index.php
             tests/phase-4-incident-detection-contract.php
           )
           for file in "${files[@]}"; do php -l "$file"; done

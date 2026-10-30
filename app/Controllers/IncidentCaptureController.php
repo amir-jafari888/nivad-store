@@ -28,7 +28,13 @@ final class IncidentCaptureController extends Controller
         }
 
         $page = parse_url((string) ($data['page'] ?? '/'), PHP_URL_PATH);
-        $file = parse_url((string) ($data['file'] ?? ''), PHP_URL_PATH);
+        $fileInput = (string) ($data['file'] ?? '');
+        $fileParts = parse_url($fileInput);
+        $fileScheme = is_array($fileParts) ? strtolower((string) ($fileParts['scheme'] ?? '')) : '';
+        $file = is_array($fileParts)
+            && ($fileScheme === '' || in_array($fileScheme, ['http', 'https'], true))
+            ? ($fileParts['path'] ?? null)
+            : null;
         $errorType = (string) ($data['error_type'] ?? 'Error');
         if (preg_match('/^[A-Za-z][A-Za-z0-9_]{0,79}$/', $errorType) !== 1) $errorType = 'Error';
 
