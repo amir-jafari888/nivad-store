@@ -291,6 +291,7 @@ final class PaymentController extends Controller
                     $errorMessage
                 );
 
+            (new AdminNotificationEventDispatcher())->dispatch('commerce.payment.failed', 'پرداخت ناموفق', 'یک تلاش پرداخت ناموفق ثبت شد.', 'payment_attempt', $attemptId, ['error_code' => $errorCode]);
             $this->success(
                 $attempt,
                 'پرداخت ناموفق ثبت شد.'
