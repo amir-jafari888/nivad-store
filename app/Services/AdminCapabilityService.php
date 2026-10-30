@@ -40,7 +40,7 @@ final class AdminCapabilityService
         $category = (string)($input['category'] ?? 'system');
         $severity = (string)($input['severity'] ?? 'info');
         $recipient = $input['recipient_admin_user_id'] ?? $actorAdminId;
-        if ($title === '' || mb_strlen($title) > 255 || $message === '') {
+        if ($title === '' || mb_strlen($title) > 255 || $message === '' || mb_strlen($message) > 5000) {
             throw new InvalidArgumentException('عنوان و متن اعلان الزامی است.');
         }
         if (!in_array($category, self::NOTIFICATION_CATEGORIES, true) || !in_array($severity, self::SEVERITIES, true)) {
@@ -181,7 +181,7 @@ final class AdminCapabilityService
         $subject = trim((string)($input['subject'] ?? ''));
         $message = trim((string)($input['message'] ?? ''));
         $priority = (string)($input['priority'] ?? 'normal');
-        if ($subject === '' || mb_strlen($subject) > 255 || $message === '') {
+        if ($subject === '' || mb_strlen($subject) > 255 || $message === '' || mb_strlen($message) > 20000) {
             throw new InvalidArgumentException('موضوع و متن پیام تیکت الزامی است.');
         }
         if (!in_array($priority, self::TICKET_PRIORITIES, true)) {
@@ -209,7 +209,7 @@ final class AdminCapabilityService
     public function addTicketMessage(int $ticketId, int $adminId, string $message, bool $internal): int
     {
         $message = trim($message);
-        if ($ticketId < 1 || $message === '') {
+        if ($ticketId < 1 || $message === '' || mb_strlen($message) > 20000) {
             throw new InvalidArgumentException('متن پیام تیکت الزامی است.');
         }
         if ($this->repository->ticket($ticketId) === null) {
@@ -370,6 +370,10 @@ final class AdminCapabilityService
         }
         $this->validateEntity($entityType, $entityId);
         $summary = trim((string)($input['change_summary'] ?? ''));
+        $snapshotJson = json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        if (strlen($snapshotJson) > 100000) {
+            throw new InvalidArgumentException('حجم Snapshot بیش از حد مجاز است.');
+        }
         return $this->repository->createRevision($entityType, $entityId, $adminId, $snapshot, mb_substr($summary, 0, 1000));
     }
 
