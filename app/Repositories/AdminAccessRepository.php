@@ -17,7 +17,8 @@ final class AdminAccessRepository
         $stmt = $this->db->query(
             'SELECT a.id, a.username, a.email, a.first_name, a.last_name, a.status,
                     a.last_login_at, a.created_at,
-                    GROUP_CONCAT(DISTINCT r.name ORDER BY r.name SEPARATOR ", ") AS role_names
+                    GROUP_CONCAT(DISTINCT r.name ORDER BY r.name SEPARATOR ", ") AS role_names,
+                    GROUP_CONCAT(DISTINCT r.slug ORDER BY r.slug SEPARATOR ",") AS role_slugs
              FROM admin_users a
              LEFT JOIN admin_user_roles ur ON ur.admin_user_id = a.id
              LEFT JOIN admin_roles r ON r.id = ur.role_id AND r.status = "active" AND r.deleted_at IS NULL
