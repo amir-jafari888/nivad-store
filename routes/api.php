@@ -2809,4 +2809,45 @@ return static function (Router $router): void {
         [],
         'storefront.budget-optimizer'
     );
+
+
+    /*
+     * Admin Master Capabilities — notifications, incidents, support,
+     * analytics, preferences, saved views and content revisions.
+     */
+    $adminCapabilityRead = [
+        AdminAuthMiddleware::class,
+        AdminRoutePermissionMiddleware::class,
+    ];
+    $adminCapabilityWrite = [
+        AdminAuthMiddleware::class,
+        AdminRoutePermissionMiddleware::class,
+        CsrfMiddleware::class,
+    ];
+
+    $router->get('/admin/capabilities/notifications', [AdminCapabilityController::class, 'notifications'], $adminCapabilityRead, 'admin.capabilities.notifications.index');
+    $router->post('/admin/capabilities/notifications', [AdminCapabilityController::class, 'createNotification'], $adminCapabilityWrite, 'admin.capabilities.notifications.store');
+    $router->patch('/admin/capabilities/notifications/{id}/read', [AdminCapabilityController::class, 'markNotificationRead'], $adminCapabilityWrite, 'admin.capabilities.notifications.read');
+
+    $router->get('/admin/capabilities/incidents', [AdminCapabilityController::class, 'incidents'], $adminCapabilityRead, 'admin.capabilities.incidents.index');
+    $router->patch('/admin/capabilities/incidents/{id}', [AdminCapabilityController::class, 'updateIncident'], $adminCapabilityWrite, 'admin.capabilities.incidents.update');
+
+    $router->get('/admin/capabilities/tickets', [AdminCapabilityController::class, 'tickets'], $adminCapabilityRead, 'admin.capabilities.tickets.index');
+    $router->get('/admin/capabilities/tickets/{id}', [AdminCapabilityController::class, 'showTicket'], $adminCapabilityRead, 'admin.capabilities.tickets.show');
+    $router->post('/admin/capabilities/tickets', [AdminCapabilityController::class, 'createTicket'], $adminCapabilityWrite, 'admin.capabilities.tickets.store');
+    $router->post('/admin/capabilities/tickets/{id}/messages', [AdminCapabilityController::class, 'addTicketMessage'], $adminCapabilityWrite, 'admin.capabilities.tickets.messages.store');
+    $router->patch('/admin/capabilities/tickets/{id}', [AdminCapabilityController::class, 'updateTicket'], $adminCapabilityWrite, 'admin.capabilities.tickets.update');
+
+    $router->get('/admin/capabilities/product-analytics', [AdminCapabilityController::class, 'analytics'], $adminCapabilityRead, 'admin.capabilities.analytics.index');
+
+    $router->get('/admin/capabilities/preferences', [AdminCapabilityController::class, 'preferences'], $adminCapabilityRead, 'admin.capabilities.preferences.index');
+    $router->put('/admin/capabilities/preferences', [AdminCapabilityController::class, 'savePreference'], $adminCapabilityWrite, 'admin.capabilities.preferences.update');
+
+    $router->get('/admin/capabilities/saved-views', [AdminCapabilityController::class, 'savedViews'], $adminCapabilityRead, 'admin.capabilities.saved-views.index');
+    $router->post('/admin/capabilities/saved-views', [AdminCapabilityController::class, 'saveView'], $adminCapabilityWrite, 'admin.capabilities.saved-views.store');
+    $router->delete('/admin/capabilities/saved-views/{id}', [AdminCapabilityController::class, 'deleteView'], $adminCapabilityWrite, 'admin.capabilities.saved-views.destroy');
+
+    $router->get('/admin/capabilities/revisions', [AdminCapabilityController::class, 'revisions'], $adminCapabilityRead, 'admin.capabilities.revisions.index');
+    $router->post('/admin/capabilities/revisions', [AdminCapabilityController::class, 'createRevision'], $adminCapabilityWrite, 'admin.capabilities.revisions.store');
+
 };
