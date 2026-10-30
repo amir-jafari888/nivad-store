@@ -41,6 +41,23 @@ final class CustomerSupportController extends Controller
             $userId = $this->customerId();
             $id = $this->service->createCustomerTicket($userId, $this->payload());
             AdminAuditTrail::record(null, 'customer_create', 'customer_support', 'admin_support_ticket', $id, 'Customer submitted a support ticket.', null, ['customer_id' => $userId]);
+            try {
+                $this->service->createNotification(0, [
+                    'recipient_admin_user_id' => null,
+                    'category' => 'customer_support',
+                    'severity' => 'info',
+                    'title' => 'درخواست پشتیبانی جدید',
+                    'message' => 'یک مشتری درخواست پشتیبانی جدید ثبت کرده است.',
+                    'source_type' => 'support_ticket',
+                    'source_id' => $id,
+                    'dedupe_key' => 'customer-ticket-created:' . $id,
+                ]);
+            } catch (Throwable $notificationFailure) {
+                Logger::error('Customer ticket was created but Admin notification failed.', [
+                    'ticket_id' => $id,
+                    'exception_type' => get_class($notificationFailure),
+                ]);
+            }
             $this->success(['id' => $id], 'درخواست پشتیبانی ثبت شد.', 201);
         } catch (InvalidArgumentException $exception) {
             $this->error($exception->getMessage(), 422);
@@ -58,6 +75,24 @@ final class CustomerSupportController extends Controller
                 (string)($data['message'] ?? '')
             );
             AdminAuditTrail::record(null, 'customer_reply', 'customer_support', 'admin_support_message', $id, 'Customer replied to a support ticket.', null, ['customer_id' => $userId]);
+            try {
+                $this->service->createNotification(0, [
+                    'recipient_admin_user_id' => null,
+                    'category' => 'customer_support',
+                    'severity' => 'info',
+                    'title' => 'پیام جدید در تیکت پشتیبانی',
+                    'message' => 'مشتری در یک تیکت پشتیبانی پیام جدیدی ارسال کرده است.',
+                    'source_type' => 'support_ticket',
+                    'source_id' => (int)($parameters['id'] ?? 0),
+                    'dedupe_key' => 'customer-ticket-message:' . $id,
+                ]);
+            } catch (Throwable $notificationFailure) {
+                Logger::error('Customer ticket reply was created but Admin notification failed.', [
+                    'ticket_id' => (int)($parameters['id'] ?? 0),
+                    'message_id' => $id,
+                    'exception_type' => get_class($notificationFailure),
+                ]);
+            }
             $this->success(['id' => $id], 'پیام شما ثبت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->error($exception->getMessage(), 422);
