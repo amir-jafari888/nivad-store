@@ -34,7 +34,8 @@ final class AdminContentService
         if ($key === '') $key = $type . '-' . bin2hex(random_bytes(5));
         if (!preg_match('/^[a-z][a-z0-9_-]{1,79}$/', $key)) throw new InvalidArgumentException('کلید سکشن معتبر نیست.');
         $id = $this->repository->createSection($pageKey, $key, $type, $title, $content, $style, $adminId);
-        $this->repository->saveRevision($id, ['title' => $title, 'content' => $content, 'style' => $style, 'is_visible' => true, 'sort_order' => 10], $adminId);
+        $created = $this->repository->section($id);
+        $this->repository->saveRevision($id, ['title' => $title, 'content' => $content, 'style' => $style, 'is_visible' => true, 'sort_order' => (int)($created['sort_order'] ?? 10)], $adminId);
         return $id;
     }
 
@@ -88,7 +89,17 @@ final class AdminContentService
     {
         AdminContentRegistry::page($pageKey);
         if (count($ids) > 100 || count(array_unique(array_map('intval', $ids))) !== count($ids)) throw new InvalidArgumentException('فهرست ترتیب سکشن‌ها نامعتبر است.');
-        $this->repository->reorder($pageKey, array_map('intval', $ids), $adminId);
+        $current = $this->repository->sections($pageKey);
+        $expected = array_map('intval', array_column($current, 'id'));
+        $requested = array_map('intval', $ids);
+        sort($expected);
+        $comparison = $requested;
+        sort($comparison);
+        if ($expected !== $comparison) throw new InvalidArgumentException('ترتیب باید شامل تمام سکشن‌های فعال همین صفحه و فقط همان‌ها باشد.');
+        $this->repository->reorder($pageKey, $requested, $adminId);
+        foreach ($this->repository->sections($pageKey) as $section) {
+            $this->repository->saveRevision((int)$section['id'], ['title' => $section['title'], 'content' => $section['content'], 'style' => $section['style'], 'is_visible' => (bool)$section['is_visible'], 'sort_order' => (int)$section['sort_order']], $adminId);
+        }
     }
 
     public function revisions(int $id): array
