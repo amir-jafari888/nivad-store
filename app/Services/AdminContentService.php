@@ -111,7 +111,6 @@ final class AdminContentService
     public function restoreRevision(int $id, int $revisionId, int $adminId): bool
     {
         if (!$this->repository->section($id)) return false;
-        $before = $this->repository->section($id);
         $ok = $this->repository->restoreRevision($id, $revisionId, $adminId);
         if ($ok) { $restored = $this->repository->section($id); if ($restored) $this->repository->saveRevision($id, ['title' => $restored['title'], 'content' => $restored['content'], 'style' => $restored['style'], 'is_visible' => (bool)$restored['is_visible'], 'sort_order' => (int)$restored['sort_order']], $adminId); }
         return $ok;
