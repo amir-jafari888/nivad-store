@@ -8,18 +8,10 @@ require_once dirname(__DIR__) . '/includes/auth.php';
 
 $accessPageReadPermissions = [
     'admin.access.admins.index',
-    'admin.access.admins.store',
-    'admin.access.admins.update',
-    'admin.access.admins.destroy',
-    'admin.access.admins.roles.update',
     'admin.access.roles.index',
-    'admin.access.roles.store',
-    'admin.access.roles.update',
     'admin.access.permissions.index',
     'admin.access.roles.permissions.show',
-    'admin.access.roles.permissions.update',
     'admin.access.sessions.index',
-    'admin.access.sessions.destroy',
 ];
 
 if (!$adminAuth->canAll($accessPageReadPermissions)) {
