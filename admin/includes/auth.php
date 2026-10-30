@@ -27,6 +27,16 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     if (stripos($html, '</head>') !== false) {
         $assets = '';
 
+        if (stripos($html, 'name="csrf-token"') === false) {
+            $csrfToken = e(Csrf::token());
+            $assets .= "\n<meta name=\"csrf-token\" content=\"{$csrfToken}\">";
+        }
+
+        if (stripos($html, 'name="admin-api-url"') === false) {
+            $apiUrl = e(url('/api/index.php'));
+            $assets .= "\n<meta name=\"admin-api-url\" content=\"{$apiUrl}\">";
+        }
+
         if (stripos($html, '/admin/assets/css/main.css') === false) {
             $stylesheet = e(url('/admin/assets/css/main.css'));
             $assets .= "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">";
