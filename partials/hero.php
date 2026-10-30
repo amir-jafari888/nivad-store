@@ -1,6 +1,6 @@
 <?php $cmsContent = CmsContentRenderer::activeContent(); ?>
 <main>
-    <section class="hero section" aria-labelledby="hero-title">
+    <section class="hero section" aria-labelledby="hero-title" <?= CmsContentRenderer::activeStyleAttribute() ?>>
         <div class="container">
             <div class="hero-slider swiper" data-hero-slider>
                 <div class="swiper-wrapper">
@@ -8,7 +8,7 @@
                     <article class="hero-slide swiper-slide">
                         <img
                             class="hero-slide__visual"
-                            src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1800&q=85"
+                            src="<?= e(!empty($cmsContent['image_id']) ? url('/api/content-media/' . (int)$cmsContent['image_id']) : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1800&q=85') ?>"
                             alt="گوشی هوشمند مدرن" />
 
                         <div class="hero-slide__overlay" aria-hidden="true"></div>
