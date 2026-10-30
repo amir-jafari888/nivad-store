@@ -37,6 +37,7 @@ final class AdminAccessController extends Controller
     {
         try {
             $id = $this->service->createAdmin($this->payload());
+            AdminAuditTrail::record($this->actorId(), 'create', 'admin_users', 'admin_user', $id, 'Admin account created.', null, ['status' => 'active']);
             $this->success(['id' => $id], 'مدیر جدید ایجاد شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -54,6 +55,7 @@ final class AdminAccessController extends Controller
                 $this->payload()
             );
             if (!$updated) $this->error('مدیر پیدا نشد.', 404);
+            AdminAuditTrail::record($this->actorId(), 'update', 'admin_users', 'admin_user', (int)($parameters['id'] ?? 0), 'Admin account updated.', null, ['status' => $this->payload()['status'] ?? null]);
             $this->success(['updated' => true], 'اطلاعات مدیر به‌روزرسانی شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -71,6 +73,7 @@ final class AdminAccessController extends Controller
                 $this->payload()
             );
             if (!$updated) $this->error('مدیر پیدا نشد.', 404);
+            AdminAuditTrail::record($this->actorId(), 'assign_roles', 'admin_users', 'admin_user', (int)($parameters['id'] ?? 0), 'Admin roles reassigned.', null, ['role_ids' => $this->payload()['role_ids'] ?? []]);
             $this->success(['updated' => true], 'نقش‌های مدیر به‌روزرسانی شدند.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -97,6 +100,7 @@ final class AdminAccessController extends Controller
             $tokenHash
         );
         if (!$revoked) $this->error('نشست پیدا نشد، منقضی شده یا نشست فعلی است.', 404);
+        AdminAuditTrail::record($adminId, 'revoke_session', 'admin_sessions', 'admin_session', (int)($parameters['id'] ?? 0), 'Another Admin session was revoked.');
         $this->success(['revoked' => true], 'نشست انتخاب‌شده لغو شد.');
     }
 
@@ -109,6 +113,7 @@ final class AdminAccessController extends Controller
     {
         try {
             $id = $this->service->createRole($this->payload());
+            AdminAuditTrail::record($this->actorId(), 'create', 'admin_roles', 'admin_role', $id, 'Admin role created.');
             $this->success(['id' => $id], 'نقش جدید ایجاد شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -122,6 +127,7 @@ final class AdminAccessController extends Controller
         try {
             $updated = $this->service->updateRole((int)($parameters['id'] ?? 0), $this->payload());
             if (!$updated) $this->error('نقش پیدا نشد.', 404);
+            AdminAuditTrail::record($this->actorId(), 'update', 'admin_roles', 'admin_role', (int)($parameters['id'] ?? 0), 'Admin role updated.', null, ['status' => $this->payload()['status'] ?? null]);
             $this->success(['updated' => true], 'نقش به‌روزرسانی شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -153,6 +159,7 @@ final class AdminAccessController extends Controller
                 $this->payload()
             );
             if (!$updated) $this->error('نقش پیدا نشد.', 404);
+            AdminAuditTrail::record($this->actorId(), 'assign_permissions', 'admin_roles', 'admin_role', (int)($parameters['id'] ?? 0), 'Admin role permissions reassigned.', null, ['permission_ids' => $this->payload()['permission_ids'] ?? []]);
             $this->success(['updated' => true], 'مجوزهای نقش به‌روزرسانی شدند.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
