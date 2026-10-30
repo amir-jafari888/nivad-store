@@ -235,9 +235,6 @@ final class PaymentController extends Controller
         } catch (
             RuntimeException $exception
         ) {
-            if ($exception instanceof PDOException) {
-                Database::reportFailure($exception, ['operation' => 'payment.request']);
-            }
             $this->error(
                 $exception->getMessage(),
                 409

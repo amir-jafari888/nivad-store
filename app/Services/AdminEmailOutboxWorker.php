@@ -87,10 +87,12 @@ final class AdminEmailOutboxWorker
             } catch (Throwable $exception) {
                 // A failed provider adapter must not abort the rest of the batch
                 // or leave this claimed row silently unprocessed.
-                AdminIncidentCaptureService::captureExternalFailure('admin_email_smtp', $exception, [
-                    'outbox_id' => $outboxId,
-                    'attempt' => $attempt,
-                ]);
+                if (class_exists(AdminIncidentCaptureService::class)) {
+                    AdminIncidentCaptureService::captureExternalFailure('admin_email_smtp', $exception, [
+                        'outbox_id' => $outboxId,
+                        'attempt' => $attempt,
+                    ]);
+                }
                 $result = ['success' => false, 'error_code' => 'smtp_delivery_failed'];
             }
 
@@ -106,14 +108,16 @@ final class AdminEmailOutboxWorker
             $errorCode = is_string($result['error_code'] ?? null)
                 ? $result['error_code']
                 : 'smtp_delivery_failed';
-            AdminIncidentCaptureService::capture(
-                'external_service.smtp',
-                'warning',
-                'SMTP delivery attempt failed.',
-                ['outbox_id' => $outboxId, 'attempt' => $attempt, 'error_code' => $errorCode],
-                'external_service.failure',
-                'An email delivery attempt failed and was handled by the outbox retry policy.'
-            );
+            if (class_exists(AdminIncidentCaptureService::class)) {
+                AdminIncidentCaptureService::capture(
+                    'external_service.smtp',
+                    'warning',
+                    'SMTP delivery attempt failed.',
+                    ['outbox_id' => $outboxId, 'attempt' => $attempt, 'error_code' => $errorCode],
+                    'external_service.failure',
+                    'An email delivery attempt failed and was handled by the outbox retry policy.'
+                );
+            }
             $terminal = $this->isPermanentFailure($errorCode) || $attempt >= self::MAX_ATTEMPTS;
             $nextAttempt = $terminal
                 ? null
