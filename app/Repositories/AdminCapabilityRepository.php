@@ -164,6 +164,46 @@ final class AdminCapabilityRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function countIncidentsByStatus(string $status): int
+    {
+        $stmt = $this->db->prepare(
+            'SELECT COUNT(*) FROM admin_incidents WHERE status = :status'
+        );
+        $stmt->execute(['status' => $status]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function countTicketsByStatuses(array $statuses): int
+    {
+        if ($statuses === []) {
+            return 0;
+        }
+
+        $allowed = ['open', 'pending_customer', 'pending_admin', 'resolved', 'closed'];
+        $statuses = array_values(array_unique(array_filter(
+            $statuses,
+            static fn($status): bool => is_string($status) && in_array($status, $allowed, true)
+        )));
+        if ($statuses === []) {
+            return 0;
+        }
+
+        $placeholders = [];
+        $params = [];
+        foreach ($statuses as $index => $status) {
+            $key = 'status_' . $index;
+            $placeholders[] = ':' . $key;
+            $params[$key] = $status;
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT COUNT(*) FROM admin_support_tickets
+             WHERE status IN (' . implode(', ', $placeholders) . ')'
+        );
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
     public function recordIncident(array $data): int
     {
         $stmt = $this->db->prepare(
