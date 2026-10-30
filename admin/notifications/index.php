@@ -43,7 +43,7 @@ button{cursor:pointer;background:var(--accent);border-color:var(--accent);color:
 <select id="severity"><option value="">همه شدت‌ها</option><option value="critical">بحرانی</option><option value="warning">هشدار</option><option value="success">موفق</option><option value="info">اطلاع‌رسانی</option></select>
 <select id="state"><option value="">همه اعلان‌ها</option><option value="unread">خوانده‌نشده</option><option value="ack-no">نیازمند رسیدگی</option><option value="ack-yes">رسیدگی‌شده</option></select>
 <input id="eventKey" placeholder="کلید رویداد">
-<button id="filter">اعمال فیلتر</button><button class="secondary" id="readAll">خواندن همه</button><button class="secondary" id="showPrefs">تنظیمات اعلان</button>
+<button id="filter">اعمال فیلتر</button><button class="secondary" id="readAll">خواندن همه</button><button class="secondary" id="showPrefs">تنظیمات اعلان</button><button class="secondary" id="showPolicies">سیاست‌های اعلان</button>
 </div>
 <div id="feedback" class="notice" role="status" aria-live="polite">در حال دریافت اعلان‌ها…</div>
 <div id="items"></div>
@@ -63,6 +63,11 @@ button{cursor:pointer;background:var(--accent);border-color:var(--accent);color:
 <p class="meta">ارسال ایمیل فقط در صف ثبت می‌شود؛ اجرای Worker و تنظیمات SMTP باید جداگانه فعال و آزمایش شوند.</p>
 </form>
 </section>
+<section class="panel" id="policies" hidden>
+<h2>سیاست‌های تولید اعلان</h2>
+<p class="meta">فعال‌سازی رویداد، شدت، ایمیل، جلوگیری از تکرار و سقف تعداد اعلان در بازه زمانی.</p>
+<div id="policyItems"></div>
+</section>
 </main>
 <script>
 (() => {
@@ -77,6 +82,10 @@ button{cursor:pointer;background:var(--accent);border-color:var(--accent);color:
  document.getElementById('readAll').addEventListener('click',async()=>{try{await request('/admin/capabilities/notifications/read-all','POST',{});await load()}catch(e){feedback.textContent=e.message}});
  document.getElementById('showPrefs').addEventListener('click',async()=>{const panel=document.getElementById('preferences');panel.hidden=!panel.hidden;if(panel.hidden)return;try{const data=await request('/admin/capabilities/notification-preferences');const p=data.items['*']||{};document.getElementById('inApp').checked=p.in_app_enabled!==false;document.getElementById('email').checked=!!p.email_enabled;document.getElementById('minSeverity').value=p.minimum_severity||'info';document.getElementById('quietStart').value=p.quiet_hours_start||'';document.getElementById('quietEnd').value=p.quiet_hours_end||'';document.getElementById('timezone').value=p.timezone||'UTC'}catch(e){feedback.textContent=e.message}});
  document.getElementById('prefForm').addEventListener('submit',async e=>{e.preventDefault();try{await request('/admin/capabilities/notification-preferences','PUT',{event_key:'*',in_app_enabled:document.getElementById('inApp').checked,email_enabled:document.getElementById('email').checked,minimum_severity:document.getElementById('minSeverity').value,quiet_hours_start:document.getElementById('quietStart').value||null,quiet_hours_end:document.getElementById('quietEnd').value||null,timezone:document.getElementById('timezone').value||'UTC'});feedback.textContent='ترجیحات ذخیره شد.'}catch(e){feedback.textContent=e.message}});
+ const policyPanel=document.getElementById('policies'),policyItems=document.getElementById('policyItems');
+ const loadPolicies=async()=>{try{const data=await request('/admin/capabilities/notification-policies');policyItems.innerHTML=(data.items||[]).map(p=>'<article class="item" data-policy="'+esc(p.event_key)+'"><div class="title">'+esc(p.event_key)+'</div><div class="toolbar"><label><input type="checkbox" data-enabled '+(Number(p.enabled)?'checked':'')+'> فعال</label><label><input type="checkbox" data-email '+(Number(p.email_enabled)?'checked':'')+'> ایمیل</label><select data-severity><option value="info">اطلاع</option><option value="success">موفق</option><option value="warning">هشدار</option><option value="critical">بحرانی</option></select><input type="number" min="0" max="86400" data-dedupe value="'+Number(p.dedupe_seconds)+'" aria-label="ثانیه جلوگیری از تکرار"><input type="number" min="1" max="1000" data-maximum value="'+Number(p.maximum_per_window)+'" aria-label="حداکثر تعداد"><input type="number" min="60" max="86400" data-window value="'+Number(p.window_seconds)+'" aria-label="طول بازه به ثانیه"><button data-policy-save>ذخیره</button></div></article>').join('')||'<div class="empty">سیاستی ثبت نشده است.</div>';policyItems.querySelectorAll('[data-policy]').forEach(row=>{row.querySelector('[data-severity]').value=(data.items.find(p=>p.event_key===row.dataset.policy)||{}).severity||'info'});}catch(e){feedback.textContent=e.message}};
+ document.getElementById('showPolicies').addEventListener('click',async()=>{policyPanel.hidden=!policyPanel.hidden;if(!policyPanel.hidden)await loadPolicies()});
+ policyItems.addEventListener('click',async e=>{const button=e.target.closest('[data-policy-save]');if(!button)return;const row=button.closest('[data-policy]');try{await request('/admin/capabilities/notification-policies','PUT',{event_key:row.dataset.policy,enabled:row.querySelector('[data-enabled]').checked,email_enabled:row.querySelector('[data-email]').checked,severity:row.querySelector('[data-severity]').value,dedupe_seconds:Number(row.querySelector('[data-dedupe]').value),maximum_per_window:Number(row.querySelector('[data-maximum]').value),window_seconds:Number(row.querySelector('[data-window]').value)});feedback.textContent='سیاست '+row.dataset.policy+' ذخیره شد.'}catch(err){feedback.textContent=err.message}});
  load();
 })();
 </script>
