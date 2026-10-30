@@ -49,6 +49,9 @@ final class AdminCapabilityService
         if ($recipient !== null && (!filter_var($recipient, FILTER_VALIDATE_INT) || (int)$recipient < 1)) {
             throw new InvalidArgumentException('گیرنده اعلان نامعتبر است.');
         }
+        if ($recipient !== null && !$this->repository->adminExists((int)$recipient)) {
+            throw new InvalidArgumentException('مدیر گیرنده فعال و معتبر نیست.');
+        }
         $dedupe = trim((string)($input['dedupe_key'] ?? ''));
         return $this->repository->createNotification([
             'recipient_admin_user_id' => $recipient !== null ? (int)$recipient : null,
@@ -95,8 +98,8 @@ final class AdminCapabilityService
         if ($id < 1 || !in_array($status, self::INCIDENT_STATUSES, true)) {
             throw new InvalidArgumentException('اطلاعات تغییر رخداد نامعتبر است.');
         }
-        if ($assignedAdminId !== null && $assignedAdminId < 1) {
-            throw new InvalidArgumentException('شناسه مدیر مسئول نامعتبر است.');
+        if ($assignedAdminId !== null && !$this->repository->adminExists($assignedAdminId)) {
+            throw new InvalidArgumentException('مدیر مسئول فعال و معتبر نیست.');
         }
         return $this->repository->updateIncident($id, $status, $assignedAdminId, $actorAdminId);
     }
@@ -127,6 +130,12 @@ final class AdminCapabilityService
         }
         $userId = isset($input['user_id']) && (int)$input['user_id'] > 0 ? (int)$input['user_id'] : null;
         $assigned = isset($input['assigned_admin_id']) && (int)$input['assigned_admin_id'] > 0 ? (int)$input['assigned_admin_id'] : $actorAdminId;
+        if ($userId !== null && !$this->repository->customerExists($userId)) {
+            throw new InvalidArgumentException('مشتری انتخاب‌شده پیدا نشد.');
+        }
+        if (!$this->repository->adminExists($assigned)) {
+            throw new InvalidArgumentException('مدیر مسئول فعال و معتبر نیست.');
+        }
         return $this->repository->createTicket([
             'user_id' => $userId,
             'category' => mb_substr(trim((string)($input['category'] ?? 'general')) ?: 'general', 0, 100),
@@ -154,6 +163,9 @@ final class AdminCapabilityService
     {
         if ($id < 1 || !in_array($status, self::TICKET_STATUSES, true) || !in_array($priority, self::TICKET_PRIORITIES, true)) {
             throw new InvalidArgumentException('وضعیت یا اولویت تیکت نامعتبر است.');
+        }
+        if ($assignedAdminId !== null && !$this->repository->adminExists($assignedAdminId)) {
+            throw new InvalidArgumentException('مدیر مسئول فعال و معتبر نیست.');
         }
         return $this->repository->updateTicket($id, $status, $priority, $assignedAdminId);
     }
