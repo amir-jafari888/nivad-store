@@ -141,7 +141,6 @@ final class OrderController extends Controller
                     $shippingMethodId
                 );
 
-            (new AdminNotificationEventDispatcher())->dispatch('commerce.order.created', 'سفارش جدید ثبت شد', 'یک سفارش جدید در فروشگاه ثبت شده است.', 'order', is_array($order) ? ($order['id'] ?? null) : (is_object($order) ? ($order->id ?? null) : null));
             $this->success(
                 $order,
                 'سفارش با موفقیت ثبت شد.'
@@ -336,7 +335,6 @@ final class OrderController extends Controller
             );
         }
 
-        (new AdminNotificationEventDispatcher())->dispatch('commerce.order.status_changed', 'وضعیت سفارش تغییر کرد', 'وضعیت یک سفارش توسط مدیر تغییر کرد.', 'order', $orderId, ['status' => $toStatus], $adminUserId);
         $this->success(
             $order,
             'وضعیت سفارش با موفقیت تغییر کرد.'
