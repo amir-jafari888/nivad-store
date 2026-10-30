@@ -156,6 +156,9 @@ p56Check('Admin mutation audit trail helper exists', is_file($root . '/app/Servi
 
 p56Check('Admin access service protects the Super Admin role', is_string($sources['access_service']) && str_contains($sources['access_service'], 'super-admin'));
 p56Check('Admin access UI is connected to the API module', is_string($sources['access_page']) && is_string($sources['access_js']));
+p56Check('Admin access page requires an Access permission', is_string($sources['access_page']) && str_contains($sources['access_page'], '$adminAuth->canAny(') && str_contains($sources['access_page'], '$adminAuth->authorize('));
+p56Check('Admin capability page requires at least one capability permission', is_string($sources['capability_page']) && str_contains($sources['capability_page'], '$adminAuth->canAny(') && str_contains($sources['capability_page'], '$adminAuth->authorize('));
+p56Check('RBAC assignment list excludes inactive permissions', is_file($root . '/app/Repositories/AdminAccessRepository.php') && str_contains((string)file_get_contents($root . '/app/Repositories/AdminAccessRepository.php'), 'WHERE status = "active" AND deleted_at IS NULL'));
 p56Check('Access module is registered in Admin main.js', is_file($root . '/admin/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/admin/assets/js/main.js'), 'access-center.js'));
 p56Check('Admin session monitoring is scoped to the current account and excludes the current session', is_string($sources['access_repository']) && is_string($sources['capability_controller']) && str_contains((string)file_get_contents($root . '/app/Repositories/AdminSessionRepository.php'), 'current_token_hash'));
 p56Check('Global search uses prepared queries over the supported entity tables', is_string($sources['capability_repository']) && str_contains($sources['capability_repository'], 'globalSearch(string $term)') && str_contains($sources['capability_repository'], 'FROM products') && str_contains($sources['capability_repository'], 'FROM orders') && str_contains($sources['capability_repository'], 'FROM users'));
@@ -194,6 +197,36 @@ try {
         $existingPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
         $missingPermissions = array_diff($routeNames, $existingPermissions);
         p56Check('Every Admin API route has an active permission row', $missingPermissions === []);
+        $superAdmin = $db->prepare(
+            'SELECT r.id
+             FROM admin_roles r
+             WHERE r.slug = ? AND r.status = ? AND r.deleted_at IS NULL
+             LIMIT 1'
+        );
+        $superAdmin->execute(['super-admin', 'active']);
+        $superAdminId = (int)$superAdmin->fetchColumn();
+        if ($superAdminId > 0) {
+            $grantStmt = $db->prepare(
+                'SELECT p.name
+                 FROM admin_permissions p
+                 INNER JOIN admin_role_permissions rp ON rp.permission_id = p.id
+                 WHERE rp.role_id = ?
+                   AND p.name IN (' . $placeholders . ')
+                   AND p.status = ?
+                   AND p.deleted_at IS NULL'
+            );
+            $grantStmt->execute([$superAdminId, ...$routeNames, 'active']);
+            $grantedNames = $grantStmt->fetchAll(PDO::FETCH_COLUMN);
+            $missingSuperAdminGrants = array_diff($routeNames, $grantedNames);
+            p56Check('Active Super Admin has every active Admin route permission', $missingSuperAdminGrants === []);
+            if ($missingSuperAdminGrants !== []) {
+                foreach ($missingSuperAdminGrants as $missing) {
+                    echo '<span style="color:#b45309">[MISSING SUPER ADMIN GRANT]</span> ' . htmlspecialchars($missing, ENT_QUOTES, 'UTF-8') . "<br>\\n";
+                }
+            }
+        } else {
+            p56Check('Active Super Admin role exists', false);
+        }
         if ($missingPermissions !== []) {
             foreach ($missingPermissions as $missing) {
                 echo '<span style="color:#b45309">[MISSING PERMISSION]</span> ' . htmlspecialchars($missing, ENT_QUOTES, 'UTF-8') . "<br>\n";
