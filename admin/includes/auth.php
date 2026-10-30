@@ -74,6 +74,12 @@ ob_start(static function (string $html) use ($currentAdmin): string {
     $topbar = '
     <header class="admin-shared-topbar">
         <a class="admin-shared-topbar-brand" href="' . e(url('/admin')) . '">نیواد <span>پنل مدیریت</span></a>
+        <div class="admin-global-search" data-admin-global-search>
+            <label class="admin-global-search-label" for="admin-global-search-input">جست‌وجوی سراسری</label>
+            <input id="admin-global-search-input" type="search" placeholder="جست‌وجوی محصول، سفارش، مشتری یا تیکت…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="admin-global-search-results">
+            <ul id="admin-global-search-results" class="admin-global-search-results" role="listbox" hidden></ul>
+            <span class="admin-global-search-shortcut" aria-hidden="true">Ctrl K</span>
+        </div>
         <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده">
             <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
             <span class="admin-shared-account-name">' . e($adminName) . '</span>
