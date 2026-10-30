@@ -2854,6 +2854,7 @@ return static function (Router $router): void {
 
     $router->get('/admin/capabilities/product-analytics', [AdminCapabilityController::class, 'analytics'], $adminCapabilityRead, 'admin.capabilities.analytics.index');
     $router->get('/admin/capabilities/health', [AdminCapabilityController::class, 'health'], $adminCapabilityRead, 'admin.capabilities.health.index');
+    $router->get('/admin/capabilities/search', [AdminCapabilityController::class, 'globalSearch'], $adminCapabilityRead, 'admin.capabilities.search.index');
 
     $router->get('/admin/capabilities/preferences', [AdminCapabilityController::class, 'preferences'], $adminCapabilityRead, 'admin.capabilities.preferences.index');
     $router->put('/admin/capabilities/preferences', [AdminCapabilityController::class, 'savePreference'], $adminCapabilityWrite, 'admin.capabilities.preferences.update');
