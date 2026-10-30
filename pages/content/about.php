@@ -4,6 +4,11 @@ declare(strict_types=1);
 $pageTitle = 'درباره ما | نیواد';
 $metaDescription = 'با فروشگاه نیواد و رویکرد ما برای کمک به انتخاب آگاهانه محصولات دیجیتال آشنا شوید.';
 include_once __DIR__ . '/../../partials/header.php';
+
+if (CmsContentRenderer::renderPage('about')) {
+    include_once __DIR__ . '/../../partials/footer.php';
+    return;
+}
 ?>
 
 <main class="content-page" id="main-content">
