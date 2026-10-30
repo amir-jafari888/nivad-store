@@ -257,37 +257,10 @@ final class AdminCapabilityController extends Controller
 
     public function health(): never
     {
-        $checks = [
-            'php' => [
-                'status' => 'ok',
-                'version' => PHP_VERSION,
-            ],
-            'database' => [
-                'status' => 'unknown',
-            ],
-            'timezone' => [
-                'status' => 'ok',
-                'value' => date_default_timezone_get(),
-            ],
-        ];
-
-        try {
-            $db = Database::connection();
-            $db->query('SELECT 1')->fetchColumn();
-            $checks['database']['status'] = 'ok';
-        } catch (Throwable $exception) {
-            $checks['database']['status'] = 'error';
-        }
-
-        $overall = $checks['database']['status'] === 'ok'
-            ? 'healthy'
-            : 'degraded';
-
-        $this->success([
-            'status' => $overall,
-            'checked_at' => date(DATE_ATOM),
-            'checks' => $checks,
-        ], 'وضعیت پایه سرویس دریافت شد.');
+        $this->success(
+            (new AdminSystemHealthService())->snapshot(),
+            'وضعیت پایه سرویس دریافت شد.'
+        );
     }
 
     public function revisions(): never
