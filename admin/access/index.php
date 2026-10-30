@@ -36,6 +36,13 @@ require_once dirname(__DIR__) . '/includes/auth.php';
     </section>
 
     <section class="admin-access-panel">
+        <h2>پایش نشست‌های دیگر</h2>
+        <p>نشست فعلی از فهرست حذف شده و امکان لغو نشست‌های دیگر وجود دارد.</p>
+        <button type="button" data-access-refresh-sessions>به‌روزرسانی نشست‌ها</button>
+        <div data-access-list="sessions" class="admin-access-list"></div>
+    </section>
+
+    <section class="admin-access-panel">
         <h2>مدیریت نقش‌ها</h2>
         <form data-access-form="role" class="admin-access-form">
             <label>نام نقش <input name="name" maxlength="100" required></label>
