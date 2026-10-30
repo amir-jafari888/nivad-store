@@ -27,6 +27,12 @@ final class CmsContentRenderer
 
     private const GENERIC_HOME_SECTIONS = ['value-proposition', 'buying-guide', 'cta'];
 
+    public static function activeStyleAttribute(): string
+    {
+        $section = $GLOBALS['cms_active_section'] ?? null;
+        return self::styleAttribute(is_array($section) ? (array)($section['style'] ?? []) : []);
+    }
+
     public static function activeContent(): array
     {
         $section = $GLOBALS['cms_active_section'] ?? null;
@@ -113,6 +119,7 @@ final class CmsContentRenderer
                 $component = (string)ob_get_clean();
                 unset($GLOBALS['cms_active_section']);
                 $image = !empty($section['content']['image_id']) ? self::image((int)$section['content']['image_id'], (string)($section['content']['image_alt'] ?? $section['title'] ?? '')) : '';
+                if ($key === 'hero') return $component;
                 return '<div class="cms-native-section" data-cms-native="' . self::e($key) . '"' . self::styleAttribute((array)($section['style'] ?? [])) . '>' . $image . $component . '</div>';
             }
         }
@@ -158,6 +165,7 @@ final class CmsContentRenderer
         include $path;
         $component = (string)ob_get_clean();
         unset($GLOBALS['cms_active_section']);
+        if ((string)$section['section_key'] === 'hero') { echo $component; return; }
         $image = !empty($section['content']['image_id']) ? self::image((int)$section['content']['image_id'], (string)($section['content']['image_alt'] ?? $section['title'])) : '';
         echo '<div class="cms-native-section" data-cms-native="' . self::e((string)$section['section_key']) . '" data-cms-section="' . (int)$section['id'] . '"' . $styleAttribute . '>' . $image . $component . '</div>';
     }
