@@ -75,6 +75,25 @@ final class AdminRoutePermissionMap
         'admin.capabilities.saved-views.destroy' => 'admin.saved_views.manage',
         'admin.capabilities.revisions.index' => 'admin.content.manage',
         'admin.capabilities.revisions.store' => 'admin.content.manage',
+
+        // Phase 5 — explicit read, edit and publish permissions.
+        'admin.content.pages.index' => 'admin.content.view',
+        'admin.content.sections.index' => 'admin.content.view',
+        'admin.content.sections.revisions.index' => 'admin.content.view',
+        'admin.content.sections.store' => 'admin.content.manage',
+        'admin.content.sections.update' => 'admin.content.manage',
+        'admin.content.sections.destroy' => 'admin.content.manage',
+        'admin.content.sections.restore' => 'admin.content.manage',
+        'admin.content.sections.reorder' => 'admin.content.manage',
+        'admin.content.sections.publish' => 'admin.content.publish',
+        'admin.content.sections.schedule' => 'admin.content.publish',
+        'admin.content.sections.revisions.restore' => 'admin.content.manage',
+        'admin.media.index' => 'admin.media.view',
+        'admin.media.file' => 'admin.media.view',
+        'admin.media.store' => 'admin.media.manage',
+        'admin.media.update' => 'admin.media.manage',
+        'admin.media.destroy' => 'admin.media.manage',
+
     ];
 
     public static function permissionForRoute(string $routeName): ?string
