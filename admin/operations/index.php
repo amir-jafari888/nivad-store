@@ -30,10 +30,10 @@ $sections = [
         'title' => 'پایش و تحلیل',
         'description' => 'اعلان‌های مدیریتی، رخدادها، سلامت سیستم و رفتار مشتری.',
         'items' => [
-            ['id' => 'admin-notifications', 'title' => 'مرکز اعلان مدیران', 'status' => 'نیازمند Schema و Backend', 'detail' => 'جدول notifications فعلی فقط به users متصل است و جایگزین inbox مدیران نیست.', 'href' => '#admin-notifications'],
-            ['id' => 'incidents', 'title' => 'مدیریت رخدادها', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'برای تجمیع خطاها، fingerprint، severity، وضعیت رسیدگی و جلوگیری از اعلان تکراری.', 'href' => '#incidents'],
-            ['id' => 'system-health', 'title' => 'سلامت سیستم', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'باید از probeهای واقعی PHP، دیتابیس و سرویس‌ها تغذیه شود؛ وضعیت ساختگی نمایش داده نمی‌شود.', 'href' => '#system-health'],
-            ['id' => 'product-analytics', 'title' => 'تحلیل رفتار محصول', 'status' => 'نیازمند Event Schema', 'detail' => 'در دیتابیس فعلی جدول event برای view، wishlist add، cart add و search impression وجود ندارد.', 'href' => '#product-analytics'],
+            ['id' => 'admin-notifications', 'title' => 'مرکز اعلان مدیران', 'status' => 'Schema در branch / API و UI مفقود', 'detail' => 'notifications فعلی فقط به users متصل است؛ جدول admin_notifications در migration جدید تعریف شده اما هنوز روی دیتابیس اجرا نشده است.', 'href' => '#admin-notifications'],
+            ['id' => 'incidents', 'title' => 'مدیریت رخدادها', 'status' => 'Schema در branch / Engine مفقود', 'detail' => 'جدول admin_incidents برای fingerprint، severity و lifecycle تعریف شده؛ جمع‌آوری خطا، deduplication و API هنوز پیاده‌سازی نشده‌اند.', 'href' => '#incidents'],
+            ['id' => 'system-health', 'title' => 'سلامت سیستم', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'باید از probeهای واقعی PHP، دیتابیس و سرویس‌ها تغذیه شود؛ جدول incident به‌تنهایی health check نیست.', 'href' => '#system-health'],
+            ['id' => 'product-analytics', 'title' => 'تحلیل رفتار محصول', 'status' => 'Schema در branch / Collector مفقود', 'detail' => 'جدول product_analytics_events در migration جدید تعریف شده اما هنوز اجرا نشده؛ collector رویدادها و گزارش تحلیلی وجود ندارد.', 'href' => '#product-analytics'],
             ['id' => 'global-search', 'title' => 'جست‌وجوی سراسری', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'جست‌وجوی یکپارچه محصول، سفارش، مشتری و تیکت؛ فقط موجودیت‌های واقعی باید جست‌وجو شوند.', 'href' => '#global-search'],
         ],
     ],
@@ -41,7 +41,7 @@ $sections = [
         'title' => 'مشتریان و پشتیبانی',
         'description' => 'رسیدگی به درخواست‌های مشتری و ارتباطات داخل پنل.',
         'items' => [
-            ['id' => 'support-center', 'title' => 'مرکز پشتیبانی و تیکت', 'status' => 'نیازمند Schema و Backend', 'detail' => 'پرسش محصول و دیدگاه وجود دارد، اما مدل مستقل Ticket، Message، Assignment و Priority در دیتابیس نیست.', 'href' => '#support-center'],
+            ['id' => 'support-center', 'title' => 'مرکز پشتیبانی و تیکت', 'status' => 'Schema در branch / API و UI مفقود', 'detail' => 'مدل Ticket و Message و Assignment و Priority در migration جدید تعریف شده اما هنوز اجرا نشده؛ چرخه API و صفحه پشتیبانی ساخته نشده است.', 'href' => '#support-center'],
             ['id' => 'questions', 'title' => 'پرسش‌های محصول', 'status' => 'موجود', 'detail' => 'از ماژول فعلی پرسش و پاسخ استفاده می‌شود.', 'href' => url('/admin/questions')],
             ['id' => 'reviews', 'title' => 'دیدگاه‌ها', 'status' => 'موجود', 'detail' => 'ماژول فعلی مدیریت دیدگاه و رسانه حفظ می‌شود.', 'href' => url('/admin/reviews')],
         ],
@@ -52,7 +52,7 @@ $sections = [
         'items' => [
             ['id' => 'storefront-content', 'title' => 'ویترین و محتوای فروشگاه', 'status' => 'موجود / محدود', 'detail' => 'اسلایدر، اسلاید، مجموعه و دیسکاوری موجودند؛ CMS عمومی تمام صفحات و سکشن‌ها وجود ندارد.', 'href' => url('/admin/sliders')],
             ['id' => 'media-library', 'title' => 'کتابخانه رسانه', 'status' => 'نیازمند تکمیل', 'detail' => 'رسانه محصول و اسلاید در مدل‌های مستقل ذخیره می‌شود؛ Media Library یکپارچه وجود ندارد.', 'href' => '#media-library'],
-            ['id' => 'revisions', 'title' => 'تاریخچه نسخه محتوا', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'audit_logs جایگزین snapshot نسخه‌بندی‌شده و امکان بازگردانی نیست.', 'href' => '#revisions'],
+            ['id' => 'revisions', 'title' => 'تاریخچه نسخه محتوا', 'status' => 'Schema در branch / Versioning مفقود', 'detail' => 'جدول admin_content_revisions برای snapshot نسخه‌ها تعریف شده اما هنوز اجرا نشده؛ ثبت revision و restore API وجود ندارد.', 'href' => '#revisions'],
             ['id' => 'scheduled-publishing', 'title' => 'انتشار زمان‌بندی‌شده', 'status' => 'نیازمند تکمیل', 'detail' => 'starts_at و ends_at در برخی مدل‌ها وجود دارند؛ scheduler عمومی و lifecycle انتشار تأیید نشده است.', 'href' => '#scheduled-publishing'],
         ],
     ],
@@ -61,7 +61,7 @@ $sections = [
         'description' => 'ابزارهای سریع و تجربه کار با داده‌ها.',
         'items' => [
             ['id' => 'command-palette', 'title' => 'Command Palette', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'دسترسی سریع به مسیرها و عملیات مجاز، با رعایت Permission واقعی.', 'href' => '#command-palette'],
-            ['id' => 'saved-views', 'title' => 'فیلترهای ذخیره‌شده', 'status' => 'نیازمند Schema و Backend', 'detail' => 'ترجیحات ذخیره‌شده برای هر مدیر در دیتابیس فعلی وجود ندارد.', 'href' => '#saved-views'],
+            ['id' => 'saved-views', 'title' => 'فیلترهای ذخیره‌شده', 'status' => 'Schema در branch / API مفقود', 'detail' => 'admin_saved_views در migration جدید تعریف شده اما هنوز اجرا نشده؛ API ذخیره و بازیابی فیلترها وجود ندارد.', 'href' => '#saved-views'],
             ['id' => 'bulk-actions', 'title' => 'عملیات گروهی', 'status' => 'Frontend محدود', 'detail' => 'انتخاب ردیف و CSV وجود دارد؛ mutation گروهی سمت سرور و audit آن وجود ندارد.', 'href' => '#bulk-actions'],
             ['id' => 'admin-preferences', 'title' => 'ترجیحات مدیر', 'status' => 'Browser-only', 'detail' => 'تراکم و اندازه متن در مرورگر ذخیره می‌شوند؛ تنظیمات متصل به حساب مدیر وجود ندارد.', 'href' => url('/admin/settings')],
         ],
