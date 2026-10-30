@@ -238,3 +238,5 @@ try {
 }
 
 echo '<hr><strong>FINAL: PASS=' . $passed . ' | FAIL=' . $failed . ' | BLOCKED=' . $blocked . ' | LOCK=NO</strong><br>' . "\n";
+exit($failed > 0 ? 1 : 0);
+
