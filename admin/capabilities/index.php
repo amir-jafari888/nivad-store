@@ -18,7 +18,7 @@ $capabilityPagePermissions = [
 ];
 
 if (!$adminAuth->canAny($capabilityPagePermissions)) {
-    $adminAuth->authorize('admin.capabilities.notifications.index');
+    Response::redirect(url('/admin/access-denied.php'));
 }
 
 ?><!doctype html>
