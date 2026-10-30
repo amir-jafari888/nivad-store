@@ -88,6 +88,25 @@ final class AdminContentRepository
         return $stmt->rowCount() > 0;
     }
 
+    public function publishDueSections(): int
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE admin_cms_sections
+             SET published_content_json = content_json,
+                 published_style_json = style_json,
+                 status = "published",
+                 published_at = UTC_TIMESTAMP(),
+                 scheduled_at = NULL,
+                 updated_at = UTC_TIMESTAMP()
+             WHERE status = "scheduled"
+               AND scheduled_at IS NOT NULL
+               AND scheduled_at <= UTC_TIMESTAMP()
+               AND deleted_at IS NULL'
+        );
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
     public function dueSections(): array
     {
         return $this->db->query(
