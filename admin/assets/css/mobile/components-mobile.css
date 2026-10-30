@@ -62,4 +62,4 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-operations-card a{width:max-content;max-width:100%;font-size:var(--admin-font-size-sm);font-weight:700}
 .admin-operations-card a[aria-disabled=true]{color:var(--admin-color-text-muted);text-decoration:none;cursor:default}
 .admin-operations-footer{color:var(--admin-color-text-muted)}
-.admin-operations-footer strong{color:var(--admin-color-text}
+.admin-operations-footer strong{color:var(--admin-color-text)}
