@@ -10,7 +10,7 @@ const adminCapabilityCenter = () => {
 
   const endpoint = (path, query = {}) => {
     const url = new URL(apiUrl, window.location.href);
-    url.searchParams.set("path", apiPath + path);
+    url.searchParams.set("path", path.startsWith("/admin/") ? path : apiPath + path);
     Object.entries(query).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") url.searchParams.set(key, String(value));
     });
@@ -107,6 +107,13 @@ const adminCapabilityCenter = () => {
 
   const loadTickets = async () => {
     const data = await request("/tickets");
+    let activeAdmins = [];
+    try {
+      const adminData = await request("/admin/access/admins");
+      activeAdmins = (adminData.items || []).filter(admin => admin.status === "active");
+    } catch (_) {
+      activeAdmins = [];
+    }
     renderRows("tickets", data.items || [], {
       title: row => row.ticket_number + " · " + row.subject,
       details: row => "وضعیت: " + row.status + " · اولویت: " + row.priority + " · مشتری: " + (row.user_id || "ثبت نشده") + " · آخرین تغییر: " + row.updated_at,
@@ -121,16 +128,27 @@ const adminCapabilityCenter = () => {
         [["low","کم"],["normal","عادی"],["high","زیاد"],["urgent","فوری"]].forEach(([value,label]) => {
           const option = node("option", label); option.value = value; option.selected = value === row.priority; priority.append(option);
         });
+        let assignee = null;
+        if (activeAdmins.length) {
+          assignee = document.createElement("select");
+          const none = node("option", "بدون مسئول"); none.value = ""; assignee.append(none);
+          activeAdmins.forEach(admin => {
+            const option = node("option", admin.first_name + " " + admin.last_name + " · " + admin.username);
+            option.value = admin.id; option.selected = Number(row.assigned_admin_id) === Number(admin.id); assignee.append(option);
+          });
+        }
         const update = node("button", "ثبت وضعیت و اولویت"); update.type = "button";
         update.addEventListener("click", async () => {
           try {
             await request("/tickets/" + row.id, { method: "PATCH", body: JSON.stringify({
-              status: status.value, priority: priority.value, assigned_admin_id: row.assigned_admin_id || null
+              status: status.value, priority: priority.value, assigned_admin_id: assignee ? (Number(assignee.value) || null) : (row.assigned_admin_id || null)
             }) });
             await loadTickets(); setFeedback("تیکت به‌روزرسانی شد.");
           } catch (error) { setFeedback(error.message, true); }
         });
-        controls.append(status, priority, update);
+        controls.append(status, priority);
+        if (assignee) controls.append(assignee);
+        controls.append(update);
         const details = document.createElement("details");
         const summary = node("summary", "مشاهده پیام‌ها و پاسخ");
         const content = node("div", undefined, "admin-capability-ticket-detail");
