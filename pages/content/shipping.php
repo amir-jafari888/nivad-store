@@ -4,6 +4,11 @@ declare(strict_types=1);
 $pageTitle = 'ارسال سفارش | نیواد';
 $metaDescription = 'راهنمای بررسی گزینه‌ها، هزینه و وضعیت ارسال سفارش در فروشگاه نیواد.';
 include_once __DIR__ . '/../../partials/header.php';
+
+if (CmsContentRenderer::renderPage('shipping')) {
+    include_once __DIR__ . '/../../partials/footer.php';
+    return;
+}
 ?>
 
 <main class="content-page" id="main-content">
