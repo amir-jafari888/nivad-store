@@ -98,6 +98,30 @@ final class AdminSessionService
         return $this->sessions->revokeByIdForAdmin($sessionId, $adminUserId, $currentTokenHash);
     }
 
+    public function activeForAllAdmins(string $currentTokenHash): array
+    {
+        if ($currentTokenHash === '') {
+            return [];
+        }
+        return $this->sessions->activeForAllAdmins($currentTokenHash);
+    }
+
+    public function activeSessionOwner(int $sessionId, string $currentTokenHash): ?array
+    {
+        if ($sessionId < 1 || $currentTokenHash === '') {
+            return null;
+        }
+        return $this->sessions->activeSessionOwner($sessionId, $currentTokenHash);
+    }
+
+    public function revokeByIdForAnyAdmin(int $sessionId, string $currentTokenHash): bool
+    {
+        if ($sessionId < 1 || $currentTokenHash === '') {
+            return false;
+        }
+        return $this->sessions->revokeByIdForAnyAdmin($sessionId, $currentTokenHash);
+    }
+
     public function cleanupExpired(): int
     {
         return $this->sessions
