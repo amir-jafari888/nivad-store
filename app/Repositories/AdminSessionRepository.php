@@ -188,6 +188,44 @@ final class AdminSessionRepository
         return $stmt->rowCount() === 1;
     }
 
+    public function activeForAdmin(int $adminUserId, string $currentTokenHash): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT id, ip_address, user_agent, last_activity_at, expires_at, created_at
+             FROM admin_sessions
+             WHERE admin_user_id = :admin_user_id
+               AND revoked_at IS NULL
+               AND expires_at > CURRENT_TIMESTAMP
+               AND session_token_hash <> :current_token_hash
+             ORDER BY last_activity_at DESC'
+        );
+        $stmt->execute([
+            'admin_user_id' => $adminUserId,
+            'current_token_hash' => $currentTokenHash,
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function revokeByIdForAdmin(int $sessionId, int $adminUserId, string $currentTokenHash): bool
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE admin_sessions
+             SET revoked_at = CURRENT_TIMESTAMP
+             WHERE id = :id
+               AND admin_user_id = :admin_user_id
+               AND session_token_hash <> :current_token_hash
+               AND revoked_at IS NULL
+               AND expires_at > CURRENT_TIMESTAMP
+             LIMIT 1'
+        );
+        $stmt->execute([
+            'id' => $sessionId,
+            'admin_user_id' => $adminUserId,
+            'current_token_hash' => $currentTokenHash,
+        ]);
+        return $stmt->rowCount() === 1;
+    }
+
     public function deleteExpired(): int
     {
         $stmt = $this->db->prepare(
