@@ -98,3 +98,5 @@
 .admin-dashboard-chart-value,.admin-dashboard-chart-label{font-size:10px}
 .admin-dashboard-line-chart-labels{font-size:10px}
 
+
+.admin-dashboard-period-comparison{grid-template-columns:repeat(2,minmax(0,1fr))}
