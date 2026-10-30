@@ -37,7 +37,7 @@ button{cursor:pointer;background:var(--accent);border-color:var(--accent);color:
 </head>
 <body>
 <main>
-<div class="top"><div><h1>مرکز اعلان‌های مدیریتی</h1><div class="muted">صندوق ورودی، تاریخچه و رسیدگی به رویدادهای مهم</div></div><a href="/admin/">بازگشت به داشبورد</a></div>
+<div class="top"><div><h1>مرکز اعلان‌های مدیریتی</h1><div class="muted">صندوق ورودی، تاریخچه و رسیدگی به رویدادهای مهم</div></div><div class="toolbar"><a href="/admin/notifications/send-customer.php">ارسال اعلان به مشتری</a><a href="/admin/">بازگشت به داشبورد</a></div></div>
 <section class="panel">
 <div class="toolbar">
 <select id="severity"><option value="">همه شدت‌ها</option><option value="critical">بحرانی</option><option value="warning">هشدار</option><option value="success">موفق</option><option value="info">اطلاع‌رسانی</option></select>
