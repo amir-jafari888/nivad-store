@@ -20,7 +20,12 @@ final class CmsContentRenderer
         'compatibility-preview' => 'compatibility-preview.php',
         'new-products' => 'new-product.php',
         'smart-bundle' => 'smart-bundle.php',
+        'value-proposition' => 'value-proposition.php',
+        'buying-guide' => 'buying-guide.php',
+        'cta' => 'cta.php',
     ];
+
+    private const GENERIC_HOME_SECTIONS = ['value-proposition', 'buying-guide', 'cta'];
 
     public static function activeContent(): array
     {
@@ -56,7 +61,7 @@ final class CmsContentRenderer
                         if ((int)($section['is_visible'] ?? 0) !== 1) continue;
                         $section['content'] = $section['published_content'] ?: $section['content'];
                         $section['style'] = $section['published_style'] ?: $section['style'];
-                        if (isset(self::NATIVE_HOME_COMPONENTS[$key])) {
+                        if (isset(self::NATIVE_HOME_COMPONENTS[$key]) && !in_array($key, self::GENERIC_HOME_SECTIONS, true)) {
                             self::renderNativeHomeSection($section, self::NATIVE_HOME_COMPONENTS[$key]);
                         } else {
                             echo self::renderMarkup($section['title'], $section['content'], $section['style'], $type, $section['id']);
@@ -92,6 +97,29 @@ final class CmsContentRenderer
             error_log('CMS page rendering unavailable: ' . get_class($exception));
             return false;
         }
+    }
+
+    public static function renderAdminPreview(array $section): string
+    {
+        $key = (string)($section['section_key'] ?? '');
+        if (($section['page_key'] ?? '') === 'home' && isset(self::NATIVE_HOME_COMPONENTS[$key]) && !in_array($key, self::GENERIC_HOME_SECTIONS, true)) {
+            $path = dirname(__DIR__, 2) . '/partials/' . self::NATIVE_HOME_COMPONENTS[$key];
+            if (is_file($path)) {
+                $GLOBALS['cms_active_section'] = $section;
+                ob_start();
+                include $path;
+                $component = (string)ob_get_clean();
+                unset($GLOBALS['cms_active_section']);
+                return '<div class="cms-native-section" data-cms-native="' . self::e($key) . '"' . self::styleAttribute((array)($section['style'] ?? [])) . '>' . $component . '</div>';
+            }
+        }
+        return self::renderMarkup(
+            (string)($section['title'] ?? 'پیش‌نمایش سکشن'),
+            (array)($section['content'] ?? []),
+            (array)($section['style'] ?? []),
+            (string)($section['section_type'] ?? 'custom'),
+            $section['id'] ?? 0
+        );
     }
 
     public static function renderPreview(array $section): string
