@@ -2900,6 +2900,7 @@ return static function (Router $router): void {
     $router->post('/admin/content/sections/{id}/revisions/{revisionId}/restore', [AdminContentController::class, 'restoreRevision'], $adminCapabilityWrite, 'admin.content.sections.revisions.restore');
 
     $router->get('/admin/media', [AdminContentController::class, 'media'], $adminCapabilityRead, 'admin.media.index');
+    $router->get('/admin/media/{id}/file', [CmsMediaController::class, 'adminShow'], $adminCapabilityRead, 'admin.media.file');
     $router->post('/admin/media', [AdminContentController::class, 'uploadMedia'], $adminCapabilityWrite, 'admin.media.store');
     $router->patch('/admin/media/{id}', [AdminContentController::class, 'updateMedia'], $adminCapabilityWrite, 'admin.media.update');
     $router->delete('/admin/media/{id}', [AdminContentController::class, 'deleteMedia'], $adminCapabilityWrite, 'admin.media.destroy');
