@@ -47,6 +47,9 @@ $paths = [
     'access_repository' => $root . '/app/Repositories/AdminAccessRepository.php',
     'access_page' => $root . '/admin/access/index.php',
     'access_js' => $root . '/admin/assets/js/modules/access-center.js',
+    'customer_support_controller' => $root . '/app/Controllers/CustomerSupportController.php',
+    'customer_support_page' => $root . '/pages/account/support.php',
+    'customer_support_js' => $root . '/assets/js/modules/account-support.js',
 ];
 
 $sources = [];
@@ -160,6 +163,9 @@ p56Check('Unhandled server exceptions are reported as Admin incidents', is_file(
 p56Check('Public product analytics collector is CSRF-protected', is_file($root . '/app/Controllers/ProductAnalyticsController.php') && str_contains((string)file_get_contents($root . '/routes/api.php'), 'analytics.product-event.store') && str_contains((string)file_get_contents($root . '/routes/api.php'), '[CsrfMiddleware::class]'));
 p56Check('Product detail analytics module is registered', is_file($root . '/assets/js/modules/product-analytics.js') && str_contains((string)file_get_contents($root . '/assets/js/main.js'), 'product-analytics.js'));
 p56Check('Storefront exposes a CSRF token for analytics writes', is_file($root . '/partials/header.php') && str_contains((string)file_get_contents($root . '/partials/header.php'), 'name="csrf-token"'));
+p56Check('Customer support API is authenticated and exposes customer-owned ticket workflows', is_string($sources['customer_support_controller']) && str_contains((string)file_get_contents($root . '/routes/api.php'), 'support.tickets.messages.store') && str_contains((string)file_get_contents($root . '/routes/api.php'), 'AuthMiddleware::class'));
+p56Check('Customer support page and JS module are connected', is_string($sources['customer_support_page']) && is_string($sources['customer_support_js']) && str_contains((string)file_get_contents($root . '/assets/js/main.js'), 'account-support.js'));
+p56Check('Customer replies cannot read internal messages', is_string($sources['capability_repository']) && str_contains($sources['capability_repository'], 'AND is_internal = 0'));
 
 echo '<hr><strong>STATIC PASS: ' . $passed . ' | STATIC FAIL: ' . $failed . ' | DB BLOCKED: ' . $blocked . "</strong><br>\n";
 
