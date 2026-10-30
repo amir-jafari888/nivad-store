@@ -1,6 +1,6 @@
 <?php $cmsContent = CmsContentRenderer::activeContent(); ?>
 <main>
-    <section class="hero section" aria-labelledby="hero-title" data-cms-native="hero" <?= CmsContentRenderer::activeStyleAttribute() ?>>
+    <section class="hero section cms-native-section" aria-labelledby="hero-title" data-cms-native="hero" <?= CmsContentRenderer::activeStyleAttribute() ?>>
         <div class="container">
             <div class="hero-slider swiper" data-hero-slider>
                 <div class="swiper-wrapper">
