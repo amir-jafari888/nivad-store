@@ -9,16 +9,16 @@ $cmsContent = CmsContentRenderer::activeContent();
 <section class="home-setup-preview" aria-labelledby="home-setup-preview-title">
     <div class="home-setup-preview__inner">
         <div class="home-setup-preview__copy">
-            <span class="home-setup-preview__eyebrow">
+            <span class="home-setup-preview__eyebrow" data-cms-field="eyebrow">
                 <span class="home-setup-preview__eyebrow-mark" aria-hidden="true">✦</span>
                 <?= e((string)($cmsContent['eyebrow'] ?? 'NIVAD SMART SETUP')) ?>
             </span>
 
-            <h2 id="home-setup-preview-title">
+            <h2 id="home-setup-preview-title" data-cms-field="heading">
                 <?= e((string)($cmsContent['heading'] ?? 'ستاپ تو، انتخاب تو.')) ?>
             </h2>
 
-            <p class="home-setup-preview__description">
+            <p class="home-setup-preview__description" data-cms-field="body">
                 <?= e((string)($cmsContent['body'] ?? 'نیازت رو مشخص کن، بودجه‌ات رو تعیین کن و محصولات سازگار رو کنار هم بچین؛ قبل از خرید، ترکیب نهایی و هزینه‌اش رو بررسی کن.')) ?>
             </p>
 
@@ -45,7 +45,7 @@ $cmsContent = CmsContentRenderer::activeContent();
 
             <div class="home-setup-preview__actions">
                 <a class="home-setup-preview__cta" href="<?= e(url((string)($cmsContent['button_url'] ?? '/setup'))) ?>">
-                    <span>ستاپ خودت رو بساز</span>
+                    <span data-cms-field="button_label"><?= e((string)($cmsContent['button_label'] ?? 'ستاپ خودت رو بساز')) ?></span>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
                 </a>
                 <span class="home-setup-preview__action-note">از انتخاب نیاز تا بررسی هزینه</span>
