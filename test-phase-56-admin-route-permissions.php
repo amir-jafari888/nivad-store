@@ -75,7 +75,7 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
     p56Check('Every Admin API auth middleware has a route permission middleware', $authCount > 0 && $authCount === $permissionCount);
     $duplicateNames = array_values(array_diff_assoc($matches[1] ?? [], array_unique($matches[1] ?? [])));
     $knownDuplicateNames = ['admin.variant-attributes.index', 'admin.variant-attributes.store', 'admin.variant-attributes.destroy'];
-    p56Check('Admin API route permission names include the 18 capability routes', count($routeNames) >= 187);
+    p56Check('Admin API route permission names include the 18 capability routes', count($routeNames) >= 189);
     p56Check('Only the three pre-existing variant-attribute route names are duplicated', array_values(array_unique($duplicateNames)) === $knownDuplicateNames);
     p56Check('Route permission middleware rejects unnamed Admin routes', str_contains($sources['middleware'], '$routeName === null') && str_contains($sources['middleware'], '$service->authorize('));
     p56Check('Authorization service is called through AdminAuthService', str_contains($sources['auth_service'], 'public function authorize(') && str_contains($sources['auth_service'], 'Authorization::authorize('));
@@ -110,6 +110,8 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
         'admin.access.permissions.index',
         'admin.access.roles.permissions.show',
         'admin.access.roles.permissions.update',
+        'admin.access.sessions.index',
+        'admin.access.sessions.destroy',
     ];
     foreach ($requiredNewRoutes as $routeName) {
         p56Check('Registered capability route: ' . $routeName, in_array($routeName, $routeNames, true));
@@ -142,6 +144,7 @@ p56Check('Admin access repository exists', is_string($sources['access_repository
 p56Check('Admin access service protects the Super Admin role', is_string($sources['access_service']) && str_contains($sources['access_service'], 'super-admin'));
 p56Check('Admin access UI is connected to the API module', is_string($sources['access_page']) && is_string($sources['access_js']));
 p56Check('Access module is registered in Admin main.js', is_file($root . '/admin/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/admin/assets/js/main.js'), 'access-center.js'));
+p56Check('Admin session monitoring is scoped to the current account and excludes the current session', is_string($sources['access_repository']) && is_string($sources['capability_controller']) && str_contains((string)file_get_contents($root . '/app/Repositories/AdminSessionRepository.php'), 'current_token_hash'));
 
 echo '<hr><strong>STATIC PASS: ' . $passed . ' | STATIC FAIL: ' . $failed . ' | DB BLOCKED: ' . $blocked . "</strong><br>\n";
 
