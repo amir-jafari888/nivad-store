@@ -36,6 +36,7 @@ $controller = cmsFile('app/Controllers/AdminContentController.php');
 $routes = cmsFile('routes/api.php');
 $permissionMap = cmsFile('app/Core/AdminRoutePermissionMap.php');
 $preview = cmsFile('admin/content/preview.php');
+$previewJs = cmsFile('admin/assets/js/modules/admin-content-preview.js');
 $editor = cmsFile('admin/assets/js/modules/admin-content-editor.js');
 $workflow = cmsFile('.github/workflows/admin-phase-5-cms.yml');
 
@@ -63,8 +64,9 @@ cmsCheck('CMS media delivery restricts public files to published references', st
 cmsCheck('CMS controller exposes CRUD, publish, schedule, revisions and media', str_contains($controller, 'createSection') && str_contains($controller, 'publish') && str_contains($controller, 'schedule') && str_contains($controller, 'restoreRevision') && str_contains($controller, 'uploadMedia'));
 cmsCheck('CMS API routes are CSRF protected for writes', str_contains($routes, '$adminCapabilityWrite = [') && str_contains($routes, 'CsrfMiddleware::class'));
 cmsCheck('CMS routes have explicit view, manage and publish permissions', str_contains($permissionMap, "'admin.content.sections.publish' => 'admin.content.publish'") && str_contains($permissionMap, "'admin.media.index' => 'admin.media.view'"));
-cmsCheck('CMS preview listens for same-origin live updates', str_contains($preview, "event.source!==parent") && str_contains($preview, "event.data?.type!=='cms-preview'"));
+cmsCheck('CMS preview listens for same-origin live updates', str_contains($previewJs, 'event.source !== parent') && str_contains($previewJs, "event.data?.type !== 'cms-preview'"));
 cmsCheck('CMS editor posts preview updates without page reload', str_contains($editor, "postMessage({type:'cms-preview'") && str_contains($editor, "addEventListener('input',preview)"));
+cmsCheck('CMS API requests use the api/index.php path contract', str_contains($editor, "u.searchParams.set('path',path)") && str_contains($previewJs, "u.searchParams.set('path', '/admin/media/'"));
 cmsCheck('CMS editor supports section archive and restore', str_contains($editor, "method:'DELETE'") && str_contains($editor, "/restore"));
 cmsCheck('CMS editor supports media upload, alt editing and deletion', str_contains($editor, "method:'POST'") && str_contains($editor, "method:'PATCH'") && str_contains($editor, "method:'DELETE'"));
 cmsCheck('CMS workflow includes PHP and JavaScript syntax checks', str_contains($workflow, 'php -l') && str_contains($workflow, 'node --input-type=module --check'));
