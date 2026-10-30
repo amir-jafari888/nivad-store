@@ -93,8 +93,8 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
     $skipLink = '';
     if (stripos($html, 'admin-skip-link') === false && preg_match('/<main\\b([^>]*)>/i', $html, $mainMatch) === 1) {
         $mainAttributes = $mainMatch[1];
-        if (preg_match('/\\bid\\s*=\\s*(["\\'])(.*?)\\1/i', $mainAttributes, $idMatch) === 1 && $idMatch[2] !== '') {
-            $mainTarget = $idMatch[2];
+        if (preg_match('/\\bid\\s*=\\s*"([^"]+)"/i', $mainAttributes, $idMatch) === 1 && $idMatch[1] !== '') {
+            $mainTarget = $idMatch[1];
         } else {
             $mainTarget = 'main-content';
             if (preg_match('/\\bid\\s*=/i', $mainAttributes) !== 1) {
