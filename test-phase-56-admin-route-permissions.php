@@ -42,6 +42,11 @@ $paths = [
     'capability_page' => $root . '/admin/capabilities/index.php',
     'capability_js' => $root . '/admin/assets/js/modules/capability-center.js',
     'shared_shell' => $root . '/admin/includes/auth.php',
+    'access_controller' => $root . '/app/Controllers/AdminAccessController.php',
+    'access_service' => $root . '/app/Services/AdminAccessService.php',
+    'access_repository' => $root . '/app/Repositories/AdminAccessRepository.php',
+    'access_page' => $root . '/admin/access/index.php',
+    'access_js' => $root . '/admin/assets/js/modules/access-center.js',
 ];
 
 $sources = [];
@@ -70,7 +75,7 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
     p56Check('Every Admin API auth middleware has a route permission middleware', $authCount > 0 && $authCount === $permissionCount);
     $duplicateNames = array_values(array_diff_assoc($matches[1] ?? [], array_unique($matches[1] ?? [])));
     $knownDuplicateNames = ['admin.variant-attributes.index', 'admin.variant-attributes.store', 'admin.variant-attributes.destroy'];
-    p56Check('Admin API route permission names include the 18 capability routes', count($routeNames) >= 176);
+    p56Check('Admin API route permission names include the 18 capability routes', count($routeNames) >= 187);
     p56Check('Only the three pre-existing variant-attribute route names are duplicated', array_values(array_unique($duplicateNames)) === $knownDuplicateNames);
     p56Check('Route permission middleware rejects unnamed Admin routes', str_contains($sources['middleware'], '$routeName === null') && str_contains($sources['middleware'], '$service->authorize('));
     p56Check('Authorization service is called through AdminAuthService', str_contains($sources['auth_service'], 'public function authorize(') && str_contains($sources['auth_service'], 'Authorization::authorize('));
@@ -95,6 +100,16 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
         'admin.capabilities.saved-views.destroy',
         'admin.capabilities.revisions.index',
         'admin.capabilities.revisions.store',
+        'admin.access.admins.index',
+        'admin.access.admins.store',
+        'admin.access.admins.update',
+        'admin.access.admins.roles.update',
+        'admin.access.roles.index',
+        'admin.access.roles.store',
+        'admin.access.roles.update',
+        'admin.access.permissions.index',
+        'admin.access.roles.permissions.show',
+        'admin.access.roles.permissions.update',
     ];
     foreach ($requiredNewRoutes as $routeName) {
         p56Check('Registered capability route: ' . $routeName, in_array($routeName, $routeNames, true));
@@ -123,6 +138,10 @@ if (is_string($sources['capability_page']) && is_string($sources['capability_js'
     p56Check('Capability UI renders API data with textContent', str_contains($sources['capability_js'], 'textContent'));
 }
 p56Check('Shared Admin navigation links to capability center', is_string($sources['shared_shell']) && str_contains($sources['shared_shell'], '/admin/capabilities/index.php'));
+p56Check('Admin access repository exists', is_string($sources['access_repository']));
+p56Check('Admin access service protects the Super Admin role', is_string($sources['access_service']) && str_contains($sources['access_service'], 'super-admin'));
+p56Check('Admin access UI is connected to the API module', is_string($sources['access_page']) && is_string($sources['access_js']));
+p56Check('Access module is registered in Admin main.js', is_file($root . '/admin/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/admin/assets/js/main.js'), 'access-center.js'));
 
 echo '<hr><strong>STATIC PASS: ' . $passed . ' | STATIC FAIL: ' . $failed . ' | DB BLOCKED: ' . $blocked . "</strong><br>\n";
 
