@@ -126,4 +126,29 @@ final class AdminNotificationCenterService
             ? ($current >= $start && $current < $end)
             : ($current >= $start || $current < $end);
     }
+
+    public function policies(): array
+    {
+        return $this->repository->eventPolicies();
+    }
+
+    public function savePolicy(array $input): void
+    {
+        $eventKey = $this->policy->normalizeEventKey((string)($input['event_key'] ?? ''));
+        $severity = $this->policy->normalizeSeverity((string)($input['severity'] ?? 'info'));
+        $dedupe = (int)($input['dedupe_seconds'] ?? 300);
+        $maximum = (int)($input['maximum_per_window'] ?? 20);
+        $window = (int)($input['window_seconds'] ?? 900);
+        if ($dedupe < 0 || $dedupe > 86400 || $maximum < 1 || $maximum > 1000 || $window < 60 || $window > 86400) {
+            throw new InvalidArgumentException('مقادیر محدودسازی و بازه سیاست اعلان خارج از محدوده مجاز هستند.');
+        }
+        $this->repository->saveEventPolicy($eventKey, [
+            'enabled' => (bool)($input['enabled'] ?? true),
+            'severity' => $severity,
+            'email_enabled' => (bool)($input['email_enabled'] ?? false),
+            'dedupe_seconds' => $dedupe,
+            'maximum_per_window' => $maximum,
+            'window_seconds' => $window
+        ]);
+    }
 }

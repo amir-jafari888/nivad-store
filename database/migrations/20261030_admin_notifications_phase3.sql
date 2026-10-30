@@ -53,5 +53,4 @@ VALUES
 ('inventory.stock.out', 1, 'critical', 1, 60, 20, 900),
 ('content.review.pending', 1, 'info', 0, 300, 10, 900),
 ('content.question.pending', 1, 'info', 0, 300, 10, 900),
-('system.incident.created', 1, 'critical', 1, 30, 60, 900),
-('admin.manual.created', 1, 'info', 0, 60, 20, 900);
+('system.incident.created', 1, 'critical', 1, 30, 60, 900);

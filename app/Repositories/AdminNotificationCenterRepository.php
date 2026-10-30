@@ -285,4 +285,33 @@ final class AdminNotificationCenterRepository
             throw $exception;
         }
     }
+
+    public function eventPolicies(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT event_key, enabled, severity, email_enabled, dedupe_seconds,
+                    maximum_per_window, window_seconds, updated_at
+             FROM admin_notification_event_policies ORDER BY event_key'
+        );
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function saveEventPolicy(string $eventKey, array $policy): void
+    {
+        $stmt = $this->db->prepare(
+            'INSERT INTO admin_notification_event_policies
+             (event_key, enabled, severity, email_enabled, dedupe_seconds, maximum_per_window, window_seconds)
+             VALUES (:event_key, :enabled, :severity, :email_enabled, :dedupe, :maximum, :window)
+             ON DUPLICATE KEY UPDATE enabled = VALUES(enabled), severity = VALUES(severity),
+             email_enabled = VALUES(email_enabled), dedupe_seconds = VALUES(dedupe_seconds),
+             maximum_per_window = VALUES(maximum_per_window), window_seconds = VALUES(window_seconds),
+             updated_at = CURRENT_TIMESTAMP'
+        );
+        $stmt->execute([
+            'event_key' => $eventKey, 'enabled' => (int)$policy['enabled'],
+            'severity' => $policy['severity'], 'email_enabled' => (int)$policy['email_enabled'],
+            'dedupe' => $policy['dedupe_seconds'], 'maximum' => $policy['maximum_per_window'],
+            'window' => $policy['window_seconds']
+        ]);
+    }
 }
