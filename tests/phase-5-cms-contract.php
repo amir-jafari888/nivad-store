@@ -52,7 +52,7 @@ cmsCheck('CMS registry rejects unregistered page keys', (static function (): boo
 cmsCheck('CMS registry rejects executable content', (static function (): bool { try { AdminContentRegistry::validateContent(['body' => '<script>alert(1)</script>']); return false; } catch (InvalidArgumentException) { return true; } })());
 cmsCheck('CMS registry validates gradients and color tokens', (static function (): bool { try { AdminContentRegistry::validateStyle(['background_type' => 'gradient', 'gradient_from' => '#112233', 'gradient_to' => '#445566', 'gradient_angle' => 135]); return true; } catch (Throwable) { return false; } })());
 cmsCheck('CMS service validates media IDs before save', str_contains($service, 'validateMediaReferences') && str_contains($service, 'mediaById'));
-cmsCheck('CMS service keeps revision restore in draft', str_contains($service, 'restoreRevision') && str_contains($service, 'به‌صورت پیش‌نویس'));
+cmsCheck('CMS service keeps revision restore in draft', str_contains($service, 'restoreRevision') && str_contains($repository, 'status = "draft"'));
 cmsCheck('CMS repository publishes draft snapshots independently', str_contains($repository, 'published_content_json = content_json') && str_contains($repository, 'published_is_visible = is_visible'));
 cmsCheck('CMS repository blocks deleting referenced or historical media', str_contains($repository, 'isMediaReferenced') && str_contains($repository, 'admin_content_revisions'));
 cmsCheck('CMS renderer preserves homepage native modules', str_contains($renderer, 'NATIVE_HOME_COMPONENTS') && str_contains($renderer, 'renderOriginalHomeSection'));
