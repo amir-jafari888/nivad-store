@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS admin_cms_sections (
     published_style_json LONGTEXT NULL,
     scheduled_at DATETIME NULL,
     published_at DATETIME NULL,
-    created_by_admin_id BIGINT UNSIGNED NOT NULL,
-    updated_by_admin_id BIGINT UNSIGNED NOT NULL,
+    created_by_admin_id BIGINT UNSIGNED NULL,
+    updated_by_admin_id BIGINT UNSIGNED NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
@@ -84,7 +84,7 @@ WHERE NOT EXISTS (SELECT 1 FROM admin_cms_sections s WHERE s.page_id = p.id AND 
 INSERT INTO admin_cms_sections (page_id, section_key, section_type, title, sort_order, status, content_json, style_json, created_by_admin_id, updated_by_admin_id)
 SELECT p.id, 'intro', 'intro', p.title, 10, 'draft',
        JSON_OBJECT('heading', p.title, 'body', CONCAT('محتوای صفحه ', p.title, ' از پنل مدیریت قابل ویرایش است.')),
-       JSON_OBJECT('background_type','transparent','padding_top',40,'padding_bottom',24), 1, 1
+       JSON_OBJECT('background_type','transparent','padding_top',40,'padding_bottom',24), NULL, NULL
 FROM admin_cms_pages p
 WHERE p.page_key <> 'home'
   AND NOT EXISTS (SELECT 1 FROM admin_cms_sections s WHERE s.page_id = p.id AND s.section_key = 'intro');
