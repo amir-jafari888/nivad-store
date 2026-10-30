@@ -69,6 +69,7 @@ final class AdminContentRepository
     {
         $stmt = $this->db->prepare(
             'UPDATE admin_cms_sections SET published_content_json = content_json, published_style_json = style_json,
+             published_is_visible = is_visible, published_sort_order = sort_order,
              status = "published", published_at = CURRENT_TIMESTAMP, scheduled_at = NULL,
              updated_by_admin_id = :admin_id, updated_at = CURRENT_TIMESTAMP
              WHERE id = :id AND deleted_at IS NULL'
@@ -94,6 +95,8 @@ final class AdminContentRepository
             'UPDATE admin_cms_sections
              SET published_content_json = content_json,
                  published_style_json = style_json,
+                 published_is_visible = is_visible,
+                 published_sort_order = sort_order,
                  status = "published",
                  published_at = UTC_TIMESTAMP(),
                  scheduled_at = NULL,
@@ -258,8 +261,8 @@ final class AdminContentRepository
              WHERE m.id = :id AND m.status = "active" AND m.deleted_at IS NULL
              AND EXISTS (
                 SELECT 1 FROM admin_cms_sections s
-                WHERE s.deleted_at IS NULL AND s.is_visible = 1
-                AND s.status = "published"
+                WHERE s.deleted_at IS NULL AND COALESCE(s.published_is_visible, 1) = 1
+                AND s.published_content_json IS NOT NULL
                 AND JSON_SEARCH(s.published_content_json, "one", :media_id) IS NOT NULL
              ) LIMIT 1'
         );
@@ -269,10 +272,12 @@ final class AdminContentRepository
 
     private function decodeSection(array $row): array
     {
+        $row['has_published_version'] = $row['published_content_json'] !== null;
         $row['content'] = json_decode((string)$row['content_json'], true) ?: [];
         $row['style'] = json_decode((string)$row['style_json'], true) ?: [];
         $row['published_content'] = json_decode((string)($row['published_content_json'] ?? ''), true) ?: [];
         $row['published_style'] = json_decode((string)($row['published_style_json'] ?? ''), true) ?: [];
+        $row['published_is_visible'] = $row['published_is_visible'] === null ? null : (bool)$row['published_is_visible'];
         unset($row['content_json'], $row['style_json'], $row['published_content_json'], $row['published_style_json']);
         return $row;
     }
