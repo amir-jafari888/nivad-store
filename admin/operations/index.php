@@ -22,7 +22,7 @@ $sections = [
             ['id' => 'admin-management', 'title' => 'مدیریت مدیران', 'status' => 'CRUD پایه و UI اضافه شده / حذف امن و تست اجرایی باقی', 'detail' => 'فهرست، ایجاد، ویرایش وضعیت و تخصیص نقش پیاده‌سازی شده؛ حذف امن و تست دیتابیس واقعی باقی است.', 'href' => url('/admin/access/index.php')],
             ['id' => 'roles-permissions', 'title' => 'نقش‌ها و مجوزها', 'status' => 'مدیریت پایه پیاده‌سازی شده / تست اجرایی باقی', 'detail' => 'فهرست نقش و مجوز، ایجاد نقش و تخصیص مجوز اضافه شده؛ Super Admin محافظت شده و تست عملیاتی باقی است.', 'href' => url('/admin/access/index.php')],
             ['id' => 'session-monitoring', 'title' => 'پایش نشست مدیران', 'status' => 'Backend و UI اضافه شده / تست اجرایی باقی', 'detail' => 'فهرست نشست‌های دیگر و لغو نشست انتخابی اضافه شده؛ نشست جاری از فهرست و عملیات لغو مستثناست.', 'href' => url('/admin/access/index.php')],
-            ['id' => 'audit-logs', 'title' => 'گزارش رویدادها', 'status' => 'موجود / پوشش ناقص', 'detail' => 'audit_logs و صفحه مشاهده وجود دارند؛ ثبت تمام عملیات حساس هنوز اثبات نشده است.', 'href' => url('/admin/audit-logs')],
+            ['id' => 'audit-logs', 'title' => 'گزارش رویدادها', 'status' => 'ثبت رویدادهای جدید اضافه شده / پوشش کلی ناقص', 'detail' => 'مدیریت مدیران، نقش‌ها، نشست‌ها و قابلیت‌های جدید ثبت می‌شوند؛ CRUDهای قدیمی محصولات، سفارش‌ها، موجودی و CMS هنوز باید پوشش داده شوند.', 'href' => url('/admin/audit-logs')],
             ['id' => 'access-denied', 'title' => 'صفحه عدم دسترسی', 'status' => 'پاسخ 403 سمت API موجود / صفحه اختصاصی پنل باقی', 'detail' => 'کنترل دسترسی سمت سرور وجود دارد؛ تجربه اختصاصی 403 برای پنل باید طراحی و متصل شود.', 'href' => '#access-denied'],
         ],
     ],
@@ -30,11 +30,11 @@ $sections = [
         'title' => 'پایش و تحلیل',
         'description' => 'اعلان‌های مدیریتی، رخدادها، سلامت سیستم و رفتار مشتری.',
         'items' => [
-            ['id' => 'admin-notifications', 'title' => 'مرکز اعلان مدیران', 'status' => 'Schema در دیتابیس طبق گزارش اجرا شده / API و UI در حال اتصال', 'detail' => 'مرکز اعلان ادمین از جدول admin_notifications استفاده می‌کند؛ API و رابط عملیاتی در این شاخه اضافه شده‌اند.', 'href' => url('/admin/capabilities/index.php#admin-notifications')],
-            ['id' => 'incidents', 'title' => 'مدیریت رخدادها', 'status' => 'Schema در دیتابیس طبق گزارش اجرا شده / Engine و UI در حال اتصال', 'detail' => 'ثبت رخدادهای Unhandled Server Exception با deduplication اضافه شده؛ تست کنترل‌شده و اتصال به خطاهای مدیریت‌شده باقی است.', 'href' => url('/admin/capabilities/index.php#admin-incidents-title')],
-            ['id' => 'system-health', 'title' => 'سلامت سیستم', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'باید از probeهای واقعی PHP، دیتابیس و سرویس‌ها تغذیه شود؛ جدول incident به‌تنهایی health check نیست.', 'href' => '#system-health'],
-            ['id' => 'product-analytics', 'title' => 'تحلیل رفتار محصول', 'status' => 'Schema در branch / Collector مفقود', 'detail' => 'Collector صفحه جزئیات محصول برای بازدید، انتخاب مدل، افزودن به سبد و علاقه‌مندی متصل شده؛ پوشش سایر صفحات و رویدادهای فروش هنوز باقی است.', 'href' => url('/admin/capabilities/index.php#admin-analytics-title')],
-            ['id' => 'global-search', 'title' => 'جست‌وجوی سراسری', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'جست‌وجوی آماده‌سازی‌شده برای محصولات، سفارش‌ها، مشتریان و تیکت‌ها با Ctrl+K و نتایج واقعی.', 'href' => url('/admin')],
+            ['id' => 'admin-notifications', 'title' => 'مرکز اعلان مدیران', 'status' => 'API و UI پایه اضافه شده / تست دیتابیس واقعی باقی', 'detail' => 'اعلان شخصی مدیر، فهرست، خواندن و ایجاد دستی فعال شده؛ اعلان خودکار از رخدادها و سایر رویدادهای فروش هنوز متصل نیست.', 'href' => url('/admin/capabilities/index.php#admin-notifications')],
+            ['id' => 'incidents', 'title' => 'مدیریت رخدادها', 'status' => 'ثبت رخدادهای بحرانی پایه اضافه شده / پوشش ناقص', 'detail' => 'Unhandled Server Exception با deduplication ثبت می‌شود و وضعیت قابل تغییر است؛ Error Handlerهای مدیریت‌شده، notification خودکار و تست runtime باقی است.', 'href' => url('/admin/capabilities/index.php#admin-incidents-title')],
+            ['id' => 'system-health', 'title' => 'سلامت سیستم', 'status' => 'Probe پایه PHP و دیتابیس اضافه شده / ناقص', 'detail' => 'وضعیت PHP، اتصال دیتابیس و timezone بررسی می‌شود؛ دیسک، صف‌ها، cron، درگاه پرداخت و سرویس‌های خارجی هنوز probe ندارند.', 'href' => '#system-health'],
+            ['id' => 'product-analytics', 'title' => 'تحلیل رفتار محصول', 'status' => 'Collector و گزارش پایه اضافه شده / پوشش ناقص', 'detail' => 'بازدید، انتخاب مدل، افزودن به سبد و علاقه‌مندی در صفحه جزئیات ثبت می‌شود؛ سایر صفحات، checkout، تبدیل و funnel هنوز پوشش داده نشده‌اند.', 'href' => url('/admin/capabilities/index.php#admin-analytics-title')],
+            ['id' => 'global-search', 'title' => 'جست‌وجوی سراسری', 'status' => 'API و UI اضافه شده / گسترش دامنه باقی', 'detail' => 'محصول، سفارش، مشتری و تیکت با Ctrl+K جست‌وجو می‌شوند؛ فیلتر مجوزهای موجودیت‌محور و سایر ماژول‌ها باید تکمیل شوند.', 'href' => url('/admin')],
         ],
     ],
     [
@@ -52,7 +52,7 @@ $sections = [
         'items' => [
             ['id' => 'storefront-content', 'title' => 'ویترین و محتوای فروشگاه', 'status' => 'موجود / محدود', 'detail' => 'اسلایدر، اسلاید، مجموعه و دیسکاوری موجودند؛ CMS عمومی تمام صفحات و سکشن‌ها وجود ندارد.', 'href' => url('/admin/sliders')],
             ['id' => 'media-library', 'title' => 'کتابخانه رسانه', 'status' => 'نیازمند تکمیل', 'detail' => 'رسانه محصول و اسلاید در مدل‌های مستقل ذخیره می‌شود؛ Media Library یکپارچه وجود ندارد.', 'href' => '#media-library'],
-            ['id' => 'revisions', 'title' => 'تاریخچه نسخه محتوا', 'status' => 'Schema در دیتابیس طبق گزارش اجرا شده / ثبت نسخه پایه موجود', 'detail' => 'ثبت و مشاهده Snapshot اضافه شده؛ ثبت خودکار هنگام ویرایش و بازیابی با Adapterهای اختصاصی باقی است.', 'href' => url('/admin/capabilities/index.php#admin-revisions-title')],
+            ['id' => 'revisions', 'title' => 'تاریخچه نسخه محتوا', 'status' => 'Snapshot دستی و خودکار محصول اضافه شده / ناقص', 'detail' => 'ثبت و مشاهده Snapshot عمومی و snapshot خودکار ایجاد/ویرایش محصول فعال شده؛ اتصال سایر CMSها و بازیابی امن نسخه هنوز باقی است.', 'href' => url('/admin/capabilities/index.php#admin-revisions-title')],
             ['id' => 'scheduled-publishing', 'title' => 'انتشار زمان‌بندی‌شده', 'status' => 'نیازمند تکمیل', 'detail' => 'starts_at و ends_at در برخی مدل‌ها وجود دارند؛ scheduler عمومی و lifecycle انتشار تأیید نشده است.', 'href' => '#scheduled-publishing'],
         ],
     ],
@@ -60,10 +60,10 @@ $sections = [
         'title' => 'بهره‌وری مدیر',
         'description' => 'ابزارهای سریع و تجربه کار با داده‌ها.',
         'items' => [
-            ['id' => 'command-palette', 'title' => 'Command Palette', 'status' => 'نیازمند پیاده‌سازی', 'detail' => 'دسترسی سریع به مسیرها و عملیات مجاز، با رعایت Permission واقعی.', 'href' => url('/admin')],
+            ['id' => 'command-palette', 'title' => 'Command Palette', 'status' => 'نسخه جست‌وجومحور اضافه شده / عملیات سریع باقی', 'detail' => 'میانبر Ctrl+K و جست‌وجوی موجودیت‌ها فعال شده؛ اجرای فرمان‌های مدیریتی و فهرست میانبرهای Permission-aware باقی است.', 'href' => url('/admin')],
             ['id' => 'saved-views', 'title' => 'فیلترهای ذخیره‌شده', 'status' => 'Schema در دیتابیس طبق گزارش اجرا شده / API اضافه شده', 'detail' => 'ذخیره، فهرست و حذف نماهای شخصی از طریق API و UI اضافه شده است.', 'href' => url('/admin/capabilities/index.php#admin-saved-views-title')],
             ['id' => 'bulk-actions', 'title' => 'عملیات گروهی', 'status' => 'Frontend محدود', 'detail' => 'انتخاب ردیف و CSV وجود دارد؛ mutation گروهی سمت سرور و audit آن وجود ندارد.', 'href' => '#bulk-actions'],
-            ['id' => 'admin-preferences', 'title' => 'ترجیحات مدیر', 'status' => 'ذخیره ترجیحات در admin_preferences و همگام‌سازی API با fallback مرورگر اضافه شده است.', 'detail' => 'تراکم و اندازه متن در مرورگر ذخیره می‌شوند؛ تنظیمات متصل به حساب مدیر وجود ندارد.', 'href' => url('/admin/capabilities/index.php#admin-preferences-title')],
+            ['id' => 'admin-preferences', 'title' => 'ترجیحات مدیر', 'status' => 'ذخیره دیتابیسی و همگام‌سازی اضافه شده', 'detail' => 'تراکم، اندازه متن و بازبودن گروه اول ناوبری در حساب مدیر ذخیره می‌شوند؛ سایر ترجیحات هنوز تعریف نشده‌اند.', 'href' => url('/admin/capabilities/index.php#admin-preferences-title')],
         ],
     ],
 ];
