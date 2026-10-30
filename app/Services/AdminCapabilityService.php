@@ -39,7 +39,9 @@ final class AdminCapabilityService
         $message = trim((string)($input['message'] ?? ''));
         $category = (string)($input['category'] ?? 'system');
         $severity = (string)($input['severity'] ?? 'info');
-        $recipient = $input['recipient_admin_user_id'] ?? $actorAdminId;
+        $recipient = array_key_exists('recipient_admin_user_id', $input)
+            ? $input['recipient_admin_user_id']
+            : $actorAdminId;
         if ($title === '' || mb_strlen($title) > 255 || $message === '' || mb_strlen($message) > 5000) {
             throw new InvalidArgumentException('عنوان و متن اعلان الزامی است.');
         }
