@@ -110,7 +110,8 @@ final class CmsContentRenderer
                 include $path;
                 $component = (string)ob_get_clean();
                 unset($GLOBALS['cms_active_section']);
-                return '<div class="cms-native-section" data-cms-native="' . self::e($key) . '"' . self::styleAttribute((array)($section['style'] ?? [])) . '>' . $component . '</div>';
+                $image = !empty($section['content']['image_id']) ? self::image((int)$section['content']['image_id'], (string)($section['content']['image_alt'] ?? $section['title'] ?? '')) : '';
+                return '<div class="cms-native-section" data-cms-native="' . self::e($key) . '"' . self::styleAttribute((array)($section['style'] ?? [])) . '>' . $image . $component . '</div>';
             }
         }
         return self::renderMarkup(
@@ -155,7 +156,8 @@ final class CmsContentRenderer
         include $path;
         $component = (string)ob_get_clean();
         unset($GLOBALS['cms_active_section']);
-        echo '<div class="cms-native-section" data-cms-native="' . self::e((string)$section['section_key']) . '" data-cms-section="' . (int)$section['id'] . '"' . $styleAttribute . '>' . $component . '</div>';
+        $image = !empty($section['content']['image_id']) ? self::image((int)$section['content']['image_id'], (string)($section['content']['image_alt'] ?? $section['title'])) : '';
+        echo '<div class="cms-native-section" data-cms-native="' . self::e((string)$section['section_key']) . '" data-cms-section="' . (int)$section['id'] . '"' . $styleAttribute . '>' . $image . $component . '</div>';
     }
 
     private static function styleAttribute(array $style): string
