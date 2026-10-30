@@ -114,6 +114,21 @@ final class AdminAccessService
         return $this->repository->updateAdmin($targetId, $data);
     }
 
+    public function deleteAdmin(int $targetId, int $actorId): bool
+    {
+        if ($targetId < 1 || $targetId === $actorId) {
+            throw new InvalidArgumentException('حذف حساب مدیر فعلی مجاز نیست.');
+        }
+        $target = $this->repository->adminById($targetId);
+        if ($target === null || $target['deleted_at'] !== null) {
+            return false;
+        }
+        if ($this->isSuperAdmin($targetId) && !$this->repository->hasOtherActiveSuperAdmin($targetId)) {
+            throw new InvalidArgumentException('آخرین Super Admin را نمی‌توان حذف کرد.');
+        }
+        return $this->repository->softDeleteAdmin($targetId);
+    }
+
     public function assignAdminRoles(int $targetId, int $actorId, array $input): bool
     {
         $target = $this->repository->adminById($targetId);
@@ -168,6 +183,9 @@ final class AdminAccessService
         $status = (string)($input['status'] ?? $role['status']);
         if ($name === '' || mb_strlen($name) > 100 || !in_array($status, ['active', 'inactive'], true)) {
             throw new InvalidArgumentException('نام یا وضعیت نقش معتبر نیست.');
+        }
+        if ($status === 'inactive' && $role['status'] === 'active' && $this->repository->roleAssignedToActiveAdmin($id)) {
+            throw new InvalidArgumentException('ابتدا نقش را از مدیران فعال جدا کنید؛ سپس می‌توانید آن را غیرفعال کنید.');
         }
         return $this->repository->updateRole($id, [
             'name' => $name,
