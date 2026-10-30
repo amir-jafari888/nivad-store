@@ -192,31 +192,49 @@ final class AdminNotificationCenterRepository
         sort($recipientIds, SORT_NUMERIC);
         if ($recipientIds === []) return 0;
 
-        $identity = implode('|', [
+        $dedupeIdentity = implode('|', [
             $event['event_key'], (string)($event['entity_type'] ?? ''),
             (string)($event['entity_id'] ?? ''), implode(',', $recipientIds)
         ]);
-        $dedupeHash = hash('sha256', $identity);
+        $dedupeHash = hash('sha256', $dedupeIdentity);
+        $rateHash = hash('sha256', $event['event_key'] . '|' . implode(',', $recipientIds));
         $now = time();
         $this->db->beginTransaction();
         try {
-            $seed = $this->db->prepare(
-                'INSERT IGNORE INTO admin_notification_policy_state
-                 (dedupe_hash, window_started_at, window_count, last_created_at)
-                 VALUES (:hash, CURRENT_TIMESTAMP, 0, NULL)'
+            $seedDedupe = $this->db->prepare(
+                'INSERT IGNORE INTO admin_notification_dedupe_state (dedupe_hash)
+                 VALUES (:hash)'
             );
-            $seed->execute(['hash' => $dedupeHash]);
+            $seedDedupe->execute(['hash' => $dedupeHash]);
+            $seedRate = $this->db->prepare(
+                'INSERT IGNORE INTO admin_notification_rate_state
+                 (rate_hash, window_started_at, window_count)
+                 VALUES (:hash, CURRENT_TIMESTAMP, 0)'
+            );
+            $seedRate->execute(['hash' => $rateHash]);
 
-            $lock = $this->db->prepare('SELECT window_started_at, window_count, last_created_at FROM admin_notification_policy_state WHERE dedupe_hash = :hash FOR UPDATE');
-            $lock->execute(['hash' => $dedupeHash]);
-            $state = $lock->fetch(PDO::FETCH_ASSOC) ?: [];
+            $dedupeLock = $this->db->prepare(
+                'SELECT last_created_at FROM admin_notification_dedupe_state
+                 WHERE dedupe_hash = :hash FOR UPDATE'
+            );
+            $dedupeLock->execute(['hash' => $dedupeHash]);
+            $dedupeState = $dedupeLock->fetch(PDO::FETCH_ASSOC) ?: [];
+
+            $rateLock = $this->db->prepare(
+                'SELECT window_started_at, window_count FROM admin_notification_rate_state
+                 WHERE rate_hash = :hash FOR UPDATE'
+            );
+            $rateLock->execute(['hash' => $rateHash]);
+            $rateState = $rateLock->fetch(PDO::FETCH_ASSOC) ?: [];
 
             $windowSeconds = max(60, min(86400, (int)$policy['window_seconds']));
             $dedupeSeconds = max(0, min(86400, (int)$policy['dedupe_seconds']));
             $maximum = max(1, min(1000, (int)$policy['maximum_per_window']));
-            $windowStart = isset($state['window_started_at']) ? strtotime((string)$state['window_started_at']) : false;
-            $lastCreated = isset($state['last_created_at']) ? strtotime((string)$state['last_created_at']) : false;
-            $windowCount = (int)($state['window_count'] ?? 0);
+            $windowStart = isset($rateState['window_started_at']) ? strtotime((string)$rateState['window_started_at']) : false;
+            $lastCreated = isset($dedupeState['last_created_at']) && $dedupeState['last_created_at'] !== null
+                ? strtotime((string)$dedupeState['last_created_at'])
+                : false;
+            $windowCount = (int)($rateState['window_count'] ?? 0);
 
             if ($lastCreated !== false && $dedupeSeconds > 0 && ($now - $lastCreated) < $dedupeSeconds) {
                 $this->db->commit();
@@ -267,18 +285,24 @@ final class AdminNotificationCenterRepository
                 }
             }
 
-            $stateUpdate = $this->db->prepare(
-                'UPDATE admin_notification_policy_state
-                 SET window_started_at = :window_start, window_count = :window_count,
-                     last_created_at = CURRENT_TIMESTAMP, last_notification_id = :notification_id,
+            $dedupeUpdate = $this->db->prepare(
+                'UPDATE admin_notification_dedupe_state
+                 SET last_created_at = CURRENT_TIMESTAMP, last_notification_id = :notification_id,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE dedupe_hash = :hash'
             );
-            $stateUpdate->execute([
+            $dedupeUpdate->execute(['notification_id' => $notificationId, 'hash' => $dedupeHash]);
+
+            $rateUpdate = $this->db->prepare(
+                'UPDATE admin_notification_rate_state
+                 SET window_started_at = :window_start, window_count = :window_count,
+                     updated_at = CURRENT_TIMESTAMP
+                 WHERE rate_hash = :hash'
+            );
+            $rateUpdate->execute([
                 'window_start' => date('Y-m-d H:i:s', $windowStart),
                 'window_count' => $windowCount + 1,
-                'notification_id' => $notificationId,
-                'hash' => $dedupeHash
+                'hash' => $rateHash
             ]);
             $this->db->commit();
             return $notificationId;

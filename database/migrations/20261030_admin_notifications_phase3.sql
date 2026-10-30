@@ -31,15 +31,22 @@ CREATE TABLE IF NOT EXISTS admin_notification_event_policies (
     PRIMARY KEY (event_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS admin_notification_policy_state (
+CREATE TABLE IF NOT EXISTS admin_notification_dedupe_state (
     dedupe_hash CHAR(64) NOT NULL,
-    window_started_at TIMESTAMP NULL DEFAULT NULL,
-    window_count INT UNSIGNED NOT NULL DEFAULT 0,
     last_created_at TIMESTAMP NULL DEFAULT NULL,
     last_notification_id BIGINT UNSIGNED NULL DEFAULT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (dedupe_hash),
-    KEY idx_admin_notification_policy_window (window_started_at, window_count)
+    KEY idx_admin_notification_dedupe_last_created (last_created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS admin_notification_rate_state (
+    rate_hash CHAR(64) NOT NULL,
+    window_started_at TIMESTAMP NULL DEFAULT NULL,
+    window_count INT UNSIGNED NOT NULL DEFAULT 0,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (rate_hash),
+    KEY idx_admin_notification_rate_window (window_started_at, window_count)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT IGNORE INTO admin_notification_event_policies
