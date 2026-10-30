@@ -190,14 +190,16 @@ final class CmsContentRenderer
             $vars[] = '--cms-gradient-from:transparent';
             $vars[] = '--cms-gradient-to:transparent';
         }
-        foreach (['color' => '--cms-color', 'muted_color' => '--cms-muted', 'accent_color' => '--cms-accent'] as $key => $property) {
+        foreach (['color' => '--cms-color', 'muted_color' => '--cms-muted', 'accent_color' => '--cms-accent', 'border_color' => '--cms-border-color'] as $key => $property) {
             if (isset($style[$key])) $vars[] = $property . ':' . $style[$key];
         }
         if (isset($style['gradient_angle'])) $vars[] = '--cms-gradient-angle:' . (int)$style['gradient_angle'] . 'deg';
-        foreach (['padding_top' => 'padding-top', 'padding_bottom' => 'padding-bottom', 'radius' => 'radius', 'container_width' => 'container-width'] as $key => $property) {
+        foreach (['padding_top' => 'padding-top', 'padding_bottom' => 'padding-bottom', 'radius' => 'radius', 'container_width' => 'container-width', 'heading_size' => 'heading-size', 'body_size' => 'body-size', 'gap' => 'gap', 'card_radius' => 'card-radius'] as $key => $property) {
             if (isset($style[$key])) $vars[] = '--cms-' . $property . ':' . (float)$style[$key] . 'px';
         }
         if (isset($style['text_align'])) $vars[] = '--cms-text-align:' . $style['text_align'];
+        if (isset($style['overlay_opacity'])) $vars[] = '--cms-overlay-opacity:' . (float)$style['overlay_opacity'];
+        if (isset($style['shadow'])) $vars[] = '--cms-shadow:' . match ($style['shadow']) { 'soft' => '0 8px 24px rgba(15,23,42,.08)', 'medium' => '0 16px 40px rgba(15,23,42,.14)', default => 'none' };
         return $vars ? ' style="' . self::e(implode(';', $vars)) . '"' : '';
     }
 
