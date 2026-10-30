@@ -3,163 +3,81 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/app/Core/Bootstrap.php';
-
 Bootstrap::boot();
-
 require_once __DIR__ . '/../includes/auth.php';
 
+$adminAuth = new AdminAuthService();
+if (!$adminAuth->canAny(['admin.notifications.view', 'admin.notifications.manage'])) {
+    header('Location: /admin/access-denied.php');
+    exit;
+}
 $csrfToken = Csrf::token();
+$apiBase = rtrim((string)(getenv('APP_URL') ?: ''), '/') . '/api';
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>ارسال اعلان | نیواد</title>
-    <style>
-        body {
-            margin: 0;
-            background: #f5f7fa;
-            font-family: Tahoma, Arial
-        }
-
-        main {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px
-        }
-
-        .card {
-            background: #fff;
-            padding: 25px;
-            border-radius: 14px
-        }
-
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-            margin-bottom: 15px
-        }
-
-        input,
-        textarea,
-        button {
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font: inherit
-        }
-
-        textarea {
-            min-height: 130px
-        }
-
-        button {
-            background: #111827;
-            color: #fff;
-            cursor: pointer
-        }
-
-        .message {
-            padding: 12px;
-            background: #f3f4f6;
-            border-radius: 8px;
-            margin-bottom: 15px
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" content="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+<meta name="admin-api-url" content="<?= htmlspecialchars($apiBase, ENT_QUOTES, 'UTF-8') ?>">
+<title>مرکز اعلان‌های مدیریتی | نیواد</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f9;--surface:#fff;--text:#172033;--muted:#64748b;--line:#e2e8f0;--accent:#243b64}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.8 Tahoma,Arial,sans-serif}
+main{max-width:1180px;margin:32px auto;padding:0 18px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:24px;margin:0}.muted{color:var(--muted)}.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:18px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}select,input,button{font:inherit;border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:#fff;color:var(--text)}
+button{cursor:pointer;background:var(--accent);border-color:var(--accent);color:#fff}button.secondary{background:#fff;color:var(--text);border-color:var(--line)}
+.notice{padding:10px 12px;background:#eef2f7;border-radius:9px;margin:12px 0}.item{border-top:1px solid var(--line);padding:16px 0}.item:first-child{border-top:0}
+.item-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.title{font-weight:700}.meta{color:var(--muted);font-size:12px}.pill{display:inline-block;border-radius:30px;padding:1px 9px;background:#eef2f7;font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.empty{text-align:center;padding:36px;color:var(--muted)}
+@media(max-width:600px){main{margin:16px auto;padding:0 12px}.panel{padding:13px}.toolbar>*{width:100%}.item-head{display:block}}
+</style>
 </head>
-
 <body>
-
-    <main>
-        <h1>ارسال اعلان برای کاربر</h1>
-
-        <div id="message" class="message">
-            اطلاعات اعلان را وارد کنید.
-        </div>
-
-        <form id="form" class="card">
-
-            <div class="field">
-                <label>User ID</label>
-                <input name="user_id" type="number" min="1" required>
-            </div>
-
-            <div class="field">
-                <label>Type</label>
-                <input name="type" required>
-            </div>
-
-            <div class="field">
-                <label>عنوان</label>
-                <input name="title" required>
-            </div>
-
-            <div class="field">
-                <label>پیام</label>
-                <textarea name="message" required></textarea>
-            </div>
-
-            <div class="field">
-                <label>Data JSON اختیاری</label>
-                <textarea name="data" placeholder='{"key":"value"}'></textarea>
-            </div>
-
-            <button type="submit">ارسال اعلان</button>
-
-        </form>
-    </main>
-
-    <script>
-        const csrfToken = <?= json_encode($csrfToken) ?>;
-
-        document.getElementById('form').addEventListener('submit', async e => {
-            e.preventDefault();
-
-            const form = e.currentTarget;
-            const data = Object.fromEntries(new FormData(form).entries());
-
-            if (data.data.trim() !== '') {
-                try {
-                    data.data = JSON.parse(data.data);
-                } catch {
-                    document.getElementById('message').textContent =
-                        'فیلد Data باید JSON معتبر باشد.';
-                    return;
-                }
-            } else {
-                data.data = null;
-            }
-
-            try {
-                const response = await fetch('/api/admin/notifications', {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.message || 'ایجاد اعلان انجام نشد');
-                }
-
-                document.getElementById('message').textContent =
-                    'اعلان با موفقیت ایجاد شد.';
-
-                form.reset();
-            } catch (error) {
-                document.getElementById('message').textContent = error.message;
-            }
-        });
-    </script>
-
-</body>
-
-</html>
+<main>
+<div class="top"><div><h1>مرکز اعلان‌های مدیریتی</h1><div class="muted">صندوق ورودی، تاریخچه و رسیدگی به رویدادهای مهم</div></div><a href="/admin/">بازگشت به داشبورد</a></div>
+<section class="panel">
+<div class="toolbar">
+<select id="severity"><option value="">همه شدت‌ها</option><option value="critical">بحرانی</option><option value="warning">هشدار</option><option value="success">موفق</option><option value="info">اطلاع‌رسانی</option></select>
+<select id="state"><option value="">همه اعلان‌ها</option><option value="unread">خوانده‌نشده</option><option value="ack-no">نیازمند رسیدگی</option><option value="ack-yes">رسیدگی‌شده</option></select>
+<input id="eventKey" placeholder="کلید رویداد">
+<button id="filter">اعمال فیلتر</button><button class="secondary" id="readAll">خواندن همه</button><button class="secondary" id="showPrefs">تنظیمات اعلان</button>
+</div>
+<div id="feedback" class="notice" role="status" aria-live="polite">در حال دریافت اعلان‌ها…</div>
+<div id="items"></div>
+</section>
+<section class="panel" id="preferences" hidden>
+<h2>ترجیحات اعلان</h2>
+<form id="prefForm">
+<div class="toolbar">
+<label><input type="checkbox" id="inApp" checked> اعلان داخل پنل</label>
+<label><input type="checkbox" id="email"> اعلان ایمیلی</label>
+<select id="minSeverity"><option value="info">از اطلاع‌رسانی</option><option value="success">از موفق</option><option value="warning">از هشدار</option><option value="critical">فقط بحرانی</option></select>
+<input type="time" id="quietStart" aria-label="شروع ساعات سکوت">
+<input type="time" id="quietEnd" aria-label="پایان ساعات سکوت">
+<input id="timezone" value="UTC" aria-label="منطقه زمانی">
+<button type="submit">ذخیره تنظیمات عمومی</button>
+</div>
+<p class="meta">ارسال ایمیل فقط در صف ثبت می‌شود؛ اجرای Worker و تنظیمات SMTP باید جداگانه فعال و آزمایش شوند.</p>
+</form>
+</section>
+</main>
+<script>
+(() => {
+ const apiBase=document.querySelector('meta[name="admin-api-url"]').content;
+ const csrf=document.querySelector('meta[name="csrf-token"]').content;
+ const feedback=document.getElementById('feedback'),items=document.getElementById('items');
+ const request=async(path,method='GET',body=null)=>{const url=new URL(apiBase,location.href);url.searchParams.set('path',path);const headers={Accept:'application/json'};const options={method,credentials:'same-origin',headers};if(body!==null){headers['Content-Type']='application/json';headers['X-CSRF-TOKEN']=csrf;options.body=JSON.stringify(body)}const res=await fetch(url,options);const data=await res.json();if(!res.ok||data.success!==true)throw new Error(data.message||'درخواست ناموفق بود');return data.data||{}};
+ const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const load=async()=>{feedback.textContent='در حال دریافت اعلان‌ها…';const state=document.getElementById('state').value;const params=new URLSearchParams();if(state==='unread')params.set('unread','1');if(state==='ack-no')params.set('acknowledged','no');if(state==='ack-yes')params.set('acknowledged','yes');const sev=document.getElementById('severity').value;if(sev)params.set('severity',sev);const event=document.getElementById('eventKey').value.trim();if(event)params.set('event_key',event);try{const data=await request('/admin/capabilities/notifications'+(params.toString()?'&'+params.toString():''));feedback.textContent='خوانده‌نشده: '+(data.unread_count??0);items.innerHTML=(data.items||[]).map(n=>'<article class="item"><div class="item-head"><span class="title">'+esc(n.title)+'</span><span class="pill">'+esc(n.severity)+'</span></div><div>'+esc(n.message)+'</div><div class="meta">'+esc(n.event_key)+' · '+esc(n.created_at)+' · '+(n.acknowledged_at?'رسیدگی‌شده': 'در انتظار رسیدگی')+'</div><div class="actions">'+(!n.read_at?'<button class="secondary" data-read="'+Number(n.id)+'">خوانده شد</button>':'')+(!n.acknowledged_at?'<button data-ack="'+Number(n.id)+'">تأیید و رسیدگی</button>':'')+'</div></article>').join('')||'<div class="empty">اعلانی برای نمایش وجود ندارد.</div>';}catch(e){feedback.textContent=e.message}};
+ items.addEventListener('click',async e=>{const read=e.target.closest('[data-read]'),ack=e.target.closest('[data-ack]');try{if(read)await request('/admin/capabilities/notifications/'+read.dataset.read+'/read','PATCH',{});if(ack)await request('/admin/capabilities/notifications/'+ack.dataset.ack+'/acknowledge','PATCH',{});await load()}catch(err){feedback.textContent=err.message}});
+ document.getElementById('filter').addEventListener('click',load);
+ document.getElementById('readAll').addEventListener('click',async()=>{try{await request('/admin/capabilities/notifications/read-all','POST',{});await load()}catch(e){feedback.textContent=e.message}});
+ document.getElementById('showPrefs').addEventListener('click',async()=>{const panel=document.getElementById('preferences');panel.hidden=!panel.hidden;if(panel.hidden)return;try{const data=await request('/admin/capabilities/notification-preferences');const p=data.items['*']||{};document.getElementById('inApp').checked=p.in_app_enabled!==false;document.getElementById('email').checked===!!p.email_enabled;document.getElementById('minSeverity').value=p.minimum_severity||'info';document.getElementById('quietStart').value=p.quiet_hours_start||'';document.getElementById('quietEnd').value=p.quiet_hours_end||'';document.getElementById('timezone').value=p.timezone||'UTC'}catch(e){feedback.textContent=e.message}});
+ document.getElementById('prefForm').addEventListener('submit',async e=>{e.preventDefault();try{await request('/admin/capabilities/notification-preferences','PUT',{event_key:'*',in_app_enabled:document.getElementById('inApp').checked,email_enabled:document.getElementById('email').checked,minimum_severity:document.getElementById('minSeverity').value,quiet_hours_start:document.getElementById('quietStart').value||null,quiet_hours_end:document.getElementById('quietEnd').value||null,timezone:document.getElementById('timezone').value||'UTC'});feedback.textContent='ترجیحات ذخیره شد.'}catch(e){feedback.textContent=e.message}});
+ load();
+})();
+</script>
+</body></html>

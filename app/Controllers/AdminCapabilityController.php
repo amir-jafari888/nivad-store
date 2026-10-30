@@ -287,4 +287,39 @@ final class AdminCapabilityController extends Controller
             $this->invalid($exception);
         }
     }
+
+    public function acknowledgeNotification(array $parameters = []): never
+    {
+        try {
+            $id = (int)($parameters['id'] ?? 0);
+            $adminId = $this->adminId();
+            $updated = (new AdminNotificationCenterService())->acknowledge($id, $adminId);
+            if (!$updated) $this->error('اعلان پیدا نشد یا دسترسی به آن مجاز نیست.', 404);
+            AdminAuditTrail::record($adminId, 'acknowledge', 'admin_notifications', 'admin_notification', $id, 'Admin notification acknowledged.');
+            $this->success(['acknowledged' => true], 'اعلان تأیید و رسیدگی شد.');
+        } catch (InvalidArgumentException $exception) { $this->invalid($exception); }
+    }
+
+    public function markAllNotificationsRead(): never
+    {
+        $adminId = $this->adminId();
+        $count = (new AdminNotificationCenterService())->markAllRead($adminId);
+        AdminAuditTrail::record($adminId, 'mark_all_read', 'admin_notifications', 'admin_notification', null, 'All admin notifications marked as read.', null, ['updated' => $count]);
+        $this->success(['updated' => $count], 'اعلان‌های خوانده‌نشده علامت‌گذاری شدند.');
+    }
+
+    public function notificationPreferences(): never
+    {
+        $this->success(['items' => (new AdminNotificationCenterService())->preferences($this->adminId())], 'تنظیمات اعلان دریافت شد.');
+    }
+
+    public function saveNotificationPreference(): never
+    {
+        try {
+            $adminId = $this->adminId();
+            (new AdminNotificationCenterService())->savePreference($adminId, $this->payload());
+            AdminAuditTrail::record($adminId, 'update_notification_preference', 'admin_notification_preferences', 'admin_notification_preference', null, 'Admin notification preference updated.');
+            $this->success(['saved' => true], 'ترجیحات اعلان ذخیره شد.');
+        } catch (InvalidArgumentException $exception) { $this->invalid($exception); }
+    }
 }
