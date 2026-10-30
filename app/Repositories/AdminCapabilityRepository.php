@@ -294,6 +294,120 @@ final class AdminCapabilityRepository
         return $check->fetchColumn() !== false;
     }
 
+    public function customerTickets(int $userId, int $limit = 50): array
+    {
+        $limit = max(1, min(100, $limit));
+        $stmt = $this->db->prepare(
+            'SELECT id, ticket_number, category, priority, status, subject, last_message_at, created_at, updated_at
+             FROM admin_support_tickets
+             WHERE user_id = :user_id
+             ORDER BY updated_at DESC
+             LIMIT ' . $limit
+        );
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function customerTicket(int $ticketId, int $userId): ?array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT id, ticket_number, category, priority, status, subject, last_message_at, created_at, updated_at
+             FROM admin_support_tickets
+             WHERE id = :id AND user_id = :user_id
+             LIMIT 1'
+        );
+        $stmt->execute(['id' => $ticketId, 'user_id' => $userId]);
+        $ticket = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$ticket) return null;
+
+        $messages = $this->db->prepare(
+            'SELECT id, sender_type, message, created_at
+             FROM admin_support_messages
+             WHERE ticket_id = :ticket_id AND is_internal = 0
+             ORDER BY created_at ASC, id ASC'
+        );
+        $messages->execute(['ticket_id' => $ticketId]);
+        $ticket['messages'] = $messages->fetchAll(PDO::FETCH_ASSOC);
+        return $ticket;
+    }
+
+    public function createCustomerTicket(int $userId, array $data): int
+    {
+        $ticketNumber = 'NV-' . gmdate('ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
+        $this->db->beginTransaction();
+        try {
+            $ticket = $this->db->prepare(
+                'INSERT INTO admin_support_tickets (ticket_number, user_id, category, priority, status, subject, last_message_at)
+                 VALUES (:number, :user_id, :category, :priority, "open", :subject, CURRENT_TIMESTAMP)'
+            );
+            $ticket->execute([
+                'number' => $ticketNumber,
+                'user_id' => $userId,
+                'category' => $data['category'],
+                'priority' => $data['priority'],
+                'subject' => $data['subject'],
+            ]);
+            $ticketId = (int)$this->db->lastInsertId();
+
+            $message = $this->db->prepare(
+                'INSERT INTO admin_support_messages (ticket_id, sender_type, sender_user_id, message, is_internal)
+                 VALUES (:ticket_id, "customer", :user_id, :message, 0)'
+            );
+            $message->execute([
+                'ticket_id' => $ticketId,
+                'user_id' => $userId,
+                'message' => $data['message'],
+            ]);
+            $this->db->commit();
+            return $ticketId;
+        } catch (Throwable $exception) {
+            if ($this->db->inTransaction()) $this->db->rollBack();
+            throw $exception;
+        }
+    }
+
+    public function addCustomerTicketMessage(int $ticketId, int $userId, string $message): int
+    {
+        $this->db->beginTransaction();
+        try {
+            $check = $this->db->prepare(
+                'SELECT status FROM admin_support_tickets
+                 WHERE id = :ticket_id AND user_id = :user_id
+                 LIMIT 1 FOR UPDATE'
+            );
+            $check->execute(['ticket_id' => $ticketId, 'user_id' => $userId]);
+            $status = $check->fetchColumn();
+            if ($status === false || $status === 'closed') {
+                $this->db->rollBack();
+                throw new InvalidArgumentException('این تیکت پیدا نشد یا بسته شده است.');
+            }
+
+            $insert = $this->db->prepare(
+                'INSERT INTO admin_support_messages (ticket_id, sender_type, sender_user_id, message, is_internal)
+                 VALUES (:ticket_id, "customer", :user_id, :message, 0)'
+            );
+            $insert->execute([
+                'ticket_id' => $ticketId,
+                'user_id' => $userId,
+                'message' => $message,
+            ]);
+            $messageId = (int)$this->db->lastInsertId();
+
+            $update = $this->db->prepare(
+                'UPDATE admin_support_tickets
+                 SET status = "pending_admin", last_message_at = CURRENT_TIMESTAMP,
+                     resolved_at = NULL, closed_at = NULL, updated_at = CURRENT_TIMESTAMP
+                 WHERE id = :ticket_id AND user_id = :user_id'
+            );
+            $update->execute(['ticket_id' => $ticketId, 'user_id' => $userId]);
+            $this->db->commit();
+            return $messageId;
+        } catch (Throwable $exception) {
+            if ($this->db->inTransaction()) $this->db->rollBack();
+            throw $exception;
+        }
+    }
+
     public function analytics(string $from, string $to, int $limit = 50): array
     {
         $limit = max(1, min(200, $limit));
