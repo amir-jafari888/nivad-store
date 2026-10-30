@@ -26,10 +26,10 @@ if ($previewId > 0) {
   const style=data.style||{};setStyles(section,style);
   const inner=el('div','cms-live-section__inner'),c=data.content||{};
   if(c.eyebrow)inner.append(el('p','cms-live-section__eyebrow',c.eyebrow));
-  if(c.heading||data.title)inner.append(el('h2','cms-live-section__heading',c.heading||data.title));
+  if(c.heading||data.title)inner.append(el(data.section_type==='intro'?'h1':'h2','cms-live-section__heading',c.heading||data.title));
   if(c.body)inner.append(el('p','cms-live-section__body',c.body));
   const mainImage=image(c.image_id,c.image_alt||c.heading);if(mainImage)inner.append(mainImage);
-  if(Array.isArray(c.items)&&c.items.length){const grid=el('div','cms-live-section__grid');c.items.forEach(item=>{const card=el('article','cms-live-card');const img=image(item.image_id,item.image_alt||item.title);if(img)card.append(img);if(item.eyebrow)card.append(el('span','cms-live-card__eyebrow',item.eyebrow));if(item.title)card.append(el('h3','',item.title));if(item.body)card.append(el('p','',item.body));if(item.link_label){const a=el('a','',item.link_label);a.href=safeUrl(item.url);card.append(a)}grid.append(card)});inner.append(grid)}
+  if(Array.isArray(c.items)&&c.items.length&&data.section_type==='faq'){const faq=el('div','cms-faq-list');c.items.forEach(item=>{const details=el('details','');details.append(el('summary','',item.title||''));if(item.body)details.append(el('p','',item.body));faq.append(details)});inner.append(faq)}else if(Array.isArray(c.items)&&c.items.length){const grid=el('div','cms-live-section__grid');c.items.forEach(item=>{const card=el('article','cms-live-card');const img=image(item.image_id,item.image_alt||item.title);if(img)card.append(img);if(item.eyebrow)card.append(el('span','cms-live-card__eyebrow',item.eyebrow));if(item.title)card.append(el('h3','',item.title));if(item.body)card.append(el('p','',item.body));if(item.link_label){const a=el('a','',item.link_label);a.href=safeUrl(item.url);card.append(a)}grid.append(card)});inner.append(grid)}
   if(c.button_label&&c.button_url){const a=el('a','cms-live-section__button',c.button_label);a.href=safeUrl(c.button_url);inner.append(a)}
   section.append(inner);root.replaceChildren(section);
  };
