@@ -42,7 +42,7 @@ $cmsContent = CmsContentRenderer::activeContent();
 
       <div class="home-compatibility-preview__actions">
         <a class="home-compatibility-preview__cta" href="<?= e(url((string)($cmsContent['button_url'] ?? '/pages/store/compatibility.php'))) ?>">
-          <span><?= e((string)($cmsContent['button_label'] ?? 'بررسی سازگاری دستگاه من')) ?></span>
+          <span data-cms-field="button_label"><?= e((string)($cmsContent['button_label'] ?? 'بررسی سازگاری دستگاه من')) ?></span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
         </a>
         <span class="home-compatibility-preview__action-note">از انتخاب دستگاه تا پیدا کردن محصولات مرتبط، در یک مسیر ساده.</span>
