@@ -87,6 +87,25 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         $adminName = 'مدیر سیستم';
     }
     $adminInitial = mb_substr($firstName !== '' ? $firstName : $adminName, 0, 1, 'UTF-8');
+    $firstNameDisplay = $firstName !== '' ? $firstName : ($lastName === '' ? 'مدیر سیستم' : '');
+    $lastNameDisplay = $lastName;
+
+    $skipLink = '';
+    if (stripos($html, 'admin-skip-link') === false && preg_match('/<main\\b([^>]*)>/i', $html, $mainMatch) === 1) {
+        $mainAttributes = $mainMatch[1];
+        if (preg_match('/\\bid\\s*=\\s*(["\\'])(.*?)\\1/i', $mainAttributes, $idMatch) === 1 && $idMatch[2] !== '') {
+            $mainTarget = $idMatch[2];
+        } else {
+            $mainTarget = 'main-content';
+            if (preg_match('/\\bid\\s*=/i', $mainAttributes) !== 1) {
+                $updatedHtml = preg_replace('/<main\\b/i', '<main id="main-content"', $html, 1);
+                if (is_string($updatedHtml)) {
+                    $html = $updatedHtml;
+                }
+            }
+        }
+        $skipLink = '<a class="admin-skip-link" href="#' . e($mainTarget) . '">رفتن به محتوای اصلی</a>';
+    }
 
     $search = $canUseGlobalSearch ? '
         <div class="admin-global-search" data-admin-global-search>
@@ -103,7 +122,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         ' . $search . '
         <div class="admin-shared-topbar-profile" aria-label="حساب مدیر واردشده">
             <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
-            <span class="admin-shared-account-name">' . e($adminName) . '</span>
+            <span class="admin-shared-account-name"><span class="admin-shared-first-name">' . e($firstNameDisplay) . '</span><span class="admin-shared-last-name">' . e($lastNameDisplay) . '</span></span>
         </div>
     </header>';
 
@@ -192,7 +211,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         </nav>
         <div class="admin-shared-account">
             <span class="admin-shared-avatar" aria-hidden="true">' . e($adminInitial) . '</span>
-            <span class="admin-shared-account-name">' . e($adminName) . '</span>
+            <span class="admin-shared-account-name"><span class="admin-shared-first-name">' . e($firstNameDisplay) . '</span><span class="admin-shared-last-name">' . e($lastNameDisplay) . '</span></span>
             <form method="post" action="' . e(url('/admin/logout')) . '">
                 <input type="hidden" name="csrf_token" value="' . e(Csrf::token()) . '">
                 <button type="submit" class="admin-shared-logout">خروج از پنل</button>
@@ -218,8 +237,8 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
 
     return preg_replace_callback(
         '/<body\b[^>]*>/i',
-        static function (array $matches) use ($nav, $topbar): string {
-            return $matches[0] . $topbar . $nav;
+        static function (array $matches) use ($nav, $topbar, $skipLink): string {
+            return $matches[0] . $skipLink . $topbar . $nav;
         },
         $html,
         1
