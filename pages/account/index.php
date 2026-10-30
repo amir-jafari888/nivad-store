@@ -26,7 +26,7 @@ include_once __DIR__ . '/../../partials/header.php';
     </form><p data-account-message role="status" aria-live="polite"></p>
   </section>
   <nav class="account-navigation" aria-label="مدیریت حساب">
-    <a href="profile.php">پروفایل</a><a href="addresses.php">آدرس‌ها</a><a href="orders/index.php">سفارش‌ها</a><a href="returns/index.php">مرجوعی‌ها</a><a href="reviews.php">دیدگاه‌ها</a><a href="notifications.php">اعلان‌ها</a>
+    <a href="profile.php">پروفایل</a><a href="addresses.php">آدرس‌ها</a><a href="orders/index.php">سفارش‌ها</a><a href="returns/index.php">مرجوعی‌ها</a><a href="reviews.php">دیدگاه‌ها</a><a href="notifications.php">اعلان‌ها</a><a href="<?= htmlspecialchars(($baseUrl ?? '') . '/account/support', ENT_QUOTES, 'UTF-8') ?>">پشتیبانی</a>
     <a href="<?= htmlspecialchars(($baseUrl ?? '') . '/wishlist', ENT_QUOTES, 'UTF-8') ?>">علاقه‌مندی‌ها</a><a href="<?= htmlspecialchars(($baseUrl ?? '') . '/cart', ENT_QUOTES, 'UTF-8') ?>">سبد خرید</a>
   </nav>
 </main>

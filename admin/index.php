@@ -13,6 +13,9 @@ require_once __DIR__ . '/includes/auth.php';
  * the same view and metrics contract to prevent two divergent dashboards.
  */
 $admin = $currentAdmin;
+$overviewService = new AdminDashboardOverviewService();
+$permissions = $overviewService->permissions($adminAuth);
 $metrics = (new AdminDashboardMetricsService())->metrics();
+$overview = $overviewService->overview($permissions);
 
 require dirname(__DIR__) . '/pages/admin/dashboard.php';

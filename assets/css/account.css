@@ -114,3 +114,11 @@
 :root[data-theme="dark"] .account-page .customer-shop__panel, :root[data-theme="dark"] .account-address,
 :root[data-theme="dark"] .account-order, :root[data-theme="dark"] .account-return, :root[data-theme="dark"] .account-notification,
 :root[data-theme="dark"] .account-review, :root[data-theme="dark"] .account-session { background: var(--color-surface); border-color: var(--color-border); color: var(--color-text); }
+
+
+.account-ticket{display:grid;gap:var(--spacing-3);margin-block:var(--spacing-3);padding:var(--spacing-4);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface)}
+.account-ticket details>summary{cursor:pointer;font-weight:600}
+.account-ticket-messages{display:grid;gap:var(--spacing-3);padding-block:var(--spacing-3)}
+.account-ticket-messages>p{margin:0;padding:var(--spacing-3);border-radius:var(--radius-md);background:var(--color-background);overflow-wrap:anywhere}
+.account-ticket-messages .account-password-form{grid-template-columns:1fr}
+.account-ticket-messages textarea{width:100%;min-height:96px;padding:var(--spacing-3);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-text);font:inherit}

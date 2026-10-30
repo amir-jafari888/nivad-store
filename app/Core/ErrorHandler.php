@@ -40,6 +40,27 @@ final class ErrorHandler
             'request_id' => AdminRequestContext::id(),
         ]);
 
+        if ($statusCode >= 500) {
+            try {
+                (new AdminCapabilityService())->recordIncident(
+                    'php.exception',
+                    'critical',
+                    get_class($exception) . ' @ ' . basename($exception->getFile()) . ':' . $exception->getLine(),
+                    'An unhandled server exception was recorded.',
+                    [
+                        'exception_type' => get_class($exception),
+                        'file' => basename($exception->getFile()),
+                        'line' => $exception->getLine(),
+                        'http_status' => $statusCode,
+                    ]
+                );
+            } catch (Throwable $reportingFailure) {
+                Logger::error('Failed to persist Admin incident.', [
+                    'type' => get_class($reportingFailure),
+                ]);
+            }
+        }
+
         AdminRequestContext::publishResponseHeader();
 
         $path = parse_url(Request::uri(), PHP_URL_PATH);

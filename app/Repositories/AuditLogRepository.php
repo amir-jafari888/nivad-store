@@ -50,6 +50,32 @@ final class AuditLogRepository
         );
     }
 
+    public function recentAdminActivity(int $limit = 8): array
+    {
+        $limit = max(1, min(50, $limit));
+        $stmt = $this->db->query(
+            'SELECT
+                l.id,
+                l.action,
+                l.module,
+                l.entity_type,
+                l.entity_id,
+                l.description,
+                l.created_at,
+                COALESCE(
+                    NULLIF(TRIM(CONCAT_WS(" ", a.first_name, a.last_name)), ""),
+                    "مدیر"
+                ) AS admin_name
+             FROM audit_logs l
+             LEFT JOIN admin_users a
+                ON a.id = l.admin_user_id
+             WHERE l.admin_user_id IS NOT NULL
+             ORDER BY l.created_at DESC, l.id DESC
+             LIMIT ' . $limit
+        );
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function create(array $event): int
     {
         $stmt = $this->db->prepare(
