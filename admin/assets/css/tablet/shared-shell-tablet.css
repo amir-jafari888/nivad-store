@@ -46,7 +46,6 @@
 .admin-dashboard-footer{flex-wrap:wrap;margin-top:18px}
 .admin-nav-backdrop{position:fixed;inset:0;z-index:940;display:none;padding:0;border:0;background:rgba(17,24,39,.32)}
 .admin-nav-open .admin-nav-backdrop{display:block}
-@media (prefers-reduced-motion:reduce){.admin-shared-sidebar,.admin-dashboard-sidebar{transition:none}}
 
 
 /* Legacy page header becomes a content toolbar, not a competing global header. */
