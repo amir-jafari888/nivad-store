@@ -2825,6 +2825,8 @@ return static function (Router $router): void {
         CsrfMiddleware::class,
     ];
 
+    $router->get('/admin/access/sessions', [AdminAccessController::class, 'sessions'], $adminCapabilityRead, 'admin.access.sessions.index');
+    $router->delete('/admin/access/sessions/{id}', [AdminAccessController::class, 'revokeSession'], $adminCapabilityWrite, 'admin.access.sessions.destroy');
     $router->get('/admin/access/admins', [AdminAccessController::class, 'admins'], $adminCapabilityRead, 'admin.access.admins.index');
     $router->post('/admin/access/admins', [AdminAccessController::class, 'createAdmin'], $adminCapabilityWrite, 'admin.access.admins.store');
     $router->patch('/admin/access/admins/{id}', [AdminAccessController::class, 'updateAdmin'], $adminCapabilityWrite, 'admin.access.admins.update');
