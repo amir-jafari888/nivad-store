@@ -84,6 +84,13 @@ const adminCapabilityCenter = () => {
 
   const loadIncidents = async () => {
     const data = await request("/incidents");
+    let activeAdmins = [];
+    try {
+      const adminData = await request("/admin/access/admins");
+      activeAdmins = (adminData.items || []).filter(admin => admin.status === "active");
+    } catch (_) {
+      activeAdmins = [];
+    }
     renderRows("incidents", data.items || [], {
       title: row => row.title + " · " + row.severity,
       details: row => row.source + " · " + row.status + " · تعداد تکرار: " + row.occurrence_count + " · آخرین مشاهده: " + row.last_seen_at,
@@ -93,14 +100,25 @@ const adminCapabilityCenter = () => {
         [["open","باز"],["acknowledged","در حال بررسی"],["resolved","حل‌شده"],["ignored","نادیده‌گرفته‌شده"]].forEach(([value,label]) => {
           const option = node("option", label); option.value = value; option.selected = value === row.status; select.append(option);
         });
+        let assignee = null;
+        if (activeAdmins.length) {
+          assignee = document.createElement("select");
+          const none = node("option", "بدون مسئول"); none.value = ""; assignee.append(none);
+          activeAdmins.forEach(admin => {
+            const option = node("option", admin.first_name + " " + admin.last_name + " · " + admin.username);
+            option.value = admin.id; option.selected = Number(row.assigned_admin_id) === Number(admin.id); assignee.append(option);
+          });
+        }
         const button = node("button", "ثبت وضعیت"); button.type = "button";
         button.addEventListener("click", async () => {
           try {
-            await request("/incidents/" + row.id, { method: "PATCH", body: JSON.stringify({ status: select.value, assigned_admin_id: row.assigned_admin_id || null }) });
+            await request("/incidents/" + row.id, { method: "PATCH", body: JSON.stringify({ status: select.value, assigned_admin_id: assignee ? (Number(assignee.value) || null) : (row.assigned_admin_id || null) }) });
             await loadIncidents(); setFeedback("وضعیت رخداد به‌روزرسانی شد.");
           } catch (error) { setFeedback(error.message, true); }
         });
-        wrap.append(select, button); return wrap;
+        wrap.append(select);
+        if (assignee) wrap.append(assignee);
+        wrap.append(button); return wrap;
       }
     });
   };
