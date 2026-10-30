@@ -5,6 +5,7 @@ import adminPreferences from "./modules/admin-preferences.js";
 import adminCapabilityCenter from "./modules/capability-center.js";
 import adminAccessCenter from "./modules/access-center.js";
 import adminGlobalSearch from "./modules/global-search.js";
+import adminIncidents from "./modules/admin-incidents.js";
 
 adminDataExperience();
 adminNavigationState();
@@ -13,3 +14,4 @@ adminPreferences();
 adminCapabilityCenter();
 adminAccessCenter();
 adminGlobalSearch();
+adminIncidents();

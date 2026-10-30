@@ -72,6 +72,7 @@ final class AdminEmailOutboxWorker
 
             $outboxId = (int) $row['id'];
             $attempt = max(0, (int) ($row['attempts'] ?? 0)) + 1;
+            $transportExceptionType = null;
             try {
                 $result = ($this->send)(
                     (string) $row['recipient_email'],
@@ -87,6 +88,13 @@ final class AdminEmailOutboxWorker
             } catch (Throwable $exception) {
                 // A failed provider adapter must not abort the rest of the batch
                 // or leave this claimed row silently unprocessed.
+                $transportExceptionType = get_class($exception);
+                if (class_exists(AdminIncidentCaptureService::class)) {
+                    AdminIncidentCaptureService::captureExternalFailure('admin_email_smtp', $exception, [
+                        'outbox_id' => $outboxId,
+                        'attempt' => $attempt,
+                    ]);
+                }
                 $result = ['success' => false, 'error_code' => 'smtp_delivery_failed'];
             }
 
@@ -102,6 +110,23 @@ final class AdminEmailOutboxWorker
             $errorCode = is_string($result['error_code'] ?? null)
                 ? $result['error_code']
                 : 'smtp_delivery_failed';
+            if ($transportExceptionType === null && class_exists(AdminIncidentCaptureService::class)) {
+                $safeErrorCode = preg_match('/^[A-Za-z0-9_.-]{1,80}$/', $errorCode) === 1
+                    ? $errorCode
+                    : 'smtp_delivery_failed';
+                AdminIncidentCaptureService::capture(
+                    'external_service.smtp',
+                    'warning',
+                    'SMTP delivery attempt failed.',
+                    [
+                        'outbox_id' => $outboxId,
+                        'attempt' => $attempt,
+                        'error_code' => $safeErrorCode,
+                    ],
+                    'external_service.failure',
+                    'An email delivery attempt failed and was handled by the outbox retry policy.'
+                );
+            }
             $terminal = $this->isPermanentFailure($errorCode) || $attempt >= self::MAX_ATTEMPTS;
             $nextAttempt = $terminal
                 ? null

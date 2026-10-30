@@ -5,15 +5,14 @@ declare(strict_types=1);
 final class ErrorHandler
 {
     private static bool $registered = false;
+    private static bool $handlingShutdown = false;
 
     public static function register(): void
     {
-        if (self::$registered) {
-            return;
-        }
-
+        if (self::$registered) return;
         set_exception_handler([self::class, 'handleException']);
         set_error_handler([self::class, 'handleError']);
+        register_shutdown_function([self::class, 'handleShutdown']);
         self::$registered = true;
     }
 
@@ -31,36 +30,14 @@ final class ErrorHandler
             }
         }
 
-        // Do not log the raw exception message: database/provider exceptions
-        // can contain credentials, SQL fragments, or personal data.
         Logger::error('Unhandled exception.', [
             'type' => get_class($exception),
-            'file' => $exception->getFile(),
+            'file' => basename($exception->getFile()),
             'line' => $exception->getLine(),
             'request_id' => AdminRequestContext::id(),
+            'http_status' => $statusCode,
         ]);
-
-        if ($statusCode >= 500) {
-            try {
-                (new AdminCapabilityService())->recordIncident(
-                    'php.exception',
-                    'critical',
-                    get_class($exception) . ' @ ' . basename($exception->getFile()) . ':' . $exception->getLine(),
-                    'An unhandled server exception was recorded.',
-                    [
-                        'exception_type' => get_class($exception),
-                        'file' => basename($exception->getFile()),
-                        'line' => $exception->getLine(),
-                        'http_status' => $statusCode,
-                    ]
-                );
-            } catch (Throwable $reportingFailure) {
-                Logger::error('Failed to persist Admin incident.', [
-                    'type' => get_class($reportingFailure),
-                ]);
-            }
-        }
-
+        AdminIncidentCaptureService::captureThrowable($exception, $statusCode);
         AdminRequestContext::publishResponseHeader();
 
         $path = parse_url(Request::uri(), PHP_URL_PATH);
@@ -71,7 +48,6 @@ final class ErrorHandler
         if ($isAdminBrowserRequest) {
             AdminHttpErrorResponder::respond($statusCode, $message, $errors);
         }
-
         Response::json([
             'success' => false,
             'message' => $message,
@@ -80,22 +56,37 @@ final class ErrorHandler
         ], $statusCode);
     }
 
-    public static function handleError(
-        int $severity,
-        string $message,
-        string $file,
-        int $line
-    ): bool {
-        if (!(error_reporting() & $severity)) {
-            return false;
-        }
+    public static function handleError(int $severity, string $message, string $file, int $line): bool
+    {
+        if (!(error_reporting() & $severity)) return false;
+        throw new ErrorException($message, 0, $severity, $file, $line);
+    }
 
-        throw new ErrorException(
-            $message,
-            0,
-            $severity,
-            $file,
-            $line
+    public static function handleShutdown(): void
+    {
+        if (self::$handlingShutdown) return;
+        $error = error_get_last();
+        if (!is_array($error)) return;
+
+        $fatalTypes = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR];
+        if (!in_array((int) ($error['type'] ?? 0), $fatalTypes, true)) return;
+
+        self::$handlingShutdown = true;
+        $file = (string) ($error['file'] ?? '');
+        $line = (int) ($error['line'] ?? 0);
+        Logger::error('Fatal PHP shutdown error.', [
+            'type' => (int) $error['type'],
+            'file' => basename($file),
+            'line' => $line,
+            'request_id' => AdminRequestContext::id(),
+        ]);
+        AdminIncidentCaptureService::capture(
+            'php.fatal',
+            'critical',
+            'Fatal PHP error @ ' . basename($file) . ':' . $line,
+            ['php_error_type' => (int) $error['type'], 'file' => basename($file), 'line' => $line, 'http_status' => 500],
+            'php.fatal',
+            'A fatal PHP shutdown error was recorded.'
         );
     }
 }

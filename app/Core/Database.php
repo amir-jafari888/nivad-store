@@ -46,6 +46,22 @@ final class Database
         return self::$connection;
     }
 
+    public static function reportFailure(PDOException $exception, array $context = []): void
+    {
+        AdminIncidentCaptureService::capture(
+            'database.failure',
+            'critical',
+            'Database operation failed.',
+            array_merge($context, [
+                'exception_type' => get_class($exception),
+                'file' => basename($exception->getFile()),
+                'line' => $exception->getLine(),
+            ]),
+            'database.failure',
+            'A database operation failed.'
+        );
+    }
+
     public static function disconnect(): void
     {
         self::$connection = null;

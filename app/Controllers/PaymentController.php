@@ -235,6 +235,9 @@ final class PaymentController extends Controller
         } catch (
             RuntimeException $exception
         ) {
+            if ($exception instanceof PDOException) {
+                Database::reportFailure($exception, ['operation' => 'payment.request']);
+            }
             $this->error(
                 $exception->getMessage(),
                 409
@@ -291,6 +294,14 @@ final class PaymentController extends Controller
                     $errorMessage
                 );
 
+            AdminIncidentCaptureService::capture(
+                'payment.failure',
+                'warning',
+                'Payment attempt failed.',
+                ['payment_attempt_id' => $attemptId, 'error_code' => $errorCode],
+                'payment.failure',
+                'A payment attempt was marked as failed.'
+            );
             (new AdminNotificationEventDispatcher())->dispatch('commerce.payment.failed', 'پرداخت ناموفق', 'یک تلاش پرداخت ناموفق ثبت شد.', 'payment_attempt', $attemptId, ['error_code' => $errorCode]);
             $this->success(
                 $attempt,
@@ -306,6 +317,9 @@ final class PaymentController extends Controller
         } catch (
             RuntimeException $exception
         ) {
+            if ($exception instanceof PDOException) {
+                Database::reportFailure($exception, ['operation' => 'payment.request']);
+            }
             $this->error(
                 $exception->getMessage(),
                 409

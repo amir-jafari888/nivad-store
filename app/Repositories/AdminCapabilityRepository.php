@@ -101,29 +101,36 @@ final class AdminCapabilityRepository
         $adminIds = $this->db->query(
             'SELECT id FROM admin_users WHERE status = "active" AND deleted_at IS NULL'
         )->fetchAll(PDO::FETCH_COLUMN);
-        $bucket = (int)floor(time() / 600);
-
+        $bucket = (int) floor(time() / 600);
         foreach ($adminIds as $adminId) {
-            $adminId = (int)$adminId;
-            $this->createNotification([
-                'recipient_admin_user_id' => $adminId,
-                'category' => 'errors',
-                'severity' => 'critical',
-                'title' => mb_substr($title, 0, 255),
-                'message' => $description !== '' ? $description : 'A critical system incident was recorded.',
-                'source_type' => 'incident',
-                'source_id' => $incidentId,
-                'dedupe_key' => hash('sha256', 'incident:' . $incidentId . ':' . $adminId . ':' . $bucket),
-                'expires_at' => null,
-            ]);
+            $adminId = (int) $adminId;
+            try {
+                $this->createNotification([
+                    'recipient_admin_user_id' => $adminId,
+                    'category' => 'errors',
+                    'severity' => 'critical',
+                    'title' => mb_substr($title, 0, 255),
+                    'message' => $description !== '' ? $description : 'A critical system incident was recorded.',
+                    'source_type' => 'incident',
+                    'source_id' => $incidentId,
+                    'dedupe_key' => hash('sha256', 'incident:' . $incidentId . ':' . $adminId . ':' . $bucket),
+                    'expires_at' => null,
+                ]);
+            } catch (Throwable $failure) {
+                Logger::error('Incident notification dispatch failed.', [
+                    'incident_id' => $incidentId,
+                    'admin_id' => $adminId,
+                    'failure_type' => get_class($failure),
+                ]);
+            }
         }
-
         $touch = $this->db->prepare(
-            'UPDATE admin_incidents SET last_notification_at = CURRENT_TIMESTAMP WHERE id = :id'
+            'INSERT INTO admin_incident_metadata (incident_id, last_notification_at)
+             VALUES (:id, CURRENT_TIMESTAMP)
+             ON DUPLICATE KEY UPDATE last_notification_at = CURRENT_TIMESTAMP'
         );
         $touch->execute(['id' => $incidentId]);
     }
-
     public function notifyTicketCreated(int $ticketId, string $ticketNumber, string $subject): void
     {
         if ($ticketId < 1) return;
@@ -150,9 +157,14 @@ final class AdminCapabilityRepository
     public function incidents(string $status = '', int $limit = 100): array
     {
         $limit = max(1, min(200, $limit));
-        $sql = 'SELECT i.*, a.first_name AS assigned_first_name, a.last_name AS assigned_last_name
-                FROM admin_incidents i
-                LEFT JOIN admin_users a ON a.id = i.assigned_admin_id';
+        $sql = 'SELECT i.id, i.incident_key, i.severity, i.status, i.source, i.title,
+                       i.description, i.occurrence_count, i.first_seen_at, i.last_seen_at,
+                       i.resolved_by_admin_id, i.resolved_at, i.created_at, i.updated_at,
+                       m.assigned_admin_id, m.last_notification_at,
+                       a.first_name AS assigned_first_name, a.last_name AS assigned_last_name
+                FROM admin_system_incidents i
+                LEFT JOIN admin_incident_metadata m ON m.incident_id = i.id
+                LEFT JOIN admin_users a ON a.id = m.assigned_admin_id';
         $params = [];
         if ($status !== '') {
             $sql .= ' WHERE i.status = :status';
@@ -167,12 +179,11 @@ final class AdminCapabilityRepository
     public function countIncidentsByStatus(string $status): int
     {
         $stmt = $this->db->prepare(
-            'SELECT COUNT(*) FROM admin_incidents WHERE status = :status'
+            'SELECT COUNT(*) FROM admin_system_incidents WHERE status = :status'
         );
         $stmt->execute(['status' => $status]);
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
-
     public function countTicketsByStatuses(array $statuses): int
     {
         if ($statuses === []) {
@@ -207,10 +218,12 @@ final class AdminCapabilityRepository
     public function recordIncident(array $data): int
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO admin_incidents
-                (fingerprint, source, severity, title, description, context_json)
+            'INSERT INTO admin_system_incidents
+                (incident_key, severity, status, source, title, description,
+                 context_json, occurrence_count, first_seen_at, last_seen_at)
              VALUES
-                (:fingerprint, :source, :severity, :title, :description, :context_json)
+                (:incident_key, :severity, "open", :source, :title, :description,
+                 :context_json, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
              ON DUPLICATE KEY UPDATE
                 last_seen_at = CURRENT_TIMESTAMP,
                 occurrence_count = occurrence_count + 1,
@@ -224,25 +237,56 @@ final class AdminCapabilityRepository
                 updated_at = CURRENT_TIMESTAMP'
         );
         $stmt->execute([
-            'fingerprint' => $data['fingerprint'],
-            'source' => $data['source'],
+            'incident_key' => $data['fingerprint'],
             'severity' => $data['severity'],
+            'source' => $data['source'],
             'title' => $data['title'],
             'description' => $data['description'],
             'context_json' => $data['context_json'],
         ]);
-        $find = $this->db->prepare('SELECT id FROM admin_incidents WHERE fingerprint = :fingerprint LIMIT 1');
-        $find->execute(['fingerprint' => $data['fingerprint']]);
-        return (int)$find->fetchColumn();
-    }
 
+        $find = $this->db->prepare(
+            'SELECT id FROM admin_system_incidents WHERE incident_key = :incident_key LIMIT 1'
+        );
+        $find->execute(['incident_key' => $data['fingerprint']]);
+        $incidentId = (int) $find->fetchColumn();
+        if ($incidentId < 1) {
+            throw new RuntimeException('Incident record could not be resolved after persistence.');
+        }
+
+        $context = is_string($data['context_json'] ?? null) ? json_decode($data['context_json'], true) : [];
+        if (!is_array($context)) $context = [];
+
+        $event = $this->db->prepare(
+            'INSERT INTO admin_incident_events
+                (incident_id, event_type, severity, source, request_id, http_status,
+                 request_method, route_path, exception_type, file_basename, line_number, context_json)
+             VALUES
+                (:incident_id, :event_type, :severity, :source, :request_id, :http_status,
+                 :request_method, :route_path, :exception_type, :file_basename, :line_number, :context_json)'
+        );
+        $event->execute([
+            'incident_id' => $incidentId,
+            'event_type' => mb_substr((string) ($context['event_type'] ?? 'server.error'), 0, 80),
+            'severity' => $data['severity'],
+            'source' => $data['source'],
+            'request_id' => isset($context['request_id']) ? mb_substr((string) $context['request_id'], 0, 64) : null,
+            'http_status' => isset($context['http_status']) ? max(100, min(599, (int) $context['http_status'])) : null,
+            'request_method' => isset($context['request_method']) ? mb_substr((string) $context['request_method'], 0, 10) : null,
+            'route_path' => isset($context['route_path']) ? mb_substr((string) $context['route_path'], 0, 255) : null,
+            'exception_type' => isset($context['exception_type']) ? mb_substr((string) $context['exception_type'], 0, 160) : null,
+            'file_basename' => isset($context['file']) ? basename((string) $context['file']) : null,
+            'line_number' => isset($context['line']) ? max(0, (int) $context['line']) : null,
+            'context_json' => $data['context_json'],
+        ]);
+        return $incidentId;
+    }
     public function updateIncident(int $id, string $status, ?int $assignedAdminId, int $actorAdminId): bool
     {
         $resolved = $status === 'resolved';
         $stmt = $this->db->prepare(
-            'UPDATE admin_incidents
+            'UPDATE admin_system_incidents
              SET status = :status,
-                 assigned_admin_id = :assigned,
                  resolved_by_admin_id = CASE WHEN :is_resolved_by = 1 THEN :actor ELSE NULL END,
                  resolved_at = CASE WHEN :is_resolved_at = 1 THEN CURRENT_TIMESTAMP ELSE NULL END,
                  updated_at = CURRENT_TIMESTAMP
@@ -250,17 +294,23 @@ final class AdminCapabilityRepository
         );
         $stmt->execute([
             'status' => $status,
-            'assigned' => $assignedAdminId,
             'is_resolved_by' => $resolved ? 1 : 0,
             'is_resolved_at' => $resolved ? 1 : 0,
             'actor' => $actorAdminId,
             'id' => $id,
         ]);
-        $check = $this->db->prepare('SELECT 1 FROM admin_incidents WHERE id = :id LIMIT 1');
+        $check = $this->db->prepare('SELECT 1 FROM admin_system_incidents WHERE id = :id LIMIT 1');
         $check->execute(['id' => $id]);
-        return $check->fetchColumn() !== false;
-    }
+        if ($check->fetchColumn() === false) return false;
 
+        $metadata = $this->db->prepare(
+            'INSERT INTO admin_incident_metadata (incident_id, assigned_admin_id)
+             VALUES (:incident_id, :assigned_admin_id)
+             ON DUPLICATE KEY UPDATE assigned_admin_id = VALUES(assigned_admin_id)'
+        );
+        $metadata->execute(['incident_id' => $id, 'assigned_admin_id' => $assignedAdminId]);
+        return true;
+    }
     public function tickets(string $status = '', int $limit = 100): array
     {
         $limit = max(1, min(200, $limit));
