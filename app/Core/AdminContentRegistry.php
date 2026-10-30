@@ -10,14 +10,14 @@ final class AdminContentRegistry
 {
     private const PAGES = [
         'home' => ['title' => 'صفحه اصلی', 'route' => '/', 'sections' => ['hero', 'categories', 'discovery', 'products', 'setup-preview', 'compatibility-preview', 'new-products', 'value-proposition', 'buying-guide', 'cta', 'smart-bundle']],
-        'about' => ['title' => 'درباره ما', 'route' => '/pages/content/about.php', 'sections' => ['intro', 'content', 'links']],
-        'contact' => ['title' => 'تماس با ما', 'route' => '/pages/content/contact.php', 'sections' => ['intro', 'content', 'links']],
+        'about' => ['title' => 'درباره ما', 'route' => '/pages/content/about.php', 'sections' => ['intro', 'focus', 'principles', 'links']],
+        'contact' => ['title' => 'تماس با ما', 'route' => '/pages/content/contact.php', 'sections' => ['intro', 'orders', 'returns', 'help']],
         'faq' => ['title' => 'سؤالات متداول', 'route' => '/pages/content/faq.php', 'sections' => ['intro', 'faq']],
-        'buying-guide' => ['title' => 'راهنمای خرید', 'route' => '/pages/content/buying-guide.php', 'sections' => ['intro', 'guide', 'content']],
-        'shipping' => ['title' => 'راهنمای ارسال', 'route' => '/pages/content/shipping.php', 'sections' => ['intro', 'content']],
-        'returns' => ['title' => 'شرایط مرجوعی', 'route' => '/pages/content/returns.php', 'sections' => ['intro', 'content']],
-        'privacy' => ['title' => 'حریم خصوصی', 'route' => '/pages/content/privacy.php', 'sections' => ['intro', 'content']],
-        'terms' => ['title' => 'قوانین و مقررات', 'route' => '/pages/content/terms.php', 'sections' => ['intro', 'content']],
+        'buying-guide' => ['title' => 'راهنمای خرید', 'route' => '/pages/content/buying-guide.php', 'sections' => ['intro', 'charger', 'usb-c-thunderbolt', 'hdmi', 'compatibility']],
+        'shipping' => ['title' => 'راهنمای ارسال', 'route' => '/pages/content/shipping.php', 'sections' => ['intro', 'options', 'cost', 'tracking', 'help']],
+        'returns' => ['title' => 'شرایط مرجوعی', 'route' => '/pages/content/returns.php', 'sections' => ['intro', 'eligibility', 'request', 'review', 'help']],
+        'privacy' => ['title' => 'حریم خصوصی', 'route' => '/pages/content/privacy.php', 'sections' => ['intro', 'data', 'purpose', 'security', 'questions']],
+        'terms' => ['title' => 'قوانین و مقررات', 'route' => '/pages/content/terms.php', 'sections' => ['intro', 'account', 'product', 'order', 'returns', 'review']],
     ];
 
     private const SECTION_TYPES = [
