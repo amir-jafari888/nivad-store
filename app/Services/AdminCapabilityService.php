@@ -213,6 +213,15 @@ final class AdminCapabilityService
         return $id > 0 && $this->repository->deleteView($id, $adminId);
     }
 
+    public function globalSearch(string $term): array
+    {
+        $term = trim($term);
+        if (mb_strlen($term) < 2 || mb_strlen($term) > 100) {
+            throw new InvalidArgumentException('عبارت جست‌وجو باید بین ۲ تا ۱۰۰ نویسه باشد.');
+        }
+        return $this->repository->globalSearch($term);
+    }
+
     public function revisions(string $entityType, int $entityId, int $limit = 50): array
     {
         $this->validateEntity($entityType, $entityId);
