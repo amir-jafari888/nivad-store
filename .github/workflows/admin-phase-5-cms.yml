@@ -10,11 +10,15 @@ on:
       - 'app/Repositories/AdminContentRepository.php'
       - 'app/Services/AdminContentService.php'
       - 'app/Services/CmsContentRenderer.php'
+      - 'app/Services/AdminMediaStorageService.php'
       - 'app/Controllers/AdminContentController.php'
       - 'app/Controllers/CmsMediaController.php'
       - 'admin/content/**'
       - 'admin/assets/css/content-editor.css'
       - 'admin/assets/js/modules/admin-content-editor.js'
+      - 'admin/assets/js/modules/admin-content-preview.js'
+      - 'admin/includes/auth.php'
+      - 'assets/css/main.css'
       - 'assets/css/**/cms-renderer-*.css'
       - 'database/migrations/20261030_admin_cms_phase5.sql'
       - 'routes/api.php'
@@ -47,6 +51,7 @@ jobs:
             app/Repositories/AdminContentRepository.php \
             app/Services/AdminContentService.php \
             app/Services/CmsContentRenderer.php \
+            app/Services/AdminMediaStorageService.php \
             app/Controllers/AdminContentController.php \
             app/Controllers/CmsMediaController.php \
             app/Core/AdminRoutePermissionMap.php \
@@ -71,6 +76,7 @@ jobs:
             admin/content/index.php \
             admin/content/preview.php \
             bin/admin-content-publish-due.php \
+            admin/includes/auth.php \
             tests/phase-5-cms-contract.php
           do
             php -l "$file"
@@ -78,5 +84,6 @@ jobs:
       - name: JavaScript syntax
         run: |
           node --input-type=module --check < admin/assets/js/modules/admin-content-editor.js
+          node --input-type=module --check < admin/assets/js/modules/admin-content-preview.js
       - name: CMS contract tests
         run: php tests/phase-5-cms-contract.php
