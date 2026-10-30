@@ -322,4 +322,21 @@ final class AdminCapabilityController extends Controller
             $this->success(['saved' => true], 'ترجیحات اعلان ذخیره شد.');
         } catch (InvalidArgumentException $exception) { $this->invalid($exception); }
     }
+
+    public function notificationPolicies(): never
+    {
+        $this->success(['items' => (new AdminNotificationCenterService())->policies()], 'سیاست‌های اعلان دریافت شدند.');
+    }
+
+    public function saveNotificationPolicy(): never
+    {
+        try {
+            $adminId = $this->adminId();
+            (new AdminNotificationCenterService())->savePolicy($this->payload());
+            AdminAuditTrail::record($adminId, 'update_notification_policy', 'admin_notification_event_policies', 'admin_notification_policy', null, 'Admin notification policy updated.');
+            $this->success(['saved' => true], 'سیاست اعلان ذخیره شد.');
+        } catch (InvalidArgumentException $exception) {
+            $this->invalid($exception);
+        }
+    }
 }

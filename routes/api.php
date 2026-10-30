@@ -2849,6 +2849,8 @@ return static function (Router $router): void {
     $router->post('/admin/capabilities/notifications/read-all', [AdminCapabilityController::class, 'markAllNotificationsRead'], $adminCapabilityWrite, 'admin.capabilities.notifications.read-all');
     $router->get('/admin/capabilities/notification-preferences', [AdminCapabilityController::class, 'notificationPreferences'], $adminCapabilityRead, 'admin.capabilities.notification-preferences.index');
     $router->put('/admin/capabilities/notification-preferences', [AdminCapabilityController::class, 'saveNotificationPreference'], $adminCapabilityWrite, 'admin.capabilities.notification-preferences.update');
+    $router->get('/admin/capabilities/notification-policies', [AdminCapabilityController::class, 'notificationPolicies'], $adminCapabilityRead, 'admin.capabilities.notification-policies.index');
+    $router->put('/admin/capabilities/notification-policies', [AdminCapabilityController::class, 'saveNotificationPolicy'], $adminCapabilityWrite, 'admin.capabilities.notification-policies.update');
 
     $router->get('/admin/capabilities/incidents', [AdminCapabilityController::class, 'incidents'], $adminCapabilityRead, 'admin.capabilities.incidents.index');
     $router->patch('/admin/capabilities/incidents/{id}', [AdminCapabilityController::class, 'updateIncident'], $adminCapabilityWrite, 'admin.capabilities.incidents.update');
