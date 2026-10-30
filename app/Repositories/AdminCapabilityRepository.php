@@ -11,6 +11,20 @@ final class AdminCapabilityRepository
         $this->db = $db ?? Database::connection();
     }
 
+    public function adminExists(int $adminId): bool
+    {
+        $stmt = $this->db->prepare('SELECT 1 FROM admin_users WHERE id = :id AND status = "active" AND deleted_at IS NULL LIMIT 1');
+        $stmt->execute(['id' => $adminId]);
+        return $stmt->fetchColumn() !== false;
+    }
+
+    public function customerExists(int $userId): bool
+    {
+        $stmt = $this->db->prepare('SELECT 1 FROM users WHERE id = :id AND deleted_at IS NULL LIMIT 1');
+        $stmt->execute(['id' => $userId]);
+        return $stmt->fetchColumn() !== false;
+    }
+
     public function notifications(int $adminId, int $limit = 50, bool $unreadOnly = false): array
     {
         $limit = max(1, min(100, $limit));
@@ -111,6 +125,8 @@ final class AdminCapabilityRepository
                 title = VALUES(title),
                 description = VALUES(description),
                 context_json = VALUES(context_json),
+                resolved_by_admin_id = IF(status = "resolved", NULL, resolved_by_admin_id),
+                resolved_at = IF(status = "resolved", NULL, resolved_at),
                 status = IF(status = "resolved", "open", status),
                 updated_at = CURRENT_TIMESTAMP'
         );
@@ -134,15 +150,16 @@ final class AdminCapabilityRepository
             'UPDATE admin_incidents
              SET status = :status,
                  assigned_admin_id = :assigned,
-                 resolved_by_admin_id = CASE WHEN :is_resolved = 1 THEN :actor ELSE NULL END,
-                 resolved_at = CASE WHEN :is_resolved = 1 THEN CURRENT_TIMESTAMP ELSE NULL END,
+                 resolved_by_admin_id = CASE WHEN :is_resolved_by = 1 THEN :actor ELSE NULL END,
+                 resolved_at = CASE WHEN :is_resolved_at = 1 THEN CURRENT_TIMESTAMP ELSE NULL END,
                  updated_at = CURRENT_TIMESTAMP
              WHERE id = :id'
         );
         $stmt->execute([
             'status' => $status,
             'assigned' => $assignedAdminId,
-            'is_resolved' => $resolved ? 1 : 0,
+            'is_resolved_by' => $resolved ? 1 : 0,
+            'is_resolved_at' => $resolved ? 1 : 0,
             'actor' => $actorAdminId,
             'id' => $id,
         ]);
