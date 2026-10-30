@@ -95,11 +95,11 @@ final class AdminAccessController extends Controller
 
     public function sessions(): never
     {
-        $adminId = $this->actorId();
+        $this->actorId();
         Session::start();
         $tokenHash = hash('sha256', Session::id());
-        $items = (new AdminSessionService())->activeForAdmin($adminId, $tokenHash);
-        $this->success(['items' => $items], 'نشست‌های فعال دیگر دریافت شدند.');
+        $items = (new AdminSessionService())->activeForAllAdmins($tokenHash);
+        $this->success(['items' => $items], 'نشست‌های فعال مدیران دریافت شدند.');
     }
 
     public function revokeSession(array $parameters = []): never
@@ -107,14 +107,27 @@ final class AdminAccessController extends Controller
         $adminId = $this->actorId();
         Session::start();
         $tokenHash = hash('sha256', Session::id());
-        $revoked = (new AdminSessionService())->revokeByIdForAdmin(
-            (int)($parameters['id'] ?? 0),
+        $sessionId = (int)($parameters['id'] ?? 0);
+        $sessions = new AdminSessionService();
+        $owner = $sessions->activeSessionOwner($sessionId, $tokenHash);
+        if ($owner === null) {
+            $this->error('نشست پیدا نشد، منقضی شده یا نشست فعلی است.', 404);
+        }
+        $revoked = $sessions->revokeByIdForAnyAdmin($sessionId, $tokenHash);
+        if (!$revoked) {
+            $this->error('لغو نشست انجام نشد؛ وضعیت نشست تغییر کرده است.', 409);
+        }
+        AdminAuditTrail::record(
             $adminId,
-            $tokenHash
+            'revoke_session',
+            'admin_sessions',
+            'admin_session',
+            $sessionId,
+            'An Admin session was revoked by an authorized Admin.',
+            null,
+            ['target_admin_id' => (int)$owner['admin_user_id']]
         );
-        if (!$revoked) $this->error('نشست پیدا نشد، منقضی شده یا نشست فعلی است.', 404);
-        AdminAuditTrail::record($adminId, 'revoke_session', 'admin_sessions', 'admin_session', (int)($parameters['id'] ?? 0), 'Another Admin session was revoked.');
-        $this->success(['revoked' => true], 'نشست انتخاب‌شده لغو شد.');
+        $this->success(['revoked' => true, 'admin_user_id' => (int)$owner['admin_user_id']], 'نشست انتخاب‌شده لغو شد.');
     }
 
     public function roles(): never
