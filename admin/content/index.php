@@ -76,7 +76,7 @@ if (!$adminAuth->can('admin.content.manage')) Response::redirect(url('/admin/acc
  </section>
 </div>
 <section class="cms-history-panel" data-history-panel hidden><div class="cms-modal-head"><h2>تاریخچه نسخه‌های سکشن</h2><button type="button" data-close-history>بستن</button></div><div data-history-list></div></section>
-<section class="cms-media-panel" data-media-panel hidden><div class="cms-modal-head"><h2>کتابخانه رسانه</h2><button type="button" data-close-media>بستن</button></div><form data-upload-form><input type="file" name="file" accept="image/jpeg,image/png,image/webp" required><input type="text" name="alt_text" maxlength="500" placeholder="متن جایگزین تصویر"><button type="submit">بارگذاری تصویر</button></form><div class="cms-media-grid" data-media-grid></div></section>
+<section class="cms-media-panel" data-media-panel hidden><div class="cms-modal-head"><h2>کتابخانه رسانه</h2><button type="button" data-close-media>بستن</button></div><form data-upload-form><input type="hidden" name="csrf_token" value="<?= e(Csrf::token()) ?>"><input type="file" name="file" accept="image/jpeg,image/png,image/webp" required><input type="text" name="alt_text" maxlength="500" placeholder="متن جایگزین تصویر"><button type="submit">بارگذاری تصویر</button></form><div class="cms-media-grid" data-media-grid></div></section>
 </main>
 <script type="module" src="<?= e(url('/admin/assets/js/modules/admin-content-editor.js')) ?>"></script>
 </body></html>
