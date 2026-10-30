@@ -127,6 +127,7 @@ ob_start(static function (string $html) use ($currentAdmin): string {
                     <a href="' . e(url('/admin/audit-logs')) . '">گزارش رویدادها</a>
                 </div>
             </details>
+            <a class="admin-shared-nav-link" href="' . e(url('/admin/operations')) . '">نقشه قابلیت‌های پنل</a>
             <a class="admin-shared-nav-link" href="' . e(url('/admin/settings')) . '">تنظیمات رابط کاربری</a>
         </nav>
         <div class="admin-shared-account">
