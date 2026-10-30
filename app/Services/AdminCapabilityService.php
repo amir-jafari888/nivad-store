@@ -231,7 +231,18 @@ final class AdminCapabilityService
         if (mb_strlen($term) < 2 || mb_strlen($term) > 100) {
             throw new InvalidArgumentException('عبارت جست‌وجو باید بین ۲ تا ۱۰۰ نویسه باشد.');
         }
-        return $this->repository->globalSearch($term);
+        $items = $this->repository->globalSearch($term);
+        $targets = [
+            'product' => url('/admin/products'),
+            'order' => url('/admin/orders'),
+            'customer' => url('/admin/users'),
+            'ticket' => url('/admin/capabilities/index.php#admin-tickets-title'),
+        ];
+        foreach ($items as &$item) {
+            $item['href'] = $targets[$item['type']] ?? url('/admin');
+        }
+        unset($item);
+        return $items;
     }
 
     public function revisions(string $entityType, int $entityId, int $limit = 50): array
