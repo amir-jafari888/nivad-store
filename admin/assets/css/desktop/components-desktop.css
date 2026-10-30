@@ -92,3 +92,8 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-access-form button{justify-self:start}
 .admin-access-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 .admin-access-permissions{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+
+.admin-global-search{width:min(36vw,460px)}
+.admin-global-search-shortcut{display:block;position:absolute;inset-inline-end:10px;inset-block-end:9px;padding:2px 6px;border:1px solid var(--admin-color-border);border-radius:5px;color:var(--admin-color-text-muted);font-size:.7rem;pointer-events:none}
+.admin-global-search input{padding-inline-end:74px}
