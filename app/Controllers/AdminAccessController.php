@@ -64,6 +64,19 @@ final class AdminAccessController extends Controller
         }
     }
 
+    public function deleteAdmin(array $parameters = []): never
+    {
+        try {
+            $adminId = $this->actorId();
+            $deleted = $this->service->deleteAdmin((int)($parameters['id'] ?? 0), $adminId);
+            if (!$deleted) $this->error('مدیر پیدا نشد.', 404);
+            AdminAuditTrail::record($adminId, 'soft_delete', 'admin_users', 'admin_user', (int)($parameters['id'] ?? 0), 'Admin account soft-deleted and sessions revoked.');
+            $this->success(['deleted' => true], 'حساب مدیر غیرفعال و نشست‌های او لغو شدند.');
+        } catch (InvalidArgumentException $exception) {
+            $this->invalid($exception);
+        }
+    }
+
     public function assignAdminRoles(array $parameters = []): never
     {
         try {
