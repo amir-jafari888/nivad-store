@@ -88,3 +88,23 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-capabilities-feedback{padding:10px 12px;border-radius:var(--admin-radius-md);background:var(--admin-color-primary-soft)}
 .admin-capabilities-feedback[data-state="error"]{color:var(--admin-color-error)}
 .admin-capabilities-eyebrow{font-size:.75rem;letter-spacing:.08em;color:var(--admin-color-primary)}
+
+
+.admin-access-main{display:grid;gap:16px;padding:16px;max-width:100%;margin-inline:auto}
+.admin-access-header{display:flex;flex-direction:column;gap:10px}
+.admin-access-header h1{margin:4px 0;font-size:1.4rem}
+.admin-access-header p{color:var(--admin-color-text-muted);line-height:1.8}
+.admin-access-panel{display:grid;gap:14px;padding:16px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-lg);background:var(--admin-color-surface)}
+.admin-access-panel h2{margin:0;font-size:1.1rem}
+.admin-access-form{display:grid;gap:12px}
+.admin-access-form label{display:grid;gap:6px}
+.admin-access-form input,.admin-access-form select,.admin-access-row select{width:100%;min-width:0;padding:10px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);background:var(--admin-color-bg);color:var(--admin-color-text);font:inherit}
+.admin-access-form select[multiple],.admin-access-row select[multiple]{min-height:100px}
+.admin-access-form button,.admin-access-row button{min-height:40px;padding:8px 12px;border:0;border-radius:var(--admin-radius-md);background:var(--admin-color-primary);color:#fff}
+.admin-access-list{display:grid;gap:10px}
+.admin-access-row{display:grid;gap:8px;padding:12px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);overflow-wrap:anywhere}
+.admin-access-row p{margin:0;color:var(--admin-color-text-muted)}
+.admin-access-permissions{display:grid;gap:8px;max-height:420px;overflow:auto;padding:10px;border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md)}
+.admin-access-permission{display:flex;gap:8px;align-items:flex-start;font-size:.85rem}
+.admin-access-feedback{padding:10px;border-radius:var(--admin-radius-md);background:var(--admin-color-primary-soft)}
+.admin-access-feedback[data-state="error"]{color:var(--admin-color-error)}
