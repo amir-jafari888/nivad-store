@@ -321,16 +321,22 @@ final class AdminCapabilityService
         }
         $items = $this->repository->globalSearch($term);
         $targets = [
-            'product' => url('/admin/products'),
-            'order' => url('/admin/orders'),
-            'customer' => url('/admin/users'),
-            'ticket' => url('/admin/capabilities/index.php#admin-tickets-title'),
+            'product' => ['permission' => 'admin.products.index', 'href' => url('/admin/products')],
+            'order' => ['permission' => 'admin.orders.index', 'href' => url('/admin/orders')],
+            'customer' => ['permission' => 'admin.users.index', 'href' => url('/admin/users')],
+            'ticket' => ['permission' => 'admin.capabilities.tickets.index', 'href' => url('/admin/capabilities/index.php#admin-tickets-title')],
         ];
-        foreach ($items as &$item) {
-            $item['href'] = $targets[$item['type']] ?? url('/admin');
+        $adminId = (new AdminAuthService())->requireAdminId();
+        $visible = [];
+        foreach ($items as $item) {
+            $target = $targets[$item['type']] ?? null;
+            if ($target === null || !Authorization::can($adminId, $target['permission'])) {
+                continue;
+            }
+            $item['href'] = $target['href'];
+            $visible[] = $item;
         }
-        unset($item);
-        return $items;
+        return $visible;
     }
 
     public function revisions(string $entityType, int $entityId, int $limit = 50): array
