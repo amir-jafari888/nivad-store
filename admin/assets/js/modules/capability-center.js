@@ -155,6 +155,19 @@ const adminCapabilityCenter = () => {
     });
   };
 
+  const loadHealth = async () => {
+    const data = await request("/health");
+    const checks = Object.entries(data.checks || {}).map(([name, value]) => ({
+      name, status: value.status, detail: value.version || value.value || ""
+    }));
+    renderRows("health", checks, {
+      title: row => row.name + " · " + row.status,
+      details: row => row.detail
+    });
+    const target = root.querySelector('[data-capability-list="health"]');
+    if (target) target.prepend(node("strong", "وضعیت کلی: " + data.status + " · " + data.checked_at));
+  };
+
   const loadPreferences = async () => {
     const data = await request("/preferences");
     const rows = Object.entries(data.items || {}).map(([key, item]) => ({ key, ...item }));
@@ -182,7 +195,7 @@ const adminCapabilityCenter = () => {
   const load = async name => {
     const loaders = {
       notifications: loadNotifications, incidents: loadIncidents, tickets: loadTickets,
-      analytics: loadAnalytics, preferences: loadPreferences, "saved-views": loadSavedViews
+      analytics: loadAnalytics, health: loadHealth, preferences: loadPreferences, "saved-views": loadSavedViews
     };
     if (!loaders[name]) return;
     try { await loaders[name](); setFeedback("اطلاعات با موفقیت دریافت شد."); }
@@ -261,7 +274,7 @@ const adminCapabilityCenter = () => {
     });
   });
 
-  ["notifications", "incidents", "tickets", "analytics", "preferences", "saved-views"].forEach(load);
+  ["notifications", "incidents", "tickets", "analytics", "health", "preferences", "saved-views"].forEach(load);
 };
 
 export default adminCapabilityCenter;
