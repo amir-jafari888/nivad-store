@@ -76,7 +76,6 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
 
     if (
         stripos($html, '<body') === false ||
-        stripos($html, 'admin-dashboard-page') !== false ||
         stripos($html, 'admin-shared-sidebar') !== false
     ) {
         return $html;
@@ -123,6 +122,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         </a>
         <nav class="admin-shared-nav">
             <a class="admin-shared-nav-link" href="' . e(url('/admin')) . '">داشبورد</a>
+            <a class="admin-shared-nav-link" href="' . e(url('/admin/profile/index.php')) . '">پروفایل مدیر</a>
             <details class="admin-shared-nav-group">
                 <summary>کاتالوگ محصولات</summary>
                 <div class="admin-shared-submenu">
