@@ -18,6 +18,7 @@ on:
       - "admin/access/**"
       - "admin/assets/js/modules/access-center.js"
       - "test-admin-phase-2-rbac.php"
+      - "test-phase-56-admin-route-permissions.php"
       - ".github/workflows/admin-phase-2-rbac-security.yml"
   push:
     branches:
@@ -36,6 +37,7 @@ on:
       - "admin/access/**"
       - "admin/assets/js/modules/access-center.js"
       - "test-admin-phase-2-rbac.php"
+      - "test-phase-56-admin-route-permissions.php"
       - ".github/workflows/admin-phase-2-rbac-security.yml"
 
 jobs:
@@ -61,6 +63,7 @@ jobs:
           php -l app/Controllers/AdminAccessController.php
           php -l routes/api.php
           php -l test-admin-phase-2-rbac.php
+          php -l test-phase-56-admin-route-permissions.php
       - name: Run Phase 2 RBAC and security contract test
         run: php test-admin-phase-2-rbac.php
       - name: Run existing route permission regression
