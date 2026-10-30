@@ -298,6 +298,31 @@ final class ProductController extends Controller
             );
         }
 
+        $adminId = AdminAuth::id();
+        if ($adminId !== null) {
+            try {
+                (new AdminCapabilityService())->createRevision($adminId, [
+                    'entity_type' => 'product',
+                    'entity_id' => $id,
+                    'snapshot' => get_object_vars($updated),
+                    'change_summary' => 'Product updated through Admin API.',
+                ]);
+                AdminAuditTrail::record(
+                    $adminId,
+                    'update',
+                    'products',
+                    'product',
+                    $id,
+                    'Product updated through Admin API.'
+                );
+            } catch (Throwable $revisionFailure) {
+                Logger::error('Product update succeeded but revision snapshot could not be stored.', [
+                    'product_id' => $id,
+                    'exception_type' => get_class($revisionFailure),
+                ]);
+            }
+        }
+
         $this->success(
             $updated,
             'محصول با موفقیت بروزرسانی شد.'
