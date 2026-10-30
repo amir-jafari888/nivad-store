@@ -48,6 +48,7 @@ final class AdminCapabilityController extends Controller
     {
         try {
             $id = $this->service->createNotification($this->adminId(), $this->payload());
+            AdminAuditTrail::record($this->adminId(), 'create', 'admin_notifications', 'admin_notification', $id, 'Admin notification created.');
             $this->success(['id' => $id], 'اعلان مدیریتی ثبت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -61,6 +62,7 @@ final class AdminCapabilityController extends Controller
             if (!$updated) {
                 $this->error('اعلان پیدا نشد یا قبلاً خوانده شده است.', 404);
             }
+            AdminAuditTrail::record($this->adminId(), 'mark_read', 'admin_notifications', 'admin_notification', (int)($parameters['id'] ?? 0), 'Admin notification marked as read.');
             $this->success(['updated' => true], 'اعلان خوانده‌شده ثبت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -96,6 +98,7 @@ final class AdminCapabilityController extends Controller
             if (!$updated) {
                 $this->error('رخداد پیدا نشد یا تغییری اعمال نشد.', 404);
             }
+            AdminAuditTrail::record($this->adminId(), 'update_status', 'admin_incidents', 'admin_incident', (int)($parameters['id'] ?? 0), 'Admin incident status or assignment changed.', null, ['status' => $data['status'] ?? null, 'assigned_admin_id' => $assigned]);
             $this->success(['updated' => true], 'وضعیت رخداد به‌روزرسانی شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -128,6 +131,7 @@ final class AdminCapabilityController extends Controller
     {
         try {
             $id = $this->service->createTicket($this->adminId(), $this->payload());
+            AdminAuditTrail::record($this->adminId(), 'create', 'admin_support', 'admin_support_ticket', $id, 'Admin support ticket created.');
             $this->success(['id' => $id], 'تیکت ایجاد شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -144,6 +148,7 @@ final class AdminCapabilityController extends Controller
                 (string)($data['message'] ?? ''),
                 (bool)($data['is_internal'] ?? false)
             );
+            AdminAuditTrail::record($this->adminId(), 'create_message', 'admin_support', 'admin_support_message', $id, 'Admin support message created.', null, ['is_internal' => (bool)($data['is_internal'] ?? false)]);
             $this->success(['id' => $id], 'پیام تیکت ثبت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -166,6 +171,7 @@ final class AdminCapabilityController extends Controller
             if (!$updated) {
                 $this->error('تیکت پیدا نشد یا تغییری اعمال نشد.', 404);
             }
+            AdminAuditTrail::record($this->adminId(), 'update', 'admin_support', 'admin_support_ticket', (int)($parameters['id'] ?? 0), 'Admin support ticket updated.', null, ['status' => $data['status'] ?? null, 'priority' => $data['priority'] ?? null, 'assigned_admin_id' => $assigned]);
             $this->success(['updated' => true], 'تیکت به‌روزرسانی شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -198,6 +204,7 @@ final class AdminCapabilityController extends Controller
                 (string)($data['key'] ?? ''),
                 $data['value'] ?? null
             );
+            AdminAuditTrail::record($this->adminId(), 'update_preference', 'admin_preferences', 'admin_preference', null, 'Admin preference updated.', null, ['key' => $data['key'] ?? null]);
             $this->success(['saved' => true], 'تنظیمات مدیر ذخیره شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -221,6 +228,7 @@ final class AdminCapabilityController extends Controller
     {
         try {
             $id = $this->service->saveView($this->adminId(), $this->payload());
+            AdminAuditTrail::record($this->adminId(), 'create', 'admin_saved_views', 'admin_saved_view', $id, 'Admin saved view created.');
             $this->success(['id' => $id], 'نمای ذخیره‌شده ثبت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -233,6 +241,7 @@ final class AdminCapabilityController extends Controller
         if (!$deleted) {
             $this->error('نمای ذخیره‌شده پیدا نشد.', 404);
         }
+        AdminAuditTrail::record($this->adminId(), 'delete', 'admin_saved_views', 'admin_saved_view', (int)($parameters['id'] ?? 0), 'Admin saved view deleted.');
         $this->success(['deleted' => true], 'نمای ذخیره‌شده حذف شد.');
     }
 
@@ -299,6 +308,7 @@ final class AdminCapabilityController extends Controller
     {
         try {
             $id = $this->service->createRevision($this->adminId(), $this->payload());
+            AdminAuditTrail::record($this->adminId(), 'create_revision', 'admin_content_revisions', 'content_revision', $id, 'Content snapshot revision created.');
             $this->success(['id' => $id], 'نسخه محتوا ثبت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
