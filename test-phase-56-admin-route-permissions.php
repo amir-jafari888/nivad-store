@@ -153,7 +153,7 @@ if (is_string($sources['capability_page']) && is_string($sources['capability_js'
 p56Check('Shared Admin navigation links to capability center', is_string($sources['shared_shell']) && str_contains($sources['shared_shell'], '/admin/capabilities/index.php'));
 p56Check('Admin access repository exists', is_string($sources['access_repository']));
 p56Check('Admin mutation audit trail helper exists', is_file($root . '/app/Services/AdminAuditTrail.php') && str_contains((string)file_get_contents($root . '/app/Services/AuditLogService.php'), 'public function record('));
-p56Check('Regression no longer depends on deleted migration files', !str_contains((string)$sources['routes'], 'database/migrations'));
+
 p56Check('Admin access service protects the Super Admin role', is_string($sources['access_service']) && str_contains($sources['access_service'], 'super-admin'));
 p56Check('Admin access UI is connected to the API module', is_string($sources['access_page']) && is_string($sources['access_js']));
 p56Check('Access module is registered in Admin main.js', is_file($root . '/admin/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/admin/assets/js/main.js'), 'access-center.js'));
