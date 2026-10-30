@@ -33,6 +33,7 @@ const deferredModuleManifest = [
   { path: "./modules/product-media.js", aliases: ["product-media"] },
   { path: "./modules/customer-shop.js", aliases: ["customer-shop"] },
   { path: "./modules/account.js", aliases: ["account"] },
+  { path: "./modules/account-support.js", aliases: ["customer-support-page"] },
   { path: "./modules/customer-commerce.js", aliases: ["customer-commerce"] },
   { path: "./modules/auth.js", aliases: ["auth"] },
   { path: "./modules/finder.js", aliases: ["finder"] },
