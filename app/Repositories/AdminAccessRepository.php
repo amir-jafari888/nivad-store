@@ -127,13 +127,44 @@ final class AdminAccessRepository
 
     public function replaceAdminRoles(int $adminId, array $roleIds): void
     {
-        $delete = $this->db->prepare('DELETE FROM admin_user_roles WHERE admin_user_id = :admin_id');
-        $delete->execute(['admin_id' => $adminId]);
-        if ($roleIds === []) return;
-        $insert = $this->db->prepare('INSERT INTO admin_user_roles (admin_user_id, role_id) VALUES (:admin_id, :role_id)');
-        foreach ($roleIds as $roleId) {
-            $insert->execute(['admin_id' => $adminId, 'role_id' => $roleId]);
+        $ownsTransaction = !$this->db->inTransaction();
+        if ($ownsTransaction) {
+            $this->db->beginTransaction();
         }
+        try {
+            $delete = $this->db->prepare('DELETE FROM admin_user_roles WHERE admin_user_id = :admin_id');
+            $delete->execute(['admin_id' => $adminId]);
+            if ($roleIds !== []) {
+                $insert = $this->db->prepare('INSERT INTO admin_user_roles (admin_user_id, role_id) VALUES (:admin_id, :role_id)');
+                foreach ($roleIds as $roleId) {
+                    $insert->execute(['admin_id' => $adminId, 'role_id' => $roleId]);
+                }
+            }
+            if ($ownsTransaction) {
+                $this->db->commit();
+            }
+        } catch (Throwable $exception) {
+            if ($ownsTransaction && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $exception;
+        }
+    }
+
+    public function adminHasRoleSlug(int $adminId, string $slug): bool
+    {
+        $stmt = $this->db->prepare(
+            'SELECT 1
+             FROM admin_user_roles ur
+             INNER JOIN admin_roles r ON r.id = ur.role_id
+             WHERE ur.admin_user_id = :admin_id
+               AND r.slug = :slug
+               AND r.status = "active"
+               AND r.deleted_at IS NULL
+             LIMIT 1'
+        );
+        $stmt->execute(['admin_id' => $adminId, 'slug' => $slug]);
+        return $stmt->fetchColumn() !== false;
     }
 
     public function createRole(array $data): int
