@@ -1,0 +1,106 @@
+name: Admin Panel Foundation Regression
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "feature/admin-panel-implementation-2026-10-29"
+      - "feature/admin-panel-clean-2026-10-29"
+
+permissions:
+  contents: read
+
+jobs:
+  admin-foundation-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Lint changed and shared foundation PHP files
+        run: |
+          php -l app/Core/AdminPermissionCatalog.php
+          php -l app/Core/SensitiveDataRedactor.php
+          php -l app/Core/AdminFeatureRegistry.php
+          php -l app/Core/AdminCapabilityContractRegistry.php
+          php -l app/Core/AdminActorContext.php
+          php -l app/Core/AdminRouteFeatureMap.php
+          php -l app/Core/AdminRoutePermissionMap.php
+          php -l app/Core/AdminEmailOutboxRepositoryInterface.php
+          php -l app/Core/AdminFoundationRepositoryInterface.php
+          php -l app/Core/AdminRequestContext.php
+          php -l app/Core/AdminHttpErrorResponder.php
+          php -l app/Core/ErrorHandler.php
+          php -l app/Middleware/AdminFeatureMiddleware.php
+          php -l app/Middleware/AdminRoutePermissionMiddleware.php
+          php -l app/Services/AdminFeatureAccessService.php
+          php -l app/Services/AdminFeatureContractValidator.php
+          php -l app/Services/AdminCapabilityReadinessService.php
+          php -l app/Services/AdminHealthCheckService.php
+          php -l app/Services/AdminMediaStorageService.php
+          php -l app/Services/AdminSavedViewValidator.php
+          php -l app/Services/AdminGlobalSearchService.php
+          php -l app/Services/AdminContentPublishingPolicy.php
+          php -l app/Services/AdminContentRevisionPolicy.php
+          php -l app/Services/AdminReportExportService.php
+          php -l app/Services/AdminReportPolicy.php
+          php -l app/Services/AdminBulkOperationPolicy.php
+          php -l app/Core/AdminBulkOperationRegistry.php
+          php -l app/Core/AdminSearchProviderInterface.php
+          php -l app/Services/AdminSearchPolicy.php
+          php -l app/Services/AdminPreviewTokenService.php
+          php -l app/Services/AdminOperationPolicy.php
+          php -l app/Services/AdminApprovalPolicy.php
+          php -l app/Services/AdminIncidentPolicy.php
+          php -l app/Services/AdminMediaLibraryPolicy.php
+          php -l app/Services/AdminEmailQueuePolicy.php
+          php -l app/Services/GmailSmtpTransport.php
+          php -l app/Middleware/AdminAuthMiddleware.php
+          php -l app/Repositories/AdminFoundationRepository.php
+          php -l app/Repositories/AdminNotificationRepository.php
+          php -l app/Repositories/AdminSessionRepository.php
+          php -l app/Repositories/AuditLogRepository.php
+          php -l app/Services/AdminActivityAuditService.php
+          php -l app/Services/AdminAuditDiffService.php
+          php -l app/Services/AdminAuditSnapshotService.php
+          php -l app/Services/AdminEmailOutboxWorker.php
+          php -l app/Services/AdminFoundationService.php
+          php -l app/Services/AdminNotificationService.php
+          php -l app/Services/AdminNotificationPolicy.php
+          php -l app/Services/AdminAuthenticationAuditService.php
+          php -l app/Services/AdminAccountPolicy.php
+          php -l app/Services/AdminSupportTicketPolicy.php
+          php -l app/Services/AdminSecurityEventPolicy.php
+          php -l app/Services/AdminSessionPolicy.php
+          php -l app/Services/AdminSessionService.php
+          php -l app/Services/AuthorizationService.php
+          php -l test-admin-auth-route-regression.php
+          php -l test-admin-panel-foundation.php
+          php -l test-admin-nondb-foundations.php
+          php -l test-admin-route-contracts.php
+          php -l test-admin-capability-contracts.php
+          php -l test-admin-capability-policies.php
+
+      - name: Run authentication and authorization regression
+        run: php test-admin-auth-route-regression.php
+
+      - name: Run shared foundation regression
+        run: php test-admin-panel-foundation.php
+
+      - name: Run non-database foundation contracts
+        run: php test-admin-nondb-foundations.php
+
+      - name: Run admin capability contracts
+        run: php test-admin-capability-contracts.php
+
+      - name: Run admin route contract audit
+        run: php test-admin-route-contracts.php
+
+      - name: Run admin capability policy regression
+        run: php test-admin-capability-policies.php

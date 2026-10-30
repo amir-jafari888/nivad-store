@@ -12,45 +12,51 @@ final class ErrorHandler
             return;
         }
 
-        set_exception_handler(
-            [self::class, 'handleException']
-        );
-
-        set_error_handler(
-            [self::class, 'handleError']
-        );
-
+        set_exception_handler([self::class, 'handleException']);
+        set_error_handler([self::class, 'handleError']);
         self::$registered = true;
     }
 
-    public static function handleException(
-        Throwable $exception
-    ): never {
+    public static function handleException(Throwable $exception): never
+    {
         $statusCode = 500;
         $message = 'خطایی در سرور رخ داده است.';
         $errors = [];
 
         if ($exception instanceof AppException) {
             $statusCode = $exception->statusCode();
-            $message = $exception->getMessage();
-            $errors = $exception->errors();
+            if ($statusCode < 500) {
+                $message = $exception->getMessage();
+                $errors = $exception->errors();
+            }
         }
 
-        Logger::error(
-            'Unhandled exception.',
-            [
-                'type' => get_class($exception),
-                'message' => $exception->getMessage(),
-                'file' => $exception->getFile(),
-                'line' => $exception->getLine(),
-            ]
-        );
+        // Do not log the raw exception message: database/provider exceptions
+        // can contain credentials, SQL fragments, or personal data.
+        Logger::error('Unhandled exception.', [
+            'type' => get_class($exception),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'request_id' => AdminRequestContext::id(),
+        ]);
 
-        Response::error(
-            $message,
-            $statusCode,
-            $errors
-        );
+        AdminRequestContext::publishResponseHeader();
+
+        $path = parse_url(Request::uri(), PHP_URL_PATH);
+        $isAdminBrowserRequest = is_string($path)
+            && ($path === '/admin' || str_starts_with($path, '/admin/'))
+            && !AdminHttpErrorResponder::expectsJson();
+
+        if ($isAdminBrowserRequest) {
+            AdminHttpErrorResponder::respond($statusCode, $message, $errors);
+        }
+
+        Response::json([
+            'success' => false,
+            'message' => $message,
+            'errors' => $errors,
+            'request_id' => AdminRequestContext::id(),
+        ], $statusCode);
     }
 
     public static function handleError(

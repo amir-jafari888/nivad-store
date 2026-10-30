@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 final class AdminAuthenticationAuditService
 {
+    private AdminSecurityEventPolicy $securityEventPolicy;
+
+    public function __construct(?AdminSecurityEventPolicy $securityEventPolicy = null)
+    {
+        $this->securityEventPolicy = $securityEventPolicy ?? new AdminSecurityEventPolicy();
+    }
     public function login(
         int $adminUserId,
         string $identifier
@@ -14,12 +20,12 @@ final class AdminAuthenticationAuditService
 
         Logger::info(
             'Admin login successful.',
-            [
+            $this->eventContext('admin.auth.login_succeeded', [
                 'admin_user_id' => $adminUserId,
                 'identifier' => $identifier,
                 'ip_address' => Request::ip(),
                 'user_agent' => Request::userAgent(),
-            ]
+            ])
         );
     }
 
@@ -29,12 +35,12 @@ final class AdminAuthenticationAuditService
     ): void {
         Logger::warning(
             'Admin login failed.',
-            [
+            $this->eventContext('admin.auth.login_failed', [
                 'identifier' => $identifier,
                 'reason' => $reason,
                 'ip_address' => Request::ip(),
                 'user_agent' => Request::userAgent(),
-            ]
+            ])
         );
     }
 
@@ -49,11 +55,11 @@ final class AdminAuthenticationAuditService
     ): void {
         Logger::info(
             'Admin logout.',
-            [
+            $this->eventContext('admin.auth.logout', [
                 'admin_user_id' => $adminUserId,
                 'ip_address' => Request::ip(),
                 'user_agent' => Request::userAgent(),
-            ]
+            ])
         );
     }
 
@@ -63,12 +69,12 @@ final class AdminAuthenticationAuditService
     ): void {
         Logger::warning(
             'Admin session invalid.',
-            [
+            $this->eventContext('admin.auth.session_invalid', [
                 'admin_user_id' => $adminUserId,
                 'reason' => $reason,
                 'ip_address' => Request::ip(),
                 'user_agent' => Request::userAgent(),
-            ]
+            ])
         );
     }
 
@@ -79,6 +85,19 @@ final class AdminAuthenticationAuditService
             $adminUserId,
             'session_expired'
         );
+    }
+
+    private function eventContext(string $eventKey, array $context): array
+    {
+        $definition = $this->securityEventPolicy->requireDefinition($eventKey);
+
+        return SensitiveDataRedactor::redact(array_merge($context, [
+            'event_key' => $definition['event_key'],
+            'severity' => $definition['severity'],
+            'notify_email' => $definition['notify_email'],
+            'open_incident' => $definition['open_incident'],
+            'request_id' => AdminRequestContext::id(),
+        ]));
     }
 
     public function containsSensitiveData(

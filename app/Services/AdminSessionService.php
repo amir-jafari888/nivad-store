@@ -82,6 +82,16 @@ final class AdminSessionService
             );
     }
 
+    public function findForMonitoring(
+        int $limit = 100,
+        ?int $adminUserId = null
+    ): array {
+        return $this->sessions->findForMonitoring(
+            $limit,
+            $adminUserId
+        );
+    }
+
     public function cleanupExpired(): int
     {
         return $this->sessions

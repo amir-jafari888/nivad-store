@@ -2,68 +2,48 @@
 
 declare(strict_types=1);
 
-final class AdminAuthMiddleware
-implements MiddlewareInterface
+final class AdminAuthMiddleware implements MiddlewareInterface
 {
-    public function handle(
-        RequestContext $context,
-        callable $next
-    ): mixed {
-        $service =
-            new AdminAuthService();
+    public function handle(RequestContext $context, callable $next): mixed
+    {
+        AdminRequestContext::publishResponseHeader();
 
-        if (
-            !$service->validateCurrentSession()
-        ) {
-            if (
-                Request::acceptsJson() ||
-                Request::isAjax() ||
-                Request::isJson()
-            ) {
-                Response::json(
-                    [
-                        'success' => false,
-                        'message' =>
-                        'نشست مدیر معتبر نیست.',
-                    ],
-                    401
-                );
+        $service = new AdminAuthService();
+        $expectsJson = AdminHttpErrorResponder::expectsJson();
+
+        if (!$service->validateCurrentSession()) {
+            if ($expectsJson) {
+                Response::json([
+                    'success' => false,
+                    'message' => 'نشست مدیر معتبر نیست.',
+                    'request_id' => AdminRequestContext::id(),
+                ], 401);
             }
 
-            Response::redirect(
-                url('/admin/login')
-            );
+            Response::redirect(url('/admin/auth/login.php'));
         }
 
         $adminUserId = AdminAuth::id();
 
-        if ($adminUserId === null) {
-            Response::json(
-                [
+        if (!is_int($adminUserId) || $adminUserId < 1) {
+            if ($expectsJson) {
+                Response::json([
                     'success' => false,
-                    'message' =>
-                    'هویت مدیر پیدا نشد.',
-                ],
-                401
-            );
+                    'message' => 'هویت مدیر پیدا نشد.',
+                    'request_id' => AdminRequestContext::id(),
+                ], 401);
+            }
+
+            Response::redirect(url('/admin/auth/login.php'));
         }
 
-        $authorization =
-            Authorization::check(
-                $adminUserId,
-                'admin.access'
-            );
+        $authorization = Authorization::check($adminUserId, 'admin.access');
 
         if (!$authorization->allowed()) {
-            Response::json(
-                [
-                    'success' => false,
-                    'message' =>
-                    'دسترسی به بخش مدیریت مجاز نیست.',
-                    'reason' =>
-                    $authorization->reason(),
-                ],
-                403
+            AdminHttpErrorResponder::respond(
+                403,
+                'دسترسی به بخش مدیریت مجاز نیست.',
+                ['reason' => $authorization->reason()]
             );
         }
 
