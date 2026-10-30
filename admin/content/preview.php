@@ -14,7 +14,7 @@ if (!$adminAuth->can('admin.content.manage')) { http_response_code(403); exit('F
  const root=document.querySelector('[data-preview-root]');
  const safeUrl=value=>{const v=String(value||'').trim();return v.startsWith('/')&&!v.startsWith('//')?v:(/^https:\/\/[a-z0-9.-]+(?::[0-9]+)?(?:\/[^\s]*)?$/i.test(v)?v:'#')};
  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n};
- const image=(id,alt)=>{if(!Number.isInteger(Number(id))||Number(id)<1)return null;const n=el('img','cms-live-section__image');n.src='<?= e(url('/content-media/')) ?>'+Number(id);n.alt=String(alt||'');return n};
+ const image=(id,alt)=>{if(!Number.isInteger(Number(id))||Number(id)<1)return null;const n=el('img','cms-live-section__image');n.src='<?= e(url('/api/content-media/')) ?>'+Number(id);n.alt=String(alt||'');return n};
  const render=data=>{
   const section=el('section','cms-live-section cms-live-section--'+String(data.section_type||'custom').replace(/[^a-z0-9_-]/g,''));
   const style=data.style||{}, vars={background:'--cms-background',gradient_from:'--cms-gradient-from',gradient_to:'--cms-gradient-to',color:'--cms-color',muted_color:'--cms-muted',accent_color:'--cms-accent'};
@@ -22,7 +22,7 @@ if (!$adminAuth->can('admin.content.manage')) { http_response_code(403); exit('F
   if(style.background_type==='gradient'){section.style.setProperty('--cms-gradient-angle',Math.max(0,Math.min(360,Number(style.gradient_angle)||135))+'deg')}
   ['padding_top','padding_bottom','radius','container_width'].forEach(k=>{if(Number.isFinite(Number(style[k])))section.style.setProperty('--cms-'+({padding_top:'padding-top',padding_bottom:'padding-bottom',radius:'radius',container_width:'container-width'}[k]),Math.max(0,Math.min(1600,Number(style[k])))+'px')});
   if(['right','center','left'].includes(style.text_align))section.style.setProperty('--cms-text-align',style.text_align);
-  if(style.background_type==='solid'&&style.background)section.style.style=style.background;
+  if(style.background_type==='solid'&&style.background)section.style.setProperty('--cms-background',style.background);
   const inner=el('div','cms-live-section__inner'),c=data.content||{};
   if(c.eyebrow)inner.append(el('p','cms-live-section__eyebrow',c.eyebrow));
   if(c.heading||data.title)inner.append(el('h2','cms-live-section__heading',c.heading||data.title));
