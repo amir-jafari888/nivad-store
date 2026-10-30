@@ -47,6 +47,7 @@ jobs:
             app/Services/AdminNotificationCenterService.php
             app/Services/AdminNotificationEventDispatcher.php
             admin/notifications/index.php
+            admin/notifications/send-customer.php
             bin/process-admin-email-outbox.php
             tests/phase-3-admin-notifications-contract.php
           )
