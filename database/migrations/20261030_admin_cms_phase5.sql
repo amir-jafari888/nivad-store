@@ -1,5 +1,5 @@
 -- NIVAD Phase 5 CMS — additive migration. Does not alter or drop existing tables.
--- Requires the Phase 3/4 admin foundation migration to have been applied first.
+-- Requires the existing Admin Panel foundation migration that creates admin_content_revisions and admin_media_assets.
 -- Run only after a verified database backup. This migration is NOT auto-executed.
 
 CREATE TABLE IF NOT EXISTS admin_cms_pages (
@@ -63,7 +63,7 @@ ON DUPLICATE KEY UPDATE page_key = VALUES(page_key);
 -- Initial landing-page section contracts. content_json uses safe structured fields,
 -- not executable HTML. The renderer binds these fields to the existing component classes.
 INSERT INTO admin_cms_sections (page_id, section_key, section_type, title, sort_order, status, content_json, style_json, created_by_admin_id, updated_by_admin_id)
-SELECT p.id, seed.section_key, seed.section_type, seed.title, seed.sort_order, 'draft', seed.content_json, seed.style_json, 1, 1
+SELECT p.id, seed.section_key, seed.section_type, seed.title, seed.sort_order, 'draft', seed.content_json, seed.style_json, NULL, NULL
 FROM admin_cms_pages p
 JOIN (
     SELECT 'hero' section_key, 'hero' section_type, 'Hero اصلی' title, 10 sort_order,
