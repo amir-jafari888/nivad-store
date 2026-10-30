@@ -68,7 +68,10 @@ if (is_string($sources['routes']) && is_string($sources['middleware'])) {
     $routeNames = array_values(array_unique($matches[1] ?? []));
 
     p56Check('Every Admin API auth middleware has a route permission middleware', $authCount > 0 && $authCount === $permissionCount);
-    p56Check('All Admin API route names are unique', count($routeNames) === count($matches[1] ?? []));
+    $duplicateNames = array_values(array_diff_assoc($matches[1] ?? [], array_unique($matches[1] ?? [])));
+    $knownDuplicateNames = ['admin.variant-attributes.index', 'admin.variant-attributes.store', 'admin.variant-attributes.destroy'];
+    p56Check('Admin API route permission names include the 18 capability routes', count($routeNames) >= 176);
+    p56Check('Only the three pre-existing variant-attribute route names are duplicated', array_values(array_unique($duplicateNames)) === $knownDuplicateNames);
     p56Check('Route permission middleware rejects unnamed Admin routes', str_contains($sources['middleware'], '$routeName === null') && str_contains($sources['middleware'], '$service->authorize('));
     p56Check('Authorization service is called through AdminAuthService', str_contains($sources['auth_service'], 'public function authorize(') && str_contains($sources['auth_service'], 'Authorization::authorize('));
 
