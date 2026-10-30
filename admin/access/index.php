@@ -6,7 +6,7 @@ require_once dirname(__DIR__, 2) . '/app/Core/Bootstrap.php';
 Bootstrap::boot();
 require_once dirname(__DIR__) . '/includes/auth.php';
 
-$accessPagePermissions = [
+$accessPageReadPermissions = [
     'admin.access.admins.index',
     'admin.access.admins.store',
     'admin.access.admins.update',
@@ -22,7 +22,7 @@ $accessPagePermissions = [
     'admin.access.sessions.destroy',
 ];
 
-if (!$adminAuth->canAny($accessPagePermissions)) {
+if (!$adminAuth->canAll($accessPageReadPermissions)) {
     $adminAuth->authorize('admin.access.admins.index');
 }
 
