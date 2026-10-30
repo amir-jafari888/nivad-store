@@ -70,3 +70,11 @@ a{color:var(--admin-color-primary);text-underline-offset:.18em}a:hover{color:var
 .admin-capability-form{grid-template-columns:repeat(2,minmax(0,1fr))}
 .admin-capability-form-wide{grid-column:1/-1}
 .admin-capability-actions{grid-template-columns:minmax(140px,220px) auto;align-items:center}
+
+
+.admin-access-main{max-width:var(--admin-content-width);margin-inline:auto;padding:24px;gap:20px}
+.admin-access-header{flex-direction:row;align-items:center;justify-content:space-between}
+.admin-access-form{grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+.admin-access-form button{justify-self:start}
+.admin-access-row{grid-template-columns:repeat(2,minmax(0,1fr));align-items:center}
+.admin-access-permissions{grid-template-columns:repeat(2,minmax(0,1fr))}
