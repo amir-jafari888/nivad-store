@@ -111,6 +111,24 @@ const adminAccessCenter = () => {
     if (!(data.items || []).length) target.append(el("p", "نشست فعال دیگری وجود ندارد."));
   };
 
+  const loadSessionHistory = async () => {
+    const data = await request("/sessions/history");
+    const target = root.querySelector('[data-access-list="session-history"]');
+    target.replaceChildren();
+    (data.items || []).forEach(session => {
+      const article = el("article", undefined, "admin-access-row");
+      const statusLabels = { active: "فعال", revoked: "لغوشده", expired: "منقضی‌شده" };
+      article.append(el("strong", "نشست #" + session.id + " · " + (session.admin_name || "مدیر نامشخص")));
+      article.append(el("p", "وضعیت: " + (statusLabels[session.session_status] || "نامشخص")));
+      article.append(el("p", "شروع: " + (session.created_at || "نامشخص") + " · آخرین فعالیت: " + (session.last_activity_at || "نامشخص")));
+      article.append(el("p", "انقضا: " + (session.expires_at || "نامشخص") + " · لغو: " + (session.revoked_at || "ندارد")));
+      article.append(el("p", "IP: " + (session.ip_address || "ثبت نشده")));
+      article.append(el("p", session.user_agent || "User-Agent ثبت نشده"));
+      target.append(article);
+    });
+    if (!(data.items || []).length) target.append(el("p", "رکوردی در تاریخچه نگهداری‌شده نشست‌ها وجود ندارد."));
+  };
+
   const loadRoles = async () => {
     const data = await request("/roles");
     roles = data.items || [];
@@ -243,6 +261,7 @@ const adminAccessCenter = () => {
   };
 
   root.querySelector("[data-access-refresh-sessions]")?.addEventListener("click", () => loadSessions().catch(error => say(error.message, true)));
+  root.querySelector("[data-access-history-sessions]")?.addEventListener("click", () => loadSessionHistory().catch(error => say(error.message, true)));
 
   root.querySelector("[data-access-role-select]")?.addEventListener("change", () => {
     loadRolePermissionSelection().catch(error => say(error.message, true));
