@@ -1,0 +1,82 @@
+name: Admin Phase 5 CMS
+
+on:
+  push:
+    branches:
+      - feature/admin-phase-5-cms-2026-10-30
+      - master
+    paths:
+      - 'app/Core/AdminContentRegistry.php'
+      - 'app/Repositories/AdminContentRepository.php'
+      - 'app/Services/AdminContentService.php'
+      - 'app/Services/CmsContentRenderer.php'
+      - 'app/Controllers/AdminContentController.php'
+      - 'app/Controllers/CmsMediaController.php'
+      - 'admin/content/**'
+      - 'admin/assets/css/content-editor.css'
+      - 'admin/assets/js/modules/admin-content-editor.js'
+      - 'assets/css/**/cms-renderer-*.css'
+      - 'database/migrations/20261030_admin_cms_phase5.sql'
+      - 'routes/api.php'
+      - 'index.php'
+      - 'partials/**'
+      - 'pages/content/**'
+      - 'tests/phase-5-cms-contract.php'
+      - 'bin/admin-content-publish-due.php'
+      - 'docs/admin/phase-5-cms.md'
+      - '.github/workflows/admin-phase-5-cms.yml'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  cms-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: PHP syntax
+        run: |
+          set -e
+          for file in \
+            app/Core/AdminContentRegistry.php \
+            app/Repositories/AdminContentRepository.php \
+            app/Services/AdminContentService.php \
+            app/Services/CmsContentRenderer.php \
+            app/Controllers/AdminContentController.php \
+            app/Controllers/CmsMediaController.php \
+            app/Core/AdminRoutePermissionMap.php \
+            routes/api.php \
+            index.php \
+            pages/content/about.php \
+            pages/content/contact.php \
+            pages/content/faq.php \
+            pages/content/buying-guide.php \
+            pages/content/shipping.php \
+            pages/content/returns.php \
+            pages/content/privacy.php \
+            pages/content/terms.php \
+            partials/hero.php \
+            partials/categories.php \
+            partials/discovery.php \
+            partials/product.php \
+            partials/setup-preview.php \
+            partials/compatibility-preview.php \
+            partials/new-product.php \
+            partials/smart-bundle.php \
+            admin/content/index.php \
+            admin/content/preview.php \
+            bin/admin-content-publish-due.php \
+            tests/phase-5-cms-contract.php
+          do
+            php -l "$file"
+          done
+      - name: JavaScript syntax
+        run: |
+          node --input-type=module --check < admin/assets/js/modules/admin-content-editor.js
+      - name: CMS contract tests
+        run: php tests/phase-5-cms-contract.php
