@@ -85,6 +85,12 @@ final class CmsContentRenderer
                 return true;
             }
 
+            usort($sections, static function (array $a, array $b): int {
+                $aOrder = (int)($a['published_sort_order'] ?? $a['sort_order']);
+                $bOrder = (int)($b['published_sort_order'] ?? $b['sort_order']);
+                return $aOrder <=> $bOrder ?: ((int)$a['id'] <=> (int)$b['id']);
+            });
+
             // Content pages switch atomically: every registered section must be
             // published before the legacy page is replaced, avoiding partial pages.
             foreach ($sections as $section) {
