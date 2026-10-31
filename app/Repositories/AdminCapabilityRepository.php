@@ -605,7 +605,7 @@ final class AdminCapabilityRepository
             ? round(((int)$summary['purchase_sessions'] / (int)$summary['checkout_sessions']) * 100, 2)
             : null;
 
-        $sql = '
+        $sql = <<<'SQL'
             SELECT e.event_key AS event_name,
                    e.entity_type,
                    e.entity_id,
@@ -639,7 +639,9 @@ final class AdminCapabilityRepository
               )
             GROUP BY e.event_key, e.entity_type, e.entity_id
             ORDER BY event_count DESC, e.event_key ASC
-            LIMIT ' . $limit;
+            LIMIT
+            SQL;
+        $sql .= (string)$limit;
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['date_from' => $from, 'date_to' => $to]);
 
