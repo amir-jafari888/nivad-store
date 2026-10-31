@@ -3,6 +3,11 @@ declare(strict_types=1);
 $pageTitle = 'سؤالات متداول | نیواد';
 $metaDescription = 'پاسخ پرسش‌های رایج درباره پیدا کردن محصول، سفارش، ارسال و مرجوعی در فروشگاه نیواد.';
 include_once __DIR__ . '/../../partials/header.php';
+
+if (CmsContentRenderer::renderPage('faq')) {
+    include_once __DIR__ . '/../../partials/footer.php';
+    return;
+}
 ?>
 <main class="content-page" id="main-content">
   <header class="content-page__head">

@@ -1,33 +1,34 @@
+<?php $cmsContent = CmsContentRenderer::activeContent(); ?>
 <main>
-    <section class="hero section" aria-labelledby="hero-title">
+    <section class="hero section cms-native-section" aria-labelledby="hero-title" data-cms-native="hero" <?= CmsContentRenderer::activeStyleAttribute() ?>>
         <div class="container">
             <div class="hero-slider swiper" data-hero-slider>
                 <div class="swiper-wrapper">
 
                     <article class="hero-slide swiper-slide">
                         <img
-                            class="hero-slide__visual"
-                            src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1800&q=85"
+                            class="hero-slide__visual" data-cms-image
+                            src="<?= e(!empty($cmsContent['image_id']) ? url('/api/index.php?path=' . rawurlencode('/content-media/' . (int)$cmsContent['image_id'])) : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1800&q=85') ?>"
                             alt="گوشی هوشمند مدرن" />
 
                         <div class="hero-slide__overlay" aria-hidden="true"></div>
 
                         <div class="hero-slide__content">
-                            <span class="hero-eyebrow">انتخاب هوشمند</span>
+                            <span class="hero-eyebrow" data-cms-field="eyebrow"><?= e((string)($cmsContent['eyebrow'] ?? 'انتخاب هوشمند')) ?></span>
 
-                            <h1 id="hero-title" class="hero-title">
-                                گوشی مناسب تو، همین‌جاست
+                            <h1 id="hero-title" class="hero-title" data-cms-field="heading">
+                                <?= e((string)($cmsContent['heading'] ?? 'گوشی مناسب تو، همین‌جاست')) ?>
                             </h1>
 
-                            <p class="hero-description">
-                                مدل‌ها و امکانات را مقایسه کن و انتخابت را با خیال راحت انجام بده.
+                            <p class="hero-description" data-cms-field="body">
+                                <?= e((string)($cmsContent['body'] ?? 'مدل‌ها و امکانات را مقایسه کن و انتخابت را با خیال راحت انجام بده.')) ?>
                             </p>
 
                             <div class="hero-actions">
                                 <a
-                                    href="<?= e(url('/pages/store/products/index.php')) ?>"
-                                    class="hero-button hero-button-primary">
-                                    مشاهده محصولات
+                                    href="<?= e(url((string)($cmsContent['button_url'] ?? '/pages/store/products/index.php'))) ?>"
+                                    class="hero-button hero-button-primary" data-cms-field="button_label">
+                                    <?= e((string)($cmsContent['button_label'] ?? 'مشاهده محصولات')) ?>
                                 </a>
 
                                 <a

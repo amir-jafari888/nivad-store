@@ -1,14 +1,20 @@
 <?php
-include_once "./partials/header.php";
-include_once "./partials/hero.php";
-include_once "./partials/categories.php";
-include_once "./partials/discovery.php";
-include_once "./partials/product.php";
-include_once "./partials/setup-preview.php";
-include_once "./partials/compatibility-preview.php";
-include_once "./partials/new-product.php";
-include_once "./partials/value-proposition.php";
-include_once "./partials/buying-guide.php";
-include_once "./partials/cta.php";
-include_once "./partials/smart-bundle.php";
-include_once "./partials/footer.php";
+declare(strict_types=1);
+
+include_once __DIR__ . '/partials/header.php';
+
+if (!CmsContentRenderer::renderPage('home')) {
+    include_once __DIR__ . '/partials/hero.php';
+    include_once __DIR__ . '/partials/categories.php';
+    include_once __DIR__ . '/partials/discovery.php';
+    include_once __DIR__ . '/partials/product.php';
+    include_once __DIR__ . '/partials/setup-preview.php';
+    include_once __DIR__ . '/partials/compatibility-preview.php';
+    include_once __DIR__ . '/partials/new-product.php';
+    include_once __DIR__ . '/partials/value-proposition.php';
+    include_once __DIR__ . '/partials/buying-guide.php';
+    include_once __DIR__ . '/partials/cta.php';
+    include_once __DIR__ . '/partials/smart-bundle.php';
+}
+
+include_once __DIR__ . '/partials/footer.php';

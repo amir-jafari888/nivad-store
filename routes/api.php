@@ -2885,4 +2885,25 @@ return static function (Router $router): void {
     $router->get('/admin/capabilities/revisions', [AdminCapabilityController::class, 'revisions'], $adminCapabilityRead, 'admin.capabilities.revisions.index');
     $router->post('/admin/capabilities/revisions', [AdminCapabilityController::class, 'createRevision'], $adminCapabilityWrite, 'admin.capabilities.revisions.store');
 
+
+    /* Phase 5 — structured page and section CMS. */
+    $router->get('/admin/content/pages', [AdminContentController::class, 'pages'], $adminCapabilityRead, 'admin.content.pages.index');
+    $router->get('/admin/content/sections', [AdminContentController::class, 'sections'], $adminCapabilityRead, 'admin.content.sections.index');
+    $router->post('/admin/content/sections', [AdminContentController::class, 'createSection'], $adminCapabilityWrite, 'admin.content.sections.store');
+    $router->patch('/admin/content/sections/{id}', [AdminContentController::class, 'updateSection'], $adminCapabilityWrite, 'admin.content.sections.update');
+    $router->post('/admin/content/sections/{id}/publish', [AdminContentController::class, 'publish'], $adminCapabilityWrite, 'admin.content.sections.publish');
+    $router->post('/admin/content/sections/{id}/schedule', [AdminContentController::class, 'schedule'], $adminCapabilityWrite, 'admin.content.sections.schedule');
+    $router->delete('/admin/content/sections/{id}', [AdminContentController::class, 'deleteSection'], $adminCapabilityWrite, 'admin.content.sections.destroy');
+    $router->post('/admin/content/sections/{id}/restore', [AdminContentController::class, 'restoreDeleted'], $adminCapabilityWrite, 'admin.content.sections.restore');
+    $router->post('/admin/content/sections/reorder', [AdminContentController::class, 'reorder'], $adminCapabilityWrite, 'admin.content.sections.reorder');
+    $router->get('/admin/content/sections/{id}/revisions', [AdminContentController::class, 'revisions'], $adminCapabilityRead, 'admin.content.sections.revisions.index');
+    $router->post('/admin/content/sections/{id}/revisions/{revisionId}/restore', [AdminContentController::class, 'restoreRevision'], $adminCapabilityWrite, 'admin.content.sections.revisions.restore');
+
+    $router->get('/admin/media', [AdminContentController::class, 'media'], $adminCapabilityRead, 'admin.media.index');
+    $router->get('/admin/media/{id}/file', [CmsMediaController::class, 'adminShow'], $adminCapabilityRead, 'admin.media.file');
+    $router->post('/admin/media', [AdminContentController::class, 'uploadMedia'], $adminCapabilityWrite, 'admin.media.store');
+    $router->patch('/admin/media/{id}', [AdminContentController::class, 'updateMedia'], $adminCapabilityWrite, 'admin.media.update');
+    $router->delete('/admin/media/{id}', [AdminContentController::class, 'deleteMedia'], $adminCapabilityWrite, 'admin.media.destroy');
+    $router->get('/content-media/{id}', [CmsMediaController::class, 'show'], [], 'content-media.show');
+
 };

@@ -4,6 +4,11 @@ declare(strict_types=1);
 $pageTitle = 'مرجوعی کالا | نیواد';
 $metaDescription = 'راهنمای عمومی بررسی شرایط و ثبت درخواست مرجوعی در فروشگاه نیواد؛ پذیرش نهایی وابسته به بررسی سفارش است.';
 include_once __DIR__ . '/../../partials/header.php';
+
+if (CmsContentRenderer::renderPage('returns')) {
+    include_once __DIR__ . '/../../partials/footer.php';
+    return;
+}
 ?>
 
 <main class="content-page" id="main-content">

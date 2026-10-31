@@ -4,6 +4,11 @@ declare(strict_types=1);
 $pageTitle = 'راهنمای خرید | نیواد';
 $metaDescription = 'راهنمای انتخاب شارژر، کابل USB-C و Thunderbolt و کابل HDMI بر اساس سازگاری و نیاز واقعی دستگاه.';
 include_once __DIR__ . '/../../partials/header.php';
+
+if (CmsContentRenderer::renderPage('buying-guide')) {
+    include_once __DIR__ . '/../../partials/footer.php';
+    return;
+}
 ?>
 
 <main class="content-page" id="main-content">

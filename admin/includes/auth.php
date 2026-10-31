@@ -30,6 +30,7 @@ $canUseCapabilities = $adminAuth->canAny([
     'admin.capabilities.saved-views.index',
     'admin.capabilities.revisions.index',
 ]);
+$canManageContent = $adminAuth->can('admin.content.manage');
 $canManageAccess = $adminAuth->canAny([
     'admin.access.admins.index',
     'admin.access.roles.index',
@@ -41,7 +42,7 @@ $canManageAccess = $adminAuth->canAny([
 /*
  * Shared authenticated-admin shell for dashboard and internal admin pages.
  */
-ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch, $canUseCapabilities, $canManageAccess): string {
+ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch, $canUseCapabilities, $canManageAccess, $canManageContent): string {
     if (stripos($html, '</head>') !== false) {
         $assets = '';
 
@@ -129,6 +130,9 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
     $capabilityLink = $canUseCapabilities
         ? '<a class="admin-shared-nav-link" href="' . e(url('/admin/capabilities/index.php')) . '">مرکز عملیات ادمین</a>'
         : '';
+    $contentLink = $canManageContent
+        ? '<a class="admin-shared-nav-link" href="' . e(url('/admin/content/index.php')) . '">استودیوی مدیریت محتوا</a>'
+        : '';
     $accessLink = $canManageAccess
         ? '<a class="admin-shared-nav-link" href="' . e(url('/admin/access/index.php')) . '">مدیریت مدیران و دسترسی‌ها</a>'
         : '';
@@ -205,6 +209,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
                 </div>
             </details>
             <a class="admin-shared-nav-link" href="' . e(url('/admin/operations')) . '">نقشه قابلیت‌های پنل</a>
+            ' . $contentLink . '
             ' . $capabilityLink . '
             ' . $accessLink . '
             <a class="admin-shared-nav-link" href="' . e(url('/admin/settings')) . '">تنظیمات رابط کاربری</a>

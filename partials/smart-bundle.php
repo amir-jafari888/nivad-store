@@ -1,3 +1,4 @@
+<?php $cmsContent = CmsContentRenderer::activeContent(); ?>
 <section
     class="smart-bundle"
     data-smart-bundle
@@ -5,16 +6,14 @@
     <div class="smart-bundle__inner container">
         <header class="smart-bundle__header">
             <div>
-                <p class="smart-bundle__eyebrow">
-                    Smart Bundle &amp; Discount
+                <p class="smart-bundle__eyebrow" data-cms-field="eyebrow">
+                    <?= e((string)($cmsContent['eyebrow'] ?? 'Smart Bundle &amp; Discount')) ?>
                 </p>
-                <h2 id="smart-bundle-title">
-                    ست پیشنهادی هوشمند
+                <h2 id="smart-bundle-title" data-cms-field="heading">
+                    <?= e((string)($cmsContent['heading'] ?? 'ست پیشنهادی هوشمند')) ?>
                 </h2>
-                <p class="smart-bundle__description">
-                    بر اساس محصول اصلی و روابط واقعی سازگاری و Setup،
-                    یک ترکیب مکمل پیشنهاد می‌کنیم و ارزش اقتصادی آن را
-                    شفاف نشان می‌دهیم.
+                <p class="smart-bundle__description" data-cms-field="body">
+                    <?= e((string)($cmsContent['body'] ?? 'بر اساس محصول اصلی و روابط واقعی سازگاری و Setup، یک ترکیب مکمل پیشنهاد می‌کنیم و ارزش اقتصادی آن را شفاف نشان می‌دهیم.')) ?>
                 </p>
             </div>
 

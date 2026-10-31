@@ -4,6 +4,11 @@ declare(strict_types=1);
 $pageTitle = 'تماس با ما | نیواد';
 $metaDescription = 'راهنماهای ارتباط با نیواد برای پرسش‌های مربوط به محصولات، سفارش‌ها و خدمات فروشگاه.';
 include_once __DIR__ . '/../../partials/header.php';
+
+if (CmsContentRenderer::renderPage('contact')) {
+    include_once __DIR__ . '/../../partials/footer.php';
+    return;
+}
 ?>
 
 <main class="content-page" id="main-content">

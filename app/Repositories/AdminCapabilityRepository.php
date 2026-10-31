@@ -751,37 +751,81 @@ final class AdminCapabilityRepository
     {
         $limit = max(1, min(100, $limit));
         $stmt = $this->db->prepare(
-            'SELECT id, entity_type, entity_id, revision_number, actor_admin_id, change_summary, created_at
-             FROM admin_content_revisions WHERE entity_type = :entity_type AND entity_id = :entity_id
-             ORDER BY revision_number DESC LIMIT ' . $limit
+            'SELECT
+                id,
+                entity_type,
+                entity_id,
+                version_number AS revision_number,
+                created_by_admin_id AS actor_admin_id,
+                status,
+                scheduled_at,
+                published_at,
+                created_at
+             FROM admin_content_revisions
+             WHERE entity_type = :entity_type
+               AND entity_id = :entity_id
+             ORDER BY version_number DESC
+             LIMIT ' . $limit
         );
-        $stmt->execute(['entity_type' => $entityType, 'entity_id' => $entityId]);
+        $stmt->execute([
+            'entity_type' => $entityType,
+            'entity_id' => (string)$entityId,
+        ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function createRevision(string $entityType, int $entityId, int $actorAdminId, array $snapshot, string $summary): int
     {
+        $snapshotJson = json_encode(
+            $snapshot,
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR
+        );
+
         $this->db->beginTransaction();
         try {
             $next = $this->db->prepare(
-                'SELECT COALESCE(MAX(revision_number), 0) + 1
-                 FROM admin_content_revisions WHERE entity_type = :entity_type AND entity_id = :entity_id FOR UPDATE'
+                'SELECT COALESCE(MAX(version_number), 0) + 1
+                 FROM admin_content_revisions
+                 WHERE entity_type = :entity_type
+                   AND entity_id = :entity_id
+                 FOR UPDATE'
             );
-            $next->execute(['entity_type' => $entityType, 'entity_id' => $entityId]);
-            $number = (int)$next->fetchColumn();
+            $next->execute([
+                'entity_type' => $entityType,
+                'entity_id' => (string)$entityId,
+            ]);
+            $number = max(1, (int)$next->fetchColumn());
+
             $stmt = $this->db->prepare(
-                'INSERT INTO admin_content_revisions
-                    (entity_type, entity_id, revision_number, actor_admin_id, snapshot_json, change_summary)
-                 VALUES (:entity_type, :entity_id, :revision_number, :actor_admin_id, :snapshot_json, :change_summary)'
+                'INSERT INTO admin_content_revisions (
+                    entity_type,
+                    entity_id,
+                    version_number,
+                    status,
+                    snapshot_json,
+                    scheduled_at,
+                    published_at,
+                    created_by_admin_id
+                 ) VALUES (
+                    :entity_type,
+                    :entity_id,
+                    :version_number,
+                    :status,
+                    :snapshot_json,
+                    NULL,
+                    NULL,
+                    :created_by_admin_id
+                 )'
             );
             $stmt->execute([
                 'entity_type' => $entityType,
-                'entity_id' => $entityId,
-                'revision_number' => $number,
-                'actor_admin_id' => $actorAdminId,
-                'snapshot_json' => json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
-                'change_summary' => $summary !== '' ? $summary : null,
+                'entity_id' => (string)$entityId,
+                'version_number' => $number,
+                'status' => 'draft',
+                'snapshot_json' => $snapshotJson,
+                'created_by_admin_id' => $actorAdminId,
             ]);
+
             $id = (int)$this->db->lastInsertId();
             $this->db->commit();
             return $id;

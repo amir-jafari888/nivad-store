@@ -3,6 +3,7 @@
  * Landing-page introduction to Smart Discovery.
  * Product data is loaded from the existing Discovery API; no demo products/prices are hard-coded.
  */
+$cmsContent = CmsContentRenderer::activeContent();
 ?>
 <section
     class="home-discovery"
@@ -12,9 +13,9 @@
 
     <div class="home-discovery__inner">
         <div class="home-discovery__copy">
-            <span class="home-discovery__eyebrow">NIVAD SMART DISCOVERY</span>
-            <h2 id="home-discovery-title">نمی‌دونی کدوم محصول<br class="home-discovery__desktop-break"> به کارت میاد؟</h2>
-            <p class="home-discovery__description">نیازت رو انتخاب کن؛ محصولات مناسب خودت رو پیدا کن.</p>
+            <span class="home-discovery__eyebrow" data-cms-field="eyebrow"><?= e((string)($cmsContent['eyebrow'] ?? 'NIVAD SMART DISCOVERY')) ?></span>
+            <h2 id="home-discovery-title" data-cms-field="heading"><?= e((string)($cmsContent['heading'] ?? 'نمی‌دونی کدوم محصول به کارت میاد؟')) ?></h2>
+            <p class="home-discovery__description" data-cms-field="body"><?= e((string)($cmsContent['body'] ?? 'نیازت رو انتخاب کن؛ محصولات مناسب خودت رو پیدا کن.')) ?></p>
 
             <ul class="home-discovery__benefits" aria-label="مزیت‌های کشف هوشمند">
                 <li>

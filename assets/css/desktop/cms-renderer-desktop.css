@@ -1,0 +1,1 @@
+@media (min-width:1010px){.cms-live-section__inner{width:min(100% - 80px,var(--cms-container-width,1200px))}.cms-live-section__grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.cms-live-card{padding:26px}.cms-live-section__heading{font-size:clamp(2rem,3vw,3.4rem)}.cms-live-section__body{font-size:1.1rem}}
