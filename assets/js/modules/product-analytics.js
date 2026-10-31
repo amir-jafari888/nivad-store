@@ -32,7 +32,9 @@ const productAnalytics = () => {
       body: JSON.stringify({
         event_name: eventName,
         product_id: productId,
-        variant_id: variantId || null
+        variant_id: variantId || null,
+        visitor_id: window.NivadAnalytics?.visitorId?.() || "",
+        source: "product-detail"
       })
     }).catch(() => {});
   };
