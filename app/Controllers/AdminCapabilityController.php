@@ -203,8 +203,10 @@ final class AdminCapabilityController extends Controller
         try {
             $from = (string)Request::query('from', date('Y-m-d', strtotime('-29 days')));
             $to = (string)Request::query('to', date('Y-m-d'));
+            $report = $this->supportService->reports($from, $to);
             $this->success([
-                'items' => $this->supportService->reports($from, $to),
+                'items' => $report['by_status_priority'] ?? [],
+                'by_assignee' => $report['by_assignee'] ?? [],
                 'from' => $from,
                 'to' => $to,
             ], 'گزارش مرکز پشتیبانی دریافت شد.');
