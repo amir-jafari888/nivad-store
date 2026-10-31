@@ -104,6 +104,10 @@ const analytics = () => {
 
   window.NivadAnalytics = { track, visitorId, setConsent };
 
+  if (consent() === "accepted" || consent() === "rejected") {
+    setConsent(consent());
+  }
+
   const observeImpression = (element, eventName, productId, source) => {
     if (!element || seenImpressions.has(element) || !productId || !("IntersectionObserver" in window)) return;
     seenImpressions.add(element);
