@@ -183,8 +183,13 @@ final class AdminCapabilityController extends Controller
         try {
             $from = (string)Request::query('from', date('Y-m-d', strtotime('-29 days')));
             $to = (string)Request::query('to', date('Y-m-d'));
-            $items = $this->service->analytics($from, $to, (int)Request::query('limit', 50));
-            $this->success(['items' => $items, 'from' => $from, 'to' => $to], 'گزارش رفتار محصولات دریافت شد.');
+            $report = $this->service->analytics($from, $to, (int)Request::query('limit', 50));
+            $this->success([
+                'items' => $report['items'] ?? [],
+                'summary' => $report['summary'] ?? [],
+                'from' => $from,
+                'to' => $to,
+            ], 'گزارش تحلیل محصول دریافت شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
         }
