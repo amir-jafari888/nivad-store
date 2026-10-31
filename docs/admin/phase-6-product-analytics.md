@@ -19,10 +19,11 @@ Each Batch contains exactly 10 implementation contracts. The implementation reus
 ## Data and privacy contract
 
 - Analytics collection is opt-in and requires `nivad-analytics-consent = accepted`.
+- Consent acceptance/revocation is synchronized to the PHP session through the existing CSRF-protected event endpoint; successful-payment analytics are skipped unless the server session is still consented.
 - A first-party random visitor identifier is created only after consent. The raw identifier is sent only to the same-origin collector and hashed server-side.
 - Session identifiers and authenticated customer identifiers are stored only as SHA-256 pseudonyms.
 - Search text is never persisted. The service normalizes and hashes it before storage.
-- Purchase completion is recorded server-side only after a successful payment attempt has been finalized and a payment row has been persisted.
+- Purchase completion is recorded server-side only after a successful payment attempt has been finalized and a payment row has been persisted. The purchase conversion rate is based on distinct product-view sessions versus distinct verified-purchase sessions; unique-viewer reporting remains based on persistent visitor hashes.
 - Client-side checkout events describe observed funnel actions; they are not treated as proof of payment.
 - The collector is CSRF-protected, same-origin, rate-limited, and validates event names and product/variant references.
 - Client event IDs are checked before insertion to reduce duplicate writes. The verified payment event is inside the payment finalization transaction.
@@ -81,7 +82,7 @@ Each Batch contains exactly 10 implementation contracts. The implementation reus
 9. [x] Aggregate successful purchase sessions separately from order creation.
 10. [ ] Verify funnel drop-off against real checkout/payment sessions.
 
-The client-side checkout steps are instrumented. The final successful-purchase stage remains unavailable until the verified payment gateway completion path is implemented and connected.
+The client-side checkout steps are instrumented. The final successful-purchase stage remains unavailable until the verified payment gateway completion path is implemented and connected. Purchase conversion compares distinct sessions with a product-view event against distinct sessions with a server-verified purchase event; it does not mix visitor hashes with session hashes.
 
 ## Batch 05 — Related Products (06.41–06.50)
 
