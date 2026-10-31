@@ -224,6 +224,7 @@ const adminCapabilityCenter = () => {
         "نرخ کلیک جستجو: " + (summary.search_click_rate === null ? "داده کافی نیست" : summary.search_click_rate + "%"),
         "نرخ کلیک محصولات مرتبط: " + (summary.related_click_rate === null ? "داده کافی نیست" : summary.related_click_rate + "%"),
         "نرخ انتخاب گزینه Discovery: " + (summary.discovery_selection_rate === null ? "داده کافی نیست" : summary.discovery_selection_rate + "%"),
+        "تبدیل بازدیدکننده به خرید: " + (summary.purchase_conversion_rate === null ? "داده کافی نیست" : summary.purchase_conversion_rate + "%"),
         "تبدیل Checkout به پرداخت موفق: " + (summary.checkout_conversion_rate === null ? "داده کافی نیست" : summary.checkout_conversion_rate + "%"),
         "بازدید مقایسه: " + (summary.comparison_views ?? 0)
       ].join(" · ");
