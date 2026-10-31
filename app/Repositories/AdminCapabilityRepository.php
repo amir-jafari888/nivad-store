@@ -425,7 +425,7 @@ final class AdminCapabilityRepository
         }
     }
 
-    public function updateTicket(int $id, string $status, string $priority, ?int $assignedAdminId): bool
+    public function updateTicket(int $id, string $status, string $priority, ?int $assignedAdminId, int $actorAdminId): bool
     {
         $this->db->beginTransaction();
         try {
@@ -463,7 +463,7 @@ final class AdminCapabilityRepository
                     'ticket_id' => $id,
                     'from_status' => $previousStatus,
                     'to_status' => $status,
-                    'actor_admin_id' => $assignedAdminId,
+                    'actor_admin_id' => $actorAdminId,
                 ]);
             }
             $this->db->commit();
