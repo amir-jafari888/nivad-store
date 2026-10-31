@@ -77,10 +77,10 @@ $checks = [
     ['06.03.04', 'Purchase event is associated with an order entity', str_contains($payment, "'order',")],
     ['06.03.05', 'Purchase event includes persisted payment ID', str_contains($payment, "'payment_id' => \$payment->id")],
     ['06.03.06', 'Purchase event includes payment attempt ID', str_contains($payment, "'attempt_id' => \$attempt->id")],
-    ['06.03.07', 'Purchase event includes pseudonymous session hash', str_contains($payment, "'session_hash' => \$sessionHash")],
+    ['06.03.07', 'Purchase event includes pseudonymous visitor and session hashes', str_contains($payment, "'session_hash' => \$sessionHash") && str_contains($payment, "'visitor_hash' => \$visitorHash")],
     ['06.03.08', 'Purchase event includes pseudonymous customer hash', str_contains($payment, "'customer_hash' => \$customerHash")],
     ['06.03.09', 'Public collector does not allow client-forged purchase completion', !str_contains($service, "'purchase_completed'")],
-    ['06.03.10', 'Conversion numerator counts distinct successful-purchase sessions', str_contains($repository, "event_key = 'purchase_completed'") && str_contains($repository, 'AS purchase_sessions')],
+    ['06.03.10', 'Reports calculate distinct purchase sessions and visitor-to-purchase conversion', str_contains($repository, 'AS purchase_sessions') && str_contains($repository, 'AS unique_purchasers') && str_contains($repository, 'purchase_conversion_rate')],
 
     // Batch 04 — Checkout Funnel
     ['06.04.01', 'Checkout tracker uses the existing checkout root', str_contains($tracker, '[data-customer-checkout]')],
