@@ -601,7 +601,8 @@ final class AdminCapabilityRepository
                    e.entity_type,
                    e.entity_id,
                    CASE
-                     WHEN e.entity_type = "product" THEN COALESCE(MAX(p.name), "محصول حذف‌شده/نامشخص")
+                     WHEN e.entity_type IN ("product", "discovery") AND MAX(p.name) IS NOT NULL THEN MAX(p.name)
+                     WHEN e.entity_type = "product" THEN "محصول حذف‌شده/نامشخص"
                      WHEN e.entity_type IS NULL THEN "رویداد عمومی"
                      ELSE CONCAT(e.entity_type, " · ", COALESCE(e.entity_id, "بدون شناسه"))
                    END AS product_name,
@@ -610,7 +611,10 @@ final class AdminCapabilityRepository
                    COUNT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(e.dimensions_json, "$.visitor_hash"))) AS visitors
             FROM admin_analytics_events e
             LEFT JOIN products p
-              ON e.entity_type = "product"
+              ON (
+                   e.entity_type IN ("product", "discovery")
+                   OR (e.entity_type = "comparison" AND e.event_key IN ("comparison_add", "comparison_remove"))
+                 )
              AND p.id = CAST(e.entity_id AS UNSIGNED)
             WHERE e.occurred_at >= :date_from AND e.occurred_at < :date_to
             GROUP BY e.event_key, e.entity_type, e.entity_id
