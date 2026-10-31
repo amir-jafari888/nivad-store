@@ -360,7 +360,7 @@ final class AdminCapabilityService
             $source = 'storefront';
         }
         $step = trim((string)($input['step'] ?? ''));
-        $allowedSteps = ['address', 'shipping', 'review', 'order_created'];
+        $allowedSteps = ['start', 'address', 'shipping', 'review', 'order_created'];
         if ($step !== '' && !in_array($step, $allowedSteps, true)) $step = '';
 
         $resultCount = isset($input['result_count']) && is_numeric($input['result_count'])
