@@ -46,7 +46,7 @@ const productAnalytics = () => {
     panel.dataset.productAnalyticsConsent = "";
     panel.setAttribute("aria-label", "تنظیمات تحلیل رفتار محصول");
     const text = document.createElement("p");
-    text.textContent = "برای بهبود تجربه فروشگاه، رویدادهای ناشناس این صفحه مانند بازدید و افزودن به سبد ثبت شوند؟";
+    text.textContent = "برای بهبود تجربه فروشگاه، رویدادهای تحلیلی این صفحه با شناسه مستعار مانند بازدید و افزودن به سبد ثبت شوند؟";
     const accept = document.createElement("button");
     accept.type = "button";
     accept.textContent = "موافقت";
