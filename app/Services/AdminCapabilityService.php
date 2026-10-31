@@ -355,6 +355,7 @@ final class AdminCapabilityService
             ? hash('sha256', 'visitor|' . $visitorId)
             : hash('sha256', 'visitor-session|' . $sessionId . '|' . Request::userAgent());
         $sessionHash = hash('sha256', 'session|' . $sessionId);
+        Session::set('_analytics_visitor_hash', $visitorHash);
         $customerId = Auth::id();
         $customerHash = $customerId !== null
             ? hash('sha256', 'customer|' . (string)$customerId)
