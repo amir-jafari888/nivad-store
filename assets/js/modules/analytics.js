@@ -39,6 +39,32 @@ const analytics = () => {
     return url.toString();
   };
 
+  const setConsent = value => {
+    if (value !== "accepted" && value !== "rejected") return false;
+    try { window.localStorage.setItem(consentKey, value); } catch (_) {}
+    const endpoint = apiUrl();
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content || "";
+    if (endpoint && csrf) {
+      fetch(endpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        keepalive: true,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrf,
+        },
+        body: JSON.stringify({
+          event_name: value === "accepted" ? "consent_accepted" : "consent_rejected",
+          source: "analytics-consent",
+        }),
+      }).catch(() => {});
+    }
+    if (value === "accepted") visitorId();
+    window.dispatchEvent(new CustomEvent("nivad:analytics-consent", { detail: { consent: value } }));
+    return true;
+  };
+
   const track = (eventName, data = {}) => {
     if (consent() !== "accepted") return false;
     const endpoint = apiUrl();
@@ -76,7 +102,7 @@ const analytics = () => {
     return true;
   };
 
-  window.NivadAnalytics = { track, visitorId };
+  window.NivadAnalytics = { track, visitorId, setConsent };
 
   const observeImpression = (element, eventName, productId, source) => {
     if (!element || seenImpressions.has(element) || !productId || !("IntersectionObserver" in window)) return;
@@ -221,10 +247,8 @@ const analytics = () => {
     reject.type = "button";
     reject.textContent = "عدم موافقت";
     const choose = value => {
-      try { window.localStorage.setItem(consentKey, value); } catch (_) {}
       panel.remove();
-      if (value === "accepted") visitorId();
-      window.dispatchEvent(new CustomEvent("nivad:analytics-consent", { detail: { consent: value } }));
+      setConsent(value);
     };
     accept.addEventListener("click", () => choose("accepted"));
     reject.addEventListener("click", () => choose("rejected"));
