@@ -2863,6 +2863,10 @@ return static function (Router $router): void {
     $router->post('/admin/capabilities/tickets', [AdminCapabilityController::class, 'createTicket'], $adminCapabilityWrite, 'admin.capabilities.tickets.store');
     $router->post('/admin/capabilities/tickets/{id}/messages', [AdminCapabilityController::class, 'addTicketMessage'], $adminCapabilityWrite, 'admin.capabilities.tickets.messages.store');
     $router->patch('/admin/capabilities/tickets/{id}', [AdminCapabilityController::class, 'updateTicket'], $adminCapabilityWrite, 'admin.capabilities.tickets.update');
+    $router->get('/admin/capabilities/support/metrics', [AdminCapabilityController::class, 'supportMetrics'], $adminCapabilityRead, 'admin.capabilities.support.metrics');
+    $router->get('/admin/capabilities/support/reports', [AdminCapabilityController::class, 'supportReports'], $adminCapabilityRead, 'admin.capabilities.support.reports');
+    $router->get('/admin/capabilities/support/sla', [AdminCapabilityController::class, 'supportSla'], $adminCapabilityRead, 'admin.capabilities.support.sla.index');
+    $router->put('/admin/capabilities/support/sla/{priority}', [AdminCapabilityController::class, 'saveSupportSla'], $adminCapabilityWrite, 'admin.capabilities.support.sla.update');
 
     $router->get('/admin/capabilities/product-analytics', [AdminCapabilityController::class, 'analytics'], $adminCapabilityRead, 'admin.capabilities.analytics.index');
     $router->get('/admin/capabilities/health', [AdminCapabilityController::class, 'health'], $adminCapabilityRead, 'admin.capabilities.health.index');
