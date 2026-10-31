@@ -214,6 +214,34 @@ final class AdminSupportRepository
              ORDER BY FIELD(priority, "urgent", "high", "normal", "low"), status'
         );
         $stmt->execute(['date_from' => $from . ' 00:00:00', 'date_to' => $to . ' 00:00:00']);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $byStatusPriority = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $agents = $this->db->prepare(
+            'SELECT t.assigned_admin_id,
+                    CONCAT(COALESCE(a.first_name, ""), " ", COALESCE(a.last_name, "")) AS assigned_admin_name,
+                    COUNT(*) AS ticket_count,
+                    SUM(t.status IN ("resolved", "closed")) AS completed_count,
+                    AVG(CASE WHEN t.user_id IS NOT NULL AND first_reply.first_response_at IS NOT NULL
+                        THEN TIMESTAMPDIFF(SECOND, t.created_at, first_reply.first_response_at) / 60 END) AS avg_first_response_minutes,
+                    AVG(CASE WHEN COALESCE(t.resolved_at, t.closed_at) IS NOT NULL
+                        THEN TIMESTAMPDIFF(SECOND, t.created_at, COALESCE(t.resolved_at, t.closed_at)) / 60 END) AS avg_resolution_minutes
+             FROM admin_support_tickets t
+             LEFT JOIN admin_users a ON a.id = t.assigned_admin_id
+             LEFT JOIN (
+                SELECT ticket_id, MIN(created_at) AS first_response_at
+                FROM admin_support_messages
+                WHERE sender_type = "admin" AND is_internal = 0
+                GROUP BY ticket_id
+             ) first_reply ON first_reply.ticket_id = t.id
+             WHERE t.created_at >= :date_from AND t.created_at < DATE_ADD(:date_to, INTERVAL 1 DAY)
+             GROUP BY t.assigned_admin_id, a.first_name, a.last_name
+             ORDER BY ticket_count DESC'
+        );
+        $agents->execute(['date_from' => $from . ' 00:00:00', 'date_to' => $to . ' 00:00:00']);
+
+        return [
+            'by_status_priority' => $byStatusPriority,
+            'by_assignee' => $agents->fetchAll(PDO::FETCH_ASSOC),
+        ];
     }
 }
