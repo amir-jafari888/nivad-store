@@ -468,27 +468,25 @@ final class PaymentService
             // payment attempt has been finalized and the payment row persisted.
             Session::start();
             $sessionHash = hash('sha256', 'session|' . Session::id());
-            $visitorHash = Session::get('_analytics_visitor_hash');
-            $visitorHash = is_string($visitorHash) && preg_match('/^[a-f0-9]{64}$/', $visitorHash)
-                ? $visitorHash
-                : null;
+            $analyticsConsent = Session::get('_analytics_consent', 'unknown');
             $customerHash = $userId !== null
                 ? hash('sha256', 'customer|' . (string)$userId)
                 : null;
-            ProductAnalyticsRecorder::record(
-                $this->pdo,
-                'purchase_completed',
-                'order',
-                (string)$payment->orderId,
-                null,
-                [
-                    'session_hash' => $sessionHash,
-                    'visitor_hash' => $visitorHash,
-                    'customer_hash' => $customerHash,
-                    'payment_id' => $payment->id,
-                    'attempt_id' => $attempt->id,
-                ]
-            );
+            if ($analyticsConsent === 'accepted') {
+                ProductAnalyticsRecorder::record(
+                    $this->pdo,
+                    'purchase_completed',
+                    'order',
+                    (string)$payment->orderId,
+                    null,
+                    [
+                        'session_hash' => $sessionHash,
+                        'customer_hash' => $customerHash,
+                        'payment_id' => $payment->id,
+                        'attempt_id' => $attempt->id,
+                    ]
+                );
+            }
 
             if ($userId !== null) {
                 $this->notificationService->createForUser(
