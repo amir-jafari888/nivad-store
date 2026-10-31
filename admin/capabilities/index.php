@@ -88,7 +88,54 @@ if (!$adminAuth->canAny($capabilityPagePermissions)) {
             <label class="admin-capability-form-wide">پیام اولیه <textarea name="message" rows="2" required></textarea></label>
             <button type="submit">ایجاد تیکت</button>
         </form>
+        <form data-support-filters class="admin-capability-form">
+            <label>وضعیت
+                <select name="status"><option value="">همه وضعیت‌ها</option><option value="open">باز</option><option value="pending_customer">منتظر مشتری</option><option value="pending_admin">منتظر مدیر</option><option value="resolved">حل‌شده</option><option value="closed">بسته</option></select>
+            </label>
+            <label>اولویت
+                <select name="priority"><option value="">همه اولویت‌ها</option><option value="urgent">فوری</option><option value="high">زیاد</option><option value="normal">عادی</option><option value="low">کم</option></select>
+            </label>
+            <label>شناسه مسئول <input name="assigned_admin_id" type="number" min="1"></label>
+            <label>شناسه مشتری <input name="user_id" type="number" min="1"></label>
+            <label>از تاریخ <input name="date_from" type="date"></label>
+            <label>تا تاریخ <input name="date_to" type="date"></label>
+            <label class="admin-capability-form-wide">جستجو در شماره تیکت، موضوع یا شناسه <input name="search" maxlength="120"></label>
+            <button type="submit">اعمال فیلترها</button>
+            <button type="reset">پاک‌کردن فیلترها</button>
+        </form>
         <div class="admin-capability-list" data-capability-list="tickets"></div>
+        <section class="admin-capability-panel" aria-labelledby="admin-support-sla-title">
+            <div class="admin-capability-panel-heading">
+                <div><h3 id="admin-support-sla-title">سیاست‌های SLA</h3><p>زمان‌ها برحسب دقیقه تقویمی هستند. تا زمانی که برای اولویت‌ها مقدار ثبت نشود، وضعیت SLA محاسبه‌شده نیست.</p></div>
+                <button type="button" data-capability-refresh="support-sla">بارگذاری سیاست‌ها</button>
+            </div>
+            <form data-capability-form="support-sla" class="admin-capability-form">
+                <label>اولویت <select name="priority"><option value="urgent">فوری</option><option value="high">زیاد</option><option value="normal">عادی</option><option value="low">کم</option></select></label>
+                <label>حداکثر زمان پاسخ اولیه (دقیقه) <input name="first_response_minutes" type="number" min="1" max="525600" required></label>
+                <label>حداکثر زمان حل (دقیقه) <input name="resolution_minutes" type="number" min="1" max="525600" required></label>
+                <button type="submit">ذخیره SLA</button>
+            </form>
+            <div class="admin-capability-list" data-capability-list="support-sla"></div>
+        </section>
+        <section class="admin-capability-panel" aria-labelledby="admin-support-metrics-title">
+            <div class="admin-capability-panel-heading">
+                <div><h3 id="admin-support-metrics-title">شاخص‌های پاسخ‌گویی</h3><p>میانگین پاسخ اولیه فقط از پاسخ عمومی مدیر به تیکت مشتری محاسبه می‌شود؛ یادداشت داخلی پاسخ محسوب نمی‌شود.</p></div>
+                <button type="button" data-capability-refresh="support-metrics">به‌روزرسانی شاخص‌ها</button>
+            </div>
+            <form data-support-range class="admin-capability-form">
+                <label>از تاریخ <input name="from" type="date" required></label>
+                <label>تا تاریخ <input name="to" type="date" required></label>
+                <button type="submit">اعمال بازه</button>
+            </form>
+            <div class="admin-capability-list" data-capability-list="support-metrics"></div>
+        </section>
+        <section class="admin-capability-panel" aria-labelledby="admin-support-reports-title">
+            <div class="admin-capability-panel-heading">
+                <div><h3 id="admin-support-reports-title">گزارش عملکرد پشتیبانی</h3><p>تعداد تیکت و میانگین زمان پاسخ اولیه بر اساس وضعیت و اولویت.</p></div>
+                <button type="button" data-capability-refresh="support-reports">بارگذاری گزارش</button>
+            </div>
+            <div class="admin-capability-list" data-capability-list="support-reports"></div>
+        </section>
     </section>
 
     <section class="admin-capability-panel" aria-labelledby="admin-analytics-title">
