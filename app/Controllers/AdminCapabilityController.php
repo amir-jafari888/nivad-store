@@ -5,10 +5,12 @@ declare(strict_types=1);
 final class AdminCapabilityController extends Controller
 {
     private AdminCapabilityService $service;
+    private AdminSupportService $supportService;
 
-    public function __construct(?AdminCapabilityService $service = null)
+    public function __construct(?AdminCapabilityService $service = null, ?AdminSupportService $supportService = null)
     {
         $this->service = $service ?? new AdminCapabilityService();
+        $this->supportService = $supportService ?? new AdminSupportService();
     }
 
     private function adminId(): int
@@ -108,10 +110,16 @@ final class AdminCapabilityController extends Controller
     public function tickets(): never
     {
         try {
-            $items = $this->service->tickets(
-                (string)Request::query('status', ''),
-                (int)Request::query('limit', 100)
-            );
+            $items = $this->supportService->tickets([
+                'status' => (string)Request::query('status', ''),
+                'priority' => (string)Request::query('priority', ''),
+                'assigned_admin_id' => (string)Request::query('assigned_admin_id', ''),
+                'user_id' => (string)Request::query('user_id', ''),
+                'date_from' => (string)Request::query('date_from', ''),
+                'date_to' => (string)Request::query('date_to', ''),
+                'search' => (string)Request::query('search', ''),
+                'limit' => (int)Request::query('limit', 100),
+            ]);
             $this->success(['items' => $items], 'تیکت‌ها دریافت شدند.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
@@ -120,7 +128,7 @@ final class AdminCapabilityController extends Controller
 
     public function showTicket(array $parameters = []): never
     {
-        $ticket = $this->service->ticket((int)($parameters['id'] ?? 0));
+        $ticket = $this->supportService->ticket((int)($parameters['id'] ?? 0));
         if ($ticket === null) {
             $this->error('تیکت پیدا نشد.', 404);
         }
@@ -166,13 +174,62 @@ final class AdminCapabilityController extends Controller
                 (int)($parameters['id'] ?? 0),
                 (string)($data['status'] ?? ''),
                 (string)($data['priority'] ?? ''),
-                $assigned
+                $assigned,
+                $this->adminId()
             );
             if (!$updated) {
                 $this->error('تیکت پیدا نشد یا تغییری اعمال نشد.', 404);
             }
             AdminAuditTrail::record($this->adminId(), 'update', 'admin_support', 'admin_support_ticket', (int)($parameters['id'] ?? 0), 'Admin support ticket updated.', null, ['status' => $data['status'] ?? null, 'priority' => $data['priority'] ?? null, 'assigned_admin_id' => $assigned]);
             $this->success(['updated' => true], 'تیکت به‌روزرسانی شد.');
+        } catch (InvalidArgumentException $exception) {
+            $this->invalid($exception);
+        }
+    }
+
+    public function supportMetrics(): never
+    {
+        try {
+            $from = (string)Request::query('from', date('Y-m-d', strtotime('-29 days')));
+            $to = (string)Request::query('to', date('Y-m-d'));
+            $this->success($this->supportService->metrics($from, $to), 'شاخص‌های مرکز پشتیبانی دریافت شدند.');
+        } catch (InvalidArgumentException $exception) {
+            $this->invalid($exception);
+        }
+    }
+
+    public function supportReports(): never
+    {
+        try {
+            $from = (string)Request::query('from', date('Y-m-d', strtotime('-29 days')));
+            $to = (string)Request::query('to', date('Y-m-d'));
+            $this->success([
+                'items' => $this->supportService->reports($from, $to),
+                'from' => $from,
+                'to' => $to,
+            ], 'گزارش مرکز پشتیبانی دریافت شد.');
+        } catch (InvalidArgumentException $exception) {
+            $this->invalid($exception);
+        }
+    }
+
+    public function supportSla(): never
+    {
+        $this->success(['items' => $this->supportService->slaPolicies()], 'سیاست‌های SLA دریافت شدند.');
+    }
+
+    public function saveSupportSla(array $parameters = []): never
+    {
+        try {
+            $data = $this->payload();
+            $data['priority'] = (string)($parameters['priority'] ?? $data['priority'] ?? '');
+            $this->supportService->saveSlaPolicy($this->adminId(), $data);
+            AdminAuditTrail::record($this->adminId(), 'update_sla_policy', 'admin_support', 'support_sla_policy', null, 'Support SLA policy updated.', null, [
+                'priority' => $data['priority'],
+                'first_response_minutes' => (int)$data['first_response_minutes'],
+                'resolution_minutes' => (int)$data['resolution_minutes'],
+            ]);
+            $this->success(['updated' => true], 'سیاست SLA ذخیره شد.');
         } catch (InvalidArgumentException $exception) {
             $this->invalid($exception);
         }
