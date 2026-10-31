@@ -271,6 +271,15 @@ final class AdminCapabilityService
     public function recordProductEvent(array $input): int
     {
         $event = trim((string)($input['event_name'] ?? ''));
+        if (in_array($event, ['consent_accepted', 'consent_rejected'], true)) {
+            Session::start();
+            Session::set('_analytics_consent', $event === 'consent_accepted' ? 'accepted' : 'rejected');
+            if ($event === 'consent_rejected') {
+                Session::set('_analytics_visitor_hash', null);
+            }
+            return 0;
+        }
+
         $allowedEvents = [
             'product_view', 'variant_select', 'add_to_cart', 'wishlist_add',
             'search_impression', 'search_click',
@@ -355,9 +364,7 @@ final class AdminCapabilityService
             ? hash('sha256', 'visitor|' . $visitorId)
             : null;
         $sessionHash = hash('sha256', 'session|' . $sessionId);
-        if ($visitorHash !== null) {
-            Session::set('_analytics_visitor_hash', $visitorHash);
-        }
+        Session::set('_analytics_consent', 'accepted');
         $customerId = Auth::id();
         $customerHash = $customerId !== null
             ? hash('sha256', 'customer|' . (string)$customerId)
