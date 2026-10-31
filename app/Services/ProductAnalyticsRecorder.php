@@ -25,6 +25,19 @@ final class ProductAnalyticsRecorder
         }
 
         $safeDimensions = SensitiveDataRedactor::redact($dimensions);
+        $clientEventId = trim((string)($safeDimensions['client_event_id'] ?? ''));
+        if ($clientEventId !== '') {
+            $duplicate = $db->prepare(
+                "SELECT id FROM admin_analytics_events
+                 WHERE event_key = :event_key
+                   AND JSON_UNQUOTE(JSON_EXTRACT(dimensions_json, '$.client_event_id')) = :client_event_id
+                 LIMIT 1"
+            );
+            $duplicate->execute(['event_key' => $eventKey, 'client_event_id' => $clientEventId]);
+            $existingId = $duplicate->fetchColumn();
+            if ($existingId !== false) return (int)$existingId;
+        }
+
         $json = $safeDimensions === []
             ? null
             : json_encode($safeDimensions, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
