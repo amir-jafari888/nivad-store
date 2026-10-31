@@ -33,8 +33,11 @@ final class AdminSupportService
         }
         foreach (['date_from', 'date_to'] as $key) {
             $value = trim((string)($input[$key] ?? ''));
-            if ($value !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
-                throw new InvalidArgumentException('بازه زمانی فیلتر نامعتبر است.');
+            if ($value !== '') {
+                $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+                if (!$date || $date->format('Y-m-d') !== $value) {
+                    throw new InvalidArgumentException('بازه زمانی فیلتر نامعتبر است.');
+                }
             }
             $filters[$key] = $value;
         }
