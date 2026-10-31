@@ -65,7 +65,7 @@ $checks = [
     ['06.02.04', 'Tracker observes the existing suggestion class', str_contains($tracker, '.search-suggestion')],
     ['06.02.05', 'Search impression requires visible suggestion state', str_contains($tracker, 'box.classList.contains("is-visible")')],
     ['06.02.06', 'Search impression records the result count', str_contains($tracker, 'result_count: count')],
-    ['06.02.07', 'Search term is normalized and hashed server-side', str_contains($service, 'hash(''sha256'', $normalizedSearchTerm)')],
+    ['06.02.07', 'Search term is normalized and hashed server-side', str_contains($service, "hash('sha256', \$normalizedSearchTerm)")],
     ['06.02.08', 'Only the search-term hash is persisted in event dimensions', str_contains($service, "'search_term_hash' => $searchTermHash")],
     ['06.02.09', 'Repository aggregates search impressions and clicks', str_contains($repository, 'AS search_impressions') && str_contains($repository, 'AS search_clicks')],
     ['06.02.10', 'Repository calculates search click rate with a zero-denominator guard', str_contains($repository, '$summary[\'search_click_rate\']')],
