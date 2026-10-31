@@ -135,6 +135,8 @@ if (!$adminAuth->canAny($capabilityPagePermissions)) {
                 <button type="button" data-capability-refresh="support-reports">بارگذاری گزارش</button>
             </div>
             <div class="admin-capability-list" data-capability-list="support-reports"></div>
+            <h4>عملکرد مسئولان تیکت</h4>
+            <div class="admin-capability-list" data-capability-list="support-assignees"></div>
         </section>
     </section>
 
