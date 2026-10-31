@@ -141,12 +141,6 @@ const analytics = () => {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
 
-    const suggestion = target.closest(".search-suggestion");
-    if (suggestion) {
-      const query = document.querySelector("[data-search-input]")?.value || "";
-      if (query.trim()) track("search_click", { search_term: query, source: "search-suggestion" });
-    }
-
     const related = target.closest("[data-complement-product-id] a");
     if (related) {
       const card = related.closest("[data-complement-product-id]");
