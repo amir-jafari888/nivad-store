@@ -110,11 +110,17 @@ Exactly 5 Batches × 10 Sub-steps = 50 contracts.
 ## Current gate
 
 - Implementation branch: `feature/admin-phase-7-support-center-2026-10-31`
+- Pull request: #56 (draft; not merged).
 - Base: `master` at `d2a0b73886f31f1b289150f182f7ea41bc1c5314`
 - Migration: additive; no DROP/DELETE; manual execution only.
-- Static contract test: pending CI execution.
-- PHP/JS syntax: pending CI execution.
-- XAMPP/MySQL runtime: pending.
+- Phase 7 static contracts: **50/50 PASS** (CI run `41203313491`).
+- Changed PHP syntax: PASS.
+- Admin capability-center JavaScript syntax: PASS.
+- Admin Phase 3, Phase 5 and Phase 6 workflows: PASS on the same PR head.
+- Admin Dashboard Redesign Integrity: PASS.
+- Shared legacy Admin capability checks: 3 unrelated FAILs remain — legacy test expects `admin_incidents` while the current subsystem uses `admin_system_incidents`; expects `product_analytics_events` while the current subsystem uses `admin_analytics_events`; and fails the unhandled-exception-to-incident contract. These are outside the Phase 7 support changes and are not silently marked PASS.
+- Admin Panel Foundation Regression: fails at the existing undefined `AdminAccountPolicy::validateCreate()` call. The Phase 2 suite itself reports 38/38 PASS; its combined workflow is red because the shared legacy Admin capability regression above also runs.
+- XAMPP/MySQL runtime: pending. Run the read-only schema preflight before applying the migration.
 - Browser verification: pending.
 - PASS: not granted.
 - LOCK: NO.
