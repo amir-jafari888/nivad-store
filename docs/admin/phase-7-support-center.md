@@ -13,7 +13,7 @@ Exactly 5 Batches × 10 Sub-steps = 50 contracts.
 - Resolution time uses `resolved_at` or `closed_at`; unresolved tickets are measured against current database time.
 - Status history records transitions observed after the Phase 7 migration. Existing historical transitions are not fabricated.
 - The existing support subsystem is retained. The additive migration reconciles its repository-facing columns with the canonical foundation table and creates the missing message/history/SLA tables.
-- The migration is manual and must be applied only after backup and schema preflight.
+- The migration is manual and must be applied only after backup and schema preflight. Run `20261031_admin_support_phase7_preflight.sql` first; if the actual table columns differ from the Admin foundation contract, stop and reconcile before applying the migration.
 
 ## Batch 01 — SLA (07.01–07.10)
 
@@ -92,6 +92,7 @@ Exactly 5 Batches × 10 Sub-steps = 50 contracts.
 - `admin/capabilities/index.php`
 - `admin/assets/js/modules/capability-center.js`
 - `database/migrations/20261031_admin_support_phase7.sql`
+- `database/verification/20261031_admin_support_phase7_preflight.sql`
 - `database/verification/20261031_admin_support_phase7_verify.sql`
 - `test-admin-phase-7-support-center.php`
 - `.github/workflows/admin-phase-7-support-center.yml`
@@ -102,7 +103,7 @@ Exactly 5 Batches × 10 Sub-steps = 50 contracts.
 - PHP syntax: all changed PHP files.
 - JavaScript syntax: Admin capability center module.
 - CI: `.github/workflows/admin-phase-7-support-center.yml`
-- XAMPP/MySQL: apply the migration manually after backup; run the read-only verification SQL.
+- XAMPP/MySQL: back up the database; run the read-only preflight; apply the migration only if its expected foundation columns match; then run the read-only verification SQL.
 - Browser: test filters, policy configuration, metrics, ticket status history and reports.
 - SLA values remain inactive until a manager configures actual target minutes.
 
