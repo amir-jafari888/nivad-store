@@ -554,17 +554,74 @@ final class AdminCapabilityRepository
     public function analytics(string $from, string $to, int $limit = 50): array
     {
         $limit = max(1, min(200, $limit));
-        $stmt = $this->db->prepare(
-            'SELECT p.id AS product_id, p.name AS product_name, e.event_name, COUNT(*) AS event_count,
-                    COUNT(DISTINCT e.session_hash) AS sessions, COUNT(DISTINCT e.visitor_hash) AS visitors
-             FROM product_analytics_events e
-             LEFT JOIN products p ON p.id = e.product_id
-             WHERE e.occurred_at >= :date_from AND e.occurred_at < :date_to
-             GROUP BY p.id, p.name, e.event_name
-             ORDER BY event_count DESC LIMIT ' . $limit
-        );
+        $summaryStmt = $this->db->prepare(<<<'SQL'
+            SELECT
+                COUNT(*) AS total_events,
+                COUNT(DISTINCT CASE WHEN event_key = 'product_view'
+                    THEN JSON_UNQUOTE(JSON_EXTRACT(dimensions_json, '$.visitor_hash')) END) AS unique_viewers,
+                SUM(event_key = 'search_impression') AS search_impressions,
+                SUM(event_key = 'search_click') AS search_clicks,
+                SUM(event_key = 'checkout_started') AS checkout_starts,
+                SUM(event_key = 'checkout_address_selected') AS checkout_address_steps,
+                SUM(event_key = 'checkout_shipping_selected') AS checkout_shipping_steps,
+                SUM(event_key = 'checkout_order_created') AS checkout_orders_created,
+                COUNT(DISTINCT CASE WHEN event_key = 'checkout_started'
+                    THEN JSON_UNQUOTE(JSON_EXTRACT(dimensions_json, '$.session_hash')) END) AS checkout_sessions,
+                COUNT(DISTINCT CASE WHEN event_key = 'purchase_completed'
+                    THEN JSON_UNQUOTE(JSON_EXTRACT(dimensions_json, '$.session_hash')) END) AS purchase_sessions,
+                SUM(event_key = 'related_product_impression') AS related_impressions,
+                SUM(event_key = 'related_product_click') AS related_clicks,
+                SUM(event_key = 'discovery_impression') AS discovery_impressions,
+                SUM(event_key = 'discovery_click') AS discovery_clicks,
+                SUM(event_key = 'discovery_select') AS discovery_selections,
+                SUM(event_key = 'comparison_view') AS comparison_views,
+                SUM(event_key IN ('comparison_add', 'comparison_remove')) AS comparison_selections
+            FROM admin_analytics_events
+            WHERE occurred_at >= :summary_from AND occurred_at < :summary_to
+            SQL);
+        $summaryStmt->execute(['summary_from' => $from, 'summary_to' => $to]);
+        $summary = $summaryStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+        $summary['search_click_rate'] = (int)($summary['search_impressions'] ?? 0) > 0
+            ? round(((int)$summary['search_clicks'] / (int)$summary['search_impressions']) * 100, 2)
+            : null;
+        $summary['related_click_rate'] = (int)($summary['related_impressions'] ?? 0) > 0
+            ? round(((int)$summary['related_clicks'] / (int)$summary['related_impressions']) * 100, 2)
+            : null;
+        $summary['discovery_click_rate'] = (int)($summary['discovery_impressions'] ?? 0) > 0
+            ? round(((int)$summary['discovery_clicks'] / (int)$summary['discovery_impressions']) * 100, 2)
+            : null;
+        $summary['checkout_conversion_rate'] = (int)($summary['checkout_sessions'] ?? 0) > 0
+            ? round(((int)$summary['purchase_sessions'] / (int)$summary['checkout_sessions']) * 100, 2)
+            : null;
+
+        $sql = '
+            SELECT e.event_key AS event_name,
+                   e.entity_type,
+                   e.entity_id,
+                   CASE
+                     WHEN e.entity_type = "product" THEN COALESCE(MAX(p.name), "محصول حذف‌شده/نامشخص")
+                     WHEN e.entity_type IS NULL THEN "رویداد عمومی"
+                     ELSE CONCAT(e.entity_type, " · ", COALESCE(e.entity_id, "بدون شناسه"))
+                   END AS product_name,
+                   COUNT(*) AS event_count,
+                   COUNT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(e.dimensions_json, "$.session_hash"))) AS sessions,
+                   COUNT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(e.dimensions_json, "$.visitor_hash"))) AS visitors
+            FROM admin_analytics_events e
+            LEFT JOIN products p
+              ON e.entity_type = "product"
+             AND p.id = CAST(e.entity_id AS UNSIGNED)
+            WHERE e.occurred_at >= :date_from AND e.occurred_at < :date_to
+            GROUP BY e.event_key, e.entity_type, e.entity_id
+            ORDER BY event_count DESC, e.event_key ASC
+            LIMIT ' . $limit;
+        $stmt = $this->db->prepare($sql);
         $stmt->execute(['date_from' => $from, 'date_to' => $to]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return [
+            'summary' => $summary,
+            'items' => $stmt->fetchAll(PDO::FETCH_ASSOC),
+        ];
     }
 
     public function productExists(int $productId): bool
@@ -587,14 +644,14 @@ final class AdminCapabilityRepository
 
     public function recordProductEvent(array $data): int
     {
-        $stmt = $this->db->prepare(
-            'INSERT INTO product_analytics_events
-                (event_name, product_id, variant_id, user_id, visitor_hash, session_hash, search_term_hash, source, context_json)
-             VALUES
-                (:event_name, :product_id, :variant_id, :user_id, :visitor_hash, :session_hash, :search_term_hash, :source, :context_json)'
+        return ProductAnalyticsRecorder::record(
+            $this->db,
+            (string)$data['event_key'],
+            isset($data['entity_type']) ? (string)$data['entity_type'] : null,
+            $data['entity_id'] ?? null,
+            isset($data['numeric_value']) ? (float)$data['numeric_value'] : null,
+            is_array($data['dimensions'] ?? null) ? $data['dimensions'] : []
         );
-        $stmt->execute($data);
-        return (int)$this->db->lastInsertId();
     }
 
     public function preferences(int $adminId): array
