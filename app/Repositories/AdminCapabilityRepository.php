@@ -572,6 +572,7 @@ final class AdminCapabilityRepository
                 SUM(event_key = 'related_product_impression') AS related_impressions,
                 SUM(event_key = 'related_product_click') AS related_clicks,
                 SUM(event_key = 'discovery_impression') AS discovery_impressions,
+                SUM(event_key = 'discovery_option_impression') AS discovery_option_impressions,
                 SUM(event_key = 'discovery_click') AS discovery_clicks,
                 SUM(event_key = 'discovery_select') AS discovery_selections,
                 SUM(event_key = 'comparison_view') AS comparison_views,
@@ -588,8 +589,8 @@ final class AdminCapabilityRepository
         $summary['related_click_rate'] = (int)($summary['related_impressions'] ?? 0) > 0
             ? round(((int)$summary['related_clicks'] / (int)$summary['related_impressions']) * 100, 2)
             : null;
-        $summary['discovery_click_rate'] = (int)($summary['discovery_impressions'] ?? 0) > 0
-            ? round(((int)$summary['discovery_clicks'] / (int)$summary['discovery_impressions']) * 100, 2)
+        $summary['discovery_selection_rate'] = (int)($summary['discovery_option_impressions'] ?? 0) > 0
+            ? round(((int)$summary['discovery_selections'] / (int)$summary['discovery_option_impressions']) * 100, 2)
             : null;
         $summary['checkout_conversion_rate'] = (int)($summary['checkout_sessions'] ?? 0) > 0
             ? round(((int)$summary['purchase_sessions'] / (int)$summary['checkout_sessions']) * 100, 2)
