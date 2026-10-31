@@ -114,6 +114,7 @@ const discovery = () => {
     const article = document.createElement("article");
 
     article.className = "page-discovery__product swiper-slide";
+    article.dataset.productId = String(Number(product?.id || 0));
 
     const imageWrapper = document.createElement("div");
 
