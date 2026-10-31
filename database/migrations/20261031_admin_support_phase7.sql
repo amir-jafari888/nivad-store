@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS admin_support_status_history (
     to_status VARCHAR(20) NOT NULL,
     actor_type VARCHAR(20) NOT NULL,
     actor_admin_id BIGINT UNSIGNED NULL,
+    actor_user_id BIGINT UNSIGNED NULL,
     note VARCHAR(1000) NULL,
     changed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
