@@ -55,7 +55,7 @@ $checks = [
     ['07.01.07', 'Service validates priority and positive bounded targets', str_contains($service, 'public function saveSlaPolicy') && str_contains($service, '$first < 1') && str_contains($service, '$resolution > 525600')],
     ['07.01.08', 'Resolution target cannot be shorter than first-response target', str_contains($service, '$resolution < $first')],
     ['07.01.09', 'SLA read/write endpoints have explicit support permissions', str_contains($permissions, "'admin.capabilities.support.sla.index' => 'admin.support.view'") && str_contains($permissions, "'admin.capabilities.support.sla.update' => 'admin.support.manage'")],
-    ['07.01.10', 'Admin UI exposes configurable SLA values and warns when unset', str_contains($page, 'data-capability-form="support-sla"') && str_contains($page, 'تعریف‌نشده')],
+    ['07.01.10', 'Admin UI exposes configurable SLA values and warns when unset', str_contains($page, 'data-capability-form="support-sla"') && str_contains($ui, 'تعریف‌نشده')],
 
     // Batch 02 — Response Metrics
     ['07.02.01', 'Support repository exposes date-bounded metrics', str_contains($repository, 'public function metrics(string $from, string $to): array')],
@@ -89,7 +89,7 @@ $checks = [
     ['07.04.05', 'Admin-created tickets record their initial status', str_contains($capRepository, 'Ticket created') && str_contains($capRepository, 'actor_type, actor_admin_id, note')],
     ['07.04.06', 'Customer-created tickets record their initial status', str_contains($capRepository, 'actor_type, note)') && str_contains($capRepository, '"customer", "Ticket created"')],
     ['07.04.07', 'Admin status updates lock and read the prior state transactionally', str_contains($capRepository, 'SELECT status FROM admin_support_tickets WHERE id = :id LIMIT 1 FOR UPDATE')],
-    ['07.04.08', 'Admin status transitions persist old and new status with actor', str_contains($capRepository, 'if ($previousStatus !== $status)') && str_contains($capRepository, "'actor_admin_id' => $actorAdminId")],
+    ['07.04.08', 'Admin status transitions persist old and new status with actor', str_contains($capRepository, 'if ($previousStatus !== $status)') && str_contains($capRepository, "'actor_admin_id' => " . '$actorAdminId')],
     ['07.04.09', 'Customer replies record automatic pending-admin transitions', str_contains($capRepository, 'Customer replied') && str_contains($capRepository, '"pending_admin"')],
     ['07.04.10', 'Migration explicitly avoids fabricating historical status events', str_contains($migration, 'No historical status transitions are fabricated')],
 
