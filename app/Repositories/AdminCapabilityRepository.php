@@ -579,6 +579,15 @@ final class AdminCapabilityRepository
                 SUM(event_key IN ('comparison_add', 'comparison_remove')) AS comparison_selections
             FROM admin_analytics_events
             WHERE occurred_at >= :summary_from AND occurred_at < :summary_to
+              AND event_key IN (
+                'product_view', 'variant_select', 'add_to_cart', 'wishlist_add',
+                'search_impression', 'search_click',
+                'checkout_started', 'checkout_address_selected', 'checkout_shipping_selected', 'checkout_order_created',
+                'purchase_completed',
+                'related_product_impression', 'related_product_click',
+                'discovery_impression', 'discovery_click', 'discovery_select', 'discovery_option_impression',
+                'comparison_add', 'comparison_remove', 'comparison_view'
+            )
             SQL);
         $summaryStmt->execute(['summary_from' => $from, 'summary_to' => $to]);
         $summary = $summaryStmt->fetch(PDO::FETCH_ASSOC) ?: [];
@@ -619,6 +628,15 @@ final class AdminCapabilityRepository
                  )
              AND p.id = CAST(e.entity_id AS UNSIGNED)
             WHERE e.occurred_at >= :date_from AND e.occurred_at < :date_to
+              AND e.event_key IN (
+                'product_view', 'variant_select', 'add_to_cart', 'wishlist_add',
+                'search_impression', 'search_click',
+                'checkout_started', 'checkout_address_selected', 'checkout_shipping_selected', 'checkout_order_created',
+                'purchase_completed',
+                'related_product_impression', 'related_product_click',
+                'discovery_impression', 'discovery_click', 'discovery_select', 'discovery_option_impression',
+                'comparison_add', 'comparison_remove', 'comparison_view'
+              )
             GROUP BY e.event_key, e.entity_type, e.entity_id
             ORDER BY event_count DESC, e.event_key ASC
             LIMIT ' . $limit;
