@@ -601,8 +601,10 @@ final class AdminCapabilityRepository
                    e.entity_type,
                    e.entity_id,
                    CASE
-                     WHEN e.entity_type IN ("product", "discovery") AND MAX(p.name) IS NOT NULL THEN MAX(p.name)
+                     WHEN e.entity_type IN ("product", "discovery", "comparison") AND MAX(p.name) IS NOT NULL THEN MAX(p.name)
                      WHEN e.entity_type = "product" THEN "محصول حذف‌شده/نامشخص"
+                     WHEN e.entity_type = "search" THEN CONCAT("جستجو · ", LEFT(COALESCE(e.entity_id, ""), 8))
+                     WHEN e.entity_type = "comparison" AND e.event_key = "comparison_view" THEN "مقایسه محصولات"
                      WHEN e.entity_type IS NULL THEN "رویداد عمومی"
                      ELSE CONCAT(e.entity_type, " · ", COALESCE(e.entity_id, "بدون شناسه"))
                    END AS product_name,
