@@ -50,7 +50,7 @@ $checks = [
     ['06.01.01', 'Official Admin roadmap defines Phase 6 Product Analytics', str_contains($roadmap, 'فاز ۶ — تکمیل Product Analytics')],
     ['06.01.02', 'Foundation migration defines canonical admin analytics event table', str_contains($migration, 'CREATE TABLE IF NOT EXISTS admin_analytics_events')],
     ['06.01.03', 'Shared ProductAnalyticsRecorder exists', str_contains($recorder, 'final class ProductAnalyticsRecorder')],
-    ['06.01.04', 'Analytics collection has explicit consent and a site-wide prompt', str_contains($tracker, 'nivad-analytics-consent') && str_contains($tracker, 'showGlobalConsent')],
+    ['06.01.04', 'Analytics consent is site-wide and synchronized with the server session', str_contains($tracker, 'showGlobalConsent') && str_contains($tracker, 'setConsent') && str_contains($service, 'consent_rejected')],
     ['06.01.05', 'Visitor identity is stored in first-party localStorage only after consent', str_contains($tracker, 'window.localStorage.setItem(visitorKey, value)')],
     ['06.01.06', 'Tracker sends the pseudonymous visitor identifier', str_contains($tracker, 'visitor_id: visitor')],
     ['06.01.07', 'Server hashes the visitor identifier', str_contains($service, "hash('sha256', 'visitor|' . \$visitorId)")],
@@ -77,10 +77,10 @@ $checks = [
     ['06.03.04', 'Purchase event is associated with an order entity', str_contains($payment, "'order',")],
     ['06.03.05', 'Purchase event includes persisted payment ID', str_contains($payment, "'payment_id' => \$payment->id")],
     ['06.03.06', 'Purchase event includes payment attempt ID', str_contains($payment, "'attempt_id' => \$attempt->id")],
-    ['06.03.07', 'Purchase event includes pseudonymous visitor and session hashes', str_contains($payment, "'session_hash' => \$sessionHash") && str_contains($payment, "'visitor_hash' => \$visitorHash")],
+    ['06.03.07', 'Purchase event includes the session hash only when consent is accepted', str_contains($payment, "'session_hash' => \$sessionHash") && str_contains($payment, "$analyticsConsent === 'accepted'")],
     ['06.03.08', 'Purchase event includes pseudonymous customer hash', str_contains($payment, "'customer_hash' => \$customerHash")],
     ['06.03.09', 'Public collector does not allow client-forged purchase completion', !str_contains($service, "'purchase_completed'")],
-    ['06.03.10', 'Reports calculate distinct purchase sessions and visitor-to-purchase conversion', str_contains($repository, 'AS purchase_sessions') && str_contains($repository, 'AS unique_purchasers') && str_contains($repository, 'purchase_conversion_rate')],
+    ['06.03.10', 'Reports calculate product-view-session to purchase-session conversion', str_contains($repository, 'AS product_view_sessions') && str_contains($repository, 'AS purchase_sessions') && str_contains($repository, 'purchase_conversion_rate')],
 
     // Batch 04 — Checkout Funnel
     ['06.04.01', 'Checkout tracker uses the existing checkout root', str_contains($tracker, '[data-customer-checkout]')],
