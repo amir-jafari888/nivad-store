@@ -200,7 +200,7 @@ final class AdminSupportRepository
     {
         $stmt = $this->db->prepare(
             'SELECT status, priority, COUNT(*) AS ticket_count,
-                    AVG(CASE WHEN first_reply.first_response_at IS NOT NULL
+                    AVG(CASE WHEN t.user_id IS NOT NULL AND first_reply.first_response_at IS NOT NULL
                         THEN TIMESTAMPDIFF(SECOND, t.created_at, first_reply.first_response_at) / 60 END) AS avg_first_response_minutes
              FROM admin_support_tickets t
              LEFT JOIN (
