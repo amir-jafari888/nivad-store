@@ -55,9 +55,13 @@ const productAnalytics = () => {
     reject.textContent = "عدم موافقت";
     const choose = value => {
       consent = value;
-      try { window.localStorage.setItem(consentKey, value); } catch (_) {}
       panel.remove();
-      window.dispatchEvent(new CustomEvent("nivad:analytics-consent", { detail: { consent: value } }));
+      if (window.NivadAnalytics?.setConsent) {
+        window.NivadAnalytics.setConsent(value);
+      } else {
+        try { window.localStorage.setItem(consentKey, value); } catch (_) {}
+        window.dispatchEvent(new CustomEvent("nivad:analytics-consent", { detail: { consent: value } }));
+      }
       if (value === "accepted" && loaded && !viewSent) {
         viewSent = true;
         send("product_view", lastVariantId || null);
