@@ -24,3 +24,10 @@ ORDER BY INDEX_NAME;
 
 SELECT COUNT(*) AS existing_support_tickets
 FROM admin_support_tickets;
+
+-- If this table already exists, verify that its columns match the repository contract.
+SELECT TABLE_NAME, COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE()
+  AND TABLE_NAME = 'admin_support_messages'
+ORDER BY ORDINAL_POSITION;
