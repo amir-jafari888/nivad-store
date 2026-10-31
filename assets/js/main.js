@@ -7,6 +7,7 @@ import cartDrawer from "./modules/cart-drawer.js";
 import backToTopButton from "./modules/backtoup.js";
 import skipNavigation from "./modules/skip-navigation.js";
 import clientErrorMonitoring from "./modules/client-error-monitor.js";
+import analytics from "./modules/analytics.js";
 
 header();
 theme();
@@ -17,6 +18,7 @@ cartDrawer();
 backToTopButton();
 skipNavigation();
 clientErrorMonitoring();
+analytics();
 
 const deferredModuleManifest = [
   { path: "./modules/hero.js", aliases: ["hero"] },

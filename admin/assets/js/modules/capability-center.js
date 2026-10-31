@@ -208,9 +208,28 @@ const adminCapabilityCenter = () => {
     const iso = date => date.getFullYear() + "-" + String(date.getMonth()+1).padStart(2,"0") + "-" + String(date.getDate()).padStart(2,"0");
     const data = await request("/product-analytics", {}, { from: iso(from), to: iso(to) });
     renderRows("analytics", data.items || [], {
-      title: row => (row.product_name || "محصول حذف‌شده/نامشخص") + " · " + row.event_name,
-      details: row => "تعداد رویداد: " + row.event_count + " · نشست‌ها: " + row.sessions + " · بازدیدکنندگان: " + row.visitors
+      title: row => (row.product_name || "رویداد عمومی") + " · " + row.event_name,
+      details: row => "تعداد رویداد: " + row.event_count + " · نشست‌ها: " + row.sessions + " · بازدیدکنندگان یکتا: " + row.visitors
     });
+    const target = root.querySelector('[data-capability-list="analytics"]');
+    const summary = data.summary || {};
+    if (target) {
+      const line = [
+        "بازدیدکنندگان یکتا: " + (summary.unique_viewers ?? 0),
+        "شروع Checkout: " + (summary.checkout_sessions ?? 0),
+        "پرداخت موفق: " + (summary.purchase_sessions ?? 0),
+        "نمایش جستجو: " + (summary.search_impressions ?? 0) + " · کلیک جستجو: " + (summary.search_clicks ?? 0),
+        "نمایش مکمل: " + (summary.related_impressions ?? 0) + " · کلیک مکمل: " + (summary.related_clicks ?? 0),
+        "نمایش گزینه Discovery: " + (summary.discovery_option_impressions ?? 0) + " · انتخاب: " + (summary.discovery_selections ?? 0),
+        "نرخ کلیک جستجو: " + (summary.search_click_rate === null ? "داده کافی نیست" : summary.search_click_rate + "%"),
+        "نرخ کلیک محصولات مرتبط: " + (summary.related_click_rate === null ? "داده کافی نیست" : summary.related_click_rate + "%"),
+        "نرخ انتخاب گزینه Discovery: " + (summary.discovery_selection_rate === null ? "داده کافی نیست" : summary.discovery_selection_rate + "%"),
+        "تبدیل نشست‌های بازدید محصول به خرید: " + (summary.purchase_conversion_rate === null ? "داده کافی نیست" : summary.purchase_conversion_rate + "%"),
+        "تبدیل Checkout به پرداخت موفق: " + (summary.checkout_conversion_rate === null ? "داده کافی نیست" : summary.checkout_conversion_rate + "%"),
+        "بازدید مقایسه: " + (summary.comparison_views ?? 0)
+      ].join(" · ");
+      target.prepend(node("p", line));
+    }
   };
 
   const loadHealth = async () => {

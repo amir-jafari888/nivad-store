@@ -270,45 +270,138 @@ final class AdminCapabilityService
 
     public function recordProductEvent(array $input): int
     {
-        $event = (string)($input['event_name'] ?? '');
-        $allowedEvents = ['product_view', 'variant_select', 'add_to_cart', 'wishlist_add'];
-        $productId = (int)($input['product_id'] ?? 0);
+        $event = trim((string)($input['event_name'] ?? ''));
+        if (in_array($event, ['consent_accepted', 'consent_rejected'], true)) {
+            Session::start();
+            Session::set('_analytics_consent', $event === 'consent_accepted' ? 'accepted' : 'rejected');
+            if ($event === 'consent_rejected') {
+                Session::set('_analytics_visitor_hash', null);
+            }
+            return 0;
+        }
+
+        $allowedEvents = [
+            'product_view', 'variant_select', 'add_to_cart', 'wishlist_add',
+            'search_impression', 'search_click',
+            'checkout_started', 'checkout_address_selected', 'checkout_shipping_selected', 'checkout_order_created',
+            'related_product_impression', 'related_product_click',
+            'discovery_impression', 'discovery_click', 'discovery_select', 'discovery_option_impression',
+            'comparison_add', 'comparison_remove', 'comparison_view',
+        ];
+        if (!in_array($event, $allowedEvents, true)) {
+            throw new InvalidArgumentException('نوع رویداد تحلیلی مجاز نیست.');
+        }
+
+        $productId = isset($input['product_id']) && (int)$input['product_id'] > 0
+            ? (int)$input['product_id']
+            : null;
         $variantId = isset($input['variant_id']) && (int)$input['variant_id'] > 0
             ? (int)$input['variant_id']
             : null;
 
-        if (!in_array($event, $allowedEvents, true) || $productId < 1) {
-            throw new InvalidArgumentException('رویداد یا شناسه محصول نامعتبر است.');
+        if (in_array($event, ['product_view', 'variant_select', 'add_to_cart', 'wishlist_add', 'related_product_impression', 'related_product_click', 'discovery_impression', 'discovery_click', 'comparison_add', 'comparison_remove'], true) && $productId === null) {
+            throw new InvalidArgumentException('شناسه محصول برای این رویداد الزامی است.');
         }
-        if (!$this->repository->productExists($productId)) {
+        if ($productId !== null && !$this->repository->productExists($productId)) {
             throw new InvalidArgumentException('محصول فعال پیدا نشد.');
         }
-        if ($variantId !== null && !$this->repository->variantBelongsToProduct($variantId, $productId)) {
+        if ($variantId !== null && ($productId === null || !$this->repository->variantBelongsToProduct($variantId, $productId))) {
             throw new InvalidArgumentException('مدل انتخاب‌شده متعلق به این محصول نیست.');
         }
+
+        $searchTerm = trim((string)($input['search_term'] ?? ''));
+        if (in_array($event, ['search_impression', 'search_click'], true) && ($searchTerm === '' || mb_strlen($searchTerm) > 200)) {
+            throw new InvalidArgumentException('عبارت جستجو نامعتبر است.');
+        }
+        $normalizedSearchTerm = str_replace(
+            ['ي', 'ى', 'ك'],
+            ['ی', 'ی', 'ک'],
+            mb_strtolower($searchTerm, 'UTF-8')
+        );
+        $searchTermHash = $searchTerm !== ''
+            ? hash('sha256', $normalizedSearchTerm)
+            : null;
+
+        $entityType = match (true) {
+            str_starts_with($event, 'search_') => 'search',
+            str_starts_with($event, 'checkout_') => 'checkout',
+            str_starts_with($event, 'discovery_') => 'discovery',
+            str_starts_with($event, 'comparison_') => 'comparison',
+            str_starts_with($event, 'related_product_') => 'product',
+            $productId !== null => 'product',
+            default => null,
+        };
+
+        $entityId = $productId !== null
+            ? (string)$productId
+            : (isset($input['entity_id']) ? trim((string)$input['entity_id']) : null);
+        if ($entityId === '') $entityId = null;
+        if ($entityId !== null && mb_strlen($entityId) > 100) {
+            throw new InvalidArgumentException('شناسه موجودیت تحلیلی بیش از حد مجاز است.');
+        }
+        if ($entityType === 'search') $entityId = $searchTermHash;
 
         Session::start();
         $sessionId = Session::id();
         $now = time();
         $rate = Session::get('_product_analytics_rate', []);
         if (!is_array($rate)) $rate = [];
-        $rate = array_values(array_filter($rate, static fn($timestamp): bool => is_int($timestamp) && $timestamp > ($now - 60)));
-        if (count($rate) >= 60) {
+        $rate = array_values(array_filter(
+            $rate,
+            static fn($timestamp): bool => is_int($timestamp) && $timestamp > ($now - 60)
+        ));
+        if (count($rate) >= 120) {
             throw new InvalidArgumentException('تعداد رویدادهای ثبت‌شده در این نشست بیش از حد مجاز است.');
         }
         $rate[] = $now;
         Session::set('_product_analytics_rate', $rate);
 
-        return $this->repository->recordProductEvent([
-            'event_name' => $event,
-            'product_id' => $productId,
+        $visitorId = trim((string)($input['visitor_id'] ?? ''));
+        if ($visitorId !== '' && !preg_match('/^[A-Za-z0-9_-]{16,128}$/', $visitorId)) {
+            throw new InvalidArgumentException('شناسه ناشناس بازدیدکننده معتبر نیست.');
+        }
+        $visitorHash = $visitorId !== ''
+            ? hash('sha256', 'visitor|' . $visitorId)
+            : null;
+        $sessionHash = hash('sha256', 'session|' . $sessionId);
+        $customerId = Auth::id();
+        $customerHash = $customerId !== null
+            ? hash('sha256', 'customer|' . (string)$customerId)
+            : null;
+
+        $source = trim((string)($input['source'] ?? 'storefront'));
+        if ($source === '' || !preg_match('/^[a-z0-9_-]{1,60}$/i', $source)) {
+            $source = 'storefront';
+        }
+        $step = trim((string)($input['step'] ?? ''));
+        $allowedSteps = ['start', 'address', 'shipping', 'review', 'order_created'];
+        if ($step !== '' && !in_array($step, $allowedSteps, true)) $step = '';
+
+        $resultCount = isset($input['result_count']) && is_numeric($input['result_count'])
+            ? max(0, min(1000, (int)$input['result_count']))
+            : null;
+
+        $dimensions = [
+            'visitor_hash' => $visitorHash,
+            'session_hash' => $sessionHash,
+            'customer_hash' => $customerHash,
+            'search_term_hash' => $searchTermHash,
             'variant_id' => $variantId,
-            'user_id' => Auth::id(),
-            'visitor_hash' => hash('sha256', 'visitor|' . $sessionId . '|' . Request::userAgent()),
-            'session_hash' => hash('sha256', 'session|' . $sessionId),
-            'search_term_hash' => null,
-            'source' => 'product-detail',
-            'context_json' => null,
+            'source' => $source,
+            'step' => $step !== '' ? $step : null,
+            'result_count' => $resultCount,
+            'client_event_id' => isset($input['client_event_id'])
+                && preg_match('/^[A-Za-z0-9_-]{12,80}$/', (string)$input['client_event_id'])
+                    ? (string)$input['client_event_id']
+                    : null,
+        ];
+
+        return $this->repository->recordProductEvent([
+            'event_key' => $event,
+            'entity_type' => $entityType,
+            'entity_id' => $entityId,
+            'numeric_value' => $resultCount !== null ? (float)$resultCount : null,
+            'dimensions' => $dimensions,
         ]);
     }
 

@@ -32,7 +32,9 @@ const productAnalytics = () => {
       body: JSON.stringify({
         event_name: eventName,
         product_id: productId,
-        variant_id: variantId || null
+        variant_id: variantId || null,
+        visitor_id: window.NivadAnalytics?.visitorId?.() || "",
+        source: "product-detail"
       })
     }).catch(() => {});
   };
@@ -44,7 +46,7 @@ const productAnalytics = () => {
     panel.dataset.productAnalyticsConsent = "";
     panel.setAttribute("aria-label", "تنظیمات تحلیل رفتار محصول");
     const text = document.createElement("p");
-    text.textContent = "برای بهبود تجربه فروشگاه، رویدادهای ناشناس این صفحه مانند بازدید و افزودن به سبد ثبت شوند؟";
+    text.textContent = "برای بهبود تجربه فروشگاه، رویدادهای تحلیلی این صفحه با شناسه مستعار مانند بازدید و افزودن به سبد ثبت شوند؟";
     const accept = document.createElement("button");
     accept.type = "button";
     accept.textContent = "موافقت";
@@ -53,8 +55,13 @@ const productAnalytics = () => {
     reject.textContent = "عدم موافقت";
     const choose = value => {
       consent = value;
-      try { window.localStorage.setItem(consentKey, value); } catch (_) {}
       panel.remove();
+      if (window.NivadAnalytics?.setConsent) {
+        window.NivadAnalytics.setConsent(value);
+      } else {
+        try { window.localStorage.setItem(consentKey, value); } catch (_) {}
+        window.dispatchEvent(new CustomEvent("nivad:analytics-consent", { detail: { consent: value } }));
+      }
       if (value === "accepted" && loaded && !viewSent) {
         viewSent = true;
         send("product_view", lastVariantId || null);

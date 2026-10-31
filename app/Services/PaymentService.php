@@ -464,6 +464,30 @@ final class PaymentService
                     $order?->userId;
             }
 
+            // Purchase conversion is recorded server-side only after a successful
+            // payment attempt has been finalized and the payment row persisted.
+            Session::start();
+            $sessionHash = hash('sha256', 'session|' . Session::id());
+            $analyticsConsent = Session::get('_analytics_consent', 'unknown');
+            $customerHash = $userId !== null
+                ? hash('sha256', 'customer|' . (string)$userId)
+                : null;
+            if ($analyticsConsent === 'accepted') {
+                ProductAnalyticsRecorder::record(
+                    $this->pdo,
+                    'purchase_completed',
+                    'order',
+                    (string)$payment->orderId,
+                    null,
+                    [
+                        'session_hash' => $sessionHash,
+                        'customer_hash' => $customerHash,
+                        'payment_id' => $payment->id,
+                        'attempt_id' => $attempt->id,
+                    ]
+                );
+            }
+
             if ($userId !== null) {
                 $this->notificationService->createForUser(
                     $userId,
