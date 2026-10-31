@@ -86,10 +86,13 @@ final class AdminSupportService
 
     private function validateRange(string $from, string $to): void
     {
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)
-            || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)
+        $fromDate = DateTimeImmutable::createFromFormat('!Y-m-d', $from);
+        $toDate = DateTimeImmutable::createFromFormat('!Y-m-d', $to);
+        if (!$fromDate || !$toDate
+            || $fromDate->format('Y-m-d') !== $from
+            || $toDate->format('Y-m-d') !== $to
             || $from > $to
-            || (strtotime($to) - strtotime($from)) > 366 * 86400) {
+            || ($toDate->getTimestamp() - $fromDate->getTimestamp()) > 366 * 86400) {
             throw new InvalidArgumentException('بازه گزارش باید معتبر و حداکثر یک سال باشد.');
         }
     }
