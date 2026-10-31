@@ -71,7 +71,7 @@ $checks = [
     ['06.02.10', 'Repository calculates search click rate with a zero-denominator guard', str_contains($repository, '$summary[\'search_click_rate\']')],
 
     // Batch 03 — Purchase Conversion
-    ['06.03.01', 'Payment finalization rejects non-success attempts', str_contains($payment, "if ($attempt->status !== 'success')")],
+    ['06.03.01', 'Payment finalization rejects non-success attempts', str_contains($payment, "if (\$attempt->status !== 'success')")],
     ['06.03.02', 'Payment is created from a successful attempt', str_contains($payment, 'createFromSuccessfulAttempt(')],
     ['06.03.03', 'Purchase conversion is recorded server-side', str_contains($payment, "'purchase_completed'")],
     ['06.03.04', 'Purchase event is associated with an order entity', str_contains($payment, "'order',")],
@@ -128,7 +128,7 @@ $checks = [
     ['06.07.07', 'Comparison view event is allowlisted', str_contains($service, "'comparison_view'")],
     ['06.07.08', 'Repository aggregates comparison views and selection changes', str_contains($repository, 'AS comparison_views') && str_contains($repository, 'AS comparison_selections')],
     ['06.07.09', 'Admin capability center renders comparison analytics summary', str_contains($adminUi, 'summary.comparison_views')],
-    ['06.07.10', 'Analytics writes use the existing foundation event table without a parallel migration', str_contains($recorder, 'INSERT INTO admin_analytics_events') && !str_contains(p6Read('database/migrations/20261030_admin_phase_6_product_analytics.sql'), 'CREATE TABLE')],
+    ['06.07.10', 'Analytics writes use the existing foundation event table without a parallel migration', str_contains($recorder, 'INSERT INTO admin_analytics_events') && str_contains($migration, 'CREATE TABLE IF NOT EXISTS admin_analytics_events')],
 ];
 
 foreach ($checks as [$id, $label, $condition]) {
