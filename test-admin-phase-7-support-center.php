@@ -87,7 +87,7 @@ $checks = [
     ['07.04.03', 'Repository exposes ordered status history', str_contains($repository, 'public function statusHistory(int $ticketId): array')],
     ['07.04.04', 'Ticket detail includes its status history', str_contains($repository, "\$ticket['status_history'] = \$this->statusHistory(\$id)")],
     ['07.04.05', 'Admin-created tickets record their initial status', str_contains($capRepository, 'Ticket created') && str_contains($capRepository, 'actor_type, actor_admin_id, note')],
-    ['07.04.06', 'Customer-created tickets record their initial status', str_contains($capRepository, 'actor_type, note)') && str_contains($capRepository, '"customer", "Ticket created"')],
+    ['07.04.06', 'Customer-created tickets record their initial status', str_contains($capRepository, 'actor_type, actor_user_id, note)') && str_contains($capRepository, '"customer", :actor_user_id, "Ticket created"')],
     ['07.04.07', 'Admin status updates lock and read the prior state transactionally', str_contains($capRepository, 'SELECT status FROM admin_support_tickets WHERE id = :id LIMIT 1 FOR UPDATE')],
     ['07.04.08', 'Admin status transitions persist old and new status with actor', str_contains($capRepository, 'if ($previousStatus !== $status)') && str_contains($capRepository, "'actor_admin_id' => " . '$actorAdminId')],
     ['07.04.09', 'Customer replies record automatic pending-admin transitions', str_contains($capRepository, 'Customer replied') && str_contains($capRepository, '"pending_admin"')],
