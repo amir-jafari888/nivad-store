@@ -229,7 +229,7 @@ const analytics = () => {
     accept.addEventListener("click", () => choose("accepted"));
     reject.addEventListener("click", () => choose("rejected"));
     panel.append(text, accept, reject);
-    document.body.append(panel);
+    document.body.prepend(panel);
   };
 
   window.addEventListener("nivad:analytics-consent", () => {
