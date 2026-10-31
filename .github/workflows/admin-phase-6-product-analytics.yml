@@ -1,0 +1,88 @@
+name: Admin Phase 6 Product Analytics
+
+on:
+  push:
+    branches:
+      - feature/admin-phase-6-product-analytics-2026-10-31
+    paths:
+      - 'app/Controllers/AdminCapabilityController.php'
+      - 'app/Controllers/ProductAnalyticsController.php'
+      - 'app/Repositories/AdminCapabilityRepository.php'
+      - 'app/Services/AdminCapabilityService.php'
+      - 'app/Services/PaymentService.php'
+      - 'app/Services/ProductAnalyticsRecorder.php'
+      - 'assets/js/modules/analytics.js'
+      - 'assets/js/modules/product-analytics.js'
+      - 'assets/js/modules/discovery.js'
+      - 'assets/js/modules/checkout.js'
+      - 'assets/js/main.js'
+      - 'admin/assets/js/modules/capability-center.js'
+      - 'test-admin-phase-6-product-analytics.php'
+      - 'docs/admin/phase-6-product-analytics.md'
+      - '.github/workflows/admin-phase-6-product-analytics.yml'
+  pull_request:
+    paths:
+      - 'app/Controllers/AdminCapabilityController.php'
+      - 'app/Controllers/ProductAnalyticsController.php'
+      - 'app/Repositories/AdminCapabilityRepository.php'
+      - 'app/Services/AdminCapabilityService.php'
+      - 'app/Services/PaymentService.php'
+      - 'app/Services/ProductAnalyticsRecorder.php'
+      - 'assets/js/modules/analytics.js'
+      - 'assets/js/modules/product-analytics.js'
+      - 'assets/js/modules/discovery.js'
+      - 'assets/js/modules/checkout.js'
+      - 'assets/js/main.js'
+      - 'admin/assets/js/modules/capability-center.js'
+      - 'test-admin-phase-6-product-analytics.php'
+      - 'docs/admin/phase-6-product-analytics.md'
+      - '.github/workflows/admin-phase-6-product-analytics.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  product-analytics-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in \
+            app/Controllers/AdminCapabilityController.php \
+            app/Controllers/ProductAnalyticsController.php \
+            app/Repositories/AdminCapabilityRepository.php \
+            app/Services/AdminCapabilityService.php \
+            app/Services/PaymentService.php \
+            app/Services/ProductAnalyticsRecorder.php \
+            test-admin-phase-6-product-analytics.php
+          do
+            php -l "$file"
+          done
+      - name: JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in \
+            assets/js/modules/analytics.js \
+            assets/js/modules/product-analytics.js \
+            assets/js/modules/discovery.js \
+            assets/js/modules/checkout.js \
+            assets/js/main.js \
+            admin/assets/js/modules/capability-center.js
+          do
+            node --input-type=module --check < "$file"
+          done
+      - name: Phase 6 static contracts
+        run: php test-admin-phase-6-product-analytics.php
