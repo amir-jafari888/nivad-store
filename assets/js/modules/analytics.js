@@ -92,6 +92,7 @@ const analytics = () => {
   };
 
   const scanImpressions = () => {
+    if (consent() !== "accepted") return;
     document.querySelectorAll("[data-complement-product-id]").forEach(element => {
       observeImpression(element, "related_product_impression", element.dataset.complementProductId, "related-products");
     });
@@ -117,6 +118,7 @@ const analytics = () => {
   };
 
   const scanSearchImpression = () => {
+    if (consent() !== "accepted") return;
     const form = document.querySelector("[data-search-form]");
     const input = form?.querySelector("[data-search-input]");
     const box = form?.querySelector(".search-suggestions");
@@ -177,6 +179,7 @@ const analytics = () => {
   });
 
   const scanComparisonView = () => {
+    if (consent() !== "accepted") return;
     const page = document.querySelector("[data-comparison-page]");
     const content = page?.querySelector("[data-comparison-content]");
     if (!page || !content || content.hidden) return;
@@ -193,7 +196,49 @@ const analytics = () => {
   };
 
   const checkout = document.querySelector("[data-customer-checkout]");
-  if (checkout) track("checkout_started", { entity_type: "checkout", source: "checkout", step: "start" });
+  let checkoutStartedTracked = false;
+  const trackCheckoutStart = () => {
+    if (!checkout || checkoutStartedTracked || consent() !== "accepted") return;
+    checkoutStartedTracked = track("checkout_started", {
+      entity_type: "checkout",
+      source: "checkout",
+      step: "start",
+    });
+  };
+
+  const showGlobalConsent = () => {
+    if (consent() !== "unknown" || document.querySelector("[data-product-detail]") || !document.body) return;
+    const panel = document.createElement("aside");
+    panel.className = "product-analytics-consent";
+    panel.dataset.globalAnalyticsConsent = "";
+    panel.setAttribute("aria-label", "تنظیمات تحلیل رفتار فروشگاه");
+    const text = document.createElement("p");
+    text.textContent = "برای تحلیل عملکرد فروشگاه، رویدادهای تعاملی با شناسه مستعار ثبت شوند؟ عبارت‌های جستجو به‌صورت خام ذخیره نمی‌شوند.";
+    const accept = document.createElement("button");
+    accept.type = "button";
+    accept.textContent = "موافقت";
+    const reject = document.createElement("button");
+    reject.type = "button";
+    reject.textContent = "عدم موافقت";
+    const choose = value => {
+      try { window.localStorage.setItem(consentKey, value); } catch (_) {}
+      panel.remove();
+      if (value === "accepted") visitorId();
+      window.dispatchEvent(new CustomEvent("nivad:analytics-consent", { detail: { consent: value } }));
+    };
+    accept.addEventListener("click", () => choose("accepted"));
+    reject.addEventListener("click", () => choose("rejected"));
+    panel.append(text, accept, reject);
+    document.body.append(panel);
+  };
+
+  window.addEventListener("nivad:analytics-consent", () => {
+    if (consent() === "accepted") visitorId();
+    scanImpressions();
+    scanSearchImpression();
+    scanComparisonView();
+    trackCheckoutStart();
+  });
 
   const observer = new MutationObserver(() => {
     scanImpressions();
@@ -205,6 +250,8 @@ const analytics = () => {
   scanImpressions();
   scanSearchImpression();
   scanComparisonView();
+  trackCheckoutStart();
+  showGlobalConsent();
 
   let currentIds = [];
   try {
