@@ -706,6 +706,13 @@ const checkout = () => {
         );
       }
 
+      window.NivadAnalytics?.track("checkout_order_created", {
+        entity_type: "checkout",
+        entity_id: order.id,
+        source: "checkout",
+        step: "order_created",
+      });
+
       setState(
         `سفارش شماره ${
           order.orderNumber ||
