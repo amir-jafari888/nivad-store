@@ -77,7 +77,7 @@ $checks = [
     ['06.03.04', 'Purchase event is associated with an order entity', str_contains($payment, "'order',")],
     ['06.03.05', 'Purchase event includes persisted payment ID', str_contains($payment, "'payment_id' => \$payment->id")],
     ['06.03.06', 'Purchase event includes payment attempt ID', str_contains($payment, "'attempt_id' => \$attempt->id")],
-    ['06.03.07', 'Purchase event includes the session hash only when consent is accepted', str_contains($payment, "'session_hash' => \$sessionHash") && str_contains($payment, "$analyticsConsent === 'accepted'")],
+    ['06.03.07', 'Purchase event includes the session hash only when consent is accepted', str_contains($payment, "'session_hash' => \$sessionHash") && str_contains($payment, "\$analyticsConsent === 'accepted'")],
     ['06.03.08', 'Purchase event includes pseudonymous customer hash', str_contains($payment, "'customer_hash' => \$customerHash")],
     ['06.03.09', 'Public collector does not allow client-forged purchase completion', !str_contains($service, "'purchase_completed'")],
     ['06.03.10', 'Reports calculate product-view-session to purchase-session conversion', str_contains($repository, 'AS product_view_sessions') && str_contains($repository, 'AS purchase_sessions') && str_contains($repository, 'purchase_conversion_rate')],
