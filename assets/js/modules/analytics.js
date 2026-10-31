@@ -98,6 +98,9 @@ const analytics = () => {
     document.querySelectorAll(".page-discovery__product[data-product-id]").forEach(element => {
       observeImpression(element, "discovery_impression", element.dataset.productId, "discovery");
     });
+    document.querySelectorAll("[data-discovery-tags]").forEach(element => {
+      observeImpression(element, "discovery_option_impression", element.dataset.discovery || "unknown", "discovery-options");
+    });
   };
 
   const scanSearchImpression = () => {
@@ -135,11 +138,6 @@ const analytics = () => {
     if (related) {
       const card = related.closest("[data-complement-product-id]");
       track("related_product_click", { product_id: card?.dataset.complementProductId, source: "related-products" });
-    }
-
-    const discoveryCard = target.closest(".page-discovery__product[data-product-id]");
-    if (discoveryCard) {
-      track("discovery_click", { product_id: discoveryCard.dataset.productId, source: "discovery" });
     }
 
     const discoveryOption = target.closest("[data-discovery-tags]");
