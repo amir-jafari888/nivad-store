@@ -468,6 +468,10 @@ final class PaymentService
             // payment attempt has been finalized and the payment row persisted.
             Session::start();
             $sessionHash = hash('sha256', 'session|' . Session::id());
+            $visitorHash = Session::get('_analytics_visitor_hash');
+            $visitorHash = is_string($visitorHash) && preg_match('/^[a-f0-9]{64}$/', $visitorHash)
+                ? $visitorHash
+                : null;
             $customerHash = $userId !== null
                 ? hash('sha256', 'customer|' . (string)$userId)
                 : null;
@@ -479,6 +483,7 @@ final class PaymentService
                 null,
                 [
                     'session_hash' => $sessionHash,
+                    'visitor_hash' => $visitorHash,
                     'customer_hash' => $customerHash,
                     'payment_id' => $payment->id,
                     'attempt_id' => $attempt->id,
