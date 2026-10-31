@@ -183,7 +183,7 @@ const adminCapabilityCenter = () => {
             const history = result.ticket.status_history || [];
             if (!history.length) content.append(node("p", "تاریخچه‌ای ثبت نشده است."));
             history.forEach(item => {
-              const actor = item.actor_type === "admin" ? "مدیر " + (item.first_name || "") + " " + (item.last_name || "") : item.actor_type === "customer" ? "مشتری" : "سیستم";
+              const actor = item.actor_type === "admin" ? "مدیر " + (item.first_name || "") + " " + (item.last_name || "") : item.actor_type === "customer" ? "مشتری #" + (item.actor_user_id || "نامشخص") : "سیستم";
               content.append(node("p", (item.from_status || "شروع") + " ← " + item.to_status + " · " + actor + " · " + item.changed_at + (item.note ? " · " + item.note : "")));
             });
             const form = document.createElement("form");
