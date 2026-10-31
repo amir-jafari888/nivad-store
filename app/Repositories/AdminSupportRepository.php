@@ -90,7 +90,7 @@ final class AdminSupportRepository
     {
         $stmt = $this->db->prepare(
             'SELECT h.id, h.from_status, h.to_status, h.actor_type, h.actor_admin_id,
-                    h.note, h.changed_at, a.first_name, a.last_name
+                    h.actor_user_id, h.note, h.changed_at, a.first_name, a.last_name
              FROM admin_support_status_history h
              LEFT JOIN admin_users a ON a.id = h.actor_admin_id
              WHERE h.ticket_id = :ticket_id
