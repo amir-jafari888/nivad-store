@@ -569,6 +569,8 @@ final class AdminCapabilityRepository
                     THEN JSON_UNQUOTE(JSON_EXTRACT(dimensions_json, '$.session_hash')) END) AS checkout_sessions,
                 COUNT(DISTINCT CASE WHEN event_key = 'purchase_completed'
                     THEN JSON_UNQUOTE(JSON_EXTRACT(dimensions_json, '$.session_hash')) END) AS purchase_sessions,
+                COUNT(DISTINCT CASE WHEN event_key = 'purchase_completed'
+                    THEN JSON_UNQUOTE(JSON_EXTRACT(dimensions_json, '$.visitor_hash')) END) AS unique_purchasers,
                 SUM(event_key = 'related_product_impression') AS related_impressions,
                 SUM(event_key = 'related_product_click') AS related_clicks,
                 SUM(event_key = 'discovery_impression') AS discovery_impressions,
@@ -601,8 +603,11 @@ final class AdminCapabilityRepository
         $summary['discovery_selection_rate'] = (int)($summary['discovery_option_impressions'] ?? 0) > 0
             ? round(((int)$summary['discovery_selections'] / (int)$summary['discovery_option_impressions']) * 100, 2)
             : null;
-        $summary['checkout_conversion_rate'] = (int)($summary['checkout_sessions'] ?? 0) > 0
+        $summary['checkout_conversion_rate'] = (int)($summary['checkout_sessions'] ?? 0) > 0 && (int)($summary['purchase_sessions'] ?? 0) > 0
             ? round(((int)$summary['purchase_sessions'] / (int)$summary['checkout_sessions']) * 100, 2)
+            : null;
+        $summary['purchase_conversion_rate'] = (int)($summary['unique_viewers'] ?? 0) > 0 && (int)($summary['unique_purchasers'] ?? 0) > 0
+            ? round(((int)$summary['unique_purchasers'] / (int)$summary['unique_viewers']) * 100, 2)
             : null;
 
         $sql = <<<'SQL'
