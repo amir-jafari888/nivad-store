@@ -33,6 +33,7 @@ on:
       - 'admin/assets/js/modules/capability-center.js'
       - 'database/migrations/20261031_admin_support_phase7.sql'
       - 'database/verification/20261031_admin_support_phase7_verify.sql'
+      - 'database/verification/20261031_admin_support_phase7_preflight.sql'
       - 'test-admin-phase-7-support-center.php'
       - 'docs/admin/phase-7-support-center.md'
       - '.github/workflows/admin-phase-7-support-center.yml'
