@@ -50,7 +50,7 @@ $checks = [
     ['06.01.01', 'Official Admin roadmap defines Phase 6 Product Analytics', str_contains($roadmap, 'فاز ۶ — تکمیل Product Analytics')],
     ['06.01.02', 'Foundation migration defines canonical admin analytics event table', str_contains($migration, 'CREATE TABLE IF NOT EXISTS admin_analytics_events')],
     ['06.01.03', 'Shared ProductAnalyticsRecorder exists', str_contains($recorder, 'final class ProductAnalyticsRecorder')],
-    ['06.01.04', 'Analytics collection reads the explicit consent key', str_contains($tracker, 'nivad-analytics-consent')],
+    ['06.01.04', 'Analytics collection has explicit consent and a site-wide prompt', str_contains($tracker, 'nivad-analytics-consent') && str_contains($tracker, 'showGlobalConsent')],
     ['06.01.05', 'Visitor identity is stored in first-party localStorage only after consent', str_contains($tracker, 'window.localStorage.setItem(visitorKey, value)')],
     ['06.01.06', 'Tracker sends the pseudonymous visitor identifier', str_contains($tracker, 'visitor_id: visitor')],
     ['06.01.07', 'Server hashes the visitor identifier', str_contains($service, "hash('sha256', 'visitor|' . $visitorId)")],
