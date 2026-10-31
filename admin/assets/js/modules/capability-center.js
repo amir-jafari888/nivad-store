@@ -216,6 +216,11 @@ const adminCapabilityCenter = () => {
     if (target) {
       const line = [
         "بازدیدکنندگان یکتا: " + (summary.unique_viewers ?? 0),
+        "شروع Checkout: " + (summary.checkout_sessions ?? 0),
+        "پرداخت موفق: " + (summary.purchase_sessions ?? 0),
+        "نمایش جستجو: " + (summary.search_impressions ?? 0) + " · کلیک جستجو: " + (summary.search_clicks ?? 0),
+        "نمایش مکمل: " + (summary.related_impressions ?? 0) + " · کلیک مکمل: " + (summary.related_clicks ?? 0),
+        "نمایش گزینه Discovery: " + (summary.discovery_option_impressions ?? 0) + " · انتخاب: " + (summary.discovery_selections ?? 0),
         "نرخ کلیک جستجو: " + (summary.search_click_rate === null ? "داده کافی نیست" : summary.search_click_rate + "%"),
         "نرخ کلیک محصولات مرتبط: " + (summary.related_click_rate === null ? "داده کافی نیست" : summary.related_click_rate + "%"),
         "نرخ انتخاب گزینه Discovery: " + (summary.discovery_selection_rate === null ? "داده کافی نیست" : summary.discovery_selection_rate + "%"),
