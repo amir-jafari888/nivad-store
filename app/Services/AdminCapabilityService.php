@@ -304,8 +304,13 @@ final class AdminCapabilityService
         if (in_array($event, ['search_impression', 'search_click'], true) && ($searchTerm === '' || mb_strlen($searchTerm) > 200)) {
             throw new InvalidArgumentException('عبارت جستجو نامعتبر است.');
         }
+        $normalizedSearchTerm = str_replace(
+            ['ي', 'ى', 'ك'],
+            ['ی', 'ی', 'ک'],
+            mb_strtolower($searchTerm, 'UTF-8')
+        );
         $searchTermHash = $searchTerm !== ''
-            ? hash('sha256', mb_strtolower($searchTerm, 'UTF-8'))
+            ? hash('sha256', $normalizedSearchTerm)
             : null;
 
         $entityType = match (true) {
