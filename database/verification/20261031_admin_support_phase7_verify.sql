@@ -31,6 +31,13 @@ SELECT priority, first_response_minutes, resolution_minutes, is_active, updated_
 FROM admin_support_sla_policies
 ORDER BY FIELD(priority, 'urgent', 'high', 'normal', 'low');
 
+SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE()
+  AND TABLE_NAME = 'admin_support_status_history'
+  AND COLUMN_NAME IN ('ticket_id', 'from_status', 'to_status', 'actor_type', 'actor_admin_id', 'actor_user_id', 'note', 'changed_at')
+ORDER BY ORDINAL_POSITION;
+
 SELECT
     (SELECT COUNT(*) FROM admin_support_tickets) AS total_tickets,
     (SELECT COUNT(*) FROM admin_support_messages) AS total_messages,
