@@ -276,7 +276,7 @@ final class AdminCapabilityService
             'search_impression', 'search_click',
             'checkout_started', 'checkout_address_selected', 'checkout_shipping_selected', 'checkout_order_created',
             'related_product_impression', 'related_product_click',
-            'discovery_impression', 'discovery_click', 'discovery_select',
+            'discovery_impression', 'discovery_click', 'discovery_select', 'discovery_option_impression',
             'comparison_add', 'comparison_remove', 'comparison_view',
         ];
         if (!in_array($event, $allowedEvents, true)) {
