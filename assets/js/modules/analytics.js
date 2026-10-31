@@ -99,7 +99,20 @@ const analytics = () => {
       observeImpression(element, "discovery_impression", element.dataset.productId, "discovery");
     });
     document.querySelectorAll("[data-discovery-tags]").forEach(element => {
-      observeImpression(element, "discovery_option_impression", element.dataset.discovery || "unknown", "discovery-options");
+      if (seenImpressions.has(element) || !("IntersectionObserver" in window)) return;
+      seenImpressions.add(element);
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting || entry.intersectionRatio < 0.35) return;
+          track("discovery_option_impression", {
+            entity_type: "discovery",
+            entity_id: element.dataset.discovery || "unknown",
+            source: "discovery-options",
+          });
+          observer.unobserve(element);
+        });
+      }, { threshold: [0.35] });
+      observer.observe(element);
     });
   };
 
