@@ -133,7 +133,7 @@ final class AdminSupportRepository
             'SELECT COUNT(*) AS total_tickets,
                     SUM(t.status IN ("open", "pending_admin", "pending_customer")) AS active_tickets,
                     SUM(t.status = "resolved" OR t.status = "closed") AS completed_tickets,
-                    AVG(CASE WHEN first_reply.first_response_at IS NOT NULL
+                    AVG(CASE WHEN t.user_id IS NOT NULL AND first_reply.first_response_at IS NOT NULL
                         THEN TIMESTAMPDIFF(SECOND, t.created_at, first_reply.first_response_at) / 60 END) AS avg_first_response_minutes,
                     SUM(CASE WHEN t.user_id IS NOT NULL AND first_reply.first_response_at IS NULL
                         AND t.status IN ("open", "pending_admin") THEN 1 ELSE 0 END) AS awaiting_first_response
@@ -156,12 +156,24 @@ final class AdminSupportRepository
             'SELECT t.priority, COUNT(*) AS eligible,
                     SUM(CASE WHEN first_reply.first_response_at IS NOT NULL
                         AND TIMESTAMPDIFF(MINUTE, t.created_at, first_reply.first_response_at) <= p.first_response_minutes THEN 1
-                        WHEN first_reply.first_response_at IS NULL AND TIMESTAMPDIFF(MINUTE, t.created_at, CURRENT_TIMESTAMP) <= p.first_response_minutes THEN 1
+                        WHEN first_reply.first_response_at IS NULL AND t.status NOT IN ("resolved", "closed")
+                        AND TIMESTAMPDIFF(MINUTE, t.created_at, CURRENT_TIMESTAMP) <= p.first_response_minutes THEN 1
                         ELSE 0 END) AS response_within_sla,
                     SUM(CASE WHEN first_reply.first_response_at IS NOT NULL
                         AND TIMESTAMPDIFF(MINUTE, t.created_at, first_reply.first_response_at) > p.first_response_minutes THEN 1
-                        WHEN first_reply.first_response_at IS NULL AND TIMESTAMPDIFF(MINUTE, t.created_at, CURRENT_TIMESTAMP) > p.first_response_minutes THEN 1
-                        ELSE 0 END) AS response_breached
+                        WHEN first_reply.first_response_at IS NULL AND (t.status IN ("resolved", "closed")
+                        OR TIMESTAMPDIFF(MINUTE, t.created_at, CURRENT_TIMESTAMP) > p.first_response_minutes) THEN 1
+                        ELSE 0 END) AS response_breached,
+                    SUM(CASE WHEN COALESCE(t.resolved_at, t.closed_at) IS NOT NULL
+                        AND TIMESTAMPDIFF(MINUTE, t.created_at, COALESCE(t.resolved_at, t.closed_at)) <= p.resolution_minutes THEN 1
+                        WHEN COALESCE(t.resolved_at, t.closed_at) IS NULL
+                        AND TIMESTAMPDIFF(MINUTE, t.created_at, CURRENT_TIMESTAMP) <= p.resolution_minutes THEN 1
+                        ELSE 0 END) AS resolution_within_sla,
+                    SUM(CASE WHEN COALESCE(t.resolved_at, t.closed_at) IS NOT NULL
+                        AND TIMESTAMPDIFF(MINUTE, t.created_at, COALESCE(t.resolved_at, t.closed_at)) > p.resolution_minutes THEN 1
+                        WHEN COALESCE(t.resolved_at, t.closed_at) IS NULL
+                        AND TIMESTAMPDIFF(MINUTE, t.created_at, CURRENT_TIMESTAMP) > p.resolution_minutes THEN 1
+                        ELSE 0 END) AS resolution_breached
              FROM admin_support_tickets t
              INNER JOIN admin_support_sla_policies p ON p.priority = t.priority AND p.is_active = 1
              LEFT JOIN (
