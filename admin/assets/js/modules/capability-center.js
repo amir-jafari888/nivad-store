@@ -346,7 +346,9 @@ const adminCapabilityCenter = () => {
         node("p", "در انتظار پاسخ اولیه: " + (summary.awaiting_first_response ?? 0)),
         node("p", "اولویت‌های دارای SLA فعال: " + (data.policies_configured ?? 0))
       );
-      (data.sla || []).forEach(row => target.append(node("p", row.priority + " · مشمول: " + row.eligible + " · در محدوده SLA: " + row.response_within_sla + " · نقض‌شده: " + row.response_breached)));
+      (data.sla || []).forEach(row => target.append(
+        node("p", row.priority + " · پاسخ اولیه: " + row.response_within_sla + " در محدوده / " + row.response_breached + " نقض · حل تیکت: " + row.resolution_within_sla + " در محدوده / " + row.resolution_breached + " نقض")
+      ));
     }
   };
 
