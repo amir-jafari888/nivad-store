@@ -176,6 +176,7 @@ final class AdminSupportRepository
                         ELSE 0 END) AS resolution_breached
              FROM admin_support_tickets t
              INNER JOIN admin_support_sla_policies p ON p.priority = t.priority AND p.is_active = 1
+               AND p.first_response_minutes IS NOT NULL AND p.resolution_minutes IS NOT NULL
              LEFT JOIN (
                 SELECT ticket_id, MIN(created_at) AS first_response_at
                 FROM admin_support_messages
@@ -192,7 +193,7 @@ final class AdminSupportRepository
         return [
             'summary' => $summary,
             'sla' => $slaRows,
-            'policies_configured' => count(array_filter($policies, static fn(array $p): bool => (int)$p['is_active'] === 1)),
+            'policies_configured' => count(array_filter($policies, static fn(array $p): bool => (int)$p['is_active'] === 1 && $p['first_response_minutes'] !== null && $p['resolution_minutes'] !== null)),
         ];
     }
 
