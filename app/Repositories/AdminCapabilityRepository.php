@@ -541,10 +541,10 @@ final class AdminCapabilityRepository
                 'message' => $data['message'],
             ]);
             $history = $this->db->prepare(
-                'INSERT INTO admin_support_status_history (ticket_id, from_status, to_status, actor_type, note)
-                 VALUES (:ticket_id, NULL, "open", "customer", "Ticket created")'
+                'INSERT INTO admin_support_status_history (ticket_id, from_status, to_status, actor_type, actor_user_id, note)
+                 VALUES (:ticket_id, NULL, "open", "customer", :actor_user_id, "Ticket created")'
             );
-            $history->execute(['ticket_id' => $ticketId]);
+            $history->execute(['ticket_id' => $ticketId, 'actor_user_id' => $userId]);
             $this->db->commit();
             return $ticketId;
         } catch (Throwable $exception) {
@@ -589,10 +589,10 @@ final class AdminCapabilityRepository
             $update->execute(['ticket_id' => $ticketId, 'user_id' => $userId]);
             if ($status !== "pending_admin") {
                 $history = $this->db->prepare(
-                    'INSERT INTO admin_support_status_history (ticket_id, from_status, to_status, actor_type, note)
-                     VALUES (:ticket_id, :from_status, "pending_admin", "customer", "Customer replied")'
+                    'INSERT INTO admin_support_status_history (ticket_id, from_status, to_status, actor_type, actor_user_id, note)
+                     VALUES (:ticket_id, :from_status, "pending_admin", "customer", :actor_user_id, "Customer replied")'
                 );
-                $history->execute(['ticket_id' => $ticketId, 'from_status' => $status]);
+                $history->execute(['ticket_id' => $ticketId, 'from_status' => $status, 'actor_user_id' => $userId]);
             }
             $this->db->commit();
             return $messageId;
