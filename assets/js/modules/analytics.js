@@ -41,7 +41,10 @@ const analytics = () => {
 
   const setConsent = value => {
     if (value !== "accepted" && value !== "rejected") return false;
-    try { window.localStorage.setItem(consentKey, value); } catch (_) {}
+    try {
+      window.localStorage.setItem(consentKey, value);
+      if (value === "rejected") window.localStorage.removeItem(visitorKey);
+    } catch (_) {}
     const endpoint = apiUrl();
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content || "";
     if (endpoint && csrf) {
