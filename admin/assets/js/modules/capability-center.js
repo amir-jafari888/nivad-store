@@ -356,6 +356,10 @@ const adminCapabilityCenter = () => {
       title: row => row.priority + " · " + row.status + " · " + row.ticket_count + " تیکت",
       details: row => "میانگین پاسخ اولیه (دقیقه): " + (row.avg_first_response_minutes === null ? "داده کافی نیست" : Number(row.avg_first_response_minutes || 0).toFixed(1))
     });
+    renderRows("support-assignees", data.by_assignee || [], {
+      title: row => (row.assigned_admin_name || "بدون مسئول") + " · " + row.ticket_count + " تیکت",
+      details: row => "تکمیل‌شده: " + row.completed_count + " · میانگین پاسخ: " + (row.avg_first_response_minutes === null ? "داده کافی نیست" : Number(row.avg_first_response_minutes || 0).toFixed(1) + " دقیقه") + " · میانگین حل: " + (row.avg_resolution_minutes === null ? "داده کافی نیست" : Number(row.avg_resolution_minutes || 0).toFixed(1) + " دقیقه")
+    });
   };
 
   const loadSupportSla = async () => {
