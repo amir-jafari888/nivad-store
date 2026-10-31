@@ -53,7 +53,7 @@ Each Batch contains exactly 10 implementation contracts. The implementation reus
 9. [x] Aggregate search impressions and clicks from persisted events.
 10. [ ] Verify search impression/click counts against browser interaction and consent states.
 
-## Batch 03 — Purchase Conversion (06.21–06.30)
+## Batch 03 — Purchase Conversion (06.21–06.30) — PARTIAL / DEPENDENCY BLOCKED
 
 1. [x] Audit the authoritative payment-attempt finalization path.
 2. [x] Require payment attempt status `success` before finalization.
@@ -66,7 +66,9 @@ Each Batch contains exactly 10 implementation contracts. The implementation reus
 9. [x] Keep the conversion event in the payment transaction; rollback removes both on failure.
 10. [ ] Verify exactly one conversion event per finalized payment against MySQL and gateway test flow.
 
-## Batch 04 — Checkout Funnel (06.31–06.40)
+**Dependency finding:** `PaymentController::complete()` currently returns HTTP 503 because valid gateway confirmation is not configured. Repository search found no call site for `PaymentService::createSuccessfulPaymentFromAttempt()`. The server-side event hook is implemented inside that finalization method, but the current application cannot reach it through a live payment flow. This is intentionally not replaced with a client-forgeable purchase event.
+
+## Batch 04 — Checkout Funnel (06.31–06.40) — PARTIAL / PURCHASE STAGE BLOCKED
 
 1. [x] Record checkout start when the real checkout root is initialized.
 2. [x] Record address selection from the existing address control.
@@ -78,6 +80,8 @@ Each Batch contains exactly 10 implementation contracts. The implementation reus
 8. [x] Aggregate address, shipping and order-created steps.
 9. [x] Aggregate successful purchase sessions separately from order creation.
 10. [ ] Verify funnel drop-off against real checkout/payment sessions.
+
+The client-side checkout steps are instrumented. The final successful-purchase stage remains unavailable until the verified payment gateway completion path is implemented and connected.
 
 ## Batch 05 — Related Products (06.41–06.50)
 
@@ -148,8 +152,12 @@ Each Batch contains exactly 10 implementation contracts. The implementation reus
 - Implementation branch: `feature/admin-phase-6-product-analytics-2026-10-31`
 - Base branch: `feature/admin-phase-5-cms-2026-10-30` (stacked; Phase 5 PR remains separate).
 - New migration: none; uses the existing foundation event table.
-- Static/CI: pending.
+- Static contract test: 70/70 PASS.
+- PHP syntax: PASS.
+- JavaScript module syntax: PASS.
 - XAMPP/MySQL runtime: pending.
 - Browser and gateway verification: pending.
+- Purchase conversion: PARTIAL / DEPENDENCY UNKNOWN (payment completion route currently returns 503; no active finalization call site).
+- Existing foundation regression: a separate pre-existing non-database test still fails on undefined `AdminAccountPolicy::validateCreate()`; this is unrelated to Phase 6 changes.
 - PASS: not granted.
 - LOCK: NO.
