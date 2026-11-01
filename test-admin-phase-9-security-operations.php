@@ -23,7 +23,7 @@ $controller = $read('app/Controllers/AdminSecurityOperationsController.php');
 $routes = $read('routes/api.php');
 $map = $read('app/Core/AdminRoutePermissionMap.php');
 $return = $read('app/Controllers/ReturnController.php');
-$page = $read('admin/security-events/index.php');
+$page = $read('nivad-panel/security-events/index.php');
 $policy = $read('app/Services/AdminSecurityEventPolicy.php');
 
 phase9Check('Security event storage is additive and has unique fingerprint', str_contains($migration, 'CREATE TABLE IF NOT EXISTS admin_security_events') && str_contains($migration, 'UNIQUE KEY uq_admin_security_event_fingerprint'));
