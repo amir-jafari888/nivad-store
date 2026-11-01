@@ -452,6 +452,7 @@ final class AdminCapabilityService
         $sort = $validator->validateSort($sort);
         $allowedFields = [
             'products' => ['id', 'name', 'sku', 'status', 'price', 'created_at', 'updated_at', 'search_term'],
+            'categories' => ['id', 'name', 'slug', 'status', 'parent_id', 'sort_order', 'search_term'],
             'orders' => ['id', 'order_number', 'status', 'total_amount', 'created_at', 'updated_at', 'search_term'],
             'customers' => ['id', 'first_name', 'last_name', 'email', 'phone', 'status', 'created_at', 'search_term'],
             'tickets' => ['id', 'ticket_number', 'status', 'priority', 'assigned_admin_id', 'created_at', 'updated_at', 'search_term'],
@@ -537,7 +538,7 @@ final class AdminCapabilityService
     private function module(string $module): string
     {
         $module = trim($module);
-        if (!in_array($module, ['products', 'orders', 'customers', 'tickets', 'inventory', 'payments'], true)) {
+        if (!in_array($module, ['products', 'categories', 'orders', 'customers', 'tickets', 'inventory', 'payments'], true)) {
             throw new InvalidArgumentException('شناسه ماژول ذخیره‌شده پشتیبانی نمی‌شود.');
         }
         return $module;
