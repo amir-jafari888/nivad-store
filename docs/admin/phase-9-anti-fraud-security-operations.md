@@ -50,7 +50,7 @@ Canonical scope: `ADMIN_PANEL_ROADMAP.md`, Phase 9 — 7 Batches.
 
 ## Database and verification
 
-1. Run the read-only preflight/verification SQL and confirm the actual DB schema before applying the additive migration.
+1. Run `database/verification/20261101_admin_security_operations_phase9_preflight.sql` and confirm the actual DB schema before applying the additive migration.
 2. Apply `database/migrations/20261101_admin_security_operations_phase9.sql` only after review and backup.
 3. Run `database/verification/20261101_admin_security_operations_phase9_verify.sql`.
 4. Run `php test-admin-phase-9-security-operations.php`.
