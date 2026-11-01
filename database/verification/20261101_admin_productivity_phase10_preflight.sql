@@ -25,5 +25,8 @@ WHERE TABLE_SCHEMA = DATABASE()
   )
 ORDER BY TABLE_NAME, ORDINAL_POSITION;
 
-SELECT COUNT(*) AS existing_saved_views
-FROM admin_saved_views;
+SELECT
+    CASE WHEN EXISTS (
+        SELECT 1 FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'admin_saved_views'
+    ) THEN 'PRESENT' ELSE 'MISSING' END AS admin_saved_views_table_status;
