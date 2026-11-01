@@ -37,14 +37,14 @@ $imports = static function (string $content): array {
 };
 
 $storeMain = $read('assets/css/main.css');
-$adminMain = $read('admin/assets/css/main.css');
+$adminMain = $read('nivad-panel/assets/css/main.css');
 $storeTokens = $read('assets/css/setting.css');
-$adminTokens = $read('admin/assets/css/setting.css');
+$adminTokens = $read('nivad-panel/assets/css/setting.css');
 
 $add('39.01 Storefront CSS entrypoint exists', $exists('assets/css/main.css'));
-$add('39.02 Admin CSS entrypoint exists', $exists('admin/assets/css/main.css'));
+$add('39.02 Admin CSS entrypoint exists', $exists('nivad-panel/assets/css/main.css'));
 $add('39.03 Storefront token source exists', $exists('assets/css/setting.css'));
-$add('39.04 Admin token source exists', $exists('admin/assets/css/setting.css'));
+$add('39.04 Admin token source exists', $exists('nivad-panel/assets/css/setting.css'));
 $add('39.05 Storefront CSS imports token source first', strpos($storeMain, '@import url(./setting.css);') < strpos($storeMain, '@import url(./mobile/mobile.css)'));
 $add('39.06 Admin CSS imports token source first', strpos($adminMain, '@import url(./setting.css);') < strpos($adminMain, '@import url(./mobile/mobile.css)'));
 
@@ -75,7 +75,7 @@ $add('39.31 Storefront tokens define Light/default root', str_contains($storeTok
 $add('39.32 Storefront tokens define dark theme', str_contains($storeTokens, '[data-theme="dark"]'));
 $add('39.33 Admin tokens define dark theme', str_contains($adminTokens, 'data-admin-theme="dark"'));
 $add('39.34 Admin token namespace is isolated', str_contains($adminTokens, '--admin-color-bg:') && !str_contains($adminTokens, '--color-primary:'));
-$add('39.35 Storefront entrypoint does not import Admin CSS', !str_contains($storeMain, 'admin/assets/css'));
+$add('39.35 Storefront entrypoint does not import Admin CSS', !str_contains($storeMain, 'nivad-panel/assets/css'));
 $add('39.36 Admin entrypoint does not import Storefront CSS', !str_contains($adminMain, 'assets/css/setting.css') || str_contains($adminMain, './setting.css'));
 
 $manifests = [
@@ -83,10 +83,10 @@ $manifests = [
     'assets/css/mobile/mobile.css',
     'assets/css/tablet/tablet.css',
     'assets/css/desktop/desktop.css',
-    'admin/assets/css/main.css',
-    'admin/assets/css/mobile/mobile.css',
-    'admin/assets/css/tablet/tablet.css',
-    'admin/assets/css/desktop/desktop.css',
+    'nivad-panel/assets/css/main.css',
+    'nivad-panel/assets/css/mobile/mobile.css',
+    'nivad-panel/assets/css/tablet/tablet.css',
+    'nivad-panel/assets/css/desktop/desktop.css',
 ];
 $missingImports = [];
 foreach ($manifests as $manifest) {
@@ -101,7 +101,7 @@ foreach ($manifests as $manifest) {
 $add('39.41 All local CSS imports in responsive manifests resolve', $missingImports === [], implode('; ', $missingImports));
 
 $responsiveFiles = [];
-foreach (['assets/css/mobile', 'assets/css/tablet', 'assets/css/desktop', 'admin/assets/css/mobile', 'admin/assets/css/tablet', 'admin/assets/css/desktop'] as $dir) {
+foreach (['assets/css/mobile', 'assets/css/tablet', 'assets/css/desktop', 'nivad-panel/assets/css/mobile', 'nivad-panel/assets/css/tablet', 'nivad-panel/assets/css/desktop'] as $dir) {
     $absolute = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $dir);
     if (is_dir($absolute)) {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($absolute, FilesystemIterator::SKIP_DOTS));
@@ -160,7 +160,7 @@ foreach ($storeResponsiveManifests as $manifest => $expected) {
 
 $cssTokenViolations = [];
 foreach ($responsiveFiles as $path) {
-    if (str_starts_with($path, 'admin/assets/css/')) {
+    if (str_starts_with($path, 'nivad-panel/assets/css/')) {
         if (preg_match('~var\\(--(?!(?:admin-))[^)]+\\)~', $read($path))) {
             $cssTokenViolations[] = $path . ' references a non-Admin token';
         }
