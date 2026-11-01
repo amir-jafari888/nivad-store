@@ -91,13 +91,7 @@ const adminGlobalSearch = () => {
   document.addEventListener("click", event => {
     if (!root.contains(event.target)) close();
   });
-  document.addEventListener("keydown", event => {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
-      event.preventDefault();
-      input.focus();
-      input.select();
-    }
-  });
+  // Ctrl/Cmd+K is reserved for the full command palette.
 };
 
 export default adminGlobalSearch;
