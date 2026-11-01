@@ -1,0 +1,62 @@
+name: Admin Phase 10 Productivity and Error UX
+
+on:
+  pull_request:
+    paths:
+      - 'app/Services/AdminBulkOperationService.php'
+      - 'app/Controllers/AdminBulkOperationController.php'
+      - 'app/Services/AdminCommandPaletteService.php'
+      - 'app/Controllers/AdminCommandPaletteController.php'
+      - 'app/Services/AdminProductivityDiagnosticsService.php'
+      - 'app/Controllers/AdminProductivityController.php'
+      - 'app/Services/AdminCapabilityService.php'
+      - 'app/Repositories/AdminCapabilityRepository.php'
+      - 'app/Core/AdminRoutePermissionMap.php'
+      - 'routes/api.php'
+      - 'admin/assets/js/modules/**'
+      - 'admin/assets/js/main.js'
+      - 'admin/assets/css/**'
+      - 'admin/includes/auth.php'
+      - 'database/migrations/20261101_admin_productivity_phase10.sql'
+      - 'database/verification/20261101_admin_productivity_phase10_*.sql'
+      - 'test-admin-phase-10-productivity.php'
+      - '.github/workflows/admin-phase-10-productivity.yml'
+
+jobs:
+  phase-10-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: PHP syntax
+        run: |
+          php -l app/Services/AdminBulkOperationService.php
+          php -l app/Controllers/AdminBulkOperationController.php
+          php -l app/Services/AdminCommandPaletteService.php
+          php -l app/Controllers/AdminCommandPaletteController.php
+          php -l app/Services/AdminProductivityDiagnosticsService.php
+          php -l app/Controllers/AdminProductivityController.php
+          php -l app/Services/AdminCapabilityService.php
+          php -l app/Repositories/AdminCapabilityRepository.php
+          php -l app/Core/AdminRoutePermissionMap.php
+          php -l routes/api.php
+          php -l admin/includes/auth.php
+          php -l test-admin-phase-10-productivity.php
+          php -l test-admin-phase-7-support-center.php
+          php -l test-admin-phase-8-audit-entity-activity.php
+          php -l test-admin-phase-9-security-operations.php
+      - name: JavaScript module syntax
+        run: |
+          for file in admin/assets/js/main.js admin/assets/js/modules/global-search.js admin/assets/js/modules/data-experience.js admin/assets/js/modules/command-palette.js admin/assets/js/modules/saved-views.js admin/assets/js/modules/error-boundary.js; do
+            node --input-type=module --check < "$file"
+          done
+      - name: Phase 7-9 regression contracts
+        run: |
+          php test-admin-phase-7-support-center.php
+          php test-admin-phase-8-audit-entity-activity.php
+          php test-admin-phase-9-security-operations.php
+      - name: Phase 10 static contracts
+        run: php test-admin-phase-10-productivity.php
