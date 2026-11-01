@@ -13,7 +13,7 @@ final class AdminSecurityEventRepository
 
     public function record(string $eventKey, string $severity, string $subjectType, string $subjectId, string $summary, array $context = []): int
     {
-        $fingerprint = hash('sha256', implode('|', [$eventKey, $subjectType, $subjectId, (string)($context['source_record_id'] ?? '')]));
+        $fingerprint = hash('sha256', implode('|', [$eventKey, $subjectType, $subjectId, (string)($context['source_record_id'] ?? $context['scan_bucket'] ?? '')]));
         $safeContext = SensitiveDataRedactor::redact($context);
         $json = $safeContext !== [] ? json_encode($safeContext, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) : null;
         $stmt = $this->db->prepare(
