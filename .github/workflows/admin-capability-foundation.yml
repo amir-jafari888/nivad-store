@@ -17,7 +17,7 @@ on:
       - 'app/Repositories/AdminSessionRepository.php'
       - 'app/Services/AdminSessionService.php'
       - 'routes/api.php'
-      - 'admin/**'
+      - 'nivad-panel/**'
       - 'pages/account/support.php'
       - 'assets/js/modules/account-support.js'
       - 'assets/js/modules/product-analytics.js'
@@ -60,7 +60,7 @@ jobs:
           set -euo pipefail
           while IFS= read -r -d '' file; do
             node --check --input-type=module < "$file"
-          done < <(find admin/assets/js assets/js/modules -type f -name '*.js' -print0)
+          done < <(find nivad-panel/assets/js assets/js/modules -type f -name '*.js' -print0)
 
       - name: Run read-only Phase 56 contracts
         run: php test-phase-56-admin-route-permissions.php
