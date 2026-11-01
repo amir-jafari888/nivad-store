@@ -885,6 +885,19 @@ final class AdminCapabilityRepository
             $results[] = ['type' => 'ticket', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail']];
         }
 
+        $admins = $this->db->prepare(
+            'SELECT id, CONCAT(COALESCE(first_name, ""), " ", COALESCE(last_name, "")) AS label,
+                    CONCAT(username, " · ", email) AS detail
+             FROM admin_users
+             WHERE deleted_at IS NULL
+               AND (username LIKE :username OR email LIKE :email OR first_name LIKE :first_name OR last_name LIKE :last_name)
+             ORDER BY id DESC LIMIT 6'
+        );
+        $admins->execute(['username' => $pattern, 'email' => $pattern, 'first_name' => $pattern, 'last_name' => $pattern]);
+        foreach ($admins->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $results[] = ['type' => 'admin', 'id' => (int)$row['id'], 'label' => trim($row['label']) ?: ('Admin #' . $row['id']), 'detail' => $row['detail']];
+        }
+
         if ($this->tableExists('admin_cms_pages')) {
             $pages = $this->db->prepare(
                 'SELECT id, title AS label, page_key AS detail
