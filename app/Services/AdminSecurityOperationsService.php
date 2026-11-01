@@ -60,7 +60,7 @@ final class AdminSecurityOperationsService
                 'login_identity',
                 $identifierHash,
                 'تلاش‌های ناموفق ورود از یک IP از حد Rate Limit عبور کرده‌اند.',
-                ['attempt_count' => (int)$row['attempts'], 'window_seconds' => (int)$limits['identifier_window'], 'ip_hash' => $ipHash, 'last_seen' => $row['last_seen']]
+                ['attempt_count' => (int)$row['attempts'], 'window_seconds' => (int)$limits['identifier_window'], 'ip_hash' => $ipHash, 'last_seen' => $row['last_seen'], 'scan_bucket' => (string)(int)(time() / 600)]
             );
             $count++;
         }
@@ -87,7 +87,7 @@ final class AdminSecurityOperationsService
                 'admin_user',
                 (string)$id,
                 'حجم فعالیت ثبت‌شده مدیر در بازه کوتاه از آستانه بررسی عبور کرده است.',
-                ['action_count' => (int)$row['action_count'], 'window_minutes' => self::ADMIN_ACTION_WINDOW_MINUTES, 'threshold' => self::ADMIN_ACTION_THRESHOLD, 'last_seen' => $row['last_seen']]
+                ['action_count' => (int)$row['action_count'], 'window_minutes' => self::ADMIN_ACTION_WINDOW_MINUTES, 'threshold' => self::ADMIN_ACTION_THRESHOLD, 'last_seen' => $row['last_seen'], 'scan_bucket' => (string)(int)(time() / 600)]
             );
             $count++;
         }
@@ -116,7 +116,7 @@ final class AdminSecurityOperationsService
                 'admin_user',
                 (string)$id,
                 'تعداد عملیات گروهی ثبت‌شده مدیر از آستانه بررسی عبور کرده است.',
-                ['operation_count' => (int)$row['action_count'], 'window_minutes' => self::BULK_ACTION_WINDOW_MINUTES, 'threshold' => self::BULK_ACTION_THRESHOLD, 'last_seen' => $row['last_seen']]
+                ['operation_count' => (int)$row['action_count'], 'window_minutes' => self::BULK_ACTION_WINDOW_MINUTES, 'threshold' => self::BULK_ACTION_THRESHOLD, 'last_seen' => $row['last_seen'], 'scan_bucket' => (string)(int)(time() / 600)]
             );
             $count++;
         }
