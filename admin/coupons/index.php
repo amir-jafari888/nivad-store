@@ -98,7 +98,7 @@ $csrfToken = Csrf::token();
         <div id="message" class="message">در حال دریافت اطلاعات...</div>
 
         <div class="card">
-            <table>
+            <table data-admin-bulk-job="coupons.status" data-admin-bulk-permission="admin.orders.manage">
                 <thead>
                     <tr>
                         <th>ID</th>
