@@ -59,7 +59,7 @@ for ($index = 0, $count = count($starts); $index < $count; $index++) {
     }
 
     $path = $pathMatch[1];
-    if (!str_starts_with($path, '/admin')) {
+    if (!(str_starts_with($path, '/admin') || str_starts_with($path, '/nivad-panel'))) {
         continue;
     }
 
