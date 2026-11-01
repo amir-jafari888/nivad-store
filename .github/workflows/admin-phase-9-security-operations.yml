@@ -10,7 +10,7 @@ on:
       - 'app/Controllers/ReturnController.php'
       - 'app/Core/AdminRoutePermissionMap.php'
       - 'routes/api.php'
-      - 'admin/security-events/index.php'
+      - 'nivad-panel/security-events/index.php'
       - 'database/migrations/20261101_admin_security_operations_phase9.sql'
       - 'test-admin-phase-9-security-operations.php'
       - '.github/workflows/admin-phase-9-security-operations.yml'
@@ -33,7 +33,7 @@ jobs:
           php -l app/Controllers/ReturnController.php
           php -l app/Core/AdminRoutePermissionMap.php
           php -l routes/api.php
-          php -l admin/security-events/index.php
+          php -l nivad-panel/security-events/index.php
           php -l test-admin-phase-9-security-operations.php
       - name: Phase 9 static contracts
         run: php test-admin-phase-9-security-operations.php
