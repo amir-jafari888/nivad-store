@@ -87,6 +87,16 @@ require_once __DIR__ . '/../includes/auth.php';
             در حال دریافت اطلاعات...
         </div>
 
+        <section class="card" style="margin-bottom:20px">
+            <h2>تاریخچه یک موجودیت</h2>
+            <form id="entity-timeline-form">
+                <label>نوع موجودیت <input name="entity_type" required maxlength="100" pattern="[a-z][a-z0-9_]{1,99}" placeholder="product"></label>
+                <label>شناسه موجودیت <input name="entity_id" required maxlength="100" pattern="[a-zA-Z0-9_-]+" placeholder="123"></label>
+                <button type="submit">نمایش تاریخچه</button>
+            </form>
+            <div id="entity-timeline" aria-live="polite"></div>
+        </section>
+
         <div class="card">
 
             <table>
@@ -174,6 +184,39 @@ require_once __DIR__ . '/../includes/auth.php';
                     'خطا در دریافت اطلاعات';
             }
         }
+
+        document.getElementById('entity-timeline-form').addEventListener('submit', async event => {
+            event.preventDefault();
+            const data = new FormData(event.currentTarget);
+            const type = String(data.get('entity_type') || '').trim();
+            const id = String(data.get('entity_id') || '').trim();
+            const target = document.getElementById('entity-timeline');
+            target.textContent = 'در حال دریافت تاریخچه...';
+            try {
+                const api = new URL('<?= e(url('/api/index.php')) ?>', window.location.href);
+                api.searchParams.set('path', '/admin/audit/entities/' + encodeURIComponent(type) + '/' + encodeURIComponent(id));
+                const response = await fetch(api, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+                const result = await response.json();
+                if (!response.ok || result.success !== true) throw new Error(result.message || 'دریافت تاریخچه ناموفق بود.');
+                const items = result.data?.items || [];
+                if (!items.length) { target.textContent = 'برای این موجودیت رویدادی ثبت نشده است.'; return; }
+                const table = document.createElement('table');
+                const head = document.createElement('thead');
+                head.innerHTML = '<tr><th>عامل</th><th>عملیات</th><th>ماژول</th><th>شرح</th><th>قبل</th><th>بعد</th><th>زمان</th></tr>';
+                const body = document.createElement('tbody');
+                items.forEach(item => {
+                    const row = document.createElement('tr');
+                    [item.actor_name, item.action, item.module, item.description, item.old_values, item.new_values, item.created_at].forEach(value => {
+                        const cell = document.createElement('td');
+                        cell.textContent = value == null ? '—' : String(value);
+                        row.append(cell);
+                    });
+                    body.append(row);
+                });
+                table.append(head, body);
+                target.replaceChildren(table);
+            } catch (error) { target.textContent = error.message || 'خطا در دریافت تاریخچه'; }
+        });
 
         loadLogs();
     </script>
