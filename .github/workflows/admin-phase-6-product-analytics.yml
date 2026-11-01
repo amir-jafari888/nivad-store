@@ -16,7 +16,7 @@ on:
       - 'assets/js/modules/discovery.js'
       - 'assets/js/modules/checkout.js'
       - 'assets/js/main.js'
-      - 'admin/assets/js/modules/capability-center.js'
+      - 'nivad-panel/assets/js/modules/capability-center.js'
       - 'test-admin-phase-6-product-analytics.php'
       - 'docs/admin/phase-6-product-analytics.md'
       - '.github/workflows/admin-phase-6-product-analytics.yml'
@@ -33,7 +33,7 @@ on:
       - 'assets/js/modules/discovery.js'
       - 'assets/js/modules/checkout.js'
       - 'assets/js/main.js'
-      - 'admin/assets/js/modules/capability-center.js'
+      - 'nivad-panel/assets/js/modules/capability-center.js'
       - 'test-admin-phase-6-product-analytics.php'
       - 'docs/admin/phase-6-product-analytics.md'
       - '.github/workflows/admin-phase-6-product-analytics.yml'
@@ -80,7 +80,7 @@ jobs:
             assets/js/modules/discovery.js \
             assets/js/modules/checkout.js \
             assets/js/main.js \
-            admin/assets/js/modules/capability-center.js
+            nivad-panel/assets/js/modules/capability-center.js
           do
             node --input-type=module --check < "$file"
           done
