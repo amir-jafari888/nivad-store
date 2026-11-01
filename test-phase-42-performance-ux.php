@@ -31,11 +31,11 @@ $main = source('assets/js/main.js');
 $performance = source('assets/js/modules/performance.js');
 $hero = source('assets/js/modules/hero.js');
 $header = source('partials/header.php');
-$adminSettings = source('admin/assets/css/setting.css');
+$adminSettings = source('nivad-panel/assets/css/setting.css');
 $storeSettings = source('assets/css/setting.css');
 
 check('42.01.01 storefront CSS entry exists', is_file($root . '/assets/css/main.css'));
-check('42.01.02 admin CSS token source exists', is_file($root . '/admin/assets/css/setting.css'));
+check('42.01.02 admin CSS token source exists', is_file($root . '/nivad-panel/assets/css/setting.css'));
 check('42.01.03 storefront JS entry exists', is_file($root . '/assets/js/main.js'));
 check('42.01.04 performance module exists', $performance !== '');
 check('42.01.05 existing storefront entry remains module-based', str_contains($main, 'from "./modules/header.js"'));
