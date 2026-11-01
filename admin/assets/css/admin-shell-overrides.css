@@ -1,0 +1,308 @@
+/* NIVAD Admin visual refinement — 2026-11-01.
+ * App-screen direction: restrained surfaces, colour reserved for data/navigation state,
+ * strong RTL geometry, one coherent primary hue, and responsive right-side navigation.
+ */
+
+:root {
+  --admin-chart-hue: var(--admin-color-primary);
+  --admin-sidebar-text: var(--admin-color-on-primary);
+  --admin-sidebar-muted: rgba(255, 255, 255, .76);
+  --admin-sidebar-hover: rgba(255, 255, 255, .10);
+  --admin-sidebar-active: rgba(255, 255, 255, .16);
+  --admin-sidebar-border: rgba(255, 255, 255, .18);
+  --admin-shadow-header: 0 1px 0 rgba(15, 23, 42, .06);
+}
+
+html[dir="rtl"],
+html[dir="rtl"] body {
+  direction: rtl;
+  text-align: start;
+}
+
+.admin-shared-sidebar,
+.admin-dashboard-sidebar {
+  inset-inline-start: 0 !important;
+  inset-inline-end: auto !important;
+  background: var(--admin-color-primary) !important;
+  border: 0 !important;
+  color: var(--admin-sidebar-text) !important;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, .04), 0 14px 34px rgba(15, 23, 42, .10) !important;
+}
+
+.admin-shared-brand,
+.admin-dashboard-brand { color: var(--admin-sidebar-text) !important; }
+
+.admin-shared-brand small,
+.admin-dashboard-brand small,
+.admin-shared-submenu a,
+.admin-dashboard-nav-submenu a,
+.admin-shared-nav-group summary::after,
+.admin-dashboard-nav-group summary::after { color: var(--admin-sidebar-muted) !important; }
+
+.admin-shared-brand-mark,
+.admin-dashboard-brand-mark,
+.admin-shared-avatar,
+.admin-dashboard-avatar {
+  background: var(--admin-sidebar-active) !important;
+  color: var(--admin-sidebar-text) !important;
+  border: 1px solid var(--admin-sidebar-border);
+}
+
+.admin-shared-nav-link,
+.admin-shared-nav-group summary,
+.admin-dashboard-nav-link,
+.admin-dashboard-nav-group summary { color: var(--admin-sidebar-text) !important; }
+
+.admin-shared-nav-link:hover,
+.admin-shared-nav-group summary:hover,
+.admin-shared-submenu a:hover,
+.admin-dashboard-nav-link:hover,
+.admin-dashboard-nav-group summary:hover,
+.admin-dashboard-nav-submenu a:hover {
+  background: var(--admin-sidebar-hover) !important;
+  color: var(--admin-sidebar-text) !important;
+}
+
+.admin-shared-nav-link[aria-current="page"],
+.admin-shared-submenu a[aria-current="page"],
+.admin-dashboard-nav-link[aria-current="page"],
+.admin-dashboard-nav-submenu a[aria-current="page"] {
+  background: var(--admin-sidebar-active) !important;
+  color: var(--admin-sidebar-text) !important;
+  box-shadow: inset -3px 0 0 var(--admin-sidebar-text);
+}
+
+.admin-shared-submenu,
+.admin-dashboard-nav-submenu { border-inline-start-color: var(--admin-sidebar-border) !important; }
+.admin-shared-account,
+.admin-dashboard-account { border-top-color: var(--admin-sidebar-border) !important; }
+
+.admin-shared-logout,
+.admin-dashboard-logout {
+  border-color: var(--admin-sidebar-border) !important;
+  background: var(--admin-sidebar-hover) !important;
+  color: var(--admin-sidebar-text) !important;
+}
+.admin-shared-logout:hover,
+.admin-dashboard-logout:hover { background: var(--admin-sidebar-active) !important; }
+
+.admin-dashboard-page .admin-shared-topbar {
+  position: sticky;
+  isolation: isolate;
+  justify-content: flex-start;
+  min-height: 72px;
+  padding: 12px 28px;
+  box-shadow: var(--admin-shadow-header);
+}
+
+.admin-dashboard-page .admin-shared-topbar::before {
+  content: "داشبورد امنیتی نیواد";
+  position: absolute;
+  inset-inline: 50% auto;
+  transform: translateX(50%);
+  z-index: 0;
+  color: var(--admin-color-text);
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 700;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.admin-dashboard-page .admin-shared-topbar-profile {
+  order: 1;
+  position: relative;
+  z-index: 1;
+  min-height: 48px;
+  padding: 6px 8px;
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+}
+
+.admin-dashboard-page .admin-shared-topbar-profile.admin-profile-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-dashboard-page .admin-shared-topbar-profile.admin-profile-link:hover {
+  border-color: var(--admin-color-primary);
+  background: var(--admin-color-primary-light);
+}
+
+.admin-dashboard-page .admin-shared-topbar-brand { display: none; }
+
+.admin-dashboard-page .admin-global-search {
+  order: 3;
+  position: relative;
+  z-index: 1;
+  margin-inline-start: auto;
+  min-width: min(460px, 38vw);
+}
+
+.admin-dashboard-page .admin-global-search input {
+  min-height: 44px;
+  border-color: var(--admin-color-border);
+  background: var(--admin-color-surface);
+}
+
+.admin-dashboard-page .admin-command-open-button {
+  min-height: 40px;
+  border-color: var(--admin-color-border);
+  background: var(--admin-color-surface);
+}
+
+.admin-dashboard-page .admin-dashboard-main { padding-block: 4px 28px; }
+
+.admin-dashboard-page .admin-dashboard-page-heading {
+  align-items: flex-start;
+  margin-bottom: 28px;
+  padding-block: 8px 0;
+}
+
+.admin-dashboard-page .admin-dashboard-page-heading h1 {
+  font-size: clamp(24px, 2vw, 30px);
+  letter-spacing: -.02em;
+}
+
+.admin-dashboard-page .admin-dashboard-eyebrow {
+  color: var(--admin-color-primary);
+  letter-spacing: .01em;
+}
+
+.admin-dashboard-page .admin-dashboard-kpis {
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.admin-dashboard-page .admin-dashboard-kpi {
+  padding-block: 16px 14px;
+  border-top: 2px solid var(--admin-color-primary);
+}
+
+.admin-dashboard-page .admin-dashboard-kpi-value {
+  font-size: clamp(28px, 2.4vw, 36px);
+}
+
+.admin-dashboard-page .admin-dashboard-panel,
+.admin-dashboard-page .admin-dashboard-comparison-card {
+  border-color: var(--admin-color-border);
+  box-shadow: var(--admin-shadow-card);
+}
+
+.admin-dashboard-page .admin-dashboard-chart-bar { background: var(--admin-chart-hue); }
+.admin-dashboard-page .admin-dashboard-line-chart-line { stroke: var(--admin-chart-hue); }
+.admin-dashboard-page .admin-dashboard-line-chart-point { stroke: var(--admin-chart-hue); }
+.admin-dashboard-page .admin-dashboard-legend-dot { background: var(--admin-chart-hue); }
+
+.admin-dashboard-page .admin-dashboard-chart-bars {
+  background-image: linear-gradient(to top, transparent 24%, rgba(15, 23, 42, .035) 25%, transparent 26%, transparent 49%, rgba(15, 23, 42, .035) 50%, transparent 51%, transparent 74%, rgba(15, 23, 42, .035) 75%, transparent 76%);
+}
+
+.admin-dashboard-settings-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--admin-space-4);
+  align-items: center;
+  margin-block: 0 var(--admin-space-6);
+  padding: var(--admin-space-4) var(--admin-space-5);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+  box-shadow: var(--admin-shadow-card);
+}
+
+.admin-dashboard-settings-copy { display: grid; gap: 4px; }
+.admin-dashboard-settings-copy strong { font-size: var(--admin-font-size-md); }
+.admin-dashboard-settings-copy span {
+  color: var(--admin-color-text-muted);
+  font-size: var(--admin-font-size-sm);
+  line-height: 1.7;
+}
+
+.admin-dashboard-settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--admin-space-2);
+}
+
+.admin-dashboard-settings-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding-inline: var(--admin-space-4);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-sm);
+  color: var(--admin-color-text);
+  background: var(--admin-color-surface);
+  font-size: var(--admin-font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.admin-dashboard-settings-actions a:first-child {
+  border-color: var(--admin-color-primary);
+  background: var(--admin-color-primary);
+  color: var(--admin-color-on-primary);
+}
+
+.admin-dashboard-settings-actions a:hover { border-color: var(--admin-color-primary); }
+
+@media (max-width: 1009px) {
+  .admin-dashboard-page .admin-shared-topbar {
+    min-height: 64px;
+    padding-inline: 16px;
+  }
+  .admin-dashboard-page .admin-shared-topbar::before { font-size: 16px; }
+  .admin-dashboard-page .admin-global-search { min-width: 0; max-width: 320px; }
+  .admin-shared-sidebar,
+  .admin-dashboard-sidebar {
+    inset-inline-start: 0 !important;
+    inset-inline-end: auto !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-dashboard-page .admin-shared-topbar {
+    gap: var(--admin-space-2);
+    padding: 8px 12px;
+  }
+  .admin-dashboard-page .admin-shared-topbar::before {
+    font-size: 14px;
+    max-width: 42vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .admin-dashboard-page .admin-global-search {
+    max-width: 46px;
+    min-width: 46px;
+  }
+  .admin-dashboard-page .admin-global-search-input,
+  .admin-dashboard-page .admin-global-search-label,
+  .admin-dashboard-page .admin-global-search-results,
+  .admin-dashboard-page .admin-global-search-shortcut { display: none; }
+  .admin-dashboard-page .admin-command-open-button {
+    width: 44px;
+    min-width: 44px;
+    overflow: hidden;
+    padding-inline: 0;
+    font-size: 0;
+  }
+  .admin-dashboard-page .admin-command-open-button::before {
+    content: "⌘";
+    font-size: 18px;
+  }
+  .admin-dashboard-settings-strip { grid-template-columns: 1fr; }
+  .admin-dashboard-settings-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .admin-dashboard-settings-actions a { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-dashboard-page .admin-shared-topbar-profile,
+  .admin-dashboard-settings-actions a { transition: none !important; }
+}
