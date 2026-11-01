@@ -39,19 +39,19 @@ $reportService = phase37Read('app/Services/ReportService.php');
 $reportRepository = phase37Read('app/Repositories/ReportRepository.php');
 $query = phase37Read('app/Models/ReportQuery.php');
 $contract = phase37Read('app/Models/ReportContract.php');
-$mainCss = phase37Read('admin/assets/css/main.css');
-$mainJs = phase37Read('admin/assets/js/main.js');
-$tokens = phase37Read('admin/assets/css/setting.css');
+$mainCss = phase37Read('nivad-panel/assets/css/main.css');
+$mainJs = phase37Read('nivad-panel/assets/js/main.js');
+$tokens = phase37Read('nivad-panel/assets/css/setting.css');
 
-$desktopLayout = phase37Read('admin/assets/css/desktop/layout-desktop.css');
-$desktopComponents = phase37Read('admin/assets/css/desktop/components-desktop.css');
-$tabletLayout = phase37Read('admin/assets/css/tablet/layout-tablet.css');
-$tabletComponents = phase37Read('admin/assets/css/tablet/components-tablet.css');
-$mobileLayout = phase37Read('admin/assets/css/mobile/layout-mobile.css');
-$mobileComponents = phase37Read('admin/assets/css/mobile/components-mobile.css');
+$desktopLayout = phase37Read('nivad-panel/assets/css/desktop/layout-desktop.css');
+$desktopComponents = phase37Read('nivad-panel/assets/css/desktop/components-desktop.css');
+$tabletLayout = phase37Read('nivad-panel/assets/css/tablet/layout-tablet.css');
+$tabletComponents = phase37Read('nivad-panel/assets/css/tablet/components-tablet.css');
+$mobileLayout = phase37Read('nivad-panel/assets/css/mobile/layout-mobile.css');
+$mobileComponents = phase37Read('nivad-panel/assets/css/mobile/components-mobile.css');
 
 /* Batch 01 — audit and existing data contracts: 10 checks. */
-phase37Check(str_contains($view, 'url(\'/admin\')') && str_contains($view, 'url(\'/admin/logout\')'), '37.01 Dashboard navigation and logout routes are preserved');
+phase37Check(str_contains($view, 'url(\'/nivad-panel\')') && str_contains($view, 'url(\'/nivad-panel/logout\')'), '37.01 Dashboard navigation and logout routes are preserved');
 phase37Check(str_contains($view, 'name="csrf_token"') && str_contains($view, 'Csrf::token()'), '37.02 Logout form keeps CSRF contract');
 phase37Check(str_contains($service, "'orders'") && str_contains($service, "'payments'"), '37.03 Existing Metrics service keys remain intact');
 phase37Check(str_contains($service, "'order_items'") && str_contains($service, "'inventory'"), '37.04 Existing order-item and inventory keys remain intact');
@@ -94,8 +94,8 @@ phase37Check(str_contains($mobileLayout, 'admin-dashboard-kpis') && str_contains
 phase37Check(str_contains($tabletLayout, 'admin-dashboard-kpis') && str_contains($tabletComponents, 'admin-dashboard-chart-bars'), '37.35 Tablet dashboard has dedicated layout and chart styles');
 phase37Check(str_contains($desktopLayout, 'admin-dashboard-kpis') && str_contains($desktopComponents, 'admin-dashboard-chart-bars'), '37.36 Desktop dashboard has dedicated layout and chart styles');
 phase37Check(str_contains($tokens, '--admin-color-bg') && str_contains($tokens, ':root[data-admin-theme="dark"]'), '37.37 Dashboard uses Admin-owned Light/Dark tokens');
-phase37Check(str_contains($view, 'lang="fa" dir="rtl"') && str_contains($view, 'admin/assets/css/main.css'), '37.38 Persian RTL and Admin stylesheet contract are present');
-phase37Check(str_contains($view, 'admin/assets/js/main.js') && str_contains($mainJs, 'adminTheme();'), '37.39 Existing Admin theme module remains connected');
+phase37Check(str_contains($view, 'lang="fa" dir="rtl"') && str_contains($view, 'nivad-panel/assets/css/main.css'), '37.38 Persian RTL and Admin stylesheet contract are present');
+phase37Check(str_contains($view, 'nivad-panel/assets/js/main.js') && str_contains($mainJs, 'adminTheme();'), '37.39 Existing Admin theme module remains connected');
 phase37Check(!str_contains($desktopComponents, '@media') && !str_contains($tabletComponents, '@media') && !str_contains($mobileComponents, '@media'), '37.40 Viewport section styles avoid media-query mixing');
 
 echo '<hr><strong>Phase 37 — Admin Dashboard Static Contract Test: '
