@@ -10,6 +10,7 @@ import adminCommandPalette from "./modules/command-palette.js";
 import adminSavedViews from "./modules/saved-views.js";
 import adminErrorBoundary from "./modules/error-boundary.js";
 import adminProductivityDiagnostics from "./modules/productivity-diagnostics.js";
+import adminDashboardUi from "./modules/admin-dashboard-ui.js";
 
 adminDataExperience();
 adminNavigationState();
@@ -23,3 +24,4 @@ adminCommandPalette();
 adminSavedViews();
 adminErrorBoundary();
 adminProductivityDiagnostics();
+adminDashboardUi();

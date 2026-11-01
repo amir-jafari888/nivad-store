@@ -4,3 +4,4 @@
 @import url(./tablet/tablet.css) only screen and (min-width: 601px) and (max-width: 1009px);
 @import url(./desktop/desktop.css) only screen and (min-width: 1010px);
 @import url(./productivity.css);
+@import url(./admin-shell-overrides.css);
