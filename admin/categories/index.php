@@ -21,7 +21,7 @@ $categories = $service->findAll();
     <main>
         <h1>دسته‌بندی‌ها</h1>
         <?php if ($categories === []): ?><p>دسته‌بندی‌ای ثبت نشده است.</p>
-        <?php else: ?><table data-admin-bulk-job="catalog.categories.status" data-admin-bulk-permission="admin.catalog.manage">
+        <?php else: ?><table data-admin-bulk-job="catalog.categories.status" data-admin-bulk-permission="admin.products.manage">
                 <thead>
                     <tr>
                         <th>ID</th>
