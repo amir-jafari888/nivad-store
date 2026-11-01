@@ -82,7 +82,7 @@ jobs:
           php -l app/Services/AdminSecurityOperationsService.php
           php -l app/Controllers/AdminSecurityOperationsController.php
           php -l app/Controllers/ReturnController.php
-          php -l admin/security-events/index.php
+          php -l nivad-panel/security-events/index.php
           php -l test-admin-phase-9-security-operations.php
           php -l app/Services/AdminSessionPolicy.php
           php -l app/Services/AdminSessionService.php
@@ -93,7 +93,7 @@ jobs:
           php -l test-admin-route-contracts.php
           php -l test-admin-capability-contracts.php
           php -l test-admin-capability-policies.php
-          php -l admin/includes/auth.php
+          php -l nivad-panel/includes/auth.php
           php -l pages/admin/dashboard.php
           php -l test-admin-ui-shell-contracts.php
 
@@ -135,7 +135,7 @@ jobs:
 
       - name: Lint admin UI PHP views
         run: |
-          php -l admin/includes/auth.php
+          php -l nivad-panel/includes/auth.php
           php -l pages/admin/dashboard.php
           php -l test-admin-ui-shell-contracts.php
 
