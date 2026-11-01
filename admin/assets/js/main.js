@@ -6,6 +6,9 @@ import adminCapabilityCenter from "./modules/capability-center.js";
 import adminAccessCenter from "./modules/access-center.js";
 import adminGlobalSearch from "./modules/global-search.js";
 import adminIncidents from "./modules/admin-incidents.js";
+import adminCommandPalette from "./modules/command-palette.js";
+import adminSavedViews from "./modules/saved-views.js";
+import adminErrorBoundary from "./modules/error-boundary.js";
 
 adminDataExperience();
 adminNavigationState();
@@ -15,3 +18,6 @@ adminCapabilityCenter();
 adminAccessCenter();
 adminGlobalSearch();
 adminIncidents();
+adminCommandPalette();
+adminSavedViews();
+adminErrorBoundary();
