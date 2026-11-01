@@ -122,6 +122,31 @@ final class AuditLogRepository
         return (int) $this->db->lastInsertId();
     }
 
+    public function entityTimeline(string $entityType, string $entityId, int $limit = 50, int $beforeId = 0): array
+    {
+        $entityType = trim($entityType);
+        $entityId = trim($entityId);
+        if ($entityType === '' || $entityId === '') {
+            throw new InvalidArgumentException('Entity type and ID are required.');
+        }
+        $limit = max(1, min(100, $limit));
+        $sql = 'SELECT l.id, l.admin_user_id, l.action, l.module, l.entity_type, l.entity_id,
+                       l.description, l.old_values, l.new_values, l.created_at,
+                       COALESCE(NULLIF(TRIM(CONCAT_WS(" ", a.first_name, a.last_name)), ""), "سیستم/مشتری") AS actor_name
+                FROM audit_logs l
+                LEFT JOIN admin_users a ON a.id = l.admin_user_id
+                WHERE l.entity_type = :entity_type AND l.entity_id = :entity_id';
+        if ($beforeId > 0) {
+            $sql .= ' AND l.id < :before_id';
+        }
+        $sql .= ' ORDER BY l.id DESC LIMIT ' . $limit;
+        $stmt = $this->db->prepare($sql);
+        $params = ['entity_type' => $entityType, 'entity_id' => $entityId];
+        if ($beforeId > 0) $params['before_id'] = $beforeId;
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function count(): int
     {
         return (int)$this->db

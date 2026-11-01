@@ -65,6 +65,32 @@ final class AuditLogService
         ]);
     }
 
+    public function entityTimeline(string $entityType, string $entityId, int $limit = 50, int $beforeId = 0): array
+    {
+        if (!preg_match('/^[a-z][a-z0-9_]{1,99}$/', $entityType)) {
+            throw new InvalidArgumentException('Entity type is invalid.');
+        }
+        if ($entityId === '' || strlen($entityId) > 100 || !preg_match('/^[a-zA-Z0-9_-]+$/', $entityId)) {
+            throw new InvalidArgumentException('Entity ID is invalid.');
+        }
+        $items = $this->repository->entityTimeline($entityType, $entityId, $limit, $beforeId);
+        foreach ($items as &$item) {
+            foreach (['old_values', 'new_values'] as $field) {
+                $decoded = is_string($item[$field] ?? null) ? json_decode($item[$field], true) : null;
+                if (is_array($decoded)) {
+                    $item[$field] = json_encode(
+                        SensitiveDataRedactor::redact($decoded),
+                        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+                    );
+                } else {
+                    $item[$field] = null;
+                }
+            }
+        }
+        unset($item);
+        return $items;
+    }
+
     public function count(): int
     {
         return $this->repository->count();
