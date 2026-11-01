@@ -15,7 +15,7 @@ on:
       - 'app/Services/AdminNotificationCenterService.php'
       - 'app/Services/AdminNotificationEventDispatcher.php'
       - 'app/Services/AdminNotificationPolicy.php'
-      - 'admin/notifications/**'
+      - 'nivad-panel/notifications/**'
       - 'routes/api.php'
       - 'database/migrations/20261030_admin_notifications_phase3.sql'
       - 'tests/phase-3-admin-notifications-contract.php'
@@ -46,8 +46,8 @@ jobs:
             app/Repositories/PdoAdminEmailOutboxRepository.php
             app/Services/AdminNotificationCenterService.php
             app/Services/AdminNotificationEventDispatcher.php
-            admin/notifications/index.php
-            admin/notifications/send-customer.php
+            nivad-panel/notifications/index.php
+            nivad-panel/notifications/send-customer.php
             bin/process-admin-email-outbox.php
             tests/phase-3-admin-notifications-contract.php
           )
