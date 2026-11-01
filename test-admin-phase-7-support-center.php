@@ -41,8 +41,8 @@ $capService = p7Read('app/Services/AdminCapabilityService.php');
 $controller = p7Read('app/Controllers/AdminCapabilityController.php');
 $routes = p7Read('routes/api.php');
 $permissions = p7Read('app/Core/AdminRoutePermissionMap.php');
-$page = p7Read('admin/capabilities/index.php');
-$ui = p7Read('admin/assets/js/modules/capability-center.js');
+$page = p7Read('nivad-panel/capabilities/index.php');
+$ui = p7Read('nivad-panel/assets/js/modules/capability-center.js');
 
 $checks = [
     // Batch 01 — SLA
