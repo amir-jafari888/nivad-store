@@ -27,11 +27,11 @@ $exists = static function (string $relative) use ($root): bool {
 $header = $read('partials/header.php');
 $footer = $read('partials/footer.php');
 $storeTokens = $read('assets/css/setting.css');
-$adminTokens = $read('admin/assets/css/setting.css');
+$adminTokens = $read('nivad-panel/assets/css/setting.css');
 $search = $read('assets/js/modules/search.js');
 $cartDrawer = $read('assets/js/modules/cart-drawer.js');
 $storeMain = $read('assets/css/main.css');
-$adminMain = $read('admin/assets/css/main.css');
+$adminMain = $read('nivad-panel/assets/css/main.css');
 
 $add('40.01 phase plan exists', $exists('phase-40-accessibility-master-audit-plan.md'));
 $testSource = $read('test-phase-40-accessibility-master-audit.php');
@@ -47,7 +47,7 @@ $add('40.07 global storefront focus-visible indicator exists', str_contains($sto
 $add('40.08 reduced-motion preference is handled by storefront tokens', str_contains($storeTokens, 'prefers-reduced-motion: reduce'));
 $add('40.09 Admin skip navigation has dedicated styles', str_contains($adminTokens, '.admin-skip-link:focus-visible'));
 $add('40.10 Admin skip navigation styles use Admin-only tokens', str_contains($adminTokens, 'var(--admin-color-primary)') && str_contains($adminTokens, 'var(--admin-space-3)'));
-$add('40.11 storefront and Admin stylesheets remain separate', str_contains($storeMain, './setting.css') && str_contains($adminMain, './setting.css') && !str_contains($storeMain, 'admin/assets/css'));
+$add('40.11 storefront and Admin stylesheets remain separate', str_contains($storeMain, './setting.css') && str_contains($adminMain, './setting.css') && !str_contains($storeMain, 'nivad-panel/assets/css'));
 
 foreach ([
     'pages/shop/cart.php',
@@ -62,14 +62,14 @@ foreach ([
 }
 
 foreach ([
-    'admin/auth/login.php',
-    'admin/index.php',
+    'nivad-panel/auth/login.php',
+    'nivad-panel/index.php',
     'pages/admin/dashboard.php',
 ] as $path) {
     $source = $read($path);
     $add('40.13 Admin skip target exists: ' . $path, str_contains($source, 'class="admin-skip-link" href="#main-content"') && str_contains($source, 'id="main-content"'));
 }
-$add('40.14 Admin login errors use assertive live feedback', str_contains($read('admin/auth/login.php'), 'role="alert" aria-live="assertive"'));
+$add('40.14 Admin login errors use assertive live feedback', str_contains($read('nivad-panel/auth/login.php'), 'role="alert" aria-live="assertive"'));
 $add('40.15 storefront search input has a visible programmatic label', str_contains($header, '<label class="sr-only" for="search-input">') && str_contains($header, 'id="search-input"'));
 $add('40.16 search suggestions expose combobox semantics', str_contains($search, 'setAttribute("role", "combobox")') && str_contains($search, 'setAttribute("aria-autocomplete", "list")'));
 $add('40.17 search combobox controls the active popup/listbox', str_contains($search, 'suggestionBox.id = "search-suggestions-panel"') && str_contains($search, 'id="search-suggestions"') && str_contains($search, 'role="listbox"') && str_contains($search, 'setAttribute("aria-controls", listbox?.id || box.id)'));
@@ -84,7 +84,7 @@ $add('40.25 customer login fields are associated with labels', str_contains($rea
 $add('40.26 registration inputs use labels and native constraints', str_contains($read('pages/auth/register.php'), 'for="auth-register-email"') && str_contains($read('pages/auth/register.php'), 'type="email"') && str_contains($read('pages/auth/register.php'), 'required'));
 $add('40.27 product detail main landmark has a skip target', str_contains($read('pages/store/products/show.php'), 'id="main-content"'));
 $add('40.28 Admin dashboard main landmark has a skip target', str_contains($read('pages/admin/dashboard.php'), 'id="main-content"'));
-$add('40.29 legacy Admin navigation has an accessible name', str_contains($read('admin/index.php'), '<nav aria-label="ناوبری مدیریت">'));
+$add('40.29 legacy Admin navigation has an accessible name', str_contains($read('nivad-panel/index.php'), '<nav aria-label="ناوبری مدیریت">'));
 $add('40.30 Admin and storefront token namespaces are distinct', str_contains($adminTokens, '--admin-color-bg:') && !str_contains($adminTokens, '--color-primary:'));
 $add('40.31 shared footer provides a fallback skip target when main ID is absent', str_contains($footer, 'document.getElementById("main-content")') && str_contains($footer, 'main.before(target)'));
 $add('40.32 cart drawer declares modal dialog semantics', str_contains($footer, 'role="dialog"') && str_contains($footer, 'aria-modal="true"') && str_contains($footer, 'aria-labelledby="cart-drawer-title"'));
