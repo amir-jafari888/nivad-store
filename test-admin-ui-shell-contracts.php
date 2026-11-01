@@ -31,22 +31,22 @@ $check = static function (string $label, bool $condition) use (&$passed, &$faile
     echo "[FAIL] {$label}\n";
 };
 
-$tokens = $read('admin/assets/css/setting.css');
+$tokens = $read('nivad-panel/assets/css/setting.css');
 $storeTokens = $read('assets/css/setting.css');
-$desktop = $read('admin/assets/css/desktop/shared-shell-desktop.css');
-$tablet = $read('admin/assets/css/tablet/shared-shell-tablet.css');
-$mobile = $read('admin/assets/css/mobile/shared-shell-mobile.css');
-$mainCss = $read('admin/assets/css/main.css');
-$mainJs = $read('admin/assets/js/main.js');
-$navigationJs = $read('admin/assets/js/modules/navigation-state.js');
-$sharedAuth = $read('admin/includes/auth.php');
+$desktop = $read('nivad-panel/assets/css/desktop/shared-shell-desktop.css');
+$tablet = $read('nivad-panel/assets/css/tablet/shared-shell-tablet.css');
+$mobile = $read('nivad-panel/assets/css/mobile/shared-shell-mobile.css');
+$mainCss = $read('nivad-panel/assets/css/main.css');
+$mainJs = $read('nivad-panel/assets/js/main.js');
+$navigationJs = $read('nivad-panel/assets/js/modules/navigation-state.js');
+$sharedAuth = $read('nivad-panel/includes/auth.php');
 $dashboard = $read('pages/admin/dashboard.php');
 $metricsService = $read('app/Services/AdminDashboardMetricsService.php');
 $overviewService = $read('app/Services/AdminDashboardOverviewService.php');
 $healthService = $read('app/Services/AdminSystemHealthService.php');
 
 $check('Admin design token file exists', $tokens !== '');
-$check('Unused dark theme module has been removed after the Light-only decision', !is_file($root . '/admin/assets/js/modules/theme.js'));
+$check('Unused dark theme module has been removed after the Light-only decision', !is_file($root . '/nivad-panel/assets/js/modules/theme.js'));
 $check('Admin palette stays aligned with storefront primary/background/surface tokens',
     preg_match('/--admin-color-primary:\s*(#[0-9a-f]{6})/i', $tokens, $adminPrimary) === 1
     && preg_match('/--color-primary:\s*(#[0-9a-f]{6})/i', $storeTokens, $storePrimary) === 1
