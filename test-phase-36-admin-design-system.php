@@ -28,13 +28,13 @@ function phase36Read(string $relativePath): string
     return is_file($path) ? (string) file_get_contents($path) : '';
 }
 
-$adminCss = 'admin/assets/css/';
-$adminJs = 'admin/assets/js/';
+$adminCss = 'nivad-panel/assets/css/';
+$adminJs = 'nivad-panel/assets/js/';
 $mainCss = phase36Read($adminCss . 'main.css');
 $tokens = phase36Read($adminCss . 'setting.css');
 $mainJs = phase36Read($adminJs . 'main.js');
 $themeModule = phase36Read($adminJs . 'modules/theme.js');
-$authInclude = phase36Read('admin/includes/auth.php');
+$authInclude = phase36Read('nivad-panel/includes/auth.php');
 $storefrontTokens = phase36Read('assets/css/setting.css');
 
 phase36Check($mainCss !== '', '36 — Admin owns a separate CSS main entry');
@@ -50,7 +50,7 @@ phase36Check($mainJs !== '' && str_contains($mainJs, './modules/theme.js'), '36 
 phase36Check(str_contains($mainJs, 'adminTheme();'), '36 — Admin JS main initializes imported module');
 phase36Check(str_contains($themeModule, 'const adminTheme = () =>') && str_contains($themeModule, 'export default adminTheme;'), '36 — module behavior is wrapped in one exported function');
 phase36Check(str_contains($themeModule, 'localStorage') && str_contains($themeModule, 'aria-pressed'), '36 — theme persistence and ARIA state exist');
-phase36Check(str_contains($authInclude, '/admin/assets/css/main.css') && str_contains($authInclude, '/admin/assets/js/main.js'), '36 — authenticated pages load isolated Admin assets');
+phase36Check(str_contains($authInclude, '/nivad-panel/assets/css/main.css') && str_contains($authInclude, '/nivad-panel/assets/js/main.js'), '36 — authenticated pages load isolated Admin assets');
 
 $deviceFiles = [
     'mobile/layout-mobile.css', 'mobile/components-mobile.css', 'mobile/forms-mobile.css', 'mobile/tables-mobile.css', 'mobile/auth-mobile.css',
@@ -64,21 +64,21 @@ foreach ($deviceFiles as $file) {
 }
 
 $legacyFiles = [
-    'admin/auth/login.php',
-    'admin/reports/index.php',
-    'admin/reports/sales.php',
-    'admin/reports/orders.php',
-    'admin/reports/products.php',
-    'admin/reports/categories.php',
-    'admin/returns/index.php',
-    'admin/returns/show.php',
-    'admin/refunds/index.php',
-    'admin/refunds/show.php',
+    'nivad-panel/auth/login.php',
+    'nivad-panel/reports/index.php',
+    'nivad-panel/reports/sales.php',
+    'nivad-panel/reports/orders.php',
+    'nivad-panel/reports/products.php',
+    'nivad-panel/reports/categories.php',
+    'nivad-panel/returns/index.php',
+    'nivad-panel/returns/show.php',
+    'nivad-panel/refunds/index.php',
+    'nivad-panel/refunds/show.php',
 ];
 foreach ($legacyFiles as $file) {
     $content = phase36Read($file);
     phase36Check($content !== '', '36 — standalone Admin page exists: ' . $file);
-    phase36Check(str_contains($content, '/admin/assets/css/main.css') && str_contains($content, '/admin/assets/js/main.js'), '36 — standalone page uses isolated assets: ' . $file);
+    phase36Check(str_contains($content, '/nivad-panel/assets/css/main.css') && str_contains($content, '/nivad-panel/assets/js/main.js'), '36 — standalone page uses isolated assets: ' . $file);
 }
 
 phase36Check(!str_contains($storefrontTokens, 'NIVAD ADMIN DESIGN SYSTEM — Phase 36'), '36 — Admin tokens removed from storefront setting.css');
