@@ -1,0 +1,39 @@
+name: Admin Phase 9 Anti-Fraud and Security Operations
+
+on:
+  pull_request:
+    paths:
+      - 'app/Repositories/AdminSecurityEventRepository.php'
+      - 'app/Services/AdminSecurityOperationsService.php'
+      - 'app/Controllers/AdminSecurityOperationsController.php'
+      - 'app/Services/AdminSecurityEventPolicy.php'
+      - 'app/Controllers/ReturnController.php'
+      - 'app/Core/AdminRoutePermissionMap.php'
+      - 'routes/api.php'
+      - 'admin/security-events/index.php'
+      - 'database/migrations/20261101_admin_security_operations_phase9.sql'
+      - 'test-admin-phase-9-security-operations.php'
+      - '.github/workflows/admin-phase-9-security-operations.yml'
+
+jobs:
+  security-operations-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: PHP syntax
+        run: |
+          php -l app/Repositories/AdminSecurityEventRepository.php
+          php -l app/Services/AdminSecurityOperationsService.php
+          php -l app/Controllers/AdminSecurityOperationsController.php
+          php -l app/Services/AdminSecurityEventPolicy.php
+          php -l app/Controllers/ReturnController.php
+          php -l app/Core/AdminRoutePermissionMap.php
+          php -l routes/api.php
+          php -l admin/security-events/index.php
+          php -l test-admin-phase-9-security-operations.php
+      - name: Phase 9 static contracts
+        run: php test-admin-phase-9-security-operations.php
