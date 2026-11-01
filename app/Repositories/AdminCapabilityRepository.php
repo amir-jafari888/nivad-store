@@ -773,8 +773,8 @@ final class AdminCapabilityRepository
     public function savedViews(int $adminId, string $module): array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, module, name, filters_json, sort_json, is_default, created_at, updated_at
-             FROM admin_saved_views WHERE admin_user_id = :admin_id AND module = :module
+            'SELECT id, module_key AS module, name, filters_json, sort_json, is_default, created_at, updated_at
+             FROM admin_saved_views WHERE admin_user_id = :admin_id AND module_key = :module
              ORDER BY is_default DESC, name ASC'
         );
         $stmt->execute(['admin_id' => $adminId, 'module' => $module]);
@@ -792,12 +792,12 @@ final class AdminCapabilityRepository
         try {
             if ($isDefault) {
                 $clear = $this->db->prepare(
-                    'UPDATE admin_saved_views SET is_default = 0 WHERE admin_user_id = :admin_id AND module = :module'
+                    'UPDATE admin_saved_views SET is_default = 0 WHERE admin_user_id = :admin_id AND module_key = :module'
                 );
                 $clear->execute(['admin_id' => $adminId, 'module' => $module]);
             }
             $stmt = $this->db->prepare(
-                'INSERT INTO admin_saved_views (admin_user_id, module, name, filters_json, sort_json, is_default)
+                'INSERT INTO admin_saved_views (admin_user_id, module_key, name, filters_json, sort_json, is_default)
                  VALUES (:admin_id, :module, :name, :filters_json, :sort_json, :is_default)
                  ON DUPLICATE KEY UPDATE filters_json = VALUES(filters_json), sort_json = VALUES(sort_json),
                                          is_default = VALUES(is_default), updated_at = CURRENT_TIMESTAMP'
@@ -811,7 +811,7 @@ final class AdminCapabilityRepository
                 'is_default' => $isDefault ? 1 : 0,
             ]);
             $find = $this->db->prepare(
-                'SELECT id FROM admin_saved_views WHERE admin_user_id = :admin_id AND module = :module AND name = :name LIMIT 1'
+                'SELECT id FROM admin_saved_views WHERE admin_user_id = :admin_id AND module_key = :module AND name = :name LIMIT 1'
             );
             $find->execute(['admin_id' => $adminId, 'module' => $module, 'name' => $name]);
             $id = (int)$find->fetchColumn();
