@@ -7,14 +7,14 @@ final class AdminCommandPaletteService
 {
     private const COMMANDS = [
         'dashboard.open' => ['label' => 'رفتن به داشبورد', 'detail' => 'داشبورد مدیریت', 'permission' => 'admin.dashboard.view', 'href' => '/admin'],
-        'products.open' => ['label' => 'مدیریت محصولات', 'detail' => 'کاتالوگ', 'permission' => 'admin.products.index', 'href' => '/admin/products'],
-        'orders.open' => ['label' => 'مدیریت سفارش‌ها', 'detail' => 'فروش', 'permission' => 'admin.orders.index', 'href' => '/admin/orders'],
-        'customers.open' => ['label' => 'مدیریت مشتریان', 'detail' => 'مشتریان', 'permission' => 'admin.users.index', 'href' => '/admin/users'],
-        'tickets.open' => ['label' => 'مرکز پشتیبانی', 'detail' => 'پشتیبانی', 'permission' => 'admin.capabilities.tickets.index', 'href' => '/admin/capabilities/index.php#admin-tickets-title'],
-        'incidents.open' => ['label' => 'مدیریت رخدادها', 'detail' => 'سلامت و خطاها', 'permission' => 'admin.capabilities.incidents.index', 'href' => '/admin/capabilities/index.php#admin-incidents-title'],
-        'notifications.open' => ['label' => 'اعلان‌های مدیریتی', 'detail' => 'ارتباطات', 'permission' => 'admin.capabilities.notifications.index', 'href' => '/admin/notifications'],
-        'inventory.open' => ['label' => 'مدیریت موجودی', 'detail' => 'انبار', 'permission' => 'admin.inventory.manage', 'href' => '/admin/inventory'],
-        'security.open' => ['label' => 'عملیات امنیتی', 'detail' => 'امنیت', 'permission' => 'admin.security_events.view', 'href' => '/admin/security-events/index.php'],
+        'products.open' => ['label' => 'مدیریت محصولات', 'detail' => 'کاتالوگ', 'permission' => 'admin.products.index', 'href' => '/nivad-panel/products'],
+        'orders.open' => ['label' => 'مدیریت سفارش‌ها', 'detail' => 'فروش', 'permission' => 'admin.orders.index', 'href' => '/nivad-panel/orders'],
+        'customers.open' => ['label' => 'مدیریت مشتریان', 'detail' => 'مشتریان', 'permission' => 'admin.users.index', 'href' => '/nivad-panel/users'],
+        'tickets.open' => ['label' => 'مرکز پشتیبانی', 'detail' => 'پشتیبانی', 'permission' => 'admin.capabilities.tickets.index', 'href' => '/nivad-panel/capabilities/index.php#admin-tickets-title'],
+        'incidents.open' => ['label' => 'مدیریت رخدادها', 'detail' => 'سلامت و خطاها', 'permission' => 'admin.capabilities.incidents.index', 'href' => '/nivad-panel/capabilities/index.php#admin-incidents-title'],
+        'notifications.open' => ['label' => 'اعلان‌های مدیریتی', 'detail' => 'ارتباطات', 'permission' => 'admin.capabilities.notifications.index', 'href' => '/nivad-panel/notifications'],
+        'inventory.open' => ['label' => 'مدیریت موجودی', 'detail' => 'انبار', 'permission' => 'admin.inventory.manage', 'href' => '/nivad-panel/inventory'],
+        'security.open' => ['label' => 'عملیات امنیتی', 'detail' => 'امنیت', 'permission' => 'admin.security_events.view', 'href' => '/nivad-panel/security-events/index.php'],
     ];
 
     public function search(int $adminId, string $query = ''): array
