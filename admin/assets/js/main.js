@@ -9,6 +9,7 @@ import adminIncidents from "./modules/admin-incidents.js";
 import adminCommandPalette from "./modules/command-palette.js";
 import adminSavedViews from "./modules/saved-views.js";
 import adminErrorBoundary from "./modules/error-boundary.js";
+import adminProductivityDiagnostics from "./modules/productivity-diagnostics.js";
 
 adminDataExperience();
 adminNavigationState();
@@ -21,3 +22,4 @@ adminIncidents();
 adminCommandPalette();
 adminSavedViews();
 adminErrorBoundary();
+adminProductivityDiagnostics();
