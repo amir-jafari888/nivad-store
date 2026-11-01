@@ -18,9 +18,9 @@ on:
       - 'app/Core/AdminRoutePermissionMap.php'
       - 'database/migrations/20261030_admin_incident_detection_phase4.sql'
       - 'assets/js/**'
-      - 'admin/capabilities/index.php'
-      - 'admin/assets/js/**'
-      - 'admin/incidents/**'
+      - 'nivad-panel/capabilities/index.php'
+      - 'nivad-panel/assets/js/**'
+      - 'nivad-panel/incidents/**'
       - 'tests/phase-4-incident-detection-contract.php'
       - '.github/workflows/admin-phase-4-incident-detection.yml'
 
@@ -52,7 +52,7 @@ jobs:
             app/Services/AdminEmailOutboxWorker.php
             app/Core/AdminRoutePermissionMap.php
             routes/api.php
-            admin/incidents/index.php
+            nivad-panel/incidents/index.php
             tests/phase-4-incident-detection-contract.php
           )
           for file in "${files[@]}"; do php -l "$file"; done
@@ -61,6 +61,6 @@ jobs:
         run: |
           set -euo pipefail
           node --input-type=module --check < assets/js/modules/client-error-monitor.js
-          node --input-type=module --check < admin/assets/js/modules/admin-incidents.js
+          node --input-type=module --check < nivad-panel/assets/js/modules/admin-incidents.js
       - name: Run Phase 4 static contracts
         run: php tests/phase-4-incident-detection-contract.php
