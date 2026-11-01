@@ -2825,6 +2825,7 @@ return static function (Router $router): void {
         CsrfMiddleware::class,
     ];
 
+    $router->get('/admin/audit/entities/{entityType}/{entityId}', [AdminAuditController::class, 'entityTimeline'], $adminCapabilityRead, 'admin.audit.entities.timeline');
     $router->get('/admin/access/sessions', [AdminAccessController::class, 'sessions'], $adminCapabilityRead, 'admin.access.sessions.index');
     $router->get('/admin/access/sessions/history', [AdminAccessController::class, 'sessionsHistory'], $adminCapabilityRead, 'admin.access.sessions.history');
     $router->delete('/admin/access/sessions/{id}', [AdminAccessController::class, 'revokeSession'], $adminCapabilityWrite, 'admin.access.sessions.destroy');
