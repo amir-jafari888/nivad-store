@@ -3,7 +3,7 @@ name: Admin Dashboard Redesign Integrity
 on:
   pull_request:
     paths:
-      - "admin/**"
+      - "nivad-panel/**"
       - "pages/admin/dashboard.php"
       - "app/**"
       - "test-phase-57-admin-core-experience.php"
@@ -14,7 +14,7 @@ on:
     branches:
       - "feature/admin-dashboard-shell-2026-10-28"
     paths:
-      - "admin/**"
+      - "nivad-panel/**"
       - "pages/admin/dashboard.php"
       - ".htaccess"
       - "test-admin-dashboard-redesign.php"
@@ -33,12 +33,12 @@ jobs:
           coverage: none
       - name: PHP syntax checks
         run: |
-          php -l admin/index.php
-          php -l admin/includes/auth.php
-          php -l admin/logout.php
-          php -l admin/settings/index.php
+          php -l nivad-panel/index.php
+          php -l nivad-panel/includes/auth.php
+          php -l nivad-panel/logout.php
+          php -l nivad-panel/settings/index.php
           php -l pages/admin/dashboard.php
-          php -l admin/profile/index.php
+          php -l nivad-panel/profile/index.php
           php -l app/Controllers/AdminController.php
           php -l app/Controllers/AdminCapabilityController.php
           php -l app/Services/AdminDashboardMetricsService.php
