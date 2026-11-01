@@ -148,7 +148,9 @@ function url(string $path = ''): string
     $path = trim($path);
 
     // Keep legacy callers working while emitting the canonical panel URL.
-    if ($path === '/admin' || str_starts_with($path, '/admin/')) {
+    // Match the path boundary so /administrator is never rewritten, and keep
+    // optional query strings or fragments intact.
+    if (preg_match('#^/admin(?=/|[?#]|$)#', $path) === 1) {
         $path = '/nivad-panel' . substr($path, strlen('/admin'));
     }
 
