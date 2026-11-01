@@ -42,10 +42,10 @@ $check = static function (string $label, bool $condition) use (&$passed, &$faile
 
 $middleware = $read('app/Middleware/AdminAuthMiddleware.php');
 $authorization = $read('app/Services/AuthorizationService.php');
-$login = $read('admin/auth/login.php');
-$adminIndex = $read('admin/index.php');
-$sharedAuth = $read('admin/includes/auth.php');
-$logout = $read('admin/logout.php');
+$login = $read('nivad-panel/auth/login.php');
+$adminIndex = $read('nivad-panel/index.php');
+$sharedAuth = $read('nivad-panel/includes/auth.php');
+$logout = $read('nivad-panel/logout.php');
 $htaccess = $read('.htaccess');
 $errorHandler = $read('app/Core/ErrorHandler.php');
 $errorResponder = $read('app/Core/AdminHttpErrorResponder.php');
@@ -59,8 +59,8 @@ $check('Shared admin auth include exists', is_string($sharedAuth));
 $check(
     'Middleware redirects browser requests to the real login path',
     is_string($middleware)
-        && str_contains($middleware, "url('/admin/auth/login.php')")
-        && !str_contains($middleware, "url('/admin/login')")
+        && str_contains($middleware, "url('/nivad-panel/auth/login')")
+        && !str_contains($middleware, "url('/nivad-panel/login')")
 );
 
 $check(
@@ -115,7 +115,7 @@ $check(
 $check(
     'Login form posts to its existing PHP endpoint',
     is_string($login)
-        && str_contains($login, "url('/admin/auth/login.php')")
+        && str_contains($login, "url('/nivad-panel/auth/login')")
         && str_contains($login, 'Request::isPost()')
 );
 
@@ -131,14 +131,14 @@ $check(
 $check(
     'Successful login redirects to the physical admin entry',
     is_string($login)
-        && str_contains($login, "url('/admin')")
+        && str_contains($login, "url('/nivad-panel')")
         && str_contains($login, 'Response::redirect(')
 );
 
 $check(
     'Shared page auth redirects to the same login endpoint',
     is_string($sharedAuth)
-        && str_contains($sharedAuth, "url('/admin/auth/login.php')")
+        && str_contains($sharedAuth, "url('/nivad-panel/auth/login')")
 );
 
 $check(
@@ -181,7 +181,7 @@ $check(
     'Existing logout rewrite contract remains present',
     is_string($htaccess)
         && str_contains($htaccess, 'RewriteEngine On')
-        && str_contains($htaccess, 'RewriteRule ^admin/logout/?$ admin/logout.php')
+        && str_contains($htaccess, 'RewriteRule ^nivad-panel/logout/?$ nivad-panel/logout.php')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
