@@ -13,10 +13,10 @@ on:
       - 'app/Repositories/AdminCapabilityRepository.php'
       - 'app/Core/AdminRoutePermissionMap.php'
       - 'routes/api.php'
-      - 'admin/assets/js/modules/**'
-      - 'admin/assets/js/main.js'
-      - 'admin/assets/css/**'
-      - 'admin/includes/auth.php'
+      - 'nivad-panel/assets/js/modules/**'
+      - 'nivad-panel/assets/js/main.js'
+      - 'nivad-panel/assets/css/**'
+      - 'nivad-panel/includes/auth.php'
       - 'database/migrations/20261101_admin_productivity_phase10.sql'
       - 'database/verification/20261101_admin_productivity_phase10_*.sql'
       - 'test-admin-phase-10-productivity.php'
@@ -43,15 +43,15 @@ jobs:
           php -l app/Repositories/AdminCapabilityRepository.php
           php -l app/Core/AdminRoutePermissionMap.php
           php -l routes/api.php
-          php -l admin/includes/auth.php
-          php -l admin/productivity/index.php
+          php -l nivad-panel/includes/auth.php
+          php -l nivad-panel/productivity/index.php
           php -l test-admin-phase-10-productivity.php
           php -l test-admin-phase-7-support-center.php
           php -l test-admin-phase-8-audit-entity-activity.php
           php -l test-admin-phase-9-security-operations.php
       - name: JavaScript module syntax
         run: |
-          for file in admin/assets/js/main.js admin/assets/js/modules/global-search.js admin/assets/js/modules/data-experience.js admin/assets/js/modules/command-palette.js admin/assets/js/modules/saved-views.js admin/assets/js/modules/error-boundary.js admin/assets/js/modules/productivity-diagnostics.js; do
+          for file in nivad-panel/assets/js/main.js nivad-panel/assets/js/modules/global-search.js nivad-panel/assets/js/modules/data-experience.js nivad-panel/assets/js/modules/command-palette.js nivad-panel/assets/js/modules/saved-views.js nivad-panel/assets/js/modules/error-boundary.js nivad-panel/assets/js/modules/productivity-diagnostics.js; do
             node --input-type=module --check < "$file"
           done
       - name: Phase 7-9 regression contracts
