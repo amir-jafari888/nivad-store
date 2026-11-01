@@ -48,7 +48,7 @@ adminRedesignCheck(str_contains($dashboardEntry, "pages/admin/dashboard.php"), '
 adminRedesignCheck(str_contains($authInclude, "first_name") && str_contains($authInclude, "last_name"), 'Shared authenticated shell identity uses first and last name fields');
 adminRedesignCheck(!str_contains($dashboardView, "['email']") && !str_contains($dashboardView, "['username']"), 'Dashboard does not expose email or username as the display-name fallback');
 adminRedesignCheck(str_contains($dashboardView, 'admin-dashboard-main') && str_contains($authInclude, 'admin-shared-nav-group') && str_contains($authInclude, 'admin-shared-sidebar'), 'Dashboard and authenticated pages share grouped mega-navigation');
-adminRedesignCheck(str_contains($authInclude, "url('/admin/settings')") && is_file($root . '/nivad-panel/settings/index.php'), 'Shared navigation points to an implemented settings page');
+adminRedesignCheck(str_contains($authInclude, "url('/nivad-panel/settings')") && is_file($root . '/nivad-panel/settings/index.php'), 'Shared navigation points to an implemented settings page');
 adminRedesignCheck(str_contains($authInclude, 'use ($nav, $topbar, $skipLink)'), 'Shared shell closure captures both navigation and topbar safely');
 adminRedesignCheck(str_contains($logout, 'Csrf::verify') && str_contains($logout, 'Request::isPost') && str_contains($logout, 'AdminAuth::logout'), 'Direct logout endpoint enforces POST and CSRF before clearing admin auth');
 adminRedesignCheck(str_contains($htaccess, 'RewriteRule ^nivad-panel/logout/?$ nivad-panel/logout.php'), 'Apache rewrite points /admin/logout to the direct endpoint');
