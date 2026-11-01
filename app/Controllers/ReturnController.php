@@ -347,6 +347,11 @@ final class ReturnController extends Controller
             ? (int)$data['paymentId']
             : null;
 
+        (new AdminReauthenticationService())->requireCurrentPassword(
+            (string)($data['reauth_password'] ?? ''),
+            'refund.create'
+        );
+
         try {
             $service =
                 new RefundService();
@@ -370,6 +375,10 @@ final class ReturnController extends Controller
                         : null
                 );
 
+            $adminId = AdminAuth::id();
+            if ($adminId !== null) {
+                AdminAuditTrail::record($adminId, 'create_refund', 'refunds', 'refund', $refund->id, 'Admin created a refund after password re-authentication.', null, ['order_id' => $refund->orderId, 'amount' => $refund->amount, 'currency' => $refund->currency]);
+            }
             $this->success(
                 $refund,
                 'بازپرداخت با موفقیت ایجاد شد.'
@@ -414,9 +423,15 @@ final class ReturnController extends Controller
                 (string)($data['status'] ?? '')
             );
 
+        (new AdminReauthenticationService())->requireCurrentPassword(
+            (string)($data['reauth_password'] ?? ''),
+            'refund.status_change'
+        );
+
         try {
             $service =
                 new RefundService();
+            $beforeRefund = $service->findById($refundId);
 
             $refund =
                 $service->changeStatus(
@@ -424,6 +439,10 @@ final class ReturnController extends Controller
                     $status
                 );
 
+            $adminId = AdminAuth::id();
+            if ($adminId !== null) {
+                AdminAuditTrail::record($adminId, 'refund_status_change', 'refunds', 'refund', $refund->id, 'Admin changed refund status after password re-authentication.', ['status' => $beforeRefund?->status], ['order_id' => $refund->orderId, 'status' => $refund->status]);
+            }
             $this->success(
                 $refund,
                 'وضعیت بازپرداخت تغییر کرد.'

@@ -78,6 +78,12 @@ jobs:
           php -l app/Services/AdminAccountPolicy.php
           php -l app/Services/AdminSupportTicketPolicy.php
           php -l app/Services/AdminSecurityEventPolicy.php
+          php -l app/Repositories/AdminSecurityEventRepository.php
+          php -l app/Services/AdminSecurityOperationsService.php
+          php -l app/Controllers/AdminSecurityOperationsController.php
+          php -l app/Controllers/ReturnController.php
+          php -l admin/security-events/index.php
+          php -l test-admin-phase-9-security-operations.php
           php -l app/Services/AdminSessionPolicy.php
           php -l app/Services/AdminSessionService.php
           php -l app/Services/AuthorizationService.php
@@ -93,6 +99,9 @@ jobs:
 
       - name: Run authentication and authorization regression
         run: php test-admin-auth-route-regression.php
+
+      - name: Run Phase 9 security operations contracts
+        run: php test-admin-phase-9-security-operations.php
 
       - name: Run shared foundation regression
         run: php test-admin-panel-foundation.php

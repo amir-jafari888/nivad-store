@@ -25,6 +25,31 @@ final class AdminSecurityEventPolicy
             'notify_email' => false,
             'open_incident' => false,
         ],
+        'security.suspicious_login' => [
+            'severity' => 'warning',
+            'notify_email' => false,
+            'open_incident' => false,
+        ],
+        'security.unusual_admin_activity' => [
+            'severity' => 'warning',
+            'notify_email' => false,
+            'open_incident' => false,
+        ],
+        'security.unusual_bulk_changes' => [
+            'severity' => 'warning',
+            'notify_email' => false,
+            'open_incident' => false,
+        ],
+        'security.refund_total_exceeds_payment' => [
+            'severity' => 'critical',
+            'notify_email' => false,
+            'open_incident' => true,
+        ],
+        'security.privilege_change_review' => [
+            'severity' => 'warning',
+            'notify_email' => false,
+            'open_incident' => false,
+        ],
         'admin.auth.session_invalid' => [
             'severity' => 'warning',
             'notify_email' => false,
