@@ -447,6 +447,30 @@ final class AdminCapabilityService
         if ($name === '' || mb_strlen($name) > 120 || !is_array($filters) || ($sort !== null && !is_array($sort))) {
             throw new InvalidArgumentException('نام و فیلترهای ذخیره‌شده معتبر نیستند.');
         }
+        $validator = new AdminSavedViewValidator();
+        $filters = $validator->validateFilters($filters);
+        $sort = $validator->validateSort($sort);
+        $allowedFields = [
+            'products' => ['id', 'name', 'sku', 'status', 'price', 'created_at', 'updated_at', 'search_term'],
+            'orders' => ['id', 'order_number', 'status', 'total_amount', 'created_at', 'updated_at', 'search_term'],
+            'customers' => ['id', 'first_name', 'last_name', 'email', 'phone', 'status', 'created_at', 'search_term'],
+            'tickets' => ['id', 'ticket_number', 'status', 'priority', 'assigned_admin_id', 'created_at', 'updated_at', 'search_term'],
+            'inventory' => ['id', 'variant_id', 'quantity', 'reserved_quantity', 'low_stock_threshold', 'updated_at', 'search_term'],
+            'payments' => ['id', 'order_id', 'gateway', 'status', 'amount', 'created_at', 'paid_at', 'search_term'],
+        ];
+        if (!isset($allowedFields[$module])) {
+            throw new InvalidArgumentException('ماژول این نمای ذخیره‌شده پشتیبانی نمی‌شود.');
+        }
+        foreach ($filters as $filter) {
+            if (!in_array($filter['field'], $allowedFields[$module], true)) {
+                throw new InvalidArgumentException('فیلد فیلتر برای این ماژول مجاز نیست.');
+            }
+        }
+        foreach ($sort ?? [] as $item) {
+            if (!in_array($item['field'], $allowedFields[$module], true) || $item['field'] === 'search_term') {
+                throw new InvalidArgumentException('فیلد مرتب‌سازی برای این ماژول مجاز نیست.');
+            }
+        }
         $filtersJson = json_encode($filters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
         $sortJson = $sort !== null ? json_encode($sort, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) : null;
         if (strlen($filtersJson) > 20000 || ($sortJson !== null && strlen($sortJson) > 5000)) {
@@ -512,8 +536,8 @@ final class AdminCapabilityService
     private function module(string $module): string
     {
         $module = trim($module);
-        if (!preg_match('/^[a-z][a-z0-9_-]{1,79}$/', $module)) {
-            throw new InvalidArgumentException('شناسه ماژول نامعتبر است.');
+        if (!in_array($module, ['products', 'orders', 'customers', 'tickets', 'inventory', 'payments'], true)) {
+            throw new InvalidArgumentException('شناسه ماژول ذخیره‌شده پشتیبانی نمی‌شود.');
         }
         return $module;
     }
