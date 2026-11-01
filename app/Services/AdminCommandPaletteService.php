@@ -6,7 +6,7 @@ declare(strict_types=1);
 final class AdminCommandPaletteService
 {
     private const COMMANDS = [
-        'dashboard.open' => ['label' => 'رفتن به داشبورد', 'detail' => 'داشبورد مدیریت', 'permission' => 'admin.dashboard.view', 'href' => '/admin'],
+        'dashboard.open' => ['label' => 'رفتن به داشبورد', 'detail' => 'داشبورد مدیریت', 'permission' => 'admin.dashboard.view', 'href' => '/nivad-panel'],
         'products.open' => ['label' => 'مدیریت محصولات', 'detail' => 'کاتالوگ', 'permission' => 'admin.products.index', 'href' => '/nivad-panel/products'],
         'orders.open' => ['label' => 'مدیریت سفارش‌ها', 'detail' => 'فروش', 'permission' => 'admin.orders.index', 'href' => '/nivad-panel/orders'],
         'customers.open' => ['label' => 'مدیریت مشتریان', 'detail' => 'مشتریان', 'permission' => 'admin.users.index', 'href' => '/nivad-panel/users'],
