@@ -14,7 +14,7 @@ if (
     $adminAuth->validateCurrentSession()
 ) {
     Response::redirect(
-        url('/admin')
+        url('/nivad-panel')
     );
 }
 
@@ -60,7 +60,7 @@ if (Request::isPost()) {
                 );
 
                 Response::redirect(
-                    url('/admin')
+                    url('/nivad-panel')
                 );
             } catch (
                 AdminAuthenticationException $exception
@@ -80,8 +80,8 @@ if (Request::isPost()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ورود مدیر | نیواد</title>
-    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
-    <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
+    <link rel="stylesheet" href="<?= e(url('/nivad-panel/assets/css/main.css')) ?>">
+    <script type="module" src="<?= e(url('/nivad-panel/assets/js/main.js')) ?>"></script>
 </head>
 
 <body class="admin-auth-page">
@@ -104,7 +104,7 @@ if (Request::isPost()) {
             <form
                 class="admin-auth-form"
                 method="post"
-                action="<?= e(url('/admin/auth/login.php')) ?>">
+                action="<?= e(url('/nivad-panel/auth/login')) ?>">
 
                 <input
                     type="hidden"
