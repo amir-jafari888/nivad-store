@@ -20,7 +20,7 @@ final class AdminAuthMiddleware implements MiddlewareInterface
                 ], 401);
             }
 
-            Response::redirect(url('/admin/auth/login.php'));
+            Response::redirect(url('/nivad-panel/auth/login'));
         }
 
         $adminUserId = AdminAuth::id();
@@ -34,7 +34,7 @@ final class AdminAuthMiddleware implements MiddlewareInterface
                 ], 401);
             }
 
-            Response::redirect(url('/admin/auth/login.php'));
+            Response::redirect(url('/nivad-panel/auth/login'));
         }
 
         $authorization = Authorization::check($adminUserId, 'admin.access');

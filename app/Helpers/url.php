@@ -147,6 +147,11 @@ function url(string $path = ''): string
 {
     $path = trim($path);
 
+    // Keep legacy callers working while emitting the canonical panel URL.
+    if ($path === '/admin' || str_starts_with($path, '/admin/')) {
+        $path = '/nivad-panel' . substr($path, strlen('/admin'));
+    }
+
     if (
         $path !== '' &&
         filter_var($path, FILTER_VALIDATE_URL)

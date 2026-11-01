@@ -1,7 +1,25 @@
 RewriteEngine On
 
-# Admin logout is a direct PHP endpoint because /admin is a physical directory.
-RewriteRule ^admin/logout/?$ admin/logout.php [L,QSA]
+# Canonical admin panel entry.
+RewriteRule ^admin/?$ /nivad-panel/ [R=301,L]
+RewriteRule ^admin/(.*)$ /nivad-panel/$1 [R=301,L,NE]
+
+# Canonical extensionless PHP URLs inside the renamed panel.
+RewriteCond %{THE_REQUEST} \s/+nivad-panel/index\.php(?:[?\s]) [NC]
+RewriteRule ^nivad-panel/index\.php$ /nivad-panel/ [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+nivad-panel/(.+?)\.php(?:[?\s]) [NC]
+RewriteRule ^nivad-panel/(.+)\.php$ /nivad-panel/$1 [R=301,L,NE]
+
+# Clean URL -> matching flat PHP endpoint (for example /reports/sales).
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^nivad-panel/(.+?)/?$ nivad-panel/$1.php [L,QSA]
+
+# Clean URL -> directory index.php (for example /products).
+RewriteCond %{REQUEST_FILENAME}/index.php -f
+RewriteRule ^nivad-panel/(.+?)/?$ nivad-panel/$1/index.php [L,QSA]
+
+# Admin logout remains a direct POST + CSRF-protected endpoint.
+RewriteRule ^nivad-panel/logout/?$ nivad-panel/logout.php [L,QSA]
 
 RewriteRule ^sitemap\.xml$ api/index.php?path=/seo/sitemap [L,QSA]
 RewriteRule ^robots\.txt$ api/index.php?path=/seo/robots [L,QSA]

@@ -9,12 +9,12 @@ final class AdminController extends Controller
         $service = new AdminAuthService();
 
         if (!$service->validateCurrentSession()) {
-            Response::redirect(url('/admin/login'));
+            Response::redirect(url('/nivad-panel/auth/login'));
         }
 
         $admin = $service->currentSafe();
         if ($admin === null) {
-            Response::redirect(url('/admin/login'));
+            Response::redirect(url('/nivad-panel/auth/login'));
         }
 
         $overviewService = new AdminDashboardOverviewService();
@@ -77,7 +77,7 @@ final class AdminController extends Controller
             $service->validateCurrentSession()
         ) {
             Response::redirect(
-                url('/admin')
+                url('/nivad-panel')
             );
         }
 

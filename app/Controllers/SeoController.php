@@ -18,7 +18,7 @@ final class SeoController extends Controller
 
         echo "User-agent: *\n";
         echo "Allow: /\n";
-        echo "Disallow: /admin/\n";
+        echo "Disallow: /nivad-panel/\n";
         echo "Disallow: /api/\n";
         echo "Disallow: /pages/account/\n";
         echo "Disallow: /pages/auth/\n";

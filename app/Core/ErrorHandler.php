@@ -42,7 +42,7 @@ final class ErrorHandler
 
         $path = parse_url(Request::uri(), PHP_URL_PATH);
         $isAdminBrowserRequest = is_string($path)
-            && ($path === '/admin' || str_starts_with($path, '/admin/'))
+            && ($path === '/nivad-panel' || str_starts_with($path, '/nivad-panel/'))
             && !AdminHttpErrorResponder::expectsJson();
 
         if ($isAdminBrowserRequest) {

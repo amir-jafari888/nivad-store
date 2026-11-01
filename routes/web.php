@@ -148,14 +148,14 @@ return static function (
     */
 
     $router->get(
-        '/admin/login',
+        '/nivad-panel/login',
         [AdminController::class, 'loginPage'],
         [],
         'admin.login'
     );
 
     $router->post(
-        '/admin/login',
+        '/nivad-panel/login',
         [AdminAuthController::class, 'login'],
         [
             CsrfMiddleware::class,
