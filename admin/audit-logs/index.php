@@ -8,6 +8,10 @@ require_once dirname(__DIR__, 2)
 Bootstrap::boot();
 
 require_once __DIR__ . '/../includes/auth.php';
+
+if (!$adminAuth->can('admin.audit.view')) {
+    Response::redirect(url('/admin/access-denied.php'));
+}
 ?>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
