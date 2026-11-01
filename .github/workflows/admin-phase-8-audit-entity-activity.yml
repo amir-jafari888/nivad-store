@@ -8,7 +8,7 @@ on:
       - 'app/Controllers/AdminAuditController.php'
       - 'app/Core/AdminRoutePermissionMap.php'
       - 'routes/api.php'
-      - 'admin/audit-logs/index.php'
+      - 'nivad-panel/audit-logs/index.php'
       - 'test-admin-phase-8-audit-entity-activity.php'
       - '.github/workflows/admin-phase-8-audit-entity-activity.yml'
 
@@ -28,7 +28,7 @@ jobs:
           php -l app/Controllers/AdminAuditController.php
           php -l app/Core/AdminRoutePermissionMap.php
           php -l routes/api.php
-          php -l admin/audit-logs/index.php
+          php -l nivad-panel/audit-logs/index.php
           php -l test-admin-phase-8-audit-entity-activity.php
       - name: Phase 8 static contracts
         run: php test-admin-phase-8-audit-entity-activity.php
