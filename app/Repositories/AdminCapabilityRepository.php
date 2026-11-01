@@ -773,8 +773,8 @@ final class AdminCapabilityRepository
     public function savedViews(int $adminId, string $module): array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, module, name, filters_json, sort_json, is_default, created_at, updated_at
-             FROM admin_saved_views WHERE admin_user_id = :admin_id AND module = :module
+            'SELECT id, module_key AS module, name, filters_json, sort_json, is_default, created_at, updated_at
+             FROM admin_saved_views WHERE admin_user_id = :admin_id AND module_key = :module
              ORDER BY is_default DESC, name ASC'
         );
         $stmt->execute(['admin_id' => $adminId, 'module' => $module]);
@@ -792,12 +792,12 @@ final class AdminCapabilityRepository
         try {
             if ($isDefault) {
                 $clear = $this->db->prepare(
-                    'UPDATE admin_saved_views SET is_default = 0 WHERE admin_user_id = :admin_id AND module = :module'
+                    'UPDATE admin_saved_views SET is_default = 0 WHERE admin_user_id = :admin_id AND module_key = :module'
                 );
                 $clear->execute(['admin_id' => $adminId, 'module' => $module]);
             }
             $stmt = $this->db->prepare(
-                'INSERT INTO admin_saved_views (admin_user_id, module, name, filters_json, sort_json, is_default)
+                'INSERT INTO admin_saved_views (admin_user_id, module_key, name, filters_json, sort_json, is_default)
                  VALUES (:admin_id, :module, :name, :filters_json, :sort_json, :is_default)
                  ON DUPLICATE KEY UPDATE filters_json = VALUES(filters_json), sort_json = VALUES(sort_json),
                                          is_default = VALUES(is_default), updated_at = CURRENT_TIMESTAMP'
@@ -811,7 +811,7 @@ final class AdminCapabilityRepository
                 'is_default' => $isDefault ? 1 : 0,
             ]);
             $find = $this->db->prepare(
-                'SELECT id FROM admin_saved_views WHERE admin_user_id = :admin_id AND module = :module AND name = :name LIMIT 1'
+                'SELECT id FROM admin_saved_views WHERE admin_user_id = :admin_id AND module_key = :module AND name = :name LIMIT 1'
             );
             $find->execute(['admin_id' => $adminId, 'module' => $module, 'name' => $name]);
             $id = (int)$find->fetchColumn();
@@ -885,7 +885,58 @@ final class AdminCapabilityRepository
             $results[] = ['type' => 'ticket', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail']];
         }
 
-        return array_slice($results, 0, 20);
+        $admins = $this->db->prepare(
+            'SELECT id, CONCAT(COALESCE(first_name, ""), " ", COALESCE(last_name, "")) AS label,
+                    CONCAT(username, " · ", email) AS detail
+             FROM admin_users
+             WHERE deleted_at IS NULL
+               AND (username LIKE :username OR email LIKE :email OR first_name LIKE :first_name OR last_name LIKE :last_name)
+             ORDER BY id DESC LIMIT 6'
+        );
+        $admins->execute(['username' => $pattern, 'email' => $pattern, 'first_name' => $pattern, 'last_name' => $pattern]);
+        foreach ($admins->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $results[] = ['type' => 'admin', 'id' => (int)$row['id'], 'label' => trim($row['label']) ?: ('Admin #' . $row['id']), 'detail' => $row['detail']];
+        }
+
+        if ($this->tableExists('admin_cms_pages')) {
+            $pages = $this->db->prepare(
+                'SELECT id, title AS label, page_key AS detail
+                 FROM admin_cms_pages
+                 WHERE deleted_at IS NULL AND (title LIKE :title OR page_key LIKE :page_key)
+                 ORDER BY sort_order ASC, id ASC LIMIT 6'
+            );
+            $pages->execute(['title' => $pattern, 'page_key' => $pattern]);
+            foreach ($pages->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $results[] = ['type' => 'content', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => 'صفحه · ' . $row['detail']];
+            }
+        }
+
+        if ($this->tableExists('admin_cms_sections')) {
+            $sections = $this->db->prepare(
+                'SELECT s.id, s.title AS label, CONCAT(p.page_key, " · ", s.section_key) AS detail
+                 FROM admin_cms_sections s
+                 INNER JOIN admin_cms_pages p ON p.id = s.page_id
+                 WHERE s.deleted_at IS NULL AND p.deleted_at IS NULL
+                   AND (s.title LIKE :title OR s.section_key LIKE :section_key)
+                 ORDER BY s.updated_at DESC LIMIT 6'
+            );
+            $sections->execute(['title' => $pattern, 'section_key' => $pattern]);
+            foreach ($sections->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $results[] = ['type' => 'content', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => 'سکشن · ' . $row['detail']];
+            }
+        }
+
+        return array_slice($results, 0, 30);
+    }
+
+    private function tableExists(string $table): bool
+    {
+        $stmt = $this->db->prepare(
+            'SELECT 1 FROM information_schema.TABLES
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table_name LIMIT 1'
+        );
+        $stmt->execute(['table_name' => $table]);
+        return $stmt->fetchColumn() !== false;
     }
 
     public function revisions(string $entityType, int $entityId, int $limit = 50): array

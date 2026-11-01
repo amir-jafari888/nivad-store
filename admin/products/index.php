@@ -28,7 +28,7 @@ $products = $productService->adminFindAll();
         <?php if ($products === []): ?>
             <p>محصولی ثبت نشده است.</p>
         <?php else: ?>
-            <table>
+            <table data-admin-bulk-job="catalog.products.status" data-admin-bulk-permission="admin.products.manage">
                 <thead>
                     <tr>
                         <th>ID</th>
