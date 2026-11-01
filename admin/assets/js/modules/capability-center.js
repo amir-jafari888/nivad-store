@@ -124,7 +124,9 @@ const adminCapabilityCenter = () => {
   };
 
   const loadTickets = async () => {
-    const data = await request("/tickets");
+    const filterForm = root.querySelector("[data-support-filters]");
+    const filters = filterForm ? Object.fromEntries(new FormData(filterForm).entries()) : {};
+    const data = await request("/tickets", {}, filters);
     let activeAdmins = [];
     try {
       const adminData = await request("/admin/access/admins");
@@ -134,7 +136,7 @@ const adminCapabilityCenter = () => {
     }
     renderRows("tickets", data.items || [], {
       title: row => row.ticket_number + " · " + row.subject,
-      details: row => "وضعیت: " + row.status + " · اولویت: " + row.priority + " · مشتری: " + (row.user_id || "ثبت نشده") + " · آخرین تغییر: " + row.updated_at,
+      details: row => "وضعیت: " + row.status + " · اولویت: " + row.priority + " · مشتری: " + (row.user_id || "ثبت نشده") + " · پاسخ اولیه: " + (row.first_response_at || "در انتظار پاسخ") + " · آخرین تغییر: " + row.updated_at,
       action: row => {
         const wrap = node("div", undefined, "admin-capability-ticket-detail");
         const controls = node("div", undefined, "admin-capability-actions");
@@ -176,6 +178,13 @@ const adminCapabilityCenter = () => {
             const result = await request("/tickets/" + row.id);
             (result.ticket.messages || []).forEach(message => {
               content.append(node("p", message.sender_type + (Number(message.is_internal) ? " · یادداشت داخلی" : "") + ": " + message.message));
+            });
+            content.append(node("h4", "تاریخچه تغییر وضعیت"));
+            const history = result.ticket.status_history || [];
+            if (!history.length) content.append(node("p", "تاریخچه‌ای ثبت نشده است."));
+            history.forEach(item => {
+              const actor = item.actor_type === "admin" ? "مدیر " + (item.first_name || "") + " " + (item.last_name || "") : item.actor_type === "customer" ? "مشتری #" + (item.actor_user_id || "نامشخص") : "سیستم";
+              content.append(node("p", (item.from_status || "شروع") + " ← " + item.to_status + " · " + actor + " · " + item.changed_at + (item.note ? " · " + item.note : "")));
             });
             const form = document.createElement("form");
             form.className = "admin-capability-inline-form";
@@ -312,6 +321,70 @@ const adminCapabilityCenter = () => {
     await loadTickets();
   });
 
+  const supportRange = () => {
+    const form = root.querySelector("[data-support-range]");
+    if (form && (!form.elements.from.value || !form.elements.to.value)) {
+      const to = new Date();
+      const from = new Date(); from.setDate(from.getDate() - 29);
+      const iso = date => date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+      form.elements.from.value ||= iso(from);
+      form.elements.to.value ||= iso(to);
+    }
+    return form ? { from: form.elements.from.value, to: form.elements.to.value } : {};
+  };
+
+  const loadSupportMetrics = async () => {
+    const data = await request("/support/metrics", {}, supportRange());
+    const summary = data.summary || {};
+    const target = root.querySelector('[data-capability-list="support-metrics"]');
+    if (target) {
+      target.replaceChildren(
+        node("p", "کل تیکت‌ها: " + (summary.total_tickets ?? 0)),
+        node("p", "تیکت‌های فعال: " + (summary.active_tickets ?? 0)),
+        node("p", "تیکت‌های تکمیل‌شده: " + (summary.completed_tickets ?? 0)),
+        node("p", "میانگین پاسخ اولیه (دقیقه): " + (summary.avg_first_response_minutes === null ? "داده کافی نیست" : Number(summary.avg_first_response_minutes || 0).toFixed(1))),
+        node("p", "در انتظار پاسخ اولیه: " + (summary.awaiting_first_response ?? 0)),
+        node("p", "اولویت‌های دارای SLA فعال: " + (data.policies_configured ?? 0))
+      );
+      (data.sla || []).forEach(row => target.append(
+        node("p", row.priority + " · پاسخ اولیه: " + row.response_within_sla + " در محدوده / " + row.response_breached + " نقض · حل تیکت: " + row.resolution_within_sla + " در محدوده / " + row.resolution_breached + " نقض")
+      ));
+    }
+  };
+
+  const loadSupportReports = async () => {
+    const data = await request("/support/reports", {}, supportRange());
+    renderRows("support-reports", data.items || [], {
+      title: row => row.priority + " · " + row.status + " · " + row.ticket_count + " تیکت",
+      details: row => "میانگین پاسخ اولیه (دقیقه): " + (row.avg_first_response_minutes === null ? "داده کافی نیست" : Number(row.avg_first_response_minutes || 0).toFixed(1))
+    });
+    renderRows("support-assignees", data.by_assignee || [], {
+      title: row => (row.assigned_admin_name || "بدون مسئول") + " · " + row.ticket_count + " تیکت",
+      details: row => "تکمیل‌شده: " + row.completed_count + " · میانگین پاسخ: " + (row.avg_first_response_minutes === null ? "داده کافی نیست" : Number(row.avg_first_response_minutes || 0).toFixed(1) + " دقیقه") + " · میانگین حل: " + (row.avg_resolution_minutes === null ? "داده کافی نیست" : Number(row.avg_resolution_minutes || 0).toFixed(1) + " دقیقه")
+    });
+  };
+
+  const loadSupportSla = async () => {
+    const data = await request("/support/sla");
+    renderRows("support-sla", data.items || [], {
+      title: row => row.priority + " · " + (Number(row.is_active) === 1 ? "فعال" : "تعریف‌نشده"),
+      details: row => "پاسخ اولیه: " + (row.first_response_minutes ?? "—") + " دقیقه · حل: " + (row.resolution_minutes ?? "—") + " دقیقه · آخرین تغییر: " + (row.updated_at || "—")
+    });
+  };
+
+  bindForm("support-sla", async form => {
+    const priority = String(form.get("priority"));
+    await request("/support/sla/" + encodeURIComponent(priority), {
+      method: "PUT",
+      body: JSON.stringify({
+        first_response_minutes: Number(form.get("first_response_minutes")),
+        resolution_minutes: Number(form.get("resolution_minutes"))
+      })
+    });
+    await loadSupportSla();
+    await loadSupportMetrics();
+  });
+
   bindForm("preference", async form => {
     let value;
     try { value = JSON.parse(String(form.get("value"))); }
@@ -351,7 +424,30 @@ const adminCapabilityCenter = () => {
     });
   });
 
+  const supportFilters = root.querySelector("[data-support-filters]");
+  if (supportFilters) {
+    supportFilters.addEventListener("submit", event => { event.preventDefault(); loadTickets().catch(error => setFeedback(error.message, true)); });
+    supportFilters.addEventListener("reset", () => window.setTimeout(() => loadTickets().catch(error => setFeedback(error.message, true)), 0));
+  }
+  const supportRangeForm = root.querySelector("[data-support-range]");
+  if (supportRangeForm) {
+    supportRange();
+    supportRangeForm.addEventListener("submit", event => {
+      event.preventDefault();
+      Promise.all([loadSupportMetrics(), loadSupportReports()]).catch(error => setFeedback(error.message, true));
+    });
+  }
+
+  const supportLoaders = {
+    "support-sla": loadSupportSla,
+    "support-metrics": loadSupportMetrics,
+    "support-reports": loadSupportReports
+  };
   ["notifications", "incidents", "tickets", "analytics", "health", "preferences", "saved-views"].forEach(load);
+  Object.entries(supportLoaders).forEach(([name, loader]) => {
+    try { loader().catch(error => setFeedback(error.message, true)); }
+    catch (error) { setFeedback(error.message, true); }
+  });
 };
 
 export default adminCapabilityCenter;

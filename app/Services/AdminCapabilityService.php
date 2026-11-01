@@ -257,7 +257,7 @@ final class AdminCapabilityService
         return $this->repository->addTicketMessage($ticketId, $adminId, $message, $internal);
     }
 
-    public function updateTicket(int $id, string $status, string $priority, ?int $assignedAdminId): bool
+    public function updateTicket(int $id, string $status, string $priority, ?int $assignedAdminId, int $actorAdminId): bool
     {
         if ($id < 1 || !in_array($status, self::TICKET_STATUSES, true) || !in_array($priority, self::TICKET_PRIORITIES, true)) {
             throw new InvalidArgumentException('وضعیت یا اولویت تیکت نامعتبر است.');
@@ -265,7 +265,7 @@ final class AdminCapabilityService
         if ($assignedAdminId !== null && !$this->repository->adminExists($assignedAdminId)) {
             throw new InvalidArgumentException('مدیر مسئول فعال و معتبر نیست.');
         }
-        return $this->repository->updateTicket($id, $status, $priority, $assignedAdminId);
+        return $this->repository->updateTicket($id, $status, $priority, $assignedAdminId, $actorAdminId);
     }
 
     public function recordProductEvent(array $input): int

@@ -353,8 +353,12 @@ final class AdminCapabilityRepository
         $this->db->beginTransaction();
         try {
             $stmt = $this->db->prepare(
-                'INSERT INTO admin_support_tickets (ticket_number, user_id, category, priority, status, subject, assigned_admin_id, last_message_at)
-                 VALUES (:number, :user_id, :category, :priority, "open", :subject, :assigned, CURRENT_TIMESTAMP)'
+                'INSERT INTO admin_support_tickets
+                    (ticket_key, ticket_number, customer_id, user_id, category, priority, status, subject, description,
+                     assigned_admin_id, created_by_admin_id, last_message_at)
+                 VALUES
+                    (:number, :number, :user_id, :user_id, :category, :priority, "open", :subject, :description,
+                     :assigned, :actor_admin_id, CURRENT_TIMESTAMP)'
             );
             $stmt->execute([
                 'number' => $ticketNumber,
@@ -362,7 +366,9 @@ final class AdminCapabilityRepository
                 'category' => $data['category'],
                 'priority' => $data['priority'],
                 'subject' => $data['subject'],
+                'description' => $data['message'],
                 'assigned' => $data['assigned_admin_id'],
+                'actor_admin_id' => $data['actor_admin_id'],
             ]);
             $id = (int)$this->db->lastInsertId();
             $message = $this->db->prepare(
@@ -374,6 +380,11 @@ final class AdminCapabilityRepository
                 'admin_id' => $data['actor_admin_id'],
                 'message' => $data['message'],
             ]);
+            $history = $this->db->prepare(
+                'INSERT INTO admin_support_status_history (ticket_id, from_status, to_status, actor_type, actor_admin_id, note)
+                 VALUES (:ticket_id, NULL, "open", "admin", :actor_admin_id, "Ticket created")'
+            );
+            $history->execute(['ticket_id' => $id, 'actor_admin_id' => $data['actor_admin_id']]);
             $this->db->commit();
             return $id;
         } catch (Throwable $exception) {
@@ -414,27 +425,53 @@ final class AdminCapabilityRepository
         }
     }
 
-    public function updateTicket(int $id, string $status, string $priority, ?int $assignedAdminId): bool
+    public function updateTicket(int $id, string $status, string $priority, ?int $assignedAdminId, int $actorAdminId): bool
     {
-        $stmt = $this->db->prepare(
-            'UPDATE admin_support_tickets
-             SET status = :status, priority = :priority, assigned_admin_id = :assigned,
-                 resolved_at = CASE WHEN :resolved = 1 THEN COALESCE(resolved_at, CURRENT_TIMESTAMP) ELSE NULL END,
-                 closed_at = CASE WHEN :closed = 1 THEN COALESCE(closed_at, CURRENT_TIMESTAMP) ELSE NULL END,
-                 updated_at = CURRENT_TIMESTAMP
-             WHERE id = :id'
-        );
-        $stmt->execute([
-            'status' => $status,
-            'priority' => $priority,
-            'assigned' => $assignedAdminId,
-            'resolved' => $status === 'resolved' ? 1 : 0,
-            'closed' => $status === 'closed' ? 1 : 0,
-            'id' => $id,
-        ]);
-        $check = $this->db->prepare('SELECT 1 FROM admin_support_tickets WHERE id = :id LIMIT 1');
-        $check->execute(['id' => $id]);
-        return $check->fetchColumn() !== false;
+        $this->db->beginTransaction();
+        try {
+            $current = $this->db->prepare('SELECT status FROM admin_support_tickets WHERE id = :id LIMIT 1 FOR UPDATE');
+            $current->execute(['id' => $id]);
+            $previousStatus = $current->fetchColumn();
+            if ($previousStatus === false) {
+                $this->db->rollBack();
+                return false;
+            }
+
+            $stmt = $this->db->prepare(
+                'UPDATE admin_support_tickets
+                 SET status = :status, priority = :priority, assigned_admin_id = :assigned,
+                     resolved_at = CASE WHEN :resolved = 1 THEN COALESCE(resolved_at, CURRENT_TIMESTAMP) ELSE NULL END,
+                     closed_at = CASE WHEN :closed = 1 THEN COALESCE(closed_at, CURRENT_TIMESTAMP) ELSE NULL END,
+                     updated_at = CURRENT_TIMESTAMP
+                 WHERE id = :id'
+            );
+            $stmt->execute([
+                'status' => $status,
+                'priority' => $priority,
+                'assigned' => $assignedAdminId,
+                'resolved' => $status === 'resolved' ? 1 : 0,
+                'closed' => $status === 'closed' ? 1 : 0,
+                'id' => $id,
+            ]);
+
+            if ($previousStatus !== $status) {
+                $history = $this->db->prepare(
+                    'INSERT INTO admin_support_status_history (ticket_id, from_status, to_status, actor_type, actor_admin_id)
+                     VALUES (:ticket_id, :from_status, :to_status, "admin", :actor_admin_id)'
+                );
+                $history->execute([
+                    'ticket_id' => $id,
+                    'from_status' => $previousStatus,
+                    'to_status' => $status,
+                    'actor_admin_id' => $actorAdminId,
+                ]);
+            }
+            $this->db->commit();
+            return true;
+        } catch (Throwable $exception) {
+            if ($this->db->inTransaction()) $this->db->rollBack();
+            throw $exception;
+        }
     }
 
     public function customerTickets(int $userId, int $limit = 50): array
@@ -480,8 +517,9 @@ final class AdminCapabilityRepository
         $this->db->beginTransaction();
         try {
             $ticket = $this->db->prepare(
-                'INSERT INTO admin_support_tickets (ticket_number, user_id, category, priority, status, subject, last_message_at)
-                 VALUES (:number, :user_id, :category, :priority, "open", :subject, CURRENT_TIMESTAMP)'
+                'INSERT INTO admin_support_tickets
+                    (ticket_key, ticket_number, customer_id, user_id, category, priority, status, subject, description, last_message_at)
+                 VALUES (:number, :number, :user_id, :user_id, :category, :priority, "open", :subject, :description, CURRENT_TIMESTAMP)'
             );
             $ticket->execute([
                 'number' => $ticketNumber,
@@ -489,6 +527,7 @@ final class AdminCapabilityRepository
                 'category' => $data['category'],
                 'priority' => $data['priority'],
                 'subject' => $data['subject'],
+                'description' => $data['message'],
             ]);
             $ticketId = (int)$this->db->lastInsertId();
 
@@ -501,6 +540,11 @@ final class AdminCapabilityRepository
                 'user_id' => $userId,
                 'message' => $data['message'],
             ]);
+            $history = $this->db->prepare(
+                'INSERT INTO admin_support_status_history (ticket_id, from_status, to_status, actor_type, actor_user_id, note)
+                 VALUES (:ticket_id, NULL, "open", "customer", :actor_user_id, "Ticket created")'
+            );
+            $history->execute(['ticket_id' => $ticketId, 'actor_user_id' => $userId]);
             $this->db->commit();
             return $ticketId;
         } catch (Throwable $exception) {
@@ -543,6 +587,13 @@ final class AdminCapabilityRepository
                  WHERE id = :ticket_id AND user_id = :user_id'
             );
             $update->execute(['ticket_id' => $ticketId, 'user_id' => $userId]);
+            if ($status !== "pending_admin") {
+                $history = $this->db->prepare(
+                    'INSERT INTO admin_support_status_history (ticket_id, from_status, to_status, actor_type, actor_user_id, note)
+                     VALUES (:ticket_id, :from_status, "pending_admin", "customer", :actor_user_id, "Customer replied")'
+                );
+                $history->execute(['ticket_id' => $ticketId, 'from_status' => $status, 'actor_user_id' => $userId]);
+            }
             $this->db->commit();
             return $messageId;
         } catch (Throwable $exception) {

@@ -1,0 +1,80 @@
+name: Admin Phase 7 Support Center
+
+on:
+  push:
+    branches:
+      - feature/admin-phase-7-support-center-2026-10-31
+    paths:
+      - 'app/Controllers/AdminCapabilityController.php'
+      - 'app/Core/AdminRoutePermissionMap.php'
+      - 'app/Repositories/AdminCapabilityRepository.php'
+      - 'app/Repositories/AdminSupportRepository.php'
+      - 'app/Services/AdminCapabilityService.php'
+      - 'app/Services/AdminSupportService.php'
+      - 'routes/api.php'
+      - 'admin/capabilities/index.php'
+      - 'admin/assets/js/modules/capability-center.js'
+      - 'database/migrations/20261031_admin_support_phase7.sql'
+      - 'database/verification/20261031_admin_support_phase7_verify.sql'
+      - 'database/verification/20261031_admin_support_phase7_preflight.sql'
+      - 'test-admin-phase-7-support-center.php'
+      - 'docs/admin/phase-7-support-center.md'
+      - '.github/workflows/admin-phase-7-support-center.yml'
+  pull_request:
+    paths:
+      - 'app/Controllers/AdminCapabilityController.php'
+      - 'app/Core/AdminRoutePermissionMap.php'
+      - 'app/Repositories/AdminCapabilityRepository.php'
+      - 'app/Repositories/AdminSupportRepository.php'
+      - 'app/Services/AdminCapabilityService.php'
+      - 'app/Services/AdminSupportService.php'
+      - 'routes/api.php'
+      - 'admin/capabilities/index.php'
+      - 'admin/assets/js/modules/capability-center.js'
+      - 'database/migrations/20261031_admin_support_phase7.sql'
+      - 'database/verification/20261031_admin_support_phase7_verify.sql'
+      - 'database/verification/20261031_admin_support_phase7_preflight.sql'
+      - 'test-admin-phase-7-support-center.php'
+      - 'docs/admin/phase-7-support-center.md'
+      - '.github/workflows/admin-phase-7-support-center.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  support-center-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in \
+            app/Controllers/AdminCapabilityController.php \
+            app/Repositories/AdminCapabilityRepository.php \
+            app/Repositories/AdminSupportRepository.php \
+            app/Services/AdminCapabilityService.php \
+            app/Services/AdminSupportService.php \
+            app/Core/AdminRoutePermissionMap.php \
+            admin/capabilities/index.php \
+            test-admin-phase-7-support-center.php
+          do
+            php -l "$file"
+          done
+      - name: JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module --check < admin/assets/js/modules/capability-center.js
+      - name: Phase 7 static contracts
+        run: php test-admin-phase-7-support-center.php
