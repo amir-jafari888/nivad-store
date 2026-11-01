@@ -39,15 +39,15 @@ $paths = [
     'capability_controller' => $root . '/app/Controllers/AdminCapabilityController.php',
     'capability_service' => $root . '/app/Services/AdminCapabilityService.php',
     'capability_repository' => $root . '/app/Repositories/AdminCapabilityRepository.php',
-    'capability_page' => $root . '/admin/capabilities/index.php',
-    'capability_js' => $root . '/admin/assets/js/modules/capability-center.js',
-    'shared_shell' => $root . '/admin/includes/auth.php',
+    'capability_page' => $root . '/nivad-panel/capabilities/index.php',
+    'capability_js' => $root . '/nivad-panel/assets/js/modules/capability-center.js',
+    'shared_shell' => $root . '/nivad-panel/includes/auth.php',
     'access_controller' => $root . '/app/Controllers/AdminAccessController.php',
     'access_service' => $root . '/app/Services/AdminAccessService.php',
     'access_repository' => $root . '/app/Repositories/AdminAccessRepository.php',
-    'access_page' => $root . '/admin/access/index.php',
-    'access_denied_page' => $root . '/admin/access-denied.php',
-    'access_js' => $root . '/admin/assets/js/modules/access-center.js',
+    'access_page' => $root . '/nivad-panel/access/index.php',
+    'access_denied_page' => $root . '/nivad-panel/access-denied.php',
+    'access_js' => $root . '/nivad-panel/assets/js/modules/access-center.js',
     'customer_support_controller' => $root . '/app/Controllers/CustomerSupportController.php',
     'customer_support_page' => $root . '/pages/account/support.php',
     'customer_support_js' => $root . '/assets/js/modules/account-support.js',
@@ -151,18 +151,18 @@ if (is_string($sources['capability_page']) && is_string($sources['capability_js'
     p56Check('Capability UI writes with CSRF header', str_contains($sources['capability_js'], 'X-CSRF-TOKEN'));
     p56Check('Capability UI renders API data with textContent', str_contains($sources['capability_js'], 'textContent'));
 }
-p56Check('Shared Admin navigation links to capability center', is_string($sources['shared_shell']) && str_contains($sources['shared_shell'], '/admin/capabilities/index.php'));
+p56Check('Shared Admin navigation links to capability center', is_string($sources['shared_shell']) && str_contains($sources['shared_shell'], '/nivad-panel/capabilities/index.php'));
 p56Check('Admin access repository exists', is_string($sources['access_repository']));
 p56Check('Admin mutation audit trail helper exists', is_file($root . '/app/Services/AdminAuditTrail.php') && str_contains((string)file_get_contents($root . '/app/Services/AuditLogService.php'), 'public function record('));
 
 p56Check('Admin access service protects the Super Admin role', is_string($sources['access_service']) && str_contains($sources['access_service'], 'super-admin'));
 p56Check('Admin access UI is connected to the API module', is_string($sources['access_page']) && is_string($sources['access_js']));
-p56Check('Admin access page requires an Access permission', is_string($sources['access_page']) && str_contains($sources['access_page'], '$adminAuth->canAll(') && str_contains($sources['access_page'], '/admin/access-denied.php'));
-p56Check('Admin capability page requires at least one capability permission', is_string($sources['capability_page']) && str_contains($sources['capability_page'], '$adminAuth->canAny(') && str_contains($sources['capability_page'], '/admin/access-denied.php'));
-p56Check('Unauthorized Admin access/capability pages redirect to the dedicated denial page', is_string($sources['access_page']) && is_string($sources['capability_page']) && str_contains($sources['access_page'], '/admin/access-denied.php') && str_contains($sources['capability_page'], '/admin/access-denied.php'));
+p56Check('Admin access page requires an Access permission', is_string($sources['access_page']) && str_contains($sources['access_page'], '$adminAuth->canAll(') && str_contains($sources['access_page'], '/nivad-panel/access-denied.php'));
+p56Check('Admin capability page requires at least one capability permission', is_string($sources['capability_page']) && str_contains($sources['capability_page'], '$adminAuth->canAny(') && str_contains($sources['capability_page'], '/nivad-panel/access-denied.php'));
+p56Check('Unauthorized Admin access/capability pages redirect to the dedicated denial page', is_string($sources['access_page']) && is_string($sources['capability_page']) && str_contains($sources['access_page'], '/nivad-panel/access-denied.php') && str_contains($sources['capability_page'], '/nivad-panel/access-denied.php'));
 p56Check('Dedicated denial page is authenticated and uses only the Admin display name', is_string($sources['access_denied_page']) && str_contains($sources['access_denied_page'], "\$currentAdmin['first_name']") && str_contains($sources['access_denied_page'], "\$currentAdmin['last_name']") && !str_contains($sources['access_denied_page'], "\$currentAdmin['email']") && !str_contains($sources['access_denied_page'], "\$currentAdmin['username']"));
 p56Check('RBAC assignment list excludes inactive permissions', is_file($root . '/app/Repositories/AdminAccessRepository.php') && str_contains((string)file_get_contents($root . '/app/Repositories/AdminAccessRepository.php'), 'WHERE status = "active" AND deleted_at IS NULL'));
-p56Check('Access module is registered in Admin main.js', is_file($root . '/admin/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/admin/assets/js/main.js'), 'access-center.js'));
+p56Check('Access module is registered in Admin main.js', is_file($root . '/nivad-panel/assets/js/modules/access-center.js') && str_contains((string)file_get_contents($root . '/nivad-panel/assets/js/main.js'), 'access-center.js'));
 p56Check('Admin session monitoring spans active Admin accounts and excludes the current session', is_string($sources['access_controller']) && is_string($sources['access_js']) && str_contains($sources['access_controller'], 'activeForAllAdmins(') && str_contains($sources['access_controller'], 'revokeByIdForAnyAdmin(') && str_contains((string)file_get_contents($root . '/app/Repositories/AdminSessionRepository.php'), 'INNER JOIN admin_users') && str_contains((string)file_get_contents($root . '/app/Repositories/AdminSessionRepository.php'), 'current_token_hash') && str_contains($sources['access_js'], 'session.admin_name'));
 p56Check('Global search uses prepared queries over the supported entity tables', is_string($sources['capability_repository']) && str_contains($sources['capability_repository'], 'globalSearch(string $term)') && str_contains($sources['capability_repository'], 'FROM products') && str_contains($sources['capability_repository'], 'FROM orders') && str_contains($sources['capability_repository'], 'FROM users'));
 p56Check('Unhandled server exceptions are reported as Admin incidents', is_file($root . '/app/Core/ErrorHandler.php') && str_contains((string)file_get_contents($root . '/app/Core/ErrorHandler.php'), 'recordIncident('));
