@@ -13,11 +13,7 @@
   --admin-shadow-header: 0 1px 0 rgba(15, 23, 42, .06);
 }
 
-html[dir="rtl"],
-html[dir="rtl"] body {
-  direction: rtl;
-  text-align: start;
-}
+html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
 
 .admin-shared-sidebar,
 .admin-dashboard-sidebar {
@@ -31,7 +27,6 @@ html[dir="rtl"] body {
 
 .admin-shared-brand,
 .admin-dashboard-brand { color: var(--admin-sidebar-text) !important; }
-
 .admin-shared-brand small,
 .admin-dashboard-brand small,
 .admin-shared-submenu a,
@@ -76,7 +71,6 @@ html[dir="rtl"] body {
 .admin-dashboard-nav-submenu { border-inline-start-color: var(--admin-sidebar-border) !important; }
 .admin-shared-account,
 .admin-dashboard-account { border-top-color: var(--admin-sidebar-border) !important; }
-
 .admin-shared-logout,
 .admin-dashboard-logout {
   border-color: var(--admin-sidebar-border) !important;
@@ -98,8 +92,9 @@ html[dir="rtl"] body {
 .admin-dashboard-page .admin-shared-topbar::before {
   content: "داشبورد امنیتی نیواد";
   position: absolute;
-  inset-inline: 50% auto;
-  transform: translateX(50%);
+  inset-inline-start: 50%;
+  inset-inline-end: auto;
+  transform: translateX(-50%);
   z-index: 0;
   color: var(--admin-color-text);
   font-size: 18px;
@@ -132,7 +127,6 @@ html[dir="rtl"] body {
 }
 
 .admin-dashboard-page .admin-shared-topbar-brand { display: none; }
-
 .admin-dashboard-page .admin-global-search {
   order: 3;
   position: relative;
@@ -140,13 +134,11 @@ html[dir="rtl"] body {
   margin-inline-start: auto;
   min-width: min(460px, 38vw);
 }
-
 .admin-dashboard-page .admin-global-search input {
   min-height: 44px;
   border-color: var(--admin-color-border);
   background: var(--admin-color-surface);
 }
-
 .admin-dashboard-page .admin-command-open-button {
   min-height: 40px;
   border-color: var(--admin-color-border);
@@ -154,43 +146,35 @@ html[dir="rtl"] body {
 }
 
 .admin-dashboard-page .admin-dashboard-main { padding-block: 4px 28px; }
-
 .admin-dashboard-page .admin-dashboard-page-heading {
   align-items: flex-start;
   margin-bottom: 28px;
   padding-block: 8px 0;
 }
-
 .admin-dashboard-page .admin-dashboard-page-heading h1 {
   font-size: clamp(24px, 2vw, 30px);
   letter-spacing: -.02em;
 }
-
 .admin-dashboard-page .admin-dashboard-eyebrow {
   color: var(--admin-color-primary);
   letter-spacing: .01em;
 }
-
 .admin-dashboard-page .admin-dashboard-kpis {
   gap: 24px;
   margin-bottom: 28px;
 }
-
 .admin-dashboard-page .admin-dashboard-kpi {
   padding-block: 16px 14px;
   border-top: 2px solid var(--admin-color-primary);
 }
-
 .admin-dashboard-page .admin-dashboard-kpi-value {
   font-size: clamp(28px, 2.4vw, 36px);
 }
-
 .admin-dashboard-page .admin-dashboard-panel,
 .admin-dashboard-page .admin-dashboard-comparison-card {
   border-color: var(--admin-color-border);
   box-shadow: var(--admin-shadow-card);
 }
-
 .admin-dashboard-page .admin-dashboard-chart-bar { background: var(--admin-chart-hue); }
 .admin-dashboard-page .admin-dashboard-line-chart-line { stroke: var(--admin-chart-hue); }
 .admin-dashboard-page .admin-dashboard-line-chart-point { stroke: var(--admin-chart-hue); }
@@ -212,7 +196,6 @@ html[dir="rtl"] body {
   background: var(--admin-color-surface);
   box-shadow: var(--admin-shadow-card);
 }
-
 .admin-dashboard-settings-copy { display: grid; gap: 4px; }
 .admin-dashboard-settings-copy strong { font-size: var(--admin-font-size-md); }
 .admin-dashboard-settings-copy span {
@@ -220,13 +203,11 @@ html[dir="rtl"] body {
   font-size: var(--admin-font-size-sm);
   line-height: 1.7;
 }
-
 .admin-dashboard-settings-actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--admin-space-2);
 }
-
 .admin-dashboard-settings-actions a {
   display: inline-flex;
   align-items: center;
@@ -241,13 +222,11 @@ html[dir="rtl"] body {
   font-weight: 600;
   text-decoration: none;
 }
-
 .admin-dashboard-settings-actions a:first-child {
   border-color: var(--admin-color-primary);
   background: var(--admin-color-primary);
   color: var(--admin-color-on-primary);
 }
-
 .admin-dashboard-settings-actions a:hover { border-color: var(--admin-color-primary); }
 
 @media (max-width: 1009px) {
@@ -279,7 +258,7 @@ html[dir="rtl"] body {
     max-width: 46px;
     min-width: 46px;
   }
-  .admin-dashboard-page .admin-global-search-input,
+  .admin-dashboard-page #admin-global-search-input,
   .admin-dashboard-page .admin-global-search-label,
   .admin-dashboard-page .admin-global-search-results,
   .admin-dashboard-page .admin-global-search-shortcut { display: none; }
