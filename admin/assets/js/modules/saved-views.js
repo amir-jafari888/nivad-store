@@ -5,7 +5,7 @@ const adminSavedViews = () => {
   const moduleForPath = () => {
     const path = location.pathname.toLowerCase();
     if (path.includes("/products")) return "products";
-    if (path.includes("/categories")) return null;
+    if (path.includes("/categories")) return "categories";
     if (path.includes("/orders")) return "orders";
     if (path.includes("/users")) return "customers";
     if (path.includes("/inventory")) return "inventory";
