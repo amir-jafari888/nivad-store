@@ -238,7 +238,7 @@ const adminDataExperience = () => {
     clearButton.addEventListener("click", () => { selected.clear(); refreshSelection(); });
     if (bulkExecute && bulkStatus) {
       bulkExecute.addEventListener("click", async () => {
-        const ids = [...selected].map((row) => dataCell(row, 0)?.textContent.trim() ?? "").filter((id) => /^\\d+$/.test(id)).map(Number);
+        const ids = [...selected].map((row) => dataCell(row, 0)?.textContent.trim() ?? "").filter((id) => /^\d+$/.test(id)).map(Number);
         if (!ids.length) {
           status.textContent = "برای اجرای عملیات گروهی ابتدا ردیف‌های معتبر انتخاب کنید.";
           return;
