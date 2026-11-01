@@ -129,6 +129,7 @@ const adminCommandPalette = () => {
     }
   });
   document.addEventListener("admin:command-palette:open", open);
+  document.addEventListener("click", event => { if (event.target.closest("[data-admin-command-palette-open]")) open(); });
 };
 
 export default adminCommandPalette;
