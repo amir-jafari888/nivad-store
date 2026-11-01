@@ -35,9 +35,9 @@ $renderer = cmsFile('app/Services/CmsContentRenderer.php');
 $controller = cmsFile('app/Controllers/AdminContentController.php');
 $routes = cmsFile('routes/api.php');
 $permissionMap = cmsFile('app/Core/AdminRoutePermissionMap.php');
-$preview = cmsFile('admin/content/preview.php');
-$previewJs = cmsFile('admin/assets/js/modules/admin-content-preview.js');
-$editor = cmsFile('admin/assets/js/modules/admin-content-editor.js');
+$preview = cmsFile('nivad-panel/content/preview.php');
+$previewJs = cmsFile('nivad-panel/assets/js/modules/admin-content-preview.js');
+$editor = cmsFile('nivad-panel/assets/js/modules/admin-content-editor.js');
 $workflow = cmsFile('.github/workflows/admin-phase-5-cms.yml');
 
 cmsCheck('CMS migration creates page and section tables', str_contains($migration, 'CREATE TABLE IF NOT EXISTS admin_cms_pages') && str_contains($migration, 'CREATE TABLE IF NOT EXISTS admin_cms_sections'));
