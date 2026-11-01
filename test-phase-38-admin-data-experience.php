@@ -20,12 +20,12 @@ $exists = static function (string $relative) use ($root): bool {
     return is_file($root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative));
 };
 
-$modulePath = 'admin/assets/js/modules/data-experience.js';
+$modulePath = 'nivad-panel/assets/js/modules/data-experience.js';
 $module = $read($modulePath);
-$mainJs = $read('admin/assets/js/main.js');
-$mobileCss = $read('admin/assets/css/mobile/tables-mobile.css');
-$tabletCss = $read('admin/assets/css/tablet/tables-tablet.css');
-$desktopCss = $read('admin/assets/css/desktop/tables-desktop.css');
+$mainJs = $read('nivad-panel/assets/js/main.js');
+$mobileCss = $read('nivad-panel/assets/css/mobile/tables-mobile.css');
+$tabletCss = $read('nivad-panel/assets/css/tablet/tables-tablet.css');
+$desktopCss = $read('nivad-panel/assets/css/desktop/tables-desktop.css');
 $roadmap = $read('front-roadmap.txt');
 $authMiddleware = $read('app/Middleware/AdminAuthMiddleware.php');
 $csrfMiddleware = $read('app/Middleware/CsrfMiddleware.php');
@@ -34,9 +34,9 @@ $add('38.01 data experience module exists', $exists($modulePath));
 $add('38.02 main.js imports the data module', str_contains($mainJs, './modules/data-experience.js'));
 $add('38.03 main.js invokes the data module', str_contains($mainJs, 'adminDataExperience();'));
 $add('38.04 module uses a default export', str_contains($module, 'export default adminDataExperience;'));
-$add('38.05 mobile table stylesheet exists', $exists('admin/assets/css/mobile/tables-mobile.css'));
-$add('38.06 tablet table stylesheet exists', $exists('admin/assets/css/tablet/tables-tablet.css'));
-$add('38.07 desktop table stylesheet exists', $exists('admin/assets/css/desktop/tables-desktop.css'));
+$add('38.05 mobile table stylesheet exists', $exists('nivad-panel/assets/css/mobile/tables-mobile.css'));
+$add('38.06 tablet table stylesheet exists', $exists('nivad-panel/assets/css/tablet/tables-tablet.css'));
+$add('38.07 desktop table stylesheet exists', $exists('nivad-panel/assets/css/desktop/tables-desktop.css'));
 $add('38.08 mobile styles use Admin tokens', str_contains($mobileCss, 'var(--admin-space-'));
 $add('38.09 tablet styles use Admin tokens', str_contains($tabletCss, 'var(--admin-space-'));
 $add('38.10 desktop styles use Admin tokens', str_contains($desktopCss, 'var(--admin-space-'));
@@ -68,8 +68,8 @@ $add('38.35 existing Admin theme module remains registered', str_contains($mainJ
 $add('38.36 Admin authentication middleware exists', $exists('app/Middleware/AdminAuthMiddleware.php') && str_contains($authMiddleware, 'admin.access'));
 $add('38.37 CSRF middleware exists and verifies tokens', $exists('app/Middleware/CsrfMiddleware.php') && str_contains($csrfMiddleware, 'Csrf::verify'));
 $add('38.38 declared permission controls use a fail-closed hook', str_contains($module, 'enforceDeclaredPermissions') && str_contains($module, 'data-admin-permission'));
-$add('38.39 product list is connected to Admin CSS', str_contains($read('admin/products/index.php'), '/admin/assets/css/main.css'));
-$add('38.40 product list is connected to Admin JS', str_contains($read('admin/products/index.php'), '/admin/assets/js/main.js'));
+$add('38.39 product list is connected to Admin CSS', str_contains($read('nivad-panel/products/index.php'), '/nivad-panel/assets/css/main.css'));
+$add('38.40 product list is connected to Admin JS', str_contains($read('nivad-panel/products/index.php'), '/nivad-panel/assets/js/main.js'));
 
 $passed = 0;
 foreach ($checks as [$name, $ok]) {
