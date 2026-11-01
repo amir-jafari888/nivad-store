@@ -39,6 +39,8 @@ $errorJs = $read('admin/assets/js/modules/error-boundary.js');
 $dataJs = $read('admin/assets/js/modules/data-experience.js');
 $mainJs = $read('admin/assets/js/main.js');
 $adminShell = $read('admin/includes/auth.php');
+$productivityPage = $read('admin/productivity/index.php');
+$productivityJs = $read('admin/assets/js/modules/productivity-diagnostics.js');
 $migration = $read('database/migrations/20261101_admin_productivity_phase10.sql');
 $preflight = $read('database/verification/20261101_admin_productivity_phase10_preflight.sql');
 $verify = $read('database/verification/20261101_admin_productivity_phase10_verify.sql');
@@ -68,6 +70,8 @@ phase10Check('Product, category and coupon tables expose only their matching bul
 phase10Check('Saved view UI is connected to the saved views API', str_contains($savedJs, '/admin/capabilities/saved-views') && str_contains($savedJs, 'is_default'));
 phase10Check('Bulk UI posts selected row IDs to the server endpoint', str_contains($dataJs, '/admin/bulk/execute') && str_contains($dataJs, 'selected'));
 phase10Check('Command palette executes server-validated command IDs', str_contains($commandJs, '/admin/capabilities/commands/execute') && str_contains($commandJs, 'command_id'));
+phase10Check('Productivity diagnostics have a permission-protected Admin page and rendered UI', str_contains($productivityPage, 'admin.system_health.view') && str_contains($productivityPage, 'data-admin-productivity-diagnostics') && str_contains($productivityJs, '/admin/capabilities/productivity-diagnostics'));
+phase10Check('Shared Admin shell exposes the diagnostics navigation by permission', str_contains($adminShell, 'admin/productivity/index.php') && str_contains($adminShell, '$canViewProductivity'));
 
 echo '<hr>Checks: ' . $checks . ' | Failures: ' . $failures . '<br>';
 exit($failures === 0 ? 0 : 1);
