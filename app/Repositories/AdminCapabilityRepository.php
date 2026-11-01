@@ -885,7 +885,45 @@ final class AdminCapabilityRepository
             $results[] = ['type' => 'ticket', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => $row['detail']];
         }
 
-        return array_slice($results, 0, 20);
+        if ($this->tableExists('admin_cms_pages')) {
+            $pages = $this->db->prepare(
+                'SELECT id, title AS label, page_key AS detail
+                 FROM admin_cms_pages
+                 WHERE deleted_at IS NULL AND (title LIKE :title OR page_key LIKE :page_key)
+                 ORDER BY sort_order ASC, id ASC LIMIT 6'
+            );
+            $pages->execute(['title' => $pattern, 'page_key' => $pattern]);
+            foreach ($pages->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $results[] = ['type' => 'content', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => 'صفحه · ' . $row['detail']];
+            }
+        }
+
+        if ($this->tableExists('admin_cms_sections')) {
+            $sections = $this->db->prepare(
+                'SELECT s.id, s.title AS label, CONCAT(p.page_key, " · ", s.section_key) AS detail
+                 FROM admin_cms_sections s
+                 INNER JOIN admin_cms_pages p ON p.id = s.page_id
+                 WHERE s.deleted_at IS NULL AND p.deleted_at IS NULL
+                   AND (s.title LIKE :title OR s.section_key LIKE :section_key)
+                 ORDER BY s.updated_at DESC LIMIT 6'
+            );
+            $sections->execute(['title' => $pattern, 'section_key' => $pattern]);
+            foreach ($sections->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $results[] = ['type' => 'content', 'id' => (int)$row['id'], 'label' => $row['label'], 'detail' => 'سکشن · ' . $row['detail']];
+            }
+        }
+
+        return array_slice($results, 0, 30);
+    }
+
+    private function tableExists(string $table): bool
+    {
+        $stmt = $this->db->prepare(
+            'SELECT 1 FROM information_schema.TABLES
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table_name LIMIT 1'
+        );
+        $stmt->execute(['table_name' => $table]);
+        return $stmt->fetchColumn() !== false;
     }
 
     public function revisions(string $entityType, int $entityId, int $limit = 50): array
