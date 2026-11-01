@@ -1,0 +1,34 @@
+name: Admin Phase 8 Audit and Entity Activity
+
+on:
+  pull_request:
+    paths:
+      - 'app/Repositories/AuditLogRepository.php'
+      - 'app/Services/AuditLogService.php'
+      - 'app/Controllers/AdminAuditController.php'
+      - 'app/Core/AdminRoutePermissionMap.php'
+      - 'routes/api.php'
+      - 'admin/audit-logs/index.php'
+      - 'test-admin-phase-8-audit-entity-activity.php'
+      - '.github/workflows/admin-phase-8-audit-entity-activity.yml'
+
+jobs:
+  audit-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: PHP syntax
+        run: |
+          php -l app/Repositories/AuditLogRepository.php
+          php -l app/Services/AuditLogService.php
+          php -l app/Controllers/AdminAuditController.php
+          php -l app/Core/AdminRoutePermissionMap.php
+          php -l routes/api.php
+          php -l admin/audit-logs/index.php
+          php -l test-admin-phase-8-audit-entity-activity.php
+      - name: Phase 8 static contracts
+        run: php test-admin-phase-8-audit-entity-activity.php
