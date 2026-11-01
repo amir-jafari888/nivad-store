@@ -11,6 +11,9 @@ final class AdminRoutePermissionMap
 {
     private const EXACT = [
         'admin.audit.entities.timeline' => 'admin.audit.view',
+        'admin.security-events.index' => 'admin.security_events.view',
+        'admin.security-events.scan' => 'admin.security_events.manage',
+        'admin.security-events.review' => 'admin.security_events.manage',
         'admin.notifications.create' => 'admin.notifications.manage',
 
         'admin.reviews.index' => 'admin.reviews.manage',
