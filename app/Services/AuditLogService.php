@@ -73,7 +73,22 @@ final class AuditLogService
         if ($entityId === '' || strlen($entityId) > 100 || !preg_match('/^[a-zA-Z0-9_-]+$/', $entityId)) {
             throw new InvalidArgumentException('Entity ID is invalid.');
         }
-        return $this->repository->entityTimeline($entityType, $entityId, $limit, $beforeId);
+        $items = $this->repository->entityTimeline($entityType, $entityId, $limit, $beforeId);
+        foreach ($items as &$item) {
+            foreach (['old_values', 'new_values'] as $field) {
+                $decoded = is_string($item[$field] ?? null) ? json_decode($item[$field], true) : null;
+                if (is_array($decoded)) {
+                    $item[$field] = json_encode(
+                        SensitiveDataRedactor::redact($decoded),
+                        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+                    );
+                } else {
+                    $item[$field] = null;
+                }
+            }
+        }
+        unset($item);
+        return $items;
     }
 
     public function count(): int
