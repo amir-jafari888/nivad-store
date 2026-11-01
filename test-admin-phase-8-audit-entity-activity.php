@@ -27,6 +27,6 @@ phase8Check('Before/after snapshots are redacted before API output', str_contain
 phase8Check('Controller returns timeline and pagination cursor', str_contains($controller, 'entityTimeline') && str_contains($controller, 'next_before_id'));
 phase8Check('API route has authentication and permission middleware', str_contains($routes, 'AdminAuditController::class') && str_contains($routes, '$adminCapabilityRead'));
 phase8Check('Route maps to existing admin.audit.view permission', str_contains($map, "'admin.audit.entities.timeline' => 'admin.audit.view'"));
-phase8Check('Audit page enforces audit permission and exposes timeline UI', str_contains($page, "$adminAuth->can('admin.audit.view')") && str_contains($page, 'entity-timeline-form'));
+phase8Check('Audit page enforces audit permission and exposes timeline UI', str_contains($page, '$adminAuth->can(\'admin.audit.view\')') && str_contains($page, 'entity-timeline-form'));
 echo '<hr>Checks: ' . $checks . ' | Failures: ' . $failures . '<br>';
 exit($failures === 0 ? 0 : 1);
