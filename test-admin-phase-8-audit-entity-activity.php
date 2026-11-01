@@ -17,7 +17,7 @@ $service = file_get_contents($root . '/app/Services/AuditLogService.php');
 $controller = file_get_contents($root . '/app/Controllers/AdminAuditController.php');
 $routes = file_get_contents($root . '/routes/api.php');
 $map = file_get_contents($root . '/app/Core/AdminRoutePermissionMap.php');
-$page = file_get_contents($root . '/admin/audit-logs/index.php');
+$page = file_get_contents($root . '/nivad-panel/audit-logs/index.php');
 phase8Check('Entity timeline queries the existing audit_logs table', str_contains($repo, 'FROM audit_logs l') && str_contains($repo, 'l.entity_type = :entity_type') && str_contains($repo, 'l.entity_id = :entity_id'));
 phase8Check('Entity timeline joins the actual Admin actor', str_contains($repo, 'LEFT JOIN admin_users a'));
 phase8Check('Timeline pagination is bounded', str_contains($repo, 'min(100, $limit)') && str_contains($repo, 'before_id'));
