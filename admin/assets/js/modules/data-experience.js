@@ -81,6 +81,24 @@ const adminDataExperience = () => {
     const clearButton = make("button", "admin-data-button admin-data-button-secondary", "پاک‌کردن انتخاب");
     clearButton.type = "button";
     bulk.append(selectAllLabel, selectedCount, exportButton, clearButton);
+    let bulkStatus = null;
+    let bulkExecute = null;
+    if (table.dataset.adminBulkJob) {
+      bulkStatus = make("select", "admin-data-filter");
+      bulkStatus.setAttribute("aria-label", "وضعیت جدید برای عملیات گروهی");
+      const statuses = table.dataset.adminBulkJob === "coupons.status"
+        ? [["active", "فعال"], ["inactive", "غیرفعال"], ["expired", "منقضی"]]
+        : [["active", "فعال"], ["inactive", "غیرفعال"]];
+      statuses.forEach(([value, label]) => {
+        const option = make("option", "", label);
+        option.value = value;
+        bulkStatus.append(option);
+      });
+      bulkExecute = make("button", "admin-data-button", "اجرای تغییر گروهی");
+      bulkExecute.type = "button";
+      bulkExecute.dataset.adminPermission = table.dataset.adminBulkPermission || "admin.bulk_operations.execute";
+      bulk.append(bulkStatus, bulkExecute);
+    }
 
     const tableWrap = make("div", "admin-data-table-wrap");
     const status = make("p", "admin-data-status", "در حال آماده‌سازی جدول…");
@@ -218,6 +236,44 @@ const adminDataExperience = () => {
       refreshSelection();
     });
     clearButton.addEventListener("click", () => { selected.clear(); refreshSelection(); });
+    if (bulkExecute && bulkStatus) {
+      bulkExecute.addEventListener("click", async () => {
+        const ids = [...selected].map((row) => dataCell(row, 0)?.textContent.trim() ?? "").filter((id) => /^\\d+$/.test(id)).map(Number);
+        if (!ids.length) {
+          status.textContent = "برای اجرای عملیات گروهی ابتدا ردیف‌های معتبر انتخاب کنید.";
+          return;
+        }
+        if (!window.confirm("وضعیت " + ids.length + " رکورد تغییر کند؟ این عملیات در سرور اجرا می‌شود.")) return;
+        bulkExecute.disabled = true;
+        status.textContent = "در حال اجرای عملیات گروهی…";
+        try {
+          const apiBase = document.querySelector('meta[name="admin-api-url"]')?.content || "/api/index.php";
+          const endpoint = new URL(apiBase, location.href);
+          endpoint.searchParams.set("path", "/admin/bulk/execute");
+          const csrf = document.querySelector('meta[name="csrf-token"]')?.content || "";
+          const response = await fetch(endpoint, {
+            method: "POST", credentials: "same-origin",
+            headers: { "Content-Type": "application/json", Accept: "application/json", "X-CSRF-TOKEN": csrf },
+            body: JSON.stringify({
+              job_type: table.dataset.adminBulkJob,
+              payload: { ids, status: bulkStatus.value },
+              confirmed: true
+            })
+          });
+          const payload = await response.json();
+          if (!response.ok || payload.success !== true) throw new Error(payload.message || "عملیات گروهی ناموفق بود.");
+          status.textContent = "عملیات موفق: " + (payload.data?.updated_count ?? 0) + " رکورد به‌روزرسانی شد.";
+          selected.clear();
+          refreshSelection();
+          window.setTimeout(() => location.reload(), 700);
+        } catch (error) {
+          status.textContent = error.message || "خطا در اجرای عملیات گروهی.";
+        } finally {
+          bulkExecute.disabled = false;
+        }
+      });
+    }
+
     exportButton.addEventListener("click", () => {
       const rows = [...selected];
       if (!rows.length) {
