@@ -148,14 +148,14 @@ return static function (
     */
 
     $router->get(
-        '/nivad-panel/login',
+        '/nivad-panel/auth/login',
         [AdminController::class, 'loginPage'],
         [],
         'admin.login'
     );
 
     $router->post(
-        '/nivad-panel/login',
+        '/nivad-panel/auth/login',
         [AdminAuthController::class, 'login'],
         [
             CsrfMiddleware::class,
@@ -164,7 +164,7 @@ return static function (
     );
 
     $router->post(
-        '/admin/logout',
+        '/nivad-panel/logout',
         [AdminAuthController::class, 'logout'],
         [
             AdminAuthMiddleware::class,
@@ -180,7 +180,7 @@ return static function (
     */
 
     $router->get(
-        '/admin',
+        '/nivad-panel',
         [AdminController::class, 'dashboard'],
         [
             AdminAuthMiddleware::class,
