@@ -498,6 +498,7 @@ final class AdminCapabilityService
             'customer' => ['permission' => 'admin.users.index', 'href' => url('/admin/users')],
             'ticket' => ['permission' => 'admin.capabilities.tickets.index', 'href' => url('/admin/capabilities/index.php#admin-tickets-title')],
             'content' => ['permission' => 'admin.content.view', 'href' => url('/admin/content/index.php')],
+            'admin' => ['permission' => 'admin.admins.view', 'href' => url('/admin/access/index.php')],
         ];
         $adminId = (new AdminAuthService())->requireAdminId();
         $visible = [];
