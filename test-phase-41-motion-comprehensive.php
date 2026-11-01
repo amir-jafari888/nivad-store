@@ -50,9 +50,9 @@ $collect = static function (string $directory) use ($root): array {
 };
 
 $storeSettings = $read('assets/css/setting.css');
-$adminSettings = $read('admin/assets/css/setting.css');
+$adminSettings = $read('nivad-panel/assets/css/setting.css');
 $storeMain = $read('assets/css/main.css');
-$adminMain = $read('admin/assets/css/main.css');
+$adminMain = $read('nivad-panel/assets/css/main.css');
 $drawer = $read('assets/js/modules/cart-drawer.js');
 
 $report('41.01 Storefront motion source exists', $storeSettings !== null);
@@ -77,9 +77,9 @@ $report('41.10 Reduced-motion rules force auto scrolling',
     && preg_match('/prefers-reduced-motion:\s*reduce[\s\S]*?scroll-behavior:\s*auto\s*!?/', $adminSettings) === 1);
 
 $storeCss = $collect('assets/css');
-$adminCss = $collect('admin/assets/css');
+$adminCss = $collect('nivad-panel/assets/css');
 $storeJs = $collect('assets/js');
-$adminJs = $collect('admin/assets/js');
+$adminJs = $collect('nivad-panel/assets/js');
 $allCss = array_merge($storeCss, $adminCss);
 $allJs = array_merge($storeJs, $adminJs);
 
@@ -168,7 +168,7 @@ $report('41.20 Cart drawer has explicit close lifecycle', $drawer !== null
     && str_contains($drawer, 'setTimeout(finishClose, 350)'));
 $report('41.21 Cart drawer close lifecycle restores focus', $drawer !== null && str_contains($drawer, 'lastFocusedElement.focus()'));
 $report('41.22 Storefront/Admin asset boundaries remain distinct', $storeMain !== null && $adminMain !== null
-    && !str_contains($storeMain, 'admin/assets/css/')
+    && !str_contains($storeMain, 'nivad-panel/assets/css/')
     && !str_contains($adminMain, 'assets/css/setting.css'));
 
 foreach (array_merge($storeJs, $adminJs) as $file) {
