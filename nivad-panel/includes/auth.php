@@ -10,13 +10,13 @@ Bootstrap::boot();
 $adminAuth = new AdminAuthService();
 
 if (!$adminAuth->validateCurrentSession()) {
-    Response::redirect(url('/admin/auth/login.php'));
+    Response::redirect(url('/nivad-panel/auth/login'));
 }
 
 $currentAdmin = $adminAuth->currentSafe();
 
 if ($currentAdmin === null) {
-    Response::redirect(url('/admin/auth/login.php'));
+    Response::redirect(url('/nivad-panel/auth/login'));
 }
 
 $canUseGlobalSearch = $adminAuth->can('admin.capabilities.search.index');
