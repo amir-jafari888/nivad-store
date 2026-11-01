@@ -10,6 +10,7 @@ declare(strict_types=1);
 final class AdminRoutePermissionMap
 {
     private const EXACT = [
+        'admin.audit.entities.timeline' => 'admin.audit.view',
         'admin.notifications.create' => 'admin.notifications.manage',
 
         'admin.reviews.index' => 'admin.reviews.manage',
