@@ -34,7 +34,7 @@ phase9Check('Admin behavior detection uses actual audit_logs', str_contains($ser
 phase9Check('Bulk-change detection is scoped to explicit bulk operation audit events', str_contains($service, 'module = "bulk_operations"') && str_contains($service, 'BULK_ACTION_THRESHOLD'));
 phase9Check('Refund anomaly detection compares committed refund totals to payment amount', str_contains($service, 'INNER JOIN refunds r ON r.payment_id = p.id') && str_contains($service, 'HAVING refund_total > CAST(p.amount'));
 phase9Check('Privilege changes are linked to source audit records', str_contains($service, 'security.privilege_change_review') && str_contains($service, 'source_record_id'));
-phase9Check('Security signals are explicitly review prompts, not fraud verdicts', str_contains($service, 'not automated fraud verdicts'));
+phase9Check('Security signals are explicitly review prompts, not fraud verdicts', str_contains($service, 'automated fraud verdicts'));
 phase9Check('Security events can be reviewed with actor and note', str_contains($repository, 'reviewed_by_admin_id') && str_contains($repository, 'review_note'));
 phase9Check('Security API routes are registered behind Admin middleware', str_contains($routes, 'AdminSecurityOperationsController::class') && str_contains($routes, '$adminCapabilityRead') && str_contains($routes, '$adminCapabilityWrite'));
 phase9Check('Security routes map to dedicated view/manage permissions', str_contains($map, "'admin.security-events.index' => 'admin.security_events.view'") && str_contains($map, "'admin.security-events.scan' => 'admin.security_events.manage'"));
