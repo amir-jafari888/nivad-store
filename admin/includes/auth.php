@@ -31,6 +31,7 @@ $canUseCapabilities = $adminAuth->canAny([
     'admin.capabilities.revisions.index',
 ]);
 $canManageContent = $adminAuth->can('admin.content.manage');
+$canViewSecurityEvents = $adminAuth->can('admin.security_events.view');
 $canManageAccess = $adminAuth->canAny([
     'admin.access.admins.index',
     'admin.access.roles.index',
@@ -42,7 +43,7 @@ $canManageAccess = $adminAuth->canAny([
 /*
  * Shared authenticated-admin shell for dashboard and internal admin pages.
  */
-ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch, $canUseCapabilities, $canManageAccess, $canManageContent): string {
+ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch, $canUseCapabilities, $canManageAccess, $canManageContent, $canViewSecurityEvents): string {
     if (stripos($html, '</head>') !== false) {
         $assets = '';
 
@@ -136,6 +137,9 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
     $accessLink = $canManageAccess
         ? '<a class="admin-shared-nav-link" href="' . e(url('/admin/access/index.php')) . '">مدیریت مدیران و دسترسی‌ها</a>'
         : '';
+    $securityLink = $canViewSecurityEvents
+        ? '<a class="admin-shared-nav-link" href="' . e(url('/admin/security-events/index.php')) . '">عملیات امنیتی</a>'
+        : '';
 
     $nav = '
     <aside id="admin-shared-sidebar" class="admin-shared-sidebar" data-admin-sidebar aria-label="ناوبری پنل مدیریت">
@@ -212,6 +216,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
             ' . $contentLink . '
             ' . $capabilityLink . '
             ' . $accessLink . '
+            ' . $securityLink . '
             <a class="admin-shared-nav-link" href="' . e(url('/admin/settings')) . '">تنظیمات رابط کاربری</a>
         </nav>
         <div class="admin-shared-account">
