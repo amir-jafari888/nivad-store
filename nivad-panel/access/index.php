@@ -15,7 +15,7 @@ $accessPageReadPermissions = [
 ];
 
 if (!$adminAuth->canAll($accessPageReadPermissions)) {
-    Response::redirect(url('/admin/access-denied.php'));
+    Response::redirect(url('/nivad-panel/access-denied.php'));
 }
 
 ?><!doctype html>
@@ -29,7 +29,7 @@ if (!$adminAuth->canAll($accessPageReadPermissions)) {
 <main class="admin-access-main" data-admin-access data-api-url="<?= e(url('/api/index.php')) ?>">
     <header class="admin-access-header">
         <div><p>ADMIN SECURITY / RBAC</p><h1>مدیریت مدیران و دسترسی‌ها</h1><p>ساخت مدیر، تعریف نقش و تخصیص مجوزهای موجود. نقش Super Admin از تغییرات مخرب محافظت شده است.</p></div>
-        <a href="<?= e(url('/admin/operations')) ?>">نقشه قابلیت‌ها</a>
+        <a href="<?= e(url('/nivad-panel/operations')) ?>">نقشه قابلیت‌ها</a>
     </header>
     <p class="admin-access-feedback" data-access-feedback role="status" aria-live="polite">در حال بارگذاری اطلاعات…</p>
 
