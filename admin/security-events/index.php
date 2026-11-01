@@ -11,6 +11,7 @@ if (!$adminAuth->can('admin.security_events.view')) {
 }
 
 $items = (new AdminSecurityOperationsService())->recent(100);
+$csrfToken = Csrf::token();
 function securityEventEscape($value): string
 {
     return htmlspecialchars((string)($value ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -21,15 +22,15 @@ function securityEventEscape($value): string
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="csrf-token" content="<?= securityEventEscape($csrfToken) ?>">
     <title>عملیات امنیتی | نیواد</title>
 </head>
 <body>
 <main>
     <h1>عملیات امنیتی و سیگنال‌های مشکوک</h1>
     <p>این موارد هشدارهای نیازمند بررسی انسانی هستند و به‌تنهایی اثبات تقلب یا تخلف نیستند.</p>
-    <form method="post" action="<?= securityEventEscape(url('/api/index.php?path=/admin/security-events/scan')) ?>">
-        <button type="submit">اجرای اسکن امنیتی</button>
-    </form>
+    <button type="button" id="run-security-scan">اجرای اسکن امنیتی</button>
+    <p id="scan-result" role="status" aria-live="polite"></p>
     <table>
         <thead><tr><th>شدت</th><th>نوع</th><th>موضوع</th><th>شرح</th><th>تعداد</th><th>آخرین مشاهده</th><th>وضعیت</th></tr></thead>
         <tbody>
@@ -47,5 +48,27 @@ function securityEventEscape($value): string
         </tbody>
     </table>
 </main>
+<script>
+(() => {
+    const button = document.getElementById("run-security-scan");
+    const result = document.getElementById("scan-result");
+    button?.addEventListener("click", async () => {
+        button.disabled = true;
+        result.textContent = "در حال اسکن...";
+        try {
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.content || "";
+            const response = await fetch("<?= securityEventEscape(url('/api/index.php?path=/admin/security-events/scan')) ?>", {
+                method: "POST", credentials: "same-origin",
+                headers: { "Accept": "application/json", "X-CSRF-TOKEN": csrf }
+            });
+            const payload = await response.json();
+            if (!response.ok || payload.success !== true) throw new Error(payload.message || "اسکن انجام نشد.");
+            result.textContent = "تعداد سیگنال‌های ثبت‌شده: " + (payload.data?.total ?? 0) + ". صفحه را برای مشاهده به‌روزرسانی کنید.";
+        } catch (error) { result.textContent = error.message || "خطا در اسکن امنیتی."; }
+        finally { button.disabled = false; }
+    });
+})();
+</script>
+
 </body>
 </html>
