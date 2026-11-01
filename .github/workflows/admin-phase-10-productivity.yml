@@ -44,13 +44,14 @@ jobs:
           php -l app/Core/AdminRoutePermissionMap.php
           php -l routes/api.php
           php -l admin/includes/auth.php
+          php -l admin/productivity/index.php
           php -l test-admin-phase-10-productivity.php
           php -l test-admin-phase-7-support-center.php
           php -l test-admin-phase-8-audit-entity-activity.php
           php -l test-admin-phase-9-security-operations.php
       - name: JavaScript module syntax
         run: |
-          for file in admin/assets/js/main.js admin/assets/js/modules/global-search.js admin/assets/js/modules/data-experience.js admin/assets/js/modules/command-palette.js admin/assets/js/modules/saved-views.js admin/assets/js/modules/error-boundary.js; do
+          for file in admin/assets/js/main.js admin/assets/js/modules/global-search.js admin/assets/js/modules/data-experience.js admin/assets/js/modules/command-palette.js admin/assets/js/modules/saved-views.js admin/assets/js/modules/error-boundary.js admin/assets/js/modules/productivity-diagnostics.js; do
             node --input-type=module --check < "$file"
           done
       - name: Phase 7-9 regression contracts
