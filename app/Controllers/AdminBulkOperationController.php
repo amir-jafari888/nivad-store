@@ -25,7 +25,7 @@ final class AdminBulkOperationController extends Controller
 
         $permission = match ($jobType) {
             'catalog.products.status' => 'admin.products.manage',
-            'catalog.categories.status' => 'admin.catalog.manage',
+            'catalog.categories.status' => 'admin.products.manage',
             'coupons.status' => 'admin.orders.manage',
             'inventory.adjust' => 'admin.inventory.manage',
             'orders.status' => 'admin.orders.manage',
