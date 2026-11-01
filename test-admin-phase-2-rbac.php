@@ -44,12 +44,12 @@ $accessRepository = $read('app/Repositories/AdminAccessRepository.php');
 $accessService = $read('app/Services/AdminAccessService.php');
 $accessController = $read('app/Controllers/AdminAccessController.php');
 $reauth = $read('app/Services/AdminReauthenticationService.php');
-$accessJs = $read('admin/assets/js/modules/access-center.js');
+$accessJs = $read('nivad-panel/assets/js/modules/access-center.js');
 $sessionService = $read('app/Services/AdminSessionService.php');
 $sessionRepository = $read('app/Repositories/AdminSessionRepository.php');
 $authService = $read('app/Services/AdminAuthService.php');
 $authAudit = $read('app/Services/AdminAuthenticationAuditService.php');
-$deniedPage = $read('admin/access-denied.php');
+$deniedPage = $read('nivad-panel/access-denied.php');
 $catalog = $read('app/Core/AdminPermissionCatalog.php');
 $seed = $read('database/seeds/20261029_admin_permission_catalog.sql');
 
