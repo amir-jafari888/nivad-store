@@ -43,7 +43,7 @@ $discovery = p6Read('assets/js/modules/discovery.js');
 $checkout = p6Read('assets/js/modules/checkout.js');
 $comparison = p6Read('assets/js/modules/comparison.js');
 $main = p6Read('assets/js/main.js');
-$adminUi = p6Read('admin/assets/js/modules/capability-center.js');
+$adminUi = p6Read('nivad-panel/assets/js/modules/capability-center.js');
 
 $checks = [
     // Batch 01 — Unique Viewers
