@@ -23,7 +23,7 @@ final class AdminController extends Controller
         $overview = $overviewService->overview($permissions);
 
         // Register the same authenticated shell used by direct Admin pages.
-        require_once dirname(__DIR__, 2) . '/admin/includes/auth.php';
+        require_once dirname(__DIR__, 2) . '/nivad-panel/includes/auth.php';
 
         $this->view('admin.dashboard', [
             'admin' => $admin,
