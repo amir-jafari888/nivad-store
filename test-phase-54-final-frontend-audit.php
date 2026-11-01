@@ -71,7 +71,7 @@ $checks = [
 ['54.03','Customer/admin page source inventory is non-empty', count($pages) > 0],
 ['54.04','Shared partial inventory is non-empty', count($partials) > 0],
 ['54.05','Page inventory covers expected top-level domains', is_dir(p54_path('pages/store')) && is_dir(p54_path('pages/shop')) && is_dir(p54_path('pages/account'))],
-['54.06','Admin page source is present', is_dir(p54_path('pages/admin')) || p54_exists('admin/index.php')],
+['54.06','Admin page source is present', is_dir(p54_path('pages/admin')) || p54_exists('nivad-panel/index.php')],
 ['54.07','Homepage references shared partials', p54_has_any($home, ['partials/', 'include', 'require'])],
 ['54.08','Page source inventory is available for dependency audit', count($pages) > 0 && count($partials) > 0],
 ['54.09','Navigation and route coverage can be statically inventoried', count($pages) > 0 && $mainJs !== ''],
