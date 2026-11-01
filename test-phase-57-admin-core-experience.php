@@ -40,17 +40,17 @@ $capabilityRepository = phase57Read('app/Repositories/AdminCapabilityRepository.
 $capabilityService = phase57Read('app/Services/AdminCapabilityService.php');
 $capabilityController = phase57Read('app/Controllers/AdminCapabilityController.php');
 $controller = phase57Read('app/Controllers/AdminController.php');
-$directEntry = phase57Read('admin/index.php');
+$directEntry = phase57Read('nivad-panel/index.php');
 $view = phase57Read('pages/admin/dashboard.php');
-$shell = phase57Read('admin/includes/auth.php');
-$profile = phase57Read('admin/profile/index.php');
-$settings = phase57Read('admin/settings/index.php');
-$preferences = phase57Read('admin/assets/js/modules/admin-preferences.js');
-$mainJs = phase57Read('admin/assets/js/main.js');
-$tokens = phase57Read('admin/assets/css/setting.css');
-$desktop = phase57Read('admin/assets/css/desktop/dashboard-desktop.css');
-$tablet = phase57Read('admin/assets/css/tablet/dashboard-tablet.css');
-$mobile = phase57Read('admin/assets/css/mobile/dashboard-mobile.css');
+$shell = phase57Read('nivad-panel/includes/auth.php');
+$profile = phase57Read('nivad-panel/profile/index.php');
+$settings = phase57Read('nivad-panel/settings/index.php');
+$preferences = phase57Read('nivad-panel/assets/js/modules/admin-preferences.js');
+$mainJs = phase57Read('nivad-panel/assets/js/main.js');
+$tokens = phase57Read('nivad-panel/assets/css/setting.css');
+$desktop = phase57Read('nivad-panel/assets/css/desktop/dashboard-desktop.css');
+$tablet = phase57Read('nivad-panel/assets/css/tablet/dashboard-tablet.css');
+$mobile = phase57Read('nivad-panel/assets/css/mobile/dashboard-mobile.css');
 $plan = phase57Read('phase-57-admin-core-experience-plan.md');
 
 phase57Check(
@@ -95,9 +95,9 @@ phase57Check(
 );
 phase57Check(
     str_contains($shell, 'admin-shared-sidebar')
-        && str_contains($shell, 'admin/profile/index.php')
+        && str_contains($shell, 'nivad-panel/profile/index.php')
         && !str_contains($shell, 'stripos($html, \'admin-dashboard-page\') !== false')
-        && str_contains($controller, '/admin/includes/auth.php')
+        && str_contains($controller, '/nivad-panel/includes/auth.php')
         && str_contains($view, 'admin-dashboard-main')
         && !str_contains($view, 'admin-dashboard-sidebar'),
     '57.07 Dashboard uses the shared authenticated shell without duplicate sidebar'
