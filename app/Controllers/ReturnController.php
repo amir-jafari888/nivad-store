@@ -431,6 +431,7 @@ final class ReturnController extends Controller
         try {
             $service =
                 new RefundService();
+            $beforeRefund = $service->findById($refundId);
 
             $refund =
                 $service->changeStatus(
@@ -440,7 +441,7 @@ final class ReturnController extends Controller
 
             $adminId = AdminAuth::id();
             if ($adminId !== null) {
-                AdminAuditTrail::record($adminId, 'refund_status_change', 'refunds', 'refund', $refund->id, 'Admin changed refund status after password re-authentication.', null, ['order_id' => $refund->orderId, 'status' => $refund->status]);
+                AdminAuditTrail::record($adminId, 'refund_status_change', 'refunds', 'refund', $refund->id, 'Admin changed refund status after password re-authentication.', ['status' => $beforeRefund?->status], ['order_id' => $refund->orderId, 'status' => $refund->status]);
             }
             $this->success(
                 $refund,
