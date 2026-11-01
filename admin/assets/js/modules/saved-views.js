@@ -93,7 +93,7 @@ const adminSavedViews = () => {
         const response = await fetch(endpoint("/admin/capabilities/saved-views"), {
           method: "POST", credentials: "same-origin",
           headers: { "Content-Type": "application/json", Accept: "application/json", "X-CSRF-TOKEN": csrf() },
-          body: JSON.stringify({ module, name: name.trim(), filters, sort: null, is_default: false })
+          body: JSON.stringify({ module, name: name.trim(), filters, sort: null, is_default: window.confirm("این نما به‌صورت پیش‌فرض هنگام ورود به صفحه اعمال شود؟") })
         });
         const payload = await response.json();
         if (!response.ok || payload.success !== true) throw new Error(payload.message || "ذخیره نما ناموفق بود.");
