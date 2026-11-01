@@ -23,4 +23,4 @@ if ($adminAuth->validateCurrentSession()) {
     AdminAuth::logout();
 }
 
-Response::redirect(url('/admin/auth/login.php'));
+Response::redirect(url('/nivad-panel/auth/login'));
