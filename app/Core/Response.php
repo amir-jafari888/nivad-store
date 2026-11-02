@@ -154,11 +154,8 @@ final class Response
             );
         }
 
-        $config = require __DIR__ .
-            '/../../config/app.php';
-
         $base = parse_url(
-            $config['url'] ?? ''
+            app_origin()
         );
 
         if (
