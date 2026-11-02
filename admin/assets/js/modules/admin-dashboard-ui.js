@@ -6,7 +6,7 @@ export default function adminDashboardUi() {
   if (profile && profile.tagName !== "A") {
     const link = document.createElement("a");
     link.className = `${profile.className} admin-profile-link`;
-    link.href = "/admin/profile/index.php";
+    link.href = "/nivad-panel/profile/index.php";
     link.setAttribute("aria-label", "مشاهده و تنظیم پروفایل مدیر");
     while (profile.firstChild) link.appendChild(profile.firstChild);
     profile.replaceWith(link);
@@ -27,8 +27,8 @@ export default function adminDashboardUi() {
       <span>تراکم، اندازه متن و رفتار ناوبری از تنظیمات پنل کنترل می‌شوند؛ داده‌های عملیاتی داشبورد دست‌کاری نمی‌شوند.</span>
     </div>
     <div class="admin-dashboard-settings-actions">
-      <a href="/admin/settings">تنظیمات پنل</a>
-      <a href="/admin/profile/index.php">پروفایل مدیر</a>
+      <a href="/nivad-panel/settings">تنظیمات پنل</a>
+      <a href="/nivad-panel/profile/index.php">پروفایل مدیر</a>
     </div>
   `;
   heading.insertAdjacentElement("afterend", strip);
