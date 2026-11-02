@@ -1,7 +1,18 @@
 RewriteEngine On
 
-# Admin logout is a direct PHP endpoint because /admin is a physical directory.
-RewriteRule ^admin/logout/?$ admin/logout.php [L,QSA]
+# Admin public URL space
+# Physical implementation remains under /admin; the public canonical prefix is /nivad-panel.
+# Legacy /admin requests are redirected only when they came directly from the browser.
+RewriteCond %{THE_REQUEST} \s/+admin/logout(?:\.php)?(?:[/?\s]) [NC]
+RewriteRule ^admin/logout(?:\.php)?/?$ /nivad-panel/logout [R=302,L,NE]
+
+RewriteCond %{THE_REQUEST} \s/+admin(?:[/?\s]) [NC]
+RewriteRule ^admin(?:/(.*))?/?$ /nivad-panel/$1 [R=302,L,NE]
+
+# Canonical admin routes -> physical /admin implementation.
+RewriteRule ^nivad-panel/?$ admin/index.php [L,QSA]
+RewriteRule ^nivad-panel/logout/?$ admin/logout.php [L,QSA]
+RewriteRule ^nivad-panel/(.+)$ admin/$1 [L,QSA]
 
 RewriteRule ^sitemap\.xml$ api/index.php?path=/seo/sitemap [L,QSA]
 RewriteRule ^robots\.txt$ api/index.php?path=/seo/robots [L,QSA]
