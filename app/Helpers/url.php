@@ -154,6 +154,12 @@ function url(string $path = ''): string
         return $path;
     }
 
+    // The admin directory is a physical implementation detail. Public admin
+    // URLs use /nivad-panel while Apache internally rewrites them to /admin.
+    if ($path === '/admin' || str_starts_with($path, '/admin/')) {
+        $path = '/nivad-panel' . substr($path, strlen('/admin'));
+    }
+
     $baseUrl = rtrim(
         app_origin() . app_base_path(),
         '/'
