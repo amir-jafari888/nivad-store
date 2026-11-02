@@ -66,8 +66,8 @@ final class AdminHttpErrorResponder
         $safeMessage = htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $requestId = htmlspecialchars(AdminRequestContext::id(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $backLink = $statusCode === 401
-            ? '/admin/auth/login.php'
-            : '/admin';
+            ? '/nivad-panel/auth/login.php'
+            : '/nivad-panel';
 
         Response::status($statusCode);
         Response::header('Content-Type', 'text/html; charset=utf-8');

@@ -8,7 +8,7 @@ require_once __DIR__ . '/../includes/auth.php';
 
 $adminAuth = new AdminAuthService();
 if (!$adminAuth->canAny(['admin.notifications.manage'])) {
-    header('Location: /admin/access-denied.php');
+    header('Location: /nivad-panel/access-denied.php');
     exit;
 }
 $csrfToken = Csrf::token();
@@ -29,7 +29,7 @@ textarea{min-height:110px}button{background:#243b64;color:#fff;cursor:pointer}.m
 </head>
 <body>
 <main>
-<p><a href="/admin/notifications/">بازگشت به مرکز اعلان‌ها</a></p>
+<p><a href="/nivad-panel/notifications/">بازگشت به مرکز اعلان‌ها</a></p>
 <h1>ارسال اعلان به مشتری</h1>
 <div id="message" class="message" role="status" aria-live="polite">اطلاعات اعلان را وارد کنید.</div>
 <form id="form" class="card">
