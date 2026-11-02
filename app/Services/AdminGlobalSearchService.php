@@ -152,7 +152,12 @@ final class AdminGlobalSearchService
 
         $path = $parts['path'] ?? '';
         return is_string($path)
-            && ($path === '/admin' || str_starts_with($path, '/admin/'))
+            && (
+                $path === '/nivad-panel' ||
+                str_starts_with($path, '/nivad-panel/') ||
+                $path === '/admin' ||
+                str_starts_with($path, '/admin/')
+            )
             && !str_contains($path, '..');
     }
 }
