@@ -23,7 +23,7 @@
 /* Admin profile editing — mobile */
 .admin-profile-page .admin-profile-main{display:grid;gap:var(--admin-space-4)}
 .admin-profile-page .admin-profile-feedback{min-height:1.5em;padding-inline:var(--admin-space-1);font-size:13px;color:var(--admin-color-success)}
-.admin-profile-page .admin-profile-feedback[data-state="error"]{color:var(--admin-color-danger)}
+.admin-profile-page .admin-profile-feedback[data-state="error"]{color:#b42318}
 .admin-profile-page .admin-profile-form{display:grid;gap:var(--admin-space-3);min-width:0}
 .admin-profile-page .admin-profile-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--admin-space-3);min-width:0}
 .admin-profile-page .admin-profile-field{display:grid;gap:var(--admin-space-2);min-width:0}
