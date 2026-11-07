@@ -22,6 +22,8 @@ const adminPasswordVisibility = () => {
         "aria-label",
         visible ? "مخفی‌کردن رمز عبور" : "نمایش رمز عبور",
       );
+      button.setAttribute("aria-pressed", visible ? "true" : "false");
+      button.dataset.passwordVisibility = visible ? "visible" : "hidden";
       visibleIcon.hidden = !visible;
       hiddenIcon.hidden = visible;
     };
@@ -31,7 +33,7 @@ const adminPasswordVisibility = () => {
       setVisibility(input.type === "password");
     });
 
-    setVisibility(false);
+    setVisibility(input.type === "text");
   });
 };
 
