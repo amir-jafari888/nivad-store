@@ -100,6 +100,7 @@ jobs:
           php -l admin/includes/auth.php
           php -l pages/admin/dashboard.php
           php -l admin/profile/index.php
+          php -l admin/products/index.php
           php -l test-admin-ui-shell-contracts.php
 
       - name: Run authentication and authorization regression
@@ -147,6 +148,7 @@ jobs:
         run: |
           php -l admin/includes/auth.php
           php -l pages/admin/dashboard.php
+          php -l admin/products/index.php
           php -l test-admin-ui-shell-contracts.php
 
       - name: Lint admin profile JavaScript module
