@@ -76,6 +76,16 @@ final class AdminProfileController extends Controller
                 $this->error('ذخیره اطلاعات پروفایل انجام نشد.', 409);
             }
 
+            $revokedSessions = 0;
+            if ($newPassword !== '') {
+                Session::start();
+                $currentTokenHash = hash('sha256', Session::id());
+                $revokedSessions = (new AdminSessionService())->revokeOtherSessionsForAdmin(
+                    $adminId,
+                    $currentTokenHash
+                );
+            }
+
             AdminAuditTrail::record(
                 $adminId,
                 $newPassword !== '' ? 'profile_and_password_update' : 'profile_update',
@@ -90,10 +100,14 @@ final class AdminProfileController extends Controller
                     'name_changed' => $firstName !== (string)($current['first_name'] ?? '')
                         || $lastName !== (string)($current['last_name'] ?? ''),
                     'password_changed' => $newPassword !== '',
+                    'other_sessions_revoked' => $revokedSessions,
                 ]
             );
 
-            $this->success(['updated' => true], 'اطلاعات پروفایل با موفقیت ذخیره شد.');
+            $message = $newPassword !== ''
+                ? 'رمز عبور تغییر کرد و نشست‌های دیگر این حساب لغو شدند.'
+                : 'اطلاعات پروفایل با موفقیت ذخیره شد.';
+            $this->success(['updated' => true, 'other_sessions_revoked' => $revokedSessions], $message);
         } catch (PDOException $exception) {
             $this->error('این ایمیل یا نام کاربری قبلاً برای حساب دیگری ثبت شده است.', 409);
         } catch (InvalidArgumentException $exception) {
