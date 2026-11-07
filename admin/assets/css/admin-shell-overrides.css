@@ -187,6 +187,7 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
 }
 .admin-shared-topbar-profile .admin-shared-account-name,
 .admin-dashboard-page .admin-shared-topbar-profile .admin-shared-account-name {
+  display: flex;
   direction: rtl;
   flex-direction: row;
   text-align: right;
