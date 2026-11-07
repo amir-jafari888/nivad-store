@@ -73,6 +73,11 @@ final class AdminSessionService
             );
     }
 
+    public function revokeOtherSessionsForAdmin(int $adminUserId, string $currentTokenHash): int
+    {
+        return $this->sessions->revokeOtherSessionsForAdmin($adminUserId, $currentTokenHash);
+    }
+
     public function touch(
         string $sessionTokenHash
     ): bool {
