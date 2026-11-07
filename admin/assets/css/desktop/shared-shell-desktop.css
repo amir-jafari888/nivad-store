@@ -878,3 +878,125 @@
   outline-offset: 2px;
   box-shadow: var(--admin-focus-ring);
 }
+
+/* Unified admin header — desktop */
+.admin-shared-topbar {
+  min-height: 68px;
+  gap: var(--admin-space-4);
+  padding: var(--admin-space-3) var(--admin-space-6);
+  background: var(--admin-color-surface);
+  border-bottom: 1px solid var(--admin-color-border);
+  box-shadow: var(--admin-shadow-card);
+}
+.admin-shared-topbar-brand {
+  flex: 0 0 auto;
+  gap: var(--admin-space-2);
+  white-space: nowrap;
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-font-size-md);
+  line-height: 1;
+}
+.admin-shared-topbar-brand span {
+  white-space: nowrap;
+  font-size: var(--admin-font-size-sm);
+}
+.admin-shared-topbar .admin-global-search {
+  display: flex;
+  flex: 1 1 360px;
+  align-items: center;
+  gap: var(--admin-space-2);
+  width: min(100%, 560px);
+  min-width: 220px;
+  margin-inline: auto;
+}
+.admin-shared-topbar .admin-global-search-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.admin-shared-topbar .admin-global-search input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--admin-control-height);
+  padding: var(--admin-space-2) var(--admin-space-3);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text);
+  font: inherit;
+  font-size: var(--admin-font-size-sm);
+  transition: border-color var(--admin-transition-fast), background-color var(--admin-transition-fast), box-shadow var(--admin-transition-fast);
+}
+.admin-shared-topbar .admin-global-search input:focus {
+  border-color: var(--admin-color-primary);
+  background: var(--admin-color-surface);
+  outline: 0;
+  box-shadow: var(--admin-focus-ring);
+}
+.admin-shared-topbar .admin-global-search-shortcut {
+  flex: 0 0 auto;
+  color: var(--admin-color-text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.admin-shared-topbar .admin-command-open-button {
+  flex: 0 0 auto;
+  min-height: var(--admin-control-height);
+  padding-inline: var(--admin-space-3);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+  color: var(--admin-color-text);
+  font: inherit;
+  font-size: var(--admin-font-size-sm);
+  white-space: nowrap;
+  transition: border-color var(--admin-transition-fast), background-color var(--admin-transition-fast), color var(--admin-transition-fast);
+}
+.admin-shared-topbar .admin-command-open-button:hover {
+  border-color: var(--admin-color-primary);
+  background: var(--admin-color-primary-soft);
+  color: var(--admin-color-primary);
+}
+.admin-shared-topbar-profile {
+  flex: 0 0 auto;
+  min-height: 48px;
+  gap: var(--admin-space-2);
+  padding: var(--admin-space-1) var(--admin-space-2);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+}
+.admin-shared-topbar-profile .admin-shared-avatar {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+}
+.admin-shared-topbar-profile .admin-shared-account-name {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--admin-space-1);
+  max-width: 200px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--admin-color-text);
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-font-size-sm);
+  line-height: 1.4;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.admin-shared-topbar-profile .admin-shared-account-name span {
+  display: inline;
+  min-width: 0;
+  white-space: nowrap;
+}
+.admin-shared-topbar-profile .admin-shared-first-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
