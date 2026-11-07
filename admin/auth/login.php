@@ -165,7 +165,8 @@ if (Request::isPost()) {
                             data-password-toggle
                             aria-label="نمایش رمز عبور"
                             aria-pressed="false"
-                            aria-controls="password">
+                            aria-controls="password"
+                            data-password-visibility="hidden">
                             <svg
                                 data-password-icon="visible"
                                 viewBox="0 0 24 24"
@@ -177,8 +178,7 @@ if (Request::isPost()) {
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 aria-hidden="true"
-                                focusable="false"
-                                hidden>
+                                focusable="false">
                                 <path d="M2.25 12s3.5-6 9.75-6 9.75 6 9.75 6-3.5 6-9.75 6-9.75-6-9.75-6Z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
