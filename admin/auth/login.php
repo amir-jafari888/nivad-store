@@ -86,6 +86,8 @@ if (Request::isPost()) {
 
 <body class="admin-auth-page">
 
+    <a class="admin-skip-link" href="#main-content">رفتن به محتوای اصلی</a>
+
     <main id="main-content" class="admin-auth-main" tabindex="-1">
         <div class="admin-auth-brand" aria-label="نیواد">
             <img
