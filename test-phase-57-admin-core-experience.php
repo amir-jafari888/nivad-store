@@ -106,6 +106,7 @@ $profileController = phase57Read('app/Controllers/AdminProfileController.php');
 $profileRepository = phase57Read('app/Repositories/AdminRepository.php');
 $apiRoutes = phase57Read('routes/api.php');
 $profileJs = phase57Read('admin/assets/js/modules/admin-profile.js');
+$sessionRepository = phase57Read('app/Repositories/AdminSessionRepository.php');
 phase57Check(
     str_contains($profile, "['first_name']")
         && str_contains($profile, "['last_name']")
@@ -121,7 +122,9 @@ phase57Check(
         && str_contains($profileRepository, 'updateOwnProfile')
         && str_contains($profileRepository, 'roleNamesForAdmin')
         && str_contains($apiRoutes, "'admin.profile.update'")
-        && str_contains($profileJs, 'X-CSRF-TOKEN'),
+        && str_contains($profileJs, 'X-CSRF-TOKEN')
+        && str_contains($profileController, 'revokeOtherSessionsForAdmin')
+        && str_contains($sessionRepository, 'revokeOtherSessionsForAdmin'),
     '57.08 Profile edits identity and password securely while displaying roles read-only'
 );
 phase57Check(
