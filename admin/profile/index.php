@@ -33,7 +33,7 @@ $profileInitial = mb_substr($displayName, 0, 1, 'UTF-8');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>پروفایل مدیر | نیواد</title>
-    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>?v=20261107-profile-edit-v1">
+    <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>?v=20261107-profile-polish-v1">
     <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </head>
 <body class="admin-settings-page admin-profile-page">
