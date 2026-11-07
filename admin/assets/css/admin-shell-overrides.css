@@ -242,10 +242,15 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
   --dashboard-card-padding: var(--admin-space-5);
   --dashboard-muted-line: 1px solid var(--admin-color-border);
 }
+/* Keep dashboard content in the shared shell's content column; sidebar is fixed at 264px on desktop. */
 .admin-dashboard-page .admin-dashboard-main {
-  width: min(100%, var(--admin-content-width));
+  display: block;
+  box-sizing: border-box;
+  width: auto;
   max-width: var(--admin-content-width);
-  margin-inline: auto;
+  min-width: 0;
+  margin-inline-start: var(--admin-sidebar-width);
+  margin-inline-end: auto;
   padding: var(--admin-space-6);
 }
 .admin-dashboard-page .admin-dashboard-page-heading {
@@ -565,4 +570,38 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
 @media (prefers-reduced-motion: reduce) {
   .admin-dashboard-page .admin-dashboard-kpi,
   .admin-dashboard-page .admin-dashboard-quick-actions a { transition: none; }
+}
+
+
+/* Correct foreground contrast for the only filled primary dashboard action. */
+.admin-dashboard-page .admin-dashboard-settings-actions a:first-child,
+.admin-dashboard-page .admin-dashboard-settings-actions a:first-child:hover,
+.admin-dashboard-page .admin-dashboard-settings-actions a:first-child:focus-visible {
+  background: var(--admin-color-primary);
+  border-color: var(--admin-color-primary);
+  color: #fff;
+}
+.admin-dashboard-page .admin-dashboard-settings-actions a:not(:first-child) {
+  background: var(--admin-color-surface);
+  color: var(--admin-color-text);
+}
+.admin-dashboard-page .admin-dashboard-settings-actions a:not(:first-child):hover {
+  background: var(--admin-color-primary-soft);
+  color: var(--admin-color-primary);
+}
+@media (min-width: 601px) and (max-width: 1009px) {
+  .admin-dashboard-page .admin-dashboard-main {
+    width: auto;
+    max-width: none;
+    margin-inline: 0;
+    padding: var(--admin-space-5) var(--admin-space-4);
+  }
+}
+@media (max-width: 600px) {
+  .admin-dashboard-page .admin-dashboard-main {
+    width: auto;
+    max-width: none;
+    margin-inline: 0;
+    padding: var(--admin-space-4) var(--admin-space-3);
+  }
 }
