@@ -729,7 +729,7 @@
   --sidebar-muted: var(--admin-color-text-muted);
   --sidebar-border: var(--admin-color-border);
   --sidebar-active: var(--admin-color-primary);
-  --sidebar-active-text: #ffffff;
+  --sidebar-active-text: var(--admin-color-surface);
   width: var(--admin-sidebar-width);
   display: flex;
   flex-direction: column;
