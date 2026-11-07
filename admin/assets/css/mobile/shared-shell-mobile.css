@@ -122,3 +122,795 @@
 .admin-profile-details{grid-template-columns:minmax(0,1fr)}
 
 .admin-nav-open{overflow:hidden}
+
+/* Sidebar refinement — mobile: a labelled, right-edge drawer with comfortable touch targets. */
+.admin-shared-sidebar {
+  width: min(320px, calc(100vw - 40px));
+  max-width: 360px;
+  gap: var(--admin-space-3);
+  padding: var(--admin-space-4) var(--admin-space-3) calc(var(--admin-space-4) + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  background: var(--admin-color-surface);
+  border-inline-end: 1px solid var(--admin-color-border);
+  box-shadow: var(--admin-shadow-floating);
+}
+.admin-shared-sidebar > .admin-nav-close {
+  order: 0;
+  align-self: flex-end;
+  flex: 0 0 40px;
+  margin: 0 0 -44px;
+}
+.admin-shared-sidebar > .admin-shared-brand {
+  order: 1;
+  min-height: 44px;
+  padding-inline-end: 48px;
+  gap: var(--admin-space-3);
+  padding-block-end: var(--admin-space-3);
+  border-bottom: 1px solid var(--admin-color-border);
+}
+.admin-shared-brand-mark { width: 40px; height: 40px; flex-basis: 40px; border-radius: var(--admin-radius-md); }
+.admin-shared-brand > span:last-child { font-size: 15px; line-height: 1.45; }
+.admin-shared-brand small { margin-top: 2px; font-size: 12px; }
+.admin-shared-sidebar > .admin-shared-nav {
+  order: 2;
+  flex: 1 0 auto;
+  gap: var(--admin-space-1);
+  padding-block: var(--admin-space-2);
+}
+.admin-shared-nav-link,
+.admin-shared-nav-group summary {
+  min-height: 46px;
+  padding: 10px 12px;
+  border-radius: var(--admin-radius-md);
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 500;
+  transition: background-color var(--admin-transition-fast), color var(--admin-transition-fast);
+}
+.admin-shared-nav-link:hover,
+.admin-shared-nav-group summary:hover,
+.admin-shared-submenu a:hover {
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text);
+}
+.admin-shared-nav-group { margin-block: 2px; }
+.admin-shared-nav-group summary {
+  background: transparent;
+  font-weight: 600;
+}
+.admin-shared-nav-group summary:after {
+  content: "⌄";
+  font-size: 16px;
+  line-height: 1;
+  transition: transform var(--admin-transition-fast);
+}
+.admin-shared-nav-group[open] summary:after { content: "⌄"; transform: rotate(180deg); }
+.admin-shared-submenu {
+  gap: 2px;
+  margin-inline-start: 14px;
+  padding: 4px 8px 6px;
+}
+.admin-shared-submenu a {
+  min-height: 40px;
+  padding: 8px 10px;
+  border-radius: var(--admin-radius-sm);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.admin-shared-nav-link[aria-current="page"],
+.admin-shared-submenu a[aria-current="page"] {
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--admin-color-border);
+}
+.admin-shared-sidebar > .admin-shared-account {
+  order: 3;
+  margin-top: auto;
+  padding: var(--admin-space-3);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-bg);
+}
+.admin-shared-account .admin-shared-avatar { width: 40px; height: 40px; }
+.admin-shared-account-name { font-size: 13px; line-height: 1.55; }
+.admin-shared-logout {
+  min-height: 44px;
+  border-radius: var(--admin-radius-sm);
+  background: var(--admin-color-surface);
+  font-weight: 600;
+}
+.admin-nav-close {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+  font-size: 22px;
+}
+.admin-shared-mobile-menu {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--admin-radius-md);
+  font-size: 0;
+}
+.admin-shared-mobile-menu::before {
+  content: "";
+  width: 18px;
+  height: 14px;
+  background: linear-gradient(
+    to bottom,
+    var(--admin-color-text) 0 2px,
+    transparent 2px 6px,
+    var(--admin-color-text) 6px 8px,
+    transparent 8px 12px,
+    var(--admin-color-text) 12px 14px
+  );
+}
+.admin-shared-mobile-menu:hover,
+.admin-nav-close:hover { background: var(--admin-color-bg); }
+.admin-shared-sidebar a:focus-visible,
+.admin-shared-sidebar summary:focus-visible,
+.admin-shared-sidebar button:focus-visible {
+  outline-offset: 2px;
+}
+
+/* Mobile drawer: larger comfortable rows, clear grouping, safe-area aware footer. */
+
+/* Sidebar visual redesign v2 — warm stone + muted olive, no blue surfaces. */
+.admin-shared-sidebar {
+  --admin-sidebar-bg: #ffffff;
+  --admin-sidebar-panel: #f8faf8;
+  --admin-sidebar-panel-hover: #f0f4f0;
+  --admin-sidebar-text: #18251d;
+  --admin-sidebar-muted: #59685e;
+  --admin-sidebar-border: #dfe6e0;
+  --admin-sidebar-accent: #315b45;
+  --admin-sidebar-accent-soft: #eaf1ec;
+  background: var(--admin-sidebar-bg);
+  color: var(--admin-sidebar-text);
+  border-inline-end: 1px solid var(--admin-sidebar-border);
+  box-shadow: 5px 0 24px rgba(35, 42, 31, .07);
+}
+.admin-shared-sidebar .admin-shared-brand {
+  min-height: 58px;
+  gap: 12px;
+  padding: 4px 2px 18px;
+  border-bottom: 1px solid var(--admin-sidebar-border);
+  color: var(--admin-sidebar-text);
+  font-size: 16px;
+  font-weight: 800;
+}
+.admin-shared-sidebar .admin-shared-brand small {
+  color: var(--admin-sidebar-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+.admin-shared-sidebar .admin-shared-brand-mark,
+.admin-shared-sidebar .admin-shared-avatar {
+  background: var(--admin-sidebar-accent-soft);
+  color: var(--admin-sidebar-accent);
+  border: 1px solid rgba(99, 116, 81, .18);
+}
+.admin-shared-sidebar .admin-shared-nav {
+  gap: 8px;
+  padding-block: 10px;
+}
+.admin-shared-sidebar .admin-shared-nav-link,
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 46px;
+  padding: 10px 13px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: var(--admin-sidebar-panel);
+  color: var(--admin-sidebar-text);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.65;
+  text-decoration: none;
+  transition: background-color var(--admin-transition-fast), border-color var(--admin-transition-fast), color var(--admin-transition-fast);
+}
+.admin-shared-sidebar .admin-shared-nav-link::before,
+.admin-shared-sidebar .admin-shared-nav-group summary::before {
+  content: "";
+  display: block;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid var(--admin-sidebar-muted);
+  border-radius: 2px;
+  background: transparent;
+}
+.admin-shared-sidebar .admin-shared-nav-link:hover,
+.admin-shared-sidebar .admin-shared-nav-group summary:hover {
+  background: var(--admin-sidebar-panel-hover);
+  border-color: var(--admin-sidebar-border);
+  color: var(--admin-sidebar-text);
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"] {
+  background: var(--admin-sidebar-accent-soft);
+  border-color: rgba(99, 116, 81, .32);
+  color: #234631;
+  font-weight: 800;
+  box-shadow: inset -3px 0 0 var(--admin-sidebar-accent);
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"]::before {
+  border-color: var(--admin-sidebar-accent);
+  background: var(--admin-sidebar-accent);
+}
+.admin-shared-sidebar .admin-shared-nav-group {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 3px;
+  border: 1px solid var(--admin-sidebar-border);
+  border-radius: 11px;
+  background: rgba(248, 247, 242, .62);
+}
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  min-height: 45px;
+  border-color: transparent;
+  background: transparent;
+  cursor: pointer;
+  list-style: none;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary::-webkit-details-marker {
+  display: none;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary::after {
+  content: "⌄";
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-inline-start: auto;
+  color: var(--admin-sidebar-muted);
+  font-size: 17px;
+  transition: transform var(--admin-transition-fast);
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary::after {
+  transform: rotate(180deg);
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary {
+  color: #234631;
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary::before {
+  border-color: var(--admin-sidebar-accent);
+  background: var(--admin-sidebar-accent);
+}
+.admin-shared-sidebar .admin-shared-submenu {
+  display: grid;
+  gap: 4px;
+  margin: 0 10px 7px 0;
+  padding: 5px 12px 4px 0;
+  border-inline-start: 0;
+  border-inline-end: 2px solid var(--admin-sidebar-border);
+}
+.admin-shared-sidebar .admin-shared-submenu a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 39px;
+  padding: 8px 11px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--admin-sidebar-muted);
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.6;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.admin-shared-sidebar .admin-shared-submenu a::before {
+  content: "";
+  flex: 0 0 5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #a5b3a8;
+}
+.admin-shared-sidebar .admin-shared-submenu a:hover {
+  background: var(--admin-sidebar-panel-hover);
+  color: var(--admin-sidebar-text);
+}
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"] {
+  background: var(--admin-sidebar-accent-soft);
+  border-color: rgba(49, 91, 69, .28);
+  color: #234631;
+  font-weight: 800;
+}
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"]::before {
+  background: var(--admin-sidebar-accent);
+}
+.admin-shared-sidebar .admin-shared-account {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 13px;
+  border: 1px solid var(--admin-sidebar-border);
+  border-radius: 11px;
+  background: var(--admin-sidebar-panel);
+}
+.admin-shared-sidebar .admin-shared-account-name {
+  color: var(--admin-sidebar-text);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.admin-shared-sidebar .admin-shared-logout {
+  min-height: 42px;
+  border: 1px solid var(--admin-sidebar-border);
+  border-radius: 8px;
+  background: transparent;
+  color: #8a423c;
+  font-size: 13px;
+  font-weight: 700;
+}
+.admin-shared-sidebar .admin-shared-logout:hover {
+  background: #f5e9e5;
+  border-color: #d9b9b2;
+}
+.admin-shared-sidebar a:focus-visible,
+.admin-shared-sidebar summary:focus-visible,
+.admin-shared-sidebar button:focus-visible {
+  outline: 2px solid var(--admin-sidebar-accent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px rgba(49, 91, 69, .16);
+}
+.admin-shared-sidebar::-webkit-scrollbar { width: 7px; }
+.admin-shared-sidebar::-webkit-scrollbar-thumb {
+  border: 2px solid var(--admin-sidebar-bg);
+  border-radius: 10px;
+  background: #c7d2c9;
+}
+
+.admin-shared-sidebar {
+  width: min(340px, calc(100vw - 28px));
+  max-width: 360px;
+  gap: 14px;
+  padding: 18px 14px calc(18px + env(safe-area-inset-bottom));
+  border-inline-end: 1px solid var(--admin-sidebar-border);
+  box-shadow: 8px 0 28px rgba(35, 42, 31, .16);
+}
+.admin-shared-sidebar > .admin-nav-close {
+  order: 0;
+  align-self: flex-end;
+  flex: 0 0 42px;
+  margin: 0 0 -52px;
+  background: var(--admin-sidebar-panel);
+  border-color: var(--admin-sidebar-border);
+  color: var(--admin-sidebar-text);
+}
+.admin-shared-sidebar > .admin-shared-brand {
+  order: 1;
+  padding-inline-end: 52px;
+}
+.admin-shared-sidebar > .admin-shared-nav { order: 2; flex: 1 0 auto; }
+.admin-shared-sidebar > .admin-shared-account { order: 3; }
+.admin-shared-mobile-menu {
+  min-width: 46px;
+  min-height: 46px;
+  border-radius: 9px;
+  border-color: var(--admin-color-border);
+  background: var(--admin-color-surface);
+  color: var(--admin-color-text);
+}
+.admin-shared-mobile-menu:hover { background: var(--admin-color-bg); }
+.admin-nav-close:hover { background: var(--admin-sidebar-panel-hover); }
+
+
+
+/* Sidebar redesign v3 — pure white surface, forest-green hierarchy, clear navigation cards. */
+.admin-shared-sidebar {
+  --admin-sidebar-bg: #ffffff;
+  --admin-sidebar-panel: #f8faf8;
+  --admin-sidebar-panel-hover: #f0f4f0;
+  --admin-sidebar-text: #18251d;
+  --admin-sidebar-muted: #59685e;
+  --admin-sidebar-border: #dfe6e0;
+  --admin-sidebar-accent: #315b45;
+  --admin-sidebar-accent-soft: #eaf1ec;
+  background: #ffffff;
+  color: #18251d;
+  border-color: #dfe6e0;
+  box-shadow: 0 10px 32px rgba(24, 37, 29, .08);
+}
+.admin-shared-sidebar > .admin-shared-brand {
+  border-block-end: 1px solid #e3e9e4;
+}
+.admin-shared-sidebar .admin-shared-brand-mark {
+  display: grid;
+  place-items: center;
+  background: #315b45;
+  color: #ffffff;
+  border-radius: 11px;
+  box-shadow: 0 3px 8px rgba(49, 91, 69, .18);
+}
+.admin-shared-sidebar .admin-shared-brand > span:last-child {
+  color: #18251d;
+  font-weight: 800;
+}
+.admin-shared-sidebar .admin-shared-brand small {
+  color: #66736a;
+  font-weight: 500;
+}
+.admin-shared-sidebar .admin-shared-nav {
+  gap: 9px;
+}
+.admin-shared-sidebar .admin-shared-nav-link,
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid #e1e7e2;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #26352b;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.55;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(24, 37, 29, .035);
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+.admin-shared-sidebar .admin-shared-nav-link::before,
+.admin-shared-sidebar .admin-shared-nav-group summary::before {
+  content: "";
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  margin-inline-end: 11px;
+  border: 1px solid #91a397;
+  border-radius: 3px;
+  background: #f4f7f4;
+}
+.admin-shared-sidebar .admin-shared-nav-link:hover,
+.admin-shared-sidebar .admin-shared-nav-group summary:hover {
+  border-color: #cbd8ce;
+  background: #f7faf7;
+  color: #203d2c;
+  box-shadow: 0 2px 7px rgba(24, 37, 29, .06);
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"] {
+  border-color: #b9cbbd;
+  background: #eaf1ec;
+  color: #234631;
+  font-weight: 800;
+  box-shadow: inset -3px 0 0 #315b45, 0 1px 3px rgba(24, 37, 29, .045);
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"]::before,
+.admin-shared-sidebar .admin-shared-nav-group[open] summary::before {
+  border-color: #315b45;
+  background: #315b45;
+}
+.admin-shared-sidebar .admin-shared-nav-group {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 4px;
+  border: 1px solid #e1e7e2;
+  border-radius: 12px;
+  background: #f8faf8;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  list-style: none;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary::-webkit-details-marker {
+  display: none;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary::after {
+  content: "⌄";
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  margin-inline-start: auto;
+  color: #617267;
+  font-size: 17px;
+  transition: transform 140ms ease;
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary::after {
+  transform: rotate(180deg);
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary {
+  color: #234631;
+}
+.admin-shared-sidebar .admin-shared-submenu {
+  display: grid;
+  gap: 4px;
+  margin: 0 10px 7px 0;
+  padding: 5px 12px 4px 0;
+  border-inline-start: 0;
+  border-inline-end: 2px solid #dce5de;
+}
+.admin-shared-sidebar .admin-shared-submenu a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  padding: 8px 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #536258;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.6;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.admin-shared-sidebar .admin-shared-submenu a::before {
+  content: "";
+  flex: 0 0 5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #a5b3a8;
+}
+.admin-shared-sidebar .admin-shared-submenu a:hover {
+  border-color: #e1e9e2;
+  background: #f0f4f0;
+  color: #203d2c;
+}
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"] {
+  border-color: #c9d8cc;
+  background: #eaf1ec;
+  color: #234631;
+  font-weight: 800;
+}
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"]::before {
+  background: #315b45;
+}
+.admin-shared-sidebar .admin-shared-account {
+  padding: 13px;
+  border: 1px solid #dfe6e0;
+  border-radius: 12px;
+  background: #f8faf8;
+}
+.admin-shared-sidebar .admin-shared-avatar {
+  background: #315b45;
+  color: #ffffff;
+}
+.admin-shared-sidebar .admin-shared-account-name {
+  color: #26352b;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.6;
+}
+.admin-shared-sidebar .admin-shared-logout {
+  min-height: 42px;
+  border: 1px solid #ead8d5;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #984b43;
+  font-size: 13px;
+  font-weight: 700;
+}
+.admin-shared-sidebar .admin-shared-logout:hover {
+  border-color: #d9b8b2;
+  background: #fbf3f1;
+}
+.admin-shared-sidebar a:focus-visible,
+.admin-shared-sidebar summary:focus-visible,
+.admin-shared-sidebar button:focus-visible {
+  outline: 2px solid #315b45;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px rgba(49, 91, 69, .16);
+}
+.admin-shared-sidebar::-webkit-scrollbar-thumb {
+  border: 2px solid #ffffff;
+  border-radius: 10px;
+  background: #c7d2c9;
+}
+
+
+/* White drawer sizing — mobile. */
+.admin-shared-sidebar {
+  width: min(340px, calc(100vw - 28px));
+  max-width: 360px;
+  gap: 14px;
+  padding: 18px 14px calc(18px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  border-inline-end: 1px solid #dfe6e0;
+  box-shadow: 8px 0 30px rgba(24, 37, 29, .16);
+}
+.admin-shared-sidebar > .admin-nav-close {
+  background: #f8faf8;
+  border-color: #dfe6e0;
+  color: #26352b;
+}
+.admin-shared-sidebar > .admin-shared-nav { flex: 1 0 auto; }
+.admin-shared-sidebar .admin-shared-nav-link,
+.admin-shared-sidebar .admin-shared-nav-group summary { min-height: 48px; }
+.admin-shared-mobile-menu {
+  min-width: 46px;
+  min-height: 46px;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #26352b;
+  border-color: #dfe6e0;
+}
+
+/* Sidebar v4 — token-only white surface with blue active navigation (mobile). */
+.admin-shared-sidebar {
+  --sidebar-surface: var(--admin-color-surface);
+  --sidebar-text: var(--admin-color-text);
+  --sidebar-muted: var(--admin-color-text-muted);
+  --sidebar-border: var(--admin-color-border);
+  --sidebar-active: var(--admin-color-primary);
+  --sidebar-active-text: var(--admin-color-surface);
+  width: min(340px, calc(100vw - 28px));
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--admin-space-4);
+  padding: var(--admin-space-4) var(--admin-space-3) calc(var(--admin-space-4) + env(safe-area-inset-bottom));
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+  border-inline-end: 1px solid var(--sidebar-border);
+  box-shadow: var(--admin-shadow-floating);
+}
+.admin-shared-sidebar > .admin-shared-brand {
+  min-height: 52px;
+  gap: var(--admin-space-3);
+  padding: 0 0 var(--admin-space-3);
+  border-block-end: 1px solid var(--sidebar-border);
+  color: var(--sidebar-text);
+}
+.admin-shared-sidebar .admin-shared-brand-mark,
+.admin-shared-sidebar .admin-shared-avatar {
+  background: var(--admin-color-primary-soft);
+  color: var(--admin-color-primary);
+  border: 0;
+  box-shadow: none;
+}
+.admin-shared-sidebar .admin-shared-brand small,
+.admin-shared-sidebar .admin-shared-account-name { color: var(--sidebar-text); }
+.admin-shared-sidebar > .admin-shared-nav {
+  flex: 1 0 auto;
+  gap: var(--admin-space-2);
+  padding: 0;
+}
+.admin-shared-sidebar .admin-shared-nav-link,
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  display: flex;
+  align-items: center;
+  gap: var(--admin-space-2);
+  min-height: 48px;
+  padding: var(--admin-space-2) var(--admin-space-3);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-font-size-sm);
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  box-shadow: none;
+  transition: background-color var(--admin-transition-fast), border-color var(--admin-transition-fast), color var(--admin-transition-fast);
+}
+.admin-shared-sidebar .admin-shared-nav-link::before,
+.admin-shared-sidebar .admin-shared-nav-group summary::before { content: none; }
+.admin-shared-sidebar .admin-shared-nav-link:hover,
+.admin-shared-sidebar .admin-shared-nav-group summary:hover,
+.admin-shared-sidebar .admin-shared-submenu a:hover {
+  border-color: var(--admin-color-primary);
+  background: var(--admin-color-primary-soft);
+  color: var(--sidebar-text);
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"],
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"] {
+  border-color: var(--sidebar-active);
+  background: var(--sidebar-active);
+  color: var(--sidebar-active-text);
+  font-weight: 700;
+  box-shadow: none;
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"]::before,
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"]::before { content: none; }
+.admin-shared-sidebar .admin-shared-nav-group {
+  display: grid;
+  gap: var(--admin-space-1);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  justify-content: flex-start;
+  cursor: pointer;
+  list-style: none;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary::-webkit-details-marker { display: none; }
+.admin-shared-sidebar .admin-shared-nav-group summary::after {
+  content: "⌄";
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  margin-inline-start: auto;
+  color: var(--sidebar-muted);
+  font-size: 17px;
+  transition: transform var(--admin-transition-fast);
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary::after { transform: rotate(180deg); }
+.admin-shared-sidebar .admin-shared-nav-group:has(.admin-shared-submenu [aria-current="page"]) > summary {
+  border-color: var(--sidebar-active);
+  background: var(--sidebar-active);
+  color: var(--sidebar-active-text);
+}
+.admin-shared-sidebar .admin-shared-nav-group:has(.admin-shared-submenu [aria-current="page"]) > summary::after { color: var(--sidebar-active-text); }
+.admin-shared-sidebar .admin-shared-submenu {
+  display: grid;
+  gap: var(--admin-space-1);
+  margin: var(--admin-space-1) var(--admin-space-3) var(--admin-space-2) 0;
+  padding: 0 var(--admin-space-3) 0 0;
+  border-inline-end: 2px solid var(--sidebar-border);
+  border-inline-start: 0;
+}
+.admin-shared-sidebar .admin-shared-submenu a {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: var(--admin-space-2) var(--admin-space-3);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--admin-radius-sm);
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+  font-size: 13px;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.admin-shared-sidebar .admin-shared-account {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--admin-space-2);
+  margin-top: auto;
+  padding: var(--admin-space-3);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--sidebar-surface);
+}
+.admin-shared-sidebar .admin-shared-account-name { font-size: 13px; line-height: 1.5; }
+.admin-shared-sidebar .admin-shared-logout {
+  min-height: var(--admin-control-height);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--admin-radius-sm);
+  background: var(--sidebar-surface);
+  color: var(--admin-color-error);
+  font: inherit;
+}
+.admin-shared-sidebar .admin-nav-close {
+  border-color: var(--sidebar-border);
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+}
+.admin-shared-sidebar a:focus-visible,
+.admin-shared-sidebar summary:focus-visible,
+.admin-shared-sidebar button:focus-visible {
+  outline: 2px solid var(--admin-color-primary);
+  outline-offset: 2px;
+  box-shadow: var(--admin-focus-ring);
+}
+.admin-shared-mobile-menu {
+  min-width: 46px;
+  min-height: 46px;
+  border-radius: var(--admin-radius-md);
+}
