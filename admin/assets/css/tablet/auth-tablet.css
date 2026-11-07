@@ -189,12 +189,12 @@ body.admin-auth-page main.admin-auth-main {
 .admin-password-field > input {
   display: block;
   min-height: 50px;
-  padding-inline: 15px 60px;
+  padding-inline: 60px 15px;
   border: 0;
   border-radius: inherit;
   background: transparent;
   direction: ltr;
-  text-align: left;
+  text-align: right;
 }
 
 .admin-password-field > input:focus-visible {
@@ -204,8 +204,10 @@ body.admin-auth-page main.admin-auth-main {
 
 .admin-password-toggle {
   position: absolute;
-  inset-block: 4px;
+  top: 50%;
+  inset-block: auto;
   inset-inline-end: 4px;
+  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -219,11 +221,11 @@ body.admin-auth-page main.admin-auth-main {
   color: var(--admin-color-text-muted);
   cursor: pointer;
   touch-action: manipulation;
-  transition: color var(--admin-transition), background-color var(--admin-transition);
+  transition: color var(--admin-transition);
 }
 
 .admin-password-toggle:hover {
-  background: var(--admin-color-primary-soft);
+  background: transparent;
   color: var(--admin-color-primary);
 }
 
