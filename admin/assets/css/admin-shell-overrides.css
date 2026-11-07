@@ -1314,3 +1314,13 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
 @media (prefers-reduced-motion: reduce) {
   .admin-products-primary-action { transition: none; }
 }
+
+
+/* Keep catalog cards and table styles above the generic shared-shell defaults. */
+.admin-shared-shell .admin-products-stat { padding: var(--admin-space-4); border-radius: var(--admin-radius-lg); box-shadow: var(--admin-shadow-card); }
+.admin-shared-shell .admin-products-panel { padding: var(--products-card-padding); border-radius: var(--admin-radius-lg); box-shadow: var(--admin-shadow-card); }
+.admin-shared-shell .admin-products-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+@media (max-width: 600px) {
+  .admin-shared-shell .admin-products-stat { padding: var(--admin-space-3); }
+  .admin-shared-shell .admin-products-panel { padding: var(--admin-space-3); }
+}
