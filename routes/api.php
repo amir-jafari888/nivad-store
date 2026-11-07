@@ -2812,6 +2812,20 @@ return static function (Router $router): void {
 
 
     /*
+     * Authenticated administrator self-service profile.
+     * This route intentionally has no role-management permission dependency.
+     */
+    $router->patch(
+        '/admin/profile',
+        [AdminProfileController::class, 'update'],
+        [
+            AdminAuthMiddleware::class,
+            CsrfMiddleware::class,
+        ],
+        'admin.profile.update'
+    );
+
+    /*
      * Admin Master Capabilities — notifications, incidents, support,
      * analytics, preferences, saved views and content revisions.
      */

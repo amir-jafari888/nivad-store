@@ -18,3 +18,30 @@
 .admin-profile-page .admin-profile-details>div{min-width:0;padding:var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);background:var(--admin-color-bg)}
 .admin-profile-page .admin-profile-details dt{margin:0 0 var(--admin-space-1);font-size:12px}
 .admin-profile-page .admin-profile-details dd{margin:0;color:var(--admin-color-text);font-size:13px;line-height:1.8;font-weight:700;overflow-wrap:anywhere;word-break:break-word;font-variant-numeric:tabular-nums}
+
+
+/* Admin profile editing — mobile */
+.admin-profile-page .admin-profile-main{display:grid;gap:var(--admin-space-4)}
+.admin-profile-page .admin-profile-feedback{min-height:1.5em;padding-inline:var(--admin-space-1);font-size:13px;color:var(--admin-color-success)}
+.admin-profile-page .admin-profile-feedback[data-state="error"]{color:#b42318}
+.admin-profile-page .admin-profile-form{display:grid;gap:var(--admin-space-3);min-width:0}
+.admin-profile-page .admin-profile-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--admin-space-3);min-width:0}
+.admin-profile-page .admin-profile-field{display:grid;gap:var(--admin-space-2);min-width:0}
+.admin-profile-page .admin-profile-field label{font-size:13px;font-weight:700}
+.admin-profile-page .admin-profile-field input{box-sizing:border-box;width:100%;min-width:0;min-height:46px;padding:var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);background:var(--admin-color-bg);color:var(--admin-color-text);font:inherit}
+.admin-profile-page .admin-profile-field input:focus-visible{outline:var(--admin-focus-ring);outline-offset:2px}
+.admin-profile-page .admin-profile-field small{color:var(--admin-color-text-muted);font-size:11px;line-height:1.7}
+.admin-profile-page .admin-profile-actions{display:flex;flex-wrap:wrap;gap:var(--admin-space-2)}
+.admin-profile-page .admin-profile-actions button:disabled{opacity:.65;cursor:wait}
+.admin-profile-page .admin-profile-role-list{display:flex;flex-wrap:wrap;gap:var(--admin-space-2)}
+.admin-profile-page .admin-profile-role{display:inline-flex;align-items:center;min-height:34px;padding:var(--admin-space-2) var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:999px;background:var(--admin-color-primary-soft);color:var(--admin-color-text);font-size:12px;font-weight:700}
+.admin-profile-page .admin-profile-role-empty{background:var(--admin-color-bg);color:var(--admin-color-text-muted)}
+.admin-profile-reauth-dialog{width:min( calc(100% - 32px), 420px);padding:var(--admin-space-4);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-lg);background:var(--admin-color-surface);color:var(--admin-color-text);box-shadow:var(--admin-shadow-floating)}
+.admin-profile-reauth-dialog::backdrop{background:rgba(15,23,42,.55)}
+.admin-profile-reauth-dialog form,.admin-profile-reauth-dialog label{display:grid;gap:var(--admin-space-3)}
+.admin-profile-reauth-dialog h2,.admin-profile-reauth-dialog p{margin:0}
+.admin-profile-reauth-dialog p{color:var(--admin-color-text-muted);font-size:13px;line-height:1.8}
+.admin-profile-reauth-dialog input{box-sizing:border-box;width:100%;min-height:46px;padding:var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);background:var(--admin-color-bg);color:var(--admin-color-text);font:inherit}
+.admin-profile-dialog-actions{display:flex;justify-content:flex-end;gap:var(--admin-space-2)}
+.admin-profile-dialog-actions button{min-height:42px;padding:var(--admin-space-2) var(--admin-space-3);border:1px solid var(--admin-color-border);border-radius:var(--admin-radius-md);background:var(--admin-color-surface);color:var(--admin-color-text);font:inherit}
+.admin-profile-dialog-actions button[type="submit"]{border-color:var(--admin-color-primary);background:var(--admin-color-primary);color:#fff}

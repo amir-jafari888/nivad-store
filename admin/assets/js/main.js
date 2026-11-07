@@ -11,6 +11,7 @@ import adminSavedViews from "./modules/saved-views.js";
 import adminErrorBoundary from "./modules/error-boundary.js";
 import adminProductivityDiagnostics from "./modules/productivity-diagnostics.js";
 import adminDashboardUi from "./modules/admin-dashboard-ui.js";
+import adminProfile from "./modules/admin-profile.js";
 
 adminDataExperience();
 adminNavigationState();
@@ -25,3 +26,4 @@ adminSavedViews();
 adminErrorBoundary();
 adminProductivityDiagnostics();
 adminDashboardUi();
+adminProfile();
