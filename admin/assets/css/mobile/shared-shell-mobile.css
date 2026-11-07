@@ -259,14 +259,14 @@
 
 /* Sidebar visual redesign v2 — warm stone + muted olive, no blue surfaces. */
 .admin-shared-sidebar {
-  --admin-sidebar-bg: #eeede6;
-  --admin-sidebar-panel: #f8f7f2;
-  --admin-sidebar-panel-hover: #e7e8df;
-  --admin-sidebar-text: #252a24;
-  --admin-sidebar-muted: #5e655b;
-  --admin-sidebar-border: #d6d8cd;
-  --admin-sidebar-accent: #637451;
-  --admin-sidebar-accent-soft: #e1e7d9;
+  --admin-sidebar-bg: #ffffff;
+  --admin-sidebar-panel: #f8faf8;
+  --admin-sidebar-panel-hover: #f0f4f0;
+  --admin-sidebar-text: #18251d;
+  --admin-sidebar-muted: #59685e;
+  --admin-sidebar-border: #dfe6e0;
+  --admin-sidebar-accent: #315b45;
+  --admin-sidebar-accent-soft: #eaf1ec;
   background: var(--admin-sidebar-bg);
   color: var(--admin-sidebar-text);
   border-inline-end: 1px solid var(--admin-sidebar-border);
@@ -333,7 +333,7 @@
 .admin-shared-sidebar .admin-shared-nav-link[aria-current="page"] {
   background: var(--admin-sidebar-accent-soft);
   border-color: rgba(99, 116, 81, .32);
-  color: #34422b;
+  color: #234631;
   font-weight: 800;
   box-shadow: inset -3px 0 0 var(--admin-sidebar-accent);
 }
@@ -376,7 +376,7 @@
   transform: rotate(180deg);
 }
 .admin-shared-sidebar .admin-shared-nav-group[open] summary {
-  color: #34422b;
+  color: #234631;
 }
 .admin-shared-sidebar .admin-shared-nav-group[open] summary::before {
   border-color: var(--admin-sidebar-accent);
@@ -411,7 +411,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #a0a697;
+  background: #a5b3a8;
 }
 .admin-shared-sidebar .admin-shared-submenu a:hover {
   background: var(--admin-sidebar-panel-hover);
@@ -419,8 +419,8 @@
 }
 .admin-shared-sidebar .admin-shared-submenu a[aria-current="page"] {
   background: var(--admin-sidebar-accent-soft);
-  border-color: rgba(99, 116, 81, .28);
-  color: #34422b;
+  border-color: rgba(49, 91, 69, .28);
+  color: #234631;
   font-weight: 800;
 }
 .admin-shared-sidebar .admin-shared-submenu a[aria-current="page"]::before {
@@ -461,13 +461,13 @@
 .admin-shared-sidebar button:focus-visible {
   outline: 2px solid var(--admin-sidebar-accent);
   outline-offset: 3px;
-  box-shadow: 0 0 0 3px rgba(99, 116, 81, .16);
+  box-shadow: 0 0 0 3px rgba(49, 91, 69, .16);
 }
 .admin-shared-sidebar::-webkit-scrollbar { width: 7px; }
 .admin-shared-sidebar::-webkit-scrollbar-thumb {
   border: 2px solid var(--admin-sidebar-bg);
   border-radius: 10px;
-  background: #c3c7b9;
+  background: #c7d2c9;
 }
 
 .admin-shared-sidebar {
