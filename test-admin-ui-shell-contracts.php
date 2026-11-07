@@ -44,6 +44,12 @@ $dashboard = $read('pages/admin/dashboard.php');
 $metricsService = $read('app/Services/AdminDashboardMetricsService.php');
 $overviewService = $read('app/Services/AdminDashboardOverviewService.php');
 $healthService = $read('app/Services/AdminSystemHealthService.php');
+$profilePage = $read('admin/profile/index.php');
+$profileController = $read('app/Controllers/AdminProfileController.php');
+$profileRepository = $read('app/Repositories/AdminRepository.php');
+$profileJs = $read('admin/assets/js/modules/admin-profile.js');
+$sessionRepository = $read('app/Repositories/AdminSessionRepository.php');
+$apiRoutes = $read('routes/api.php');
 
 $check('Admin design token file exists', $tokens !== '');
 $check('Unused dark theme module has been removed after the Light-only decision', !is_file($root . '/admin/assets/js/modules/theme.js'));
@@ -74,6 +80,26 @@ $check('Action queue sorts items by explicit priority', str_contains($overviewSe
 $check('System health checks required PHP extensions and database connectivity', str_contains($healthService, "['pdo', 'pdo_mysql', 'json', 'mbstring']") && str_contains($healthService, "query('SELECT 1')"));
 $check('Responsive CSS imports preserve the established 600/601–1009/1010 breakpoints', str_contains($mainCss, 'max-width: 600px') && str_contains($mainCss, 'min-width: 601px') && str_contains($mainCss, 'max-width: 1009px') && str_contains($mainCss, 'min-width: 1010px'));
 $check('No database or destructive operation is introduced by this UI contract test', !preg_match('/\\b(INSERT|UPDATE|DELETE|DROP|ALTER)\\b/i', $dashboard));
+$check('Profile page exposes editable identity and password forms with read-only assigned roles',
+    str_contains($profilePage, 'data-admin-profile-form')
+    && str_contains($profilePage, 'data-admin-password-form')
+    && str_contains($profilePage, 'roleNamesForAdmin')
+    && !str_contains($profilePage, 'role_ids')
+);
+$check('Profile update is session-bound, reauthenticated, CSRF-protected and does not mutate roles',
+    str_contains($profileController, 'requireCurrentPassword')
+    && str_contains($profileController, 'Password::hash')
+    && str_contains($profileController, 'updateOwnProfile')
+    && !str_contains($profileController, 'role_ids')
+    && str_contains($apiRoutes, "'admin.profile.update'")
+    && str_contains($profileJs, 'X-CSRF-TOKEN')
+);
+$check('Password changes revoke other active sessions without revoking the current session',
+    str_contains($profileController, 'revokeOtherSessionsForAdmin')
+    && str_contains($sessionRepository, 'session_token_hash <> :current_token_hash')
+    && str_contains($sessionRepository, 'revokeOtherSessionsForAdmin')
+);
+
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
 exit($failed === 0 ? 0 : 1);
