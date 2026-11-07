@@ -24,8 +24,8 @@ const adminPasswordVisibility = () => {
       );
       button.setAttribute("aria-pressed", visible ? "true" : "false");
       button.dataset.passwordVisibility = visible ? "visible" : "hidden";
-      visibleIcon.hidden = !visible;
-      hiddenIcon.hidden = visible;
+      visibleIcon.removeAttribute("hidden");
+      hiddenIcon.removeAttribute("hidden");
     };
 
     button.dataset.passwordToggleBound = "true";
