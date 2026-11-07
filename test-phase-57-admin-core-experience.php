@@ -102,13 +102,27 @@ phase57Check(
         && !str_contains($view, 'admin-dashboard-sidebar'),
     '57.07 Dashboard uses the shared authenticated shell without duplicate sidebar'
 );
+$profileController = phase57Read('app/Controllers/AdminProfileController.php');
+$profileRepository = phase57Read('app/Repositories/AdminRepository.php');
+$apiRoutes = phase57Read('routes/api.php');
+$profileJs = phase57Read('admin/assets/js/modules/admin-profile.js');
 phase57Check(
     str_contains($profile, "['first_name']")
         && str_contains($profile, "['last_name']")
         && str_contains($profile, "['id']")
-        && !str_contains($profile, "['email']")
-        && !str_contains($profile, "['username']"),
-    '57.08 Profile displays only safe session identity fields'
+        && str_contains($profile, "['email']")
+        && str_contains($profile, "['username']")
+        && str_contains($profile, 'data-admin-profile-form')
+        && str_contains($profile, 'data-admin-password-form')
+        && str_contains($profile, 'roleNamesForAdmin')
+        && !str_contains($profile, 'role_ids')
+        && str_contains($profileController, 'requireCurrentPassword')
+        && str_contains($profileController, 'Password::hash')
+        && str_contains($profileRepository, 'updateOwnProfile')
+        && str_contains($profileRepository, 'roleNamesForAdmin')
+        && str_contains($apiRoutes, "'admin.profile.update'")
+        && str_contains($profileJs, 'X-CSRF-TOKEN'),
+    '57.08 Profile edits identity and password securely while displaying roles read-only'
 );
 phase57Check(
     str_contains($settings, 'حساب مدیر ذخیره می‌شوند')
