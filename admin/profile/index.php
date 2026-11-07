@@ -61,7 +61,7 @@ $profileInitial = mb_substr($displayName, 0, 1, 'UTF-8');
                 </div>
                 <p>برای ذخیره تغییرات، رمز عبور فعلی حساب از شما درخواست می‌شود.</p>
             </div>
-            <form class="admin-profile-form" data-admin-profile-form>
+            <form class="admin-profile-form" method="post" data-admin-profile-form>
                 <div class="admin-profile-fields">
                     <div class="admin-profile-field">
                         <label for="admin-profile-first-name">نام</label>
@@ -95,7 +95,7 @@ $profileInitial = mb_substr($displayName, 0, 1, 'UTF-8');
                 </div>
                 <p>رمز عبور جدید باید حداقل ۱۲ نویسه داشته باشد. برای تأیید عملیات، رمز فعلی لازم است.</p>
             </div>
-            <form class="admin-profile-form" data-admin-password-form>
+            <form class="admin-profile-form" method="post" data-admin-password-form>
                 <div class="admin-profile-fields admin-profile-password-fields">
                     <div class="admin-profile-field">
                         <label for="admin-profile-new-password">رمز عبور جدید</label>
