@@ -1,7 +1,7 @@
 @import url(./setting.css);
 
-@import url(./mobile/mobile.css?v=20261107-dashboard-v1) only screen and (max-width: 600px);
-@import url(./tablet/tablet.css?v=20261107-dashboard-v1) only screen and (min-width: 601px) and (max-width: 1009px);
-@import url(./desktop/desktop.css?v=20261107-dashboard-v1) only screen and (min-width: 1010px);
+@import url(./mobile/mobile.css?v=20261107-dashboard-v2) only screen and (max-width: 600px);
+@import url(./tablet/tablet.css?v=20261107-dashboard-v2) only screen and (min-width: 601px) and (max-width: 1009px);
+@import url(./desktop/desktop.css?v=20261107-dashboard-v2) only screen and (min-width: 1010px);
 @import url(./productivity.css);
-@import url(./admin-shell-overrides.css?v=20261107-dashboard-v1);
+@import url(./admin-shell-overrides.css?v=20261107-dashboard-v2);
