@@ -86,17 +86,33 @@ if (Request::isPost()) {
 
 <body class="admin-auth-page">
 
+    <a class="admin-skip-link" href="#main-content">رفتن به محتوای اصلی</a>
+
     <main id="main-content" class="admin-auth-main" tabindex="-1">
+        <div class="admin-auth-brand" aria-label="نیواد">
+            <img
+                class="admin-auth-brand__mark"
+                src="<?= e(url('/assets/images/brand/nivad-mark.png')) ?>"
+                width="44"
+                height="44"
+                alt=""
+                fetchpriority="high">
+            <span class="admin-auth-brand__name">نیواد</span>
+            <span class="admin-auth-brand__divider" aria-hidden="true"></span>
+            <span class="admin-auth-brand__context" dir="ltr">ADMIN</span>
+        </div>
+
         <header class="admin-auth-heading">
+            <p class="admin-auth-eyebrow">مدیریت فروشگاه</p>
             <h1>ورود به پنل مدیریت</h1>
-            <p>برای ادامه، با حساب مدیر خود وارد شوید.</p>
+            <p>برای دسترسی به فضای مدیریت، اطلاعات حساب خود را وارد کنید.</p>
         </header>
 
         <section class="admin-auth-card" aria-labelledby="admin-auth-card-title">
-            <h2 id="admin-auth-card-title" class="admin-auth-card__title">ورود</h2>
+            <h2 id="admin-auth-card-title" class="admin-auth-card__title">اطلاعات حساب</h2>
 
             <?php if ($error !== null): ?>
-                <div class="admin-auth-error" role="alert">
+                <div class="admin-auth-error" role="alert" aria-live="assertive">
                     <?= e($error) ?>
                 </div>
             <?php endif; ?>
@@ -118,6 +134,8 @@ if (Request::isPost()) {
                         name="identifier"
                         type="text"
                         autocomplete="username"
+                        autocapitalize="off"
+                        spellcheck="false"
                         aria-describedby="admin-identifier-hint"
                         value="<?= e(
                             (string) Request::post(
@@ -125,6 +143,7 @@ if (Request::isPost()) {
                                 ''
                             )
                         ) ?>"
+                        autofocus
                         required>
                     <small id="admin-identifier-hint" class="admin-auth-hint">
                         ایمیل یا نام کاربری حساب مدیر را وارد کنید.
@@ -145,8 +164,9 @@ if (Request::isPost()) {
                             type="button"
                             data-password-toggle
                             aria-label="نمایش رمز عبور"
+                            aria-pressed="false"
                             aria-controls="password"
->
+                            data-password-visibility="hidden">
                             <svg
                                 data-password-icon="visible"
                                 viewBox="0 0 24 24"
@@ -158,8 +178,7 @@ if (Request::isPost()) {
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 aria-hidden="true"
-                                focusable="false"
-                                hidden>
+                                focusable="false">
                                 <path d="M2.25 12s3.5-6 9.75-6 9.75 6 9.75 6-3.5 6-9.75 6-9.75-6-9.75-6Z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
@@ -184,9 +203,11 @@ if (Request::isPost()) {
                     </div>
                 </div>
 
-                <button class="admin-auth-submit" type="submit">ورود</button>
+                <button class="admin-auth-submit" type="submit">ورود به پنل</button>
             </form>
         </section>
+
+        <p class="admin-auth-footer">دسترسی اختصاصی برای حساب‌های مدیریت نیواد</p>
     </main>
 
 </body>
