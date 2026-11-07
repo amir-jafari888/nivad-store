@@ -9,8 +9,10 @@ require_once __DIR__ . '/../includes/auth.php';
 $productService = new ProductService();
 $allProducts = $productService->adminFindAll();
 
-$search = trim((string)Request::query('q', ''));
-$statusFilter = trim((string)Request::query('status', ''));
+$searchValue = Request::query('q', '');
+$statusValue = Request::query('status', '');
+$search = is_string($searchValue) ? trim($searchValue) : '';
+$statusFilter = is_string($statusValue) ? trim($statusValue) : '';
 $allowedStatuses = ['active', 'draft', 'out_of_stock', 'discontinued', 'archived'];
 
 if (!in_array($statusFilter, $allowedStatuses, true)) {
