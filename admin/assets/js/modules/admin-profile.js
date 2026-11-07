@@ -98,6 +98,12 @@ const adminProfile = () => {
     return result.data || {};
   };
 
+  const currentProfileValues = () => {
+    if (!profileForm) return {};
+    const data = new FormData(profileForm);
+    return Object.fromEntries(["first_name", "last_name", "email", "username"].map(key => [key, String(data.get(key) || "").trim()]));
+  };
+
   const setBusy = (form, busy) => {
     const button = form.querySelector('button[type="submit"]');
     if (button) {
@@ -141,7 +147,7 @@ const adminProfile = () => {
       }
       setBusy(passwordForm, true);
       try {
-        await send({ new_password: newPassword, confirm_password: confirmPassword });
+        await send({ ...currentProfileValues(), new_password: newPassword, confirm_password: confirmPassword });
         passwordForm.reset();
         say("رمز عبور با موفقیت تغییر کرد.");
       } catch (error) {
