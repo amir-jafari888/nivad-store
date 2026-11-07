@@ -480,3 +480,241 @@
 }
 .admin-shared-mobile-menu:hover { background: var(--admin-color-bg); }
 .admin-nav-close:hover { background: var(--admin-sidebar-panel-hover); }
+
+
+
+/* Sidebar redesign v3 — pure white surface, forest-green hierarchy, clear navigation cards. */
+.admin-shared-sidebar {
+  --admin-sidebar-bg: #ffffff;
+  --admin-sidebar-panel: #f8faf8;
+  --admin-sidebar-panel-hover: #f0f4f0;
+  --admin-sidebar-text: #18251d;
+  --admin-sidebar-muted: #59685e;
+  --admin-sidebar-border: #dfe6e0;
+  --admin-sidebar-accent: #315b45;
+  --admin-sidebar-accent-soft: #eaf1ec;
+  background: #ffffff;
+  color: #18251d;
+  border-color: #dfe6e0;
+  box-shadow: 0 10px 32px rgba(24, 37, 29, .08);
+}
+.admin-shared-sidebar > .admin-shared-brand {
+  border-block-end: 1px solid #e3e9e4;
+}
+.admin-shared-sidebar .admin-shared-brand-mark {
+  display: grid;
+  place-items: center;
+  background: #315b45;
+  color: #ffffff;
+  border-radius: 11px;
+  box-shadow: 0 3px 8px rgba(49, 91, 69, .18);
+}
+.admin-shared-sidebar .admin-shared-brand > span:last-child {
+  color: #18251d;
+  font-weight: 800;
+}
+.admin-shared-sidebar .admin-shared-brand small {
+  color: #66736a;
+  font-weight: 500;
+}
+.admin-shared-sidebar .admin-shared-nav {
+  gap: 9px;
+}
+.admin-shared-sidebar .admin-shared-nav-link,
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid #e1e7e2;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #26352b;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.55;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(24, 37, 29, .035);
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+.admin-shared-sidebar .admin-shared-nav-link::before,
+.admin-shared-sidebar .admin-shared-nav-group summary::before {
+  content: "";
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  margin-inline-end: 11px;
+  border: 1px solid #91a397;
+  border-radius: 3px;
+  background: #f4f7f4;
+}
+.admin-shared-sidebar .admin-shared-nav-link:hover,
+.admin-shared-sidebar .admin-shared-nav-group summary:hover {
+  border-color: #cbd8ce;
+  background: #f7faf7;
+  color: #203d2c;
+  box-shadow: 0 2px 7px rgba(24, 37, 29, .06);
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"] {
+  border-color: #b9cbbd;
+  background: #eaf1ec;
+  color: #234631;
+  font-weight: 800;
+  box-shadow: inset -3px 0 0 #315b45, 0 1px 3px rgba(24, 37, 29, .045);
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"]::before,
+.admin-shared-sidebar .admin-shared-nav-group[open] summary::before {
+  border-color: #315b45;
+  background: #315b45;
+}
+.admin-shared-sidebar .admin-shared-nav-group {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 4px;
+  border: 1px solid #e1e7e2;
+  border-radius: 12px;
+  background: #f8faf8;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  list-style: none;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary::-webkit-details-marker {
+  display: none;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary::after {
+  content: "⌄";
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  margin-inline-start: auto;
+  color: #617267;
+  font-size: 17px;
+  transition: transform 140ms ease;
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary::after {
+  transform: rotate(180deg);
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary {
+  color: #234631;
+}
+.admin-shared-sidebar .admin-shared-submenu {
+  display: grid;
+  gap: 4px;
+  margin: 0 10px 7px 0;
+  padding: 5px 12px 4px 0;
+  border-inline-start: 0;
+  border-inline-end: 2px solid #dce5de;
+}
+.admin-shared-sidebar .admin-shared-submenu a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  padding: 8px 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #536258;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.6;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.admin-shared-sidebar .admin-shared-submenu a::before {
+  content: "";
+  flex: 0 0 5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #a5b3a8;
+}
+.admin-shared-sidebar .admin-shared-submenu a:hover {
+  border-color: #e1e9e2;
+  background: #f0f4f0;
+  color: #203d2c;
+}
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"] {
+  border-color: #c9d8cc;
+  background: #eaf1ec;
+  color: #234631;
+  font-weight: 800;
+}
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"]::before {
+  background: #315b45;
+}
+.admin-shared-sidebar .admin-shared-account {
+  padding: 13px;
+  border: 1px solid #dfe6e0;
+  border-radius: 12px;
+  background: #f8faf8;
+}
+.admin-shared-sidebar .admin-shared-avatar {
+  background: #315b45;
+  color: #ffffff;
+}
+.admin-shared-sidebar .admin-shared-account-name {
+  color: #26352b;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.6;
+}
+.admin-shared-sidebar .admin-shared-logout {
+  min-height: 42px;
+  border: 1px solid #ead8d5;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #984b43;
+  font-size: 13px;
+  font-weight: 700;
+}
+.admin-shared-sidebar .admin-shared-logout:hover {
+  border-color: #d9b8b2;
+  background: #fbf3f1;
+}
+.admin-shared-sidebar a:focus-visible,
+.admin-shared-sidebar summary:focus-visible,
+.admin-shared-sidebar button:focus-visible {
+  outline: 2px solid #315b45;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px rgba(49, 91, 69, .16);
+}
+.admin-shared-sidebar::-webkit-scrollbar-thumb {
+  border: 2px solid #ffffff;
+  border-radius: 10px;
+  background: #c7d2c9;
+}
+
+
+/* White drawer sizing — tablet. */
+.admin-shared-sidebar {
+  width: min(352px, 78vw);
+  gap: 16px;
+  padding: 22px 17px calc(22px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  border-inline-end: 1px solid #dfe6e0;
+  box-shadow: 8px 0 30px rgba(24, 37, 29, .16);
+}
+.admin-shared-sidebar > .admin-nav-close {
+  background: #f8faf8;
+  border-color: #dfe6e0;
+  color: #26352b;
+}
+.admin-shared-sidebar .admin-shared-nav-link,
+.admin-shared-sidebar .admin-shared-nav-group summary { min-height: 49px; }
+.admin-shared-mobile-menu {
+  min-width: 46px;
+  min-height: 46px;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #26352b;
+  border-color: #dfe6e0;
+}
