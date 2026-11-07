@@ -204,11 +204,12 @@ body.admin-auth-page main.admin-auth-main {
 
 .admin-password-toggle {
   position: absolute;
-  top: 50%;
-  inset-block: auto;
+  inset-block: 0;
   inset-inline-end: 4px;
-  transform: translateY(-50%);
-  display: inline-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 44px;
@@ -229,6 +230,10 @@ body.admin-auth-page main.admin-auth-main {
   color: var(--admin-color-primary);
 }
 
+.admin-auth-page .admin-password-toggle:active {
+  transform: none;
+}
+
 .admin-password-toggle:focus-visible {
   outline: 2px solid var(--admin-color-primary);
   outline-offset: -4px;
@@ -242,8 +247,9 @@ body.admin-auth-page main.admin-auth-main {
   flex: 0 0 20px;
 }
 
-.admin-password-toggle svg[hidden] {
-  display: none;
+.admin-password-toggle[data-password-visibility="hidden"] [data-password-icon="visible"],
+.admin-password-toggle[data-password-visibility="visible"] [data-password-icon="hidden"] {
+  display: none !important;
 }
 
 .admin-auth-submit {
