@@ -43,6 +43,9 @@ final class AdminProfileController extends Controller
             if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 190) {
                 $this->error('ایمیل واردشده معتبر نیست.', 422);
             }
+            if ($firstName === '' || $lastName === '') {
+                $this->error('نام و نام خانوادگی الزامی هستند.', 422);
+            }
             if (mb_strlen($firstName) > 100 || mb_strlen($lastName) > 100) {
                 $this->error('نام و نام خانوادگی حداکثر می‌توانند ۱۰۰ نویسه باشند.', 422);
             }
