@@ -138,11 +138,19 @@ jobs:
           php-version: "8.3"
           coverage: none
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Lint admin UI PHP views
         run: |
           php -l admin/includes/auth.php
           php -l pages/admin/dashboard.php
           php -l test-admin-ui-shell-contracts.php
+
+      - name: Lint admin profile JavaScript module
+        run: node --check --input-type=module < admin/assets/js/modules/admin-profile.js
 
       - name: Run read-only admin UI shell contracts
         run: php test-admin-ui-shell-contracts.php
