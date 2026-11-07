@@ -125,6 +125,9 @@ const adminProfile = () => {
         const name = [payload.first_name, payload.last_name].filter(Boolean).join(" ") || "نام مدیر ثبت نشده";
         const display = document.querySelector("[data-profile-display-name]");
         if (display) display.textContent = name;
+        document.querySelectorAll(".admin-shared-first-name").forEach(node => { node.textContent = payload.first_name; });
+        document.querySelectorAll(".admin-shared-last-name").forEach(node => { node.textContent = payload.last_name; });
+        document.querySelectorAll(".admin-profile-avatar, .admin-shared-avatar").forEach(node => { node.textContent = Array.from(payload.first_name)[0] || "م"; });
         say("اطلاعات شخصی با موفقیت ذخیره شد.");
       } catch (error) {
         say(error.message, true);
