@@ -1,75 +1,19 @@
-/* NIVAD Admin visual refinement — 2026-11-01.
- * App-screen direction: restrained surfaces, colour reserved for data/navigation state,
- * strong RTL geometry, one coherent primary hue, and responsive right-side navigation.
+/* NIVAD Admin visual refinement — 2026-11-07.
+ * Global shell overrides must not repaint the responsive sidebar.
+ * Sidebar appearance is owned by the mobile/tablet/desktop shared-shell styles.
  */
 :root {
   --admin-chart-hue: var(--admin-color-primary);
-  --admin-sidebar-text: var(--admin-color-on-primary);
-  --admin-sidebar-muted: rgba(255, 255, 255, .76);
-  --admin-sidebar-hover: rgba(255, 255, 255, .10);
-  --admin-sidebar-active: rgba(255, 255, 255, .16);
-  --admin-sidebar-border: rgba(255, 255, 255, .18);
   --admin-shadow-header: 0 1px 0 rgba(15, 23, 42, .06);
 }
 html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
+
+/* Keep shared sidebar placement consistent without overriding its palette. */
 .admin-shared-sidebar,
 .admin-dashboard-sidebar {
   inset-inline-start: 0 !important;
   inset-inline-end: auto !important;
-  background: var(--admin-color-primary) !important;
-  border: 0 !important;
-  color: var(--admin-sidebar-text) !important;
-  box-shadow: 0 0 0 1px rgba(15, 23, 42, .04), 0 14px 34px rgba(15, 23, 42, .10) !important;
 }
-.admin-shared-brand,
-.admin-dashboard-brand { color: var(--admin-sidebar-text) !important; }
-.admin-shared-brand small,
-.admin-dashboard-brand small,
-.admin-shared-submenu a,
-.admin-dashboard-nav-submenu a,
-.admin-shared-nav-group summary::after,
-.admin-dashboard-nav-group summary::after { color: var(--admin-sidebar-muted) !important; }
-.admin-shared-brand-mark,
-.admin-dashboard-brand-mark,
-.admin-shared-avatar,
-.admin-dashboard-avatar {
-  background: var(--admin-sidebar-active) !important;
-  color: var(--admin-sidebar-text) !important;
-  border: 1px solid var(--admin-sidebar-border);
-}
-.admin-shared-nav-link,
-.admin-shared-nav-group summary,
-.admin-dashboard-nav-link,
-.admin-dashboard-nav-group summary { color: var(--admin-sidebar-text) !important; }
-.admin-shared-nav-link:hover,
-.admin-shared-nav-group summary:hover,
-.admin-shared-submenu a:hover,
-.admin-dashboard-nav-link:hover,
-.admin-dashboard-nav-group summary:hover,
-.admin-dashboard-nav-submenu a:hover {
-  background: var(--admin-sidebar-hover) !important;
-  color: var(--admin-sidebar-text) !important;
-}
-.admin-shared-nav-link[aria-current="page"],
-.admin-shared-submenu a[aria-current="page"],
-.admin-dashboard-nav-link[aria-current="page"],
-.admin-dashboard-nav-submenu a[aria-current="page"] {
-  background: var(--admin-sidebar-active) !important;
-  color: var(--admin-sidebar-text) !important;
-  box-shadow: inset -3px 0 0 var(--admin-sidebar-text);
-}
-.admin-shared-submenu,
-.admin-dashboard-nav-submenu { border-inline-start-color: var(--admin-sidebar-border) !important; }
-.admin-shared-account,
-.admin-dashboard-account { border-top-color: var(--admin-sidebar-border) !important; }
-.admin-shared-logout,
-.admin-dashboard-logout {
-  border-color: var(--admin-sidebar-border) !important;
-  background: var(--admin-sidebar-hover) !important;
-  color: var(--admin-sidebar-text) !important;
-}
-.admin-shared-logout:hover,
-.admin-dashboard-logout:hover { background: var(--admin-sidebar-active) !important; }
 .admin-dashboard-page .admin-shared-topbar {
   position: sticky;
   isolation: isolate;
