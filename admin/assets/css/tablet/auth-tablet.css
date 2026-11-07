@@ -156,10 +156,11 @@ body.admin-auth-page main.admin-auth-main {
   transition: border-color var(--admin-transition), box-shadow var(--admin-transition);
 }
 
-.admin-auth-field > input:focus-visible {
+.admin-auth-field > input:focus {
   border-color: var(--admin-color-primary);
-  outline: 0;
-  box-shadow: var(--admin-focus-ring);
+  outline: 2px solid var(--admin-color-primary);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
 .admin-auth-hint {
@@ -180,7 +181,9 @@ body.admin-auth-page main.admin-auth-main {
 
 .admin-password-field:focus-within {
   border-color: var(--admin-color-primary);
-  box-shadow: var(--admin-focus-ring);
+  outline: 2px solid var(--admin-color-primary);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
 .admin-password-field > input {
