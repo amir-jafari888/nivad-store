@@ -718,3 +718,161 @@
   color: #26352b;
   border-color: #dfe6e0;
 }
+
+/* Sidebar v4 — token-only white surface with blue active navigation (tablet). */
+.admin-shared-sidebar {
+  --sidebar-surface: var(--admin-color-surface);
+  --sidebar-text: var(--admin-color-text);
+  --sidebar-muted: var(--admin-color-text-muted);
+  --sidebar-border: var(--admin-color-border);
+  --sidebar-active: var(--admin-color-primary);
+  --sidebar-active-text: #ffffff;
+  width: min(352px, 78vw);
+  display: flex;
+  flex-direction: column;
+  gap: var(--admin-space-4);
+  padding: var(--admin-space-5) var(--admin-space-4) calc(var(--admin-space-5) + env(safe-area-inset-bottom));
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+  border-inline-end: 1px solid var(--sidebar-border);
+  box-shadow: var(--admin-shadow-floating);
+}
+.admin-shared-sidebar > .admin-shared-brand {
+  min-height: 56px;
+  gap: var(--admin-space-3);
+  padding: 0 0 var(--admin-space-4);
+  border-block-end: 1px solid var(--sidebar-border);
+  color: var(--sidebar-text);
+}
+.admin-shared-sidebar .admin-shared-brand-mark,
+.admin-shared-sidebar .admin-shared-avatar {
+  background: var(--admin-color-primary-soft);
+  color: var(--admin-color-primary);
+  border: 0;
+  box-shadow: none;
+}
+.admin-shared-sidebar .admin-shared-brand small,
+.admin-shared-sidebar .admin-shared-account-name { color: var(--sidebar-text); }
+.admin-shared-sidebar > .admin-shared-nav { flex: 1 0 auto; gap: var(--admin-space-2); padding: 0; }
+.admin-shared-sidebar .admin-shared-nav-link,
+.admin-shared-sidebar .admin-shared-nav-group summary {
+  display: flex;
+  align-items: center;
+  gap: var(--admin-space-2);
+  min-height: 49px;
+  padding: var(--admin-space-2) var(--admin-space-3);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-font-size-sm);
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  box-shadow: none;
+  transition: background-color var(--admin-transition-fast), border-color var(--admin-transition-fast), color var(--admin-transition-fast);
+}
+.admin-shared-sidebar .admin-shared-nav-link::before,
+.admin-shared-sidebar .admin-shared-nav-group summary::before { content: none; }
+.admin-shared-sidebar .admin-shared-nav-link:hover,
+.admin-shared-sidebar .admin-shared-nav-group summary:hover,
+.admin-shared-sidebar .admin-shared-submenu a:hover {
+  border-color: var(--admin-color-primary);
+  background: var(--admin-color-primary-soft);
+  color: var(--sidebar-text);
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"],
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"] {
+  border-color: var(--sidebar-active);
+  background: var(--sidebar-active);
+  color: var(--sidebar-active-text);
+  font-weight: 700;
+  box-shadow: none;
+}
+.admin-shared-sidebar .admin-shared-nav-link[aria-current="page"]::before,
+.admin-shared-sidebar .admin-shared-submenu a[aria-current="page"]::before { content: none; }
+.admin-shared-sidebar .admin-shared-nav-group {
+  display: grid;
+  gap: var(--admin-space-1);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.admin-shared-sidebar .admin-shared-nav-group summary { cursor: pointer; list-style: none; }
+.admin-shared-sidebar .admin-shared-nav-group summary::-webkit-details-marker { display: none; }
+.admin-shared-sidebar .admin-shared-nav-group summary::after {
+  content: "⌄";
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  margin-inline-start: auto;
+  color: var(--sidebar-muted);
+  font-size: 17px;
+  transition: transform var(--admin-transition-fast);
+}
+.admin-shared-sidebar .admin-shared-nav-group[open] summary::after { transform: rotate(180deg); }
+.admin-shared-sidebar .admin-shared-nav-group:has(.admin-shared-submenu [aria-current="page"]) > summary {
+  border-color: var(--sidebar-active);
+  background: var(--sidebar-active);
+  color: var(--sidebar-active-text);
+}
+.admin-shared-sidebar .admin-shared-nav-group:has(.admin-shared-submenu [aria-current="page"]) > summary::after { color: var(--sidebar-active-text); }
+.admin-shared-sidebar .admin-shared-submenu {
+  display: grid;
+  gap: var(--admin-space-1);
+  margin: var(--admin-space-1) var(--admin-space-3) var(--admin-space-2) 0;
+  padding: 0 var(--admin-space-3) 0 0;
+  border-inline-end: 2px solid var(--sidebar-border);
+  border-inline-start: 0;
+}
+.admin-shared-sidebar .admin-shared-submenu a {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: var(--admin-space-2) var(--admin-space-3);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--admin-radius-sm);
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+  font-size: 13px;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.admin-shared-sidebar .admin-shared-account {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--admin-space-2);
+  margin-top: auto;
+  padding: var(--admin-space-3);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--sidebar-surface);
+}
+.admin-shared-sidebar .admin-shared-account-name { font-size: 13px; line-height: 1.5; }
+.admin-shared-sidebar .admin-shared-logout {
+  min-height: var(--admin-control-height);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--admin-radius-sm);
+  background: var(--sidebar-surface);
+  color: var(--admin-color-error);
+  font: inherit;
+}
+.admin-shared-sidebar .admin-nav-close {
+  border-color: var(--sidebar-border);
+  background: var(--sidebar-surface);
+  color: var(--sidebar-text);
+}
+.admin-shared-sidebar a:focus-visible,
+.admin-shared-sidebar summary:focus-visible,
+.admin-shared-sidebar button:focus-visible {
+  outline: 2px solid var(--admin-color-primary);
+  outline-offset: 2px;
+  box-shadow: var(--admin-focus-ring);
+}
+.admin-shared-mobile-menu { min-width: 46px; min-height: 46px; border-radius: var(--admin-radius-md); }
