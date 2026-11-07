@@ -751,7 +751,7 @@
   --sidebar-muted: var(--admin-color-text-muted);
   --sidebar-border: var(--admin-color-border);
   --sidebar-active: var(--admin-color-primary);
-  --sidebar-active-text: #ffffff;
+  --sidebar-active-text: var(--admin-color-surface);
   width: min(340px, calc(100vw - 28px));
   max-width: 360px;
   display: flex;
