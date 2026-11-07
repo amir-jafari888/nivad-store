@@ -59,7 +59,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         }
 
         if (stripos($html, '/admin/assets/css/main.css') === false) {
-            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261107-header-v6');
+            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261107-header-v7');
             $assets .= "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">";
         }
 
@@ -115,7 +115,6 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
             <label class="admin-global-search-label" for="admin-global-search-input">جست‌وجوی سراسری</label>
             <input id="admin-global-search-input" type="search" placeholder="جست‌وجوی محصول، سفارش، مشتری یا تیکت…" autocomplete="off" aria-autocomplete="list" aria-controls="admin-global-search-results">
             <ul id="admin-global-search-results" class="admin-global-search-results" role="list" hidden></ul>
-            <span class="admin-global-search-shortcut" aria-hidden="true">Ctrl K</span>
             <button type="button" class="admin-command-open-button" data-admin-command-palette-open aria-haspopup="dialog">فرمان‌ها</button>
         </div>' : '';
 
