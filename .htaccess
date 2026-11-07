@@ -9,6 +9,11 @@ RewriteRule ^admin/logout(?:\.php)?/?$ /nivad-panel/logout [R=302,L,NE]
 RewriteCond %{THE_REQUEST} \s/+admin(?:[/?\s]) [NC]
 RewriteRule ^admin(?:/(.*))?/?$ /nivad-panel/$1 [R=302,L,NE]
 
+# Product management pages use PHP files without exposing the .php suffix.
+RewriteRule ^nivad-panel/products/?$ admin/products/index.php [END,QSA]
+RewriteRule ^nivad-panel/products/create/?$ admin/products/create.php [END,QSA]
+RewriteRule ^nivad-panel/products/edit/?$ admin/products/edit.php [END,QSA]
+
 # Canonical admin routes -> physical /admin implementation.
 # END prevents a second per-directory rewrite pass after the internal mapping.
 RewriteRule ^nivad-panel/?$ admin/index.php [END,QSA]
