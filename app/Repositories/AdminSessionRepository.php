@@ -164,6 +164,27 @@ final class AdminSessionRepository
         return $stmt->rowCount();
     }
 
+    public function revokeOtherSessionsForAdmin(int $adminUserId, string $currentTokenHash): int
+    {
+        if ($adminUserId < 1 || $currentTokenHash === '') {
+            return 0;
+        }
+
+        $stmt = $this->db->prepare(
+            'UPDATE admin_sessions
+             SET revoked_at = CURRENT_TIMESTAMP
+             WHERE admin_user_id = :admin_user_id
+               AND session_token_hash <> :current_token_hash
+               AND revoked_at IS NULL
+               AND expires_at > CURRENT_TIMESTAMP'
+        );
+        $stmt->execute([
+            'admin_user_id' => $adminUserId,
+            'current_token_hash' => $currentTokenHash,
+        ]);
+        return $stmt->rowCount();
+    }
+
     public function touchByTokenHash(
         string $sessionTokenHash
     ): bool {
