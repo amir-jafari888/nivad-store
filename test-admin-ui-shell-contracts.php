@@ -50,6 +50,10 @@ $profileRepository = $read('app/Repositories/AdminRepository.php');
 $profileJs = $read('admin/assets/js/modules/admin-profile.js');
 $sessionRepository = $read('app/Repositories/AdminSessionRepository.php');
 $apiRoutes = $read('routes/api.php');
+$productsPage = $read('admin/products/index.php');
+$productRewrites = $read('.htaccess');
+$productCss = $read('admin/assets/css/admin-shell-overrides.css');
+
 
 $check('Admin design token file exists', $tokens !== '');
 $check('Unused dark theme module has been removed after the Light-only decision', !is_file($root . '/admin/assets/js/modules/theme.js'));
@@ -98,6 +102,31 @@ $check('Password changes revoke other active sessions without revoking the curre
     str_contains($profileController, 'revokeOtherSessionsForAdmin')
     && str_contains($sessionRepository, 'session_token_hash <> :current_token_hash')
     && str_contains($sessionRepository, 'revokeOtherSessionsForAdmin')
+);
+
+
+$check('Product create and edit pretty URLs rewrite to their existing PHP page files',
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/products/create/?$ admin/products/create.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/products/edit/?$ admin/products/edit.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/products/?$ admin/products/index.php [END,QSA]')
+);
+$check('Products index uses the shared admin shell and existing product data contract',
+    str_contains($productsPage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($productsPage, 'adminFindAll()')
+    && str_contains($productsPage, 'admin-products-table')
+    && str_contains($productsPage, "url('/admin/products/create')")
+    && str_contains($productsPage, "url('/admin/products/edit?id='")
+);
+$check('Products index filters are escaped and restricted to known statuses',
+    str_contains($productsPage, "Request::query('q'")
+    && str_contains($productsPage, "Request::query('status'")
+    && str_contains($productsPage, 'in_array($statusFilter, $allowedStatuses, true)')
+    && str_contains($productsPage, 'e($search)')
+);
+$check('Products catalog has responsive styling and shared spacing tokens',
+    str_contains($productCss, '.admin-products-summary')
+    && str_contains($productCss, '@media (max-width: 600px)')
+    && str_contains($productCss, '--admin-space-')
 );
 
 
