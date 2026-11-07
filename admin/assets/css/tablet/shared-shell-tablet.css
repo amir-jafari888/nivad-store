@@ -876,3 +876,107 @@
   box-shadow: var(--admin-focus-ring);
 }
 .admin-shared-mobile-menu { min-width: 46px; min-height: 46px; border-radius: var(--admin-radius-md); }
+
+/* Unified admin header — tablet */
+.admin-shared-topbar {
+  min-height: 64px;
+  gap: var(--admin-space-3);
+  padding: var(--admin-space-2) var(--admin-space-4);
+  background: var(--admin-color-surface);
+  border-bottom: 1px solid var(--admin-color-border);
+  box-shadow: var(--admin-shadow-card);
+}
+.admin-shared-topbar-brand {
+  flex: 0 0 auto;
+  gap: var(--admin-space-2);
+  white-space: nowrap;
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-font-size-sm);
+}
+.admin-shared-topbar-brand span { white-space: nowrap; }
+.admin-shared-topbar .admin-global-search {
+  display: flex;
+  flex: 1 1 180px;
+  align-items: center;
+  gap: var(--admin-space-2);
+  min-width: 100px;
+  max-width: 420px;
+  margin-inline: auto;
+}
+.admin-shared-topbar .admin-global-search-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.admin-shared-topbar .admin-global-search input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: var(--admin-space-2) var(--admin-space-3);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text);
+  font: inherit;
+  font-size: 13px;
+}
+.admin-shared-topbar .admin-global-search input:focus {
+  border-color: var(--admin-color-primary);
+  background: var(--admin-color-surface);
+  outline: 0;
+  box-shadow: var(--admin-focus-ring);
+}
+.admin-shared-topbar .admin-global-search-shortcut { display: none; }
+.admin-shared-topbar .admin-command-open-button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding-inline: var(--admin-space-3);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+  color: var(--admin-color-text);
+  font: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.admin-shared-topbar-profile {
+  flex: 0 0 auto;
+  min-height: 44px;
+  gap: var(--admin-space-2);
+  padding: var(--admin-space-1) var(--admin-space-2);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+}
+.admin-shared-topbar-profile .admin-shared-avatar {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+}
+.admin-shared-topbar-profile .admin-shared-account-name {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 3px;
+  max-width: 140px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.35;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.admin-shared-topbar-profile .admin-shared-account-name span {
+  display: inline;
+  min-width: 0;
+  white-space: nowrap;
+}
+.admin-shared-topbar-profile .admin-shared-first-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
