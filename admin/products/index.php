@@ -149,7 +149,7 @@ $visibleProducts = count($products);
                                     <th scope="col">محصول</th>
                                     <th scope="col">SKU</th>
                                     <th scope="col">وضعیت</th>
-                                    <th scope="col">نوع</th>
+                                    <th scope="col">شناسه نوع</th>
                                     <th scope="col">عملیات</th>
                                 </tr>
                             </thead>
