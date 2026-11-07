@@ -104,3 +104,131 @@
 .admin-profile-details{grid-template-columns:repeat(2,minmax(0,1fr))}
 
 .admin-nav-open{overflow:hidden}
+
+/* Sidebar refinement — tablet: keep the same right-side drawer and expand its reading width. */
+.admin-shared-sidebar {
+  width: min(328px, 78vw);
+  gap: var(--admin-space-3);
+  padding: var(--admin-space-5) var(--admin-space-4) calc(var(--admin-space-5) + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  background: var(--admin-color-surface);
+  border-inline-end: 1px solid var(--admin-color-border);
+  box-shadow: var(--admin-shadow-floating);
+}
+.admin-shared-sidebar > .admin-nav-close {
+  order: 0;
+  align-self: flex-end;
+  flex: 0 0 40px;
+  margin: 0 0 -44px;
+}
+.admin-shared-sidebar > .admin-shared-brand {
+  order: 1;
+  min-height: 44px;
+  padding-inline-end: 48px;
+  gap: var(--admin-space-3);
+  padding-block-end: var(--admin-space-4);
+  border-bottom: 1px solid var(--admin-color-border);
+}
+.admin-shared-brand-mark { width: 42px; height: 42px; flex-basis: 42px; border-radius: var(--admin-radius-md); }
+.admin-shared-brand > span:last-child { font-size: 15px; line-height: 1.45; }
+.admin-shared-brand small { margin-top: 2px; font-size: 12px; }
+.admin-shared-sidebar > .admin-shared-nav {
+  order: 2;
+  flex: 1 0 auto;
+  gap: var(--admin-space-1);
+  padding-block: var(--admin-space-2);
+}
+.admin-shared-nav-link,
+.admin-shared-nav-group summary {
+  min-height: 46px;
+  padding: 10px 12px;
+  border-radius: var(--admin-radius-md);
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 500;
+  transition: background-color var(--admin-transition-fast), color var(--admin-transition-fast);
+}
+.admin-shared-nav-link:hover,
+.admin-shared-nav-group summary:hover,
+.admin-shared-submenu a:hover {
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text);
+}
+.admin-shared-nav-group { margin-block: 2px; }
+.admin-shared-nav-group summary { background: transparent; font-weight: 600; }
+.admin-shared-nav-group summary:after {
+  content: "⌄";
+  font-size: 16px;
+  line-height: 1;
+  transition: transform var(--admin-transition-fast);
+}
+.admin-shared-nav-group[open] summary:after { content: "⌄"; transform: rotate(180deg); }
+.admin-shared-submenu {
+  gap: 2px;
+  margin-inline-start: 14px;
+  padding: 4px 8px 6px;
+}
+.admin-shared-submenu a {
+  min-height: 40px;
+  padding: 8px 10px;
+  border-radius: var(--admin-radius-sm);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.admin-shared-nav-link[aria-current="page"],
+.admin-shared-submenu a[aria-current="page"] {
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--admin-color-border);
+}
+.admin-shared-sidebar > .admin-shared-account {
+  order: 3;
+  margin-top: auto;
+  padding: var(--admin-space-3);
+  border: 1px solid var(--admin-color-border);
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-bg);
+}
+.admin-shared-account .admin-shared-avatar { width: 40px; height: 40px; }
+.admin-shared-account-name { font-size: 13px; line-height: 1.55; }
+.admin-shared-logout {
+  min-height: 44px;
+  border-radius: var(--admin-radius-sm);
+  background: var(--admin-color-surface);
+  font-weight: 600;
+}
+.admin-nav-close {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--admin-radius-md);
+  background: var(--admin-color-surface);
+  font-size: 22px;
+}
+.admin-shared-mobile-menu {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--admin-radius-md);
+  font-size: 0;
+}
+.admin-shared-mobile-menu::before {
+  content: "";
+  width: 18px;
+  height: 14px;
+  background: linear-gradient(
+    to bottom,
+    var(--admin-color-text) 0 2px,
+    transparent 2px 6px,
+    var(--admin-color-text) 6px 8px,
+    transparent 8px 12px,
+    var(--admin-color-text) 12px 14px
+  );
+}
+.admin-shared-mobile-menu:hover,
+.admin-nav-close:hover { background: var(--admin-color-bg); }
+.admin-shared-sidebar a:focus-visible,
+.admin-shared-sidebar summary:focus-visible,
+.admin-shared-sidebar button:focus-visible {
+  outline-offset: 2px;
+}
