@@ -352,8 +352,8 @@ $check('Collections list adds responsive catalog summary, loading feedback and r
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for collections and active navigation changes',
-    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
-    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
+    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
+    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
 );
 
 
@@ -482,8 +482,8 @@ $check('Specifications index has responsive filters, four summary metrics and vi
     && str_contains($productCss, '.admin-specifications-page .admin-products-edit-action:focus-visible')
 );
 $check('Admin asset cache is refreshed for specifications index and active navigation changes',
-    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
-    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
+    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
+    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
 );
 
 
@@ -560,8 +560,77 @@ $check('Specification groups page reuses catalog summary, panel, filters, semant
     && str_contains($productCss, '.admin-specification-groups-page')
 );
 $check('Catalog create and specification group pages refresh the shared admin asset cache key',
-    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
-    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
+    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
+    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+);
+
+
+$slidersPage = $read('admin/sliders/index.php');
+$sliderEditPage = $read('admin/sliders/edit.php');
+$sliderService = $read('app/Services/SliderService.php');
+$sliderController = $read('app/Controllers/SliderController.php');
+
+$check('Slider index and edit pages have explicit canonical extensionless routes',
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/sliders/?$ admin/sliders/index.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/sliders/edit/?$ admin/sliders/edit.php [END,QSA]')
+);
+$check('Slider index uses the authenticated admin shell and the existing admin sliders API contract',
+    str_contains($slidersPage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($slidersPage, "url('/api/admin/sliders')")
+    && str_contains($slidersPage, 'result.data?.items')
+    && str_contains($sliderController, '$this->service->findAll()')
+    && str_contains($sliderService, 'public function findAll(): array')
+);
+$check('Slider index renders real model fields including description, status, schedule and sort order',
+    str_contains($slidersPage, 'item.name')
+    && str_contains($slidersPage, 'item.slug')
+    && str_contains($slidersPage, 'item.description')
+    && str_contains($slidersPage, 'item.status')
+    && str_contains($slidersPage, 'item.startsAt')
+    && str_contains($slidersPage, 'item.endsAt')
+    && str_contains($slidersPage, 'item.sortOrder')
+);
+$check('Slider index provides data-backed counts, search and status filters',
+    str_contains($slidersPage, 'data-slider-count="all"')
+    && str_contains($slidersPage, 'data-slider-count="active"')
+    && str_contains($slidersPage, 'data-slider-count="inactive"')
+    && str_contains($slidersPage, "addEventListener('input', renderRows)")
+    && str_contains($slidersPage, 'data-slider-filter')
+    && str_contains($slidersPage, 'sliders-status')
+);
+$check('Slider index handles loading, empty, API error and retry states',
+    str_contains($slidersPage, 'aria-busy="true"')
+    && str_contains($slidersPage, 'هنوز اسلایدری ثبت نشده است.')
+    && str_contains($slidersPage, 'showFeedback(')
+    && str_contains($slidersPage, 'تلاش دوباره')
+    && str_contains($slidersPage, 'finally')
+);
+$check('Slider index creates rows through safe DOM APIs without dynamic HTML injection',
+    str_contains($slidersPage, 'document.createElement')
+    && str_contains($slidersPage, 'textContent')
+    && str_contains($slidersPage, 'replaceChildren')
+    && !str_contains($slidersPage, '.innerHTML')
+);
+$check('Slider edit action uses the existing edit page and query-string ID contract',
+    str_contains($slidersPage, "url('/admin/sliders/edit?id=')")
+    && str_contains($sliderEditPage, '$_GET')
+);
+$check('Slider navigation group opens and marks the current sliders link',
+    str_contains($sharedAuth, '$isSliderPage')
+    && str_contains($sharedAuth, "url('/admin/sliders')")
+    && str_contains($sharedAuth, 'aria-current="page"')
+    && str_contains($sharedAuth, 'is-current-group')
+);
+$check('Slider index has responsive count filters, table, focus and reduced-motion styles',
+    str_contains($productCss, '.admin-sliders-summary')
+    && str_contains($productCss, '.admin-sliders-filters')
+    && str_contains($productCss, '.admin-sliders-table')
+    && str_contains($productCss, '.admin-sliders-stat:focus-visible')
+    && str_contains($productCss, 'prefers-reduced-motion: reduce')
+);
+$check('Admin asset cache is refreshed for the slider index and navigation changes',
+    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
+    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
