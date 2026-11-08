@@ -339,6 +339,31 @@ final class SpecGroupRepository
         return $groups;
     }
 
+    public function findAllIncludingDeleted(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT
+                id,
+                name,
+                slug,
+                sort_order,
+                status,
+                created_at,
+                updated_at,
+                deleted_at
+             FROM spec_groups
+             ORDER BY id DESC'
+        );
+
+        $groups = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $groups[] = $this->hydrate($row);
+        }
+
+        return $groups;
+    }
+
     public function findActive(): array
     {
         $stmt = $this->db->query(
