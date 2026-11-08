@@ -11,7 +11,7 @@ require_once __DIR__ . '/../includes/auth.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدیریت Discovery | نیواد</title>
+    <title>دیسکاوری | نیواد</title>
     <link rel="stylesheet" href="<?= e(url('/admin/assets/css/main.css')) ?>">
     <script type="module" src="<?= e(url('/admin/assets/js/main.js')) ?>"></script>
 </head>
@@ -19,12 +19,12 @@ require_once __DIR__ . '/../includes/auth.php';
     <main id="main-content" class="admin-discovery-page-main" data-admin-discovery-page>
         <header class="admin-discovery-heading">
             <div>
-                <p class="admin-dashboard-eyebrow">ویترین و کشف محصول</p>
-                <h1>مدیریت Discovery</h1>
-                <p class="admin-discovery-description">مدیریت تگ‌ها و ارتباط آن‌ها با محصولات، با پیش‌نمایش روشن و بدون نمایش آمار ساختگی.</p>
+                <p class="admin-discovery-eyebrow">ویترین فروشگاه / کشف محصول</p>
+                <h1>دیسکاوری</h1>
+                <p class="admin-discovery-description">مدیریت ساختار تگ‌هایی که به مشتری کمک می‌کنند محصولات مرتبط را راحت‌تر پیدا کند.</p>
             </div>
             <a class="admin-discovery-storefront-link" href="<?= e(url('/discover')) ?>" target="_blank" rel="noopener noreferrer">
-                مشاهده تجربه مشتری
+                مشاهده صفحه دیسکاوری
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8"/><path d="M17 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h5"/></svg>
             </a>
         </header>
@@ -38,16 +38,16 @@ require_once __DIR__ . '/../includes/auth.php';
             <article class="admin-discovery-summary-card">
                 <span class="admin-discovery-summary-label">تگ‌های مدیریت‌شده</span>
                 <strong data-discovery-count>۰</strong>
-                <span class="admin-discovery-summary-caption">در این پیش‌نمایش</span>
+                <span class="admin-discovery-summary-caption">تگ اضافه‌شده در این نشست</span>
             </article>
             <article class="admin-discovery-summary-card">
                 <span class="admin-discovery-summary-label">محصولات متصل</span>
-                <strong>—</strong>
-                <span class="admin-discovery-summary-caption">پس از اتصال داده نمایش داده می‌شود</span>
+                <strong class="admin-discovery-source-state">—</strong>
+                <span class="admin-discovery-summary-caption">اتصال محصول هنوز پیاده‌سازی نشده</span>
             </article>
             <article class="admin-discovery-summary-card">
                 <span class="admin-discovery-summary-label">وضعیت منبع داده</span>
-                <strong class="admin-discovery-source-state">متصل نیست</strong>
+                <strong class="admin-discovery-source-state">پیش‌نمایش</strong>
                 <span class="admin-discovery-summary-caption">هیچ آمار واقعی ادعا نمی‌شود</span>
             </article>
         </section>

@@ -352,8 +352,8 @@ $check('Collections list adds responsive catalog summary, loading feedback and r
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for collections and active navigation changes',
-    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
-    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
 );
 
 
@@ -482,8 +482,8 @@ $check('Specifications index has responsive filters, four summary metrics and vi
     && str_contains($productCss, '.admin-specifications-page .admin-products-edit-action:focus-visible')
 );
 $check('Admin asset cache is refreshed for specifications index and active navigation changes',
-    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
-    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
 );
 
 
@@ -560,8 +560,8 @@ $check('Specification groups page reuses catalog summary, panel, filters, semant
     && str_contains($productCss, '.admin-specification-groups-page')
 );
 $check('Catalog create and specification group pages refresh the shared admin asset cache key',
-    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
-    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
 );
 
 
@@ -629,8 +629,60 @@ $check('Slider index has responsive count filters, table, focus and reduced-moti
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for the slider index and navigation changes',
-    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
-    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
+);
+
+
+$discoveryPage = $read('admin/discovery/index.php');
+$discoveryTags = $read('admin/discovery/tags.php');
+$discoveryModule = $read('admin/assets/js/modules/admin-discovery.js');
+$adminMainJs = $read('admin/assets/js/main.js');
+
+$check('Discovery page has an explicit canonical authenticated admin route',
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/discovery/?$ admin/discovery/index.php [END,QSA]')
+    && str_contains($discoveryPage, "require_once __DIR__ . '/../includes/auth.php'")
+);
+$check('Discovery preview clearly discloses that tags are not persisted or connected to products',
+    str_contains($discoveryPage, 'در دیتابیس ذخیره نمی‌شوند')
+    && str_contains($discoveryPage, 'اتصال محصول هنوز پیاده‌سازی نشده')
+    && str_contains($discoveryTags, 'ذخیره‌سازی پایدار هنوز فعال نیست')
+    && str_contains($discoveryModule, 'در دیتابیس ذخیره نشده است')
+);
+$check('Discovery tab interface has accessible tab and panel relationships and keyboard navigation',
+    str_contains($discoveryPage, 'role="tablist"')
+    && str_contains($discoveryPage, 'aria-controls="discovery-overview-panel"')
+    && str_contains($discoveryPage, 'role="tabpanel"')
+    && str_contains($discoveryModule, 'ArrowRight')
+    && str_contains($discoveryModule, 'event.key === "Home"')
+);
+$check('Discovery local preview form validates duplicate slugs and safely renders tag values',
+    str_contains($discoveryModule, 'form.reportValidity()')
+    && str_contains($discoveryModule, 'tag.slug === slug')
+    && str_contains($discoveryModule, 'document.createElement')
+    && str_contains($discoveryModule, 'textContent')
+    && !str_contains($discoveryModule, '.innerHTML')
+);
+$check('Discovery interaction module is imported and initialized by the shared admin entry point',
+    str_contains($adminMainJs, 'import adminDiscovery from "./modules/admin-discovery.js"')
+    && str_contains($adminMainJs, 'adminDiscovery()')
+);
+$check('Discovery navigation opens the correct group and marks the current link',
+    str_contains($sharedAuth, '$isDiscoveryPage')
+    && str_contains($sharedAuth, "url('/admin/discovery')")
+    && str_contains($sharedAuth, 'aria-current="page"')
+);
+$check('Discovery page uses responsive framed workspace, form, list and accessible focus styles',
+    str_contains($productCss, '.admin-discovery-tag-layout')
+    && str_contains($productCss, '.admin-discovery-summary')
+    && str_contains($productCss, 'focus-visible')
+    && str_contains($productCss, '@media (max-width: 1009px)')
+    && str_contains($productCss, '@media (max-width: 600px)')
+    && str_contains($productCss, 'prefers-reduced-motion: reduce')
+);
+$check('Discovery stylesheet cache key is refreshed in the shell and main stylesheet',
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";

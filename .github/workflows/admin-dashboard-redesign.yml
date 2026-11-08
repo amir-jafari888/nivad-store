@@ -46,6 +46,7 @@ jobs:
           php -l admin/product-types/index.php
           php -l admin/specifications/index.php
           php -l admin/sliders/index.php
+          php -l admin/discovery/index.php
           php -l admin/sliders/edit.php
           php -l admin/attributes/create.php
           php -l admin/product-types/create.php
