@@ -69,7 +69,7 @@ if (Request::isPost()) {
             $error = implode(' ', array_values($errors));
         } elseif ($brandService->findActiveById($payload['brandId']) === null) {
             $error = 'برند انتخاب‌شده معتبر یا فعال نیست.';
-        } elseif ($productTypeService->findById($payload['productTypeId']) === null) {
+        } elseif (!array_filter($productTypes, static fn($type): bool => $type->id === $payload['productTypeId'])) {
             $error = 'نوع محصول انتخاب‌شده معتبر نیست.';
         } elseif ($productService->adminExistsBySlug($payload['slug'])) {
             $error = 'اسلاگ محصول تکراری است.';
