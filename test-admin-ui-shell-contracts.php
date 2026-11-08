@@ -432,7 +432,7 @@ $check('Product types index includes a distinct empty state and semantic respons
 );
 $check('Product types route is included in the shared catalog active-state logic',
     str_contains($sharedAuth, '(products|categories|brands|collections|attributes|product-types)')
-    && str_contains($sharedAuth, '$catalogLink(\\'product-types\\'')
+    && str_contains($sharedAuth, '$catalogLink(\'product-types\'')
     && str_contains($sharedAuth, 'aria-current="page"')
 );
 $check('Product types index has responsive filters, descriptions and visible keyboard focus',
