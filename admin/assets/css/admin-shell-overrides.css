@@ -1837,3 +1837,62 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
     min-height: 44px;
   }
 }
+
+
+/* Product types index — reuse the established catalog list system. */
+.admin-product-types-page .admin-product-types-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.admin-product-types-page .admin-products-status-inactive,
+.admin-product-types-page .admin-products-status-unknown {
+  border-color: var(--admin-color-border);
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text-muted);
+}
+.admin-product-types-filters {
+  grid-template-columns: minmax(240px, 1.5fr) minmax(170px, .8fr) auto;
+  align-items: end;
+}
+.admin-product-types-table { min-width: 900px; }
+.admin-product-types-table td:nth-child(3) {
+  direction: ltr;
+  text-align: right;
+}
+.admin-product-types-name-cell { min-width: 170px; }
+.admin-product-types-description {
+  max-width: 280px;
+  color: var(--admin-color-text-muted);
+  font-size: var(--admin-font-size-sm);
+  line-height: 1.8;
+}
+.admin-product-types-muted { color: var(--admin-color-text-muted); }
+.admin-product-types-page .admin-products-primary-action:focus-visible,
+.admin-product-types-page .admin-products-filter-actions button:focus-visible,
+.admin-product-types-page .admin-products-filter-actions a:focus-visible,
+.admin-product-types-page .admin-products-edit-action:focus-visible {
+  outline: 2px solid var(--admin-color-primary);
+  outline-offset: 3px;
+  box-shadow: var(--admin-focus-ring);
+}
+@media (max-width: 1009px) {
+  .admin-product-types-filters {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, .7fr);
+  }
+  .admin-product-types-filters .admin-products-filter-actions {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 600px) {
+  .admin-product-types-page .admin-product-types-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-product-types-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-product-types-filters .admin-products-filter-actions {
+    grid-column: auto;
+  }
+  .admin-product-types-page .admin-products-filter-actions button {
+    min-height: 44px;
+  }
+}
