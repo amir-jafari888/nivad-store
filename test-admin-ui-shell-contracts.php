@@ -51,6 +51,7 @@ $profileJs = $read('admin/assets/js/modules/admin-profile.js');
 $sessionRepository = $read('app/Repositories/AdminSessionRepository.php');
 $apiRoutes = $read('routes/api.php');
 $productsPage = $read('admin/products/index.php');
+$productCreatePage = $read('admin/products/create.php');
 $productRewrites = $read('.htaccess');
 $productCss = $read('admin/assets/css/admin-shell-overrides.css');
 
@@ -127,6 +128,27 @@ $check('Products catalog has responsive styling and shared spacing tokens',
     str_contains($productCss, '.admin-products-summary')
     && str_contains($productCss, '@media (max-width: 600px)')
     && str_contains($productCss, '--admin-space-')
+);
+$check('Product filters align action controls to the same 46px control baseline',
+    str_contains($productCss, '.admin-products-filter-actions {')
+    && str_contains($productCss, 'align-self: end;')
+    && str_contains($productCss, 'height: 46px;')
+);
+$check('Product creation uses active brand and product-type selectors instead of manual IDs',
+    str_contains($productCreatePage, '$brandService->findActive()')
+    && str_contains($productCreatePage, '$productTypeService->findActive()')
+    && str_contains($productCreatePage, '<select name="brandId"')
+    && str_contains($productCreatePage, '<select name="productTypeId"')
+    && !str_contains($productCreatePage, 'شناسه برند<input')
+    && !str_contains($productCreatePage, 'شناسه نوع محصول<input')
+);
+$check('Product creation groups core details, descriptions, publishing and optional SEO',
+    str_contains($productCreatePage, 'product-create-basic-title')
+    && str_contains($productCreatePage, 'product-create-description-title')
+    && str_contains($productCreatePage, 'product-create-publish-title')
+    && str_contains($productCreatePage, '<details class="admin-product-create-seo">')
+    && str_contains($productCss, '.admin-product-create-fields')
+    && str_contains($productCss, '@media (max-width: 600px)')
 );
 
 
