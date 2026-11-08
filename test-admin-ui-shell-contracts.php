@@ -58,6 +58,7 @@ $categoriesPage = $read('admin/categories/index.php');
 $categoryCreatePage = $read('admin/categories/create.php');
 $brandsPage = $read('admin/brands/index.php');
 $brandCreatePage = $read('admin/brands/create.php');
+$collectionsPage = $read('admin/collections/index.php');
 
 
 $check('Admin design token file exists', $tokens !== '');
@@ -283,6 +284,71 @@ $check('Brand creation reuses the exact product-create form sections, controls a
 $check('Brand index adds a responsive three-stat layout and inactive status treatment',
     str_contains($productCss, '.admin-brands-summary')
     && str_contains($productCss, '.admin-brands-page .admin-products-status-inactive')
+);
+
+
+$check('Collections list and edit pages have canonical admin routes',
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/collections/?$ admin/collections/index.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/collections/edit/?$ admin/collections/edit.php [END,QSA]')
+);
+$check('Collections index uses the authenticated shared catalog shell and existing admin API',
+    str_contains($collectionsPage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($collectionsPage, "url('/api/admin/collections')")
+    && str_contains($collectionsPage, 'credentials: \'same-origin\'')
+    && str_contains($collectionsPage, 'result.data?.items')
+);
+$check('Collections index provides live totals, active/inactive counts, search and status filters',
+    str_contains($collectionsPage, 'collections-total')
+    && str_contains($collectionsPage, 'collections-active')
+    && str_contains($collectionsPage, 'collections-inactive')
+    && str_contains($collectionsPage, 'collections-search')
+    && str_contains($collectionsPage, 'collections-status')
+    && str_contains($collectionsPage, 'filtered.length')
+);
+$check('Collections index handles loading, empty and retryable API error states',
+    str_contains($collectionsPage, 'در حال دریافت فهرست مجموعه‌ها')
+    && str_contains($collectionsPage, 'collections-empty')
+    && str_contains($collectionsPage, 'تلاش دوباره')
+    && str_contains($collectionsPage, 'finally')
+);
+$check('Collections rows are rendered with safe DOM text APIs and retain edit links',
+    str_contains($collectionsPage, 'document.createElement')
+    && str_contains($collectionsPage, 'textContent')
+    && str_contains($collectionsPage, 'replaceChildren')
+    && str_contains($collectionsPage, "url('/admin/collections/edit?id=')")
+    && !str_contains($collectionsPage, '.innerHTML')
+);
+$check('Collections index shows collection-specific type, status, order and availability fields',
+    str_contains($collectionsPage, 'item.collectionType')
+    && str_contains($collectionsPage, 'item.sortOrder')
+    && str_contains($collectionsPage, 'item.startsAt')
+    && str_contains($collectionsPage, 'item.endsAt')
+    && str_contains($collectionsPage, 'admin-products-status-active')
+    && str_contains($collectionsPage, 'admin-products-status-inactive')
+);
+$check('Shared sidebar detects the active catalog route and exposes current navigation semantics',
+    str_contains($sharedAuth, '$activeCatalogSection')
+    && str_contains($sharedAuth, '(products|categories|brands|collections)')
+    && str_contains($sharedAuth, 'aria-current="page"')
+    && str_contains($sharedAuth, 'is-current-group')
+    && str_contains($sharedAuth, ' aria-current="location"')
+    && str_contains($sharedAuth, ' open')
+);
+$check('Products, categories, brands and collections share dynamic active sidebar links',
+    str_contains($sharedAuth, "$catalogLink('products'")
+    && str_contains($sharedAuth, "$catalogLink('categories'")
+    && str_contains($sharedAuth, "$catalogLink('brands'")
+    && str_contains($sharedAuth, "$catalogLink('collections'")
+);
+$check('Collections list adds responsive catalog summary, loading feedback and reduced-motion support',
+    str_contains($productCss, '.admin-collections-summary')
+    && str_contains($productCss, '.admin-collections-feedback')
+    && str_contains($productCss, '.admin-collections-table')
+    && str_contains($productCss, 'prefers-reduced-motion: reduce')
+);
+$check('Admin asset cache is refreshed for collections and active navigation changes',
+    str_contains($sharedAuth, '20261108-collections-index-active-nav-v1')
+    && str_contains($mainCss, '20261108-collections-index-active-nav-v1')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
