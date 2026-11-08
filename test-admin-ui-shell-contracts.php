@@ -134,6 +134,18 @@ $check('Product filters align action controls to the same 46px control baseline'
     && str_contains($productCss, 'align-self: end;')
     && str_contains($productCss, 'height: 46px;')
 );
+
+$check('Product status dropdown arrow has breathing room and remains vertically centered',
+    str_contains($productCss, 'appearance: none;')
+    && str_contains($productCss, 'background-position: left 14px center;')
+    && str_contains($productCss, 'padding-inline-end: calc(var(--admin-space-4) + 20px);')
+);
+$check('Product filter submit button shares the input baseline without vertical drift',
+    str_contains($productCss, 'align-items: start;')
+    && str_contains($productCss, 'padding-block-start: calc(12px * 1.6 + var(--admin-space-2));')
+    && str_contains($productCss, '@media (max-width: 1009px)')
+    && str_contains($productCss, 'padding-block-start: 0;')
+);
 $check('Product creation uses active brand and product-type selectors instead of manual IDs',
     str_contains($productCreatePage, '$brandService->findActive()')
     && str_contains($productCreatePage, '$productTypeService->findActive()')
