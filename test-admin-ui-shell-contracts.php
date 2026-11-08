@@ -547,6 +547,11 @@ $check('Specification groups page provides searchable, filterable list and safe 
     && str_contains($specificationGroupsPage, '$service->restore(')
     && str_contains($specificationGroupsPage, 'Csrf::verify')
 );
+$check('Specification groups restore flow reads soft-deleted rows through the explicit service/repository method',
+    str_contains($specificationGroupsPage, '$service->findAllIncludingDeleted()')
+    && str_contains($read('app/Services/SpecGroupService.php'), 'findAllIncludingDeleted')
+    && str_contains($read('app/Repositories/SpecGroupRepository.php'), 'findAllIncludingDeleted')
+);
 $check('Specification groups page reuses catalog summary, panel, filters, semantic table and responsive styles',
     str_contains($specificationGroupsPage, 'admin-specification-groups-summary')
     && str_contains($specificationGroupsPage, 'admin-products-panel')
