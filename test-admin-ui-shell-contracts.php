@@ -54,6 +54,8 @@ $productsPage = $read('admin/products/index.php');
 $productCreatePage = $read('admin/products/create.php');
 $productRewrites = $read('.htaccess');
 $productCss = $read('admin/assets/css/admin-shell-overrides.css');
+$categoriesPage = $read('admin/categories/index.php');
+$categoryCreatePage = $read('admin/categories/create.php');
 
 
 $check('Admin design token file exists', $tokens !== '');
@@ -163,6 +165,59 @@ $check('Product creation groups core details, descriptions, publishing and optio
     && str_contains($productCss, '@media (max-width: 600px)')
 );
 
+
+
+$check('Categories index reuses the shared admin shell and CategoryService data contract',
+    str_contains($categoriesPage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($categoriesPage, 'new CategoryService()')
+    && str_contains($categoriesPage, '$service->findAll()')
+    && str_contains($categoriesPage, 'admin-products-table')
+    && str_contains($categoriesPage, "url('/admin/categories/create')")
+    && str_contains($categoriesPage, "url('/admin/categories/edit?id='")
+);
+$check('Categories index filters escaped search terms and only supported active/inactive statuses',
+    str_contains($categoriesPage, "Request::query('q'")
+    && str_contains($categoriesPage, "Request::query('status'")
+    && str_contains($categoriesPage, "['active', 'inactive']")
+    && str_contains($categoriesPage, 'in_array($statusFilter, $allowedStatuses, true)')
+    && str_contains($categoriesPage, 'e($search)')
+);
+$check('Categories index reuses product catalog layout, filters, table and empty-state components',
+    str_contains($categoriesPage, 'admin-products-page admin-categories-page')
+    && str_contains($categoriesPage, 'admin-products-summary admin-categories-summary')
+    && str_contains($categoriesPage, 'admin-products-filters')
+    && str_contains($categoriesPage, 'admin-products-table-wrap')
+    && str_contains($categoriesPage, 'admin-products-empty')
+);
+$check('Category creation preserves CSRF, validator, duplicate slug and parent-existence checks',
+    str_contains($categoryCreatePage, 'Csrf::verify')
+    && str_contains($categoryCreatePage, 'new CategoryValidator()')
+    && str_contains($categoryCreatePage, '$service->findBySlug($payload[\\'slug\\'])')
+    && str_contains($categoryCreatePage, '$service->exists($payload[\\'parentId\\'])')
+    && str_contains($categoryCreatePage, '$service->create(')
+);
+$check('Category creation uses active parent selector and only supported category fields',
+    str_contains($categoryCreatePage, '$service->findActive()')
+    && str_contains($categoryCreatePage, '<select name="parentId">')
+    && str_contains($categoryCreatePage, 'name="description"')
+    && str_contains($categoryCreatePage, 'name="status"')
+    && str_contains($categoryCreatePage, 'name="sortOrder"')
+    && !str_contains($categoryCreatePage, 'name="sku"')
+);
+$check('Category creation reuses the exact product-create form sections, controls and sticky actions',
+    str_contains($categoryCreatePage, 'admin-product-create-page')
+    && str_contains($categoryCreatePage, 'admin-product-create-section')
+    && str_contains($categoryCreatePage, 'admin-product-create-fields')
+    && str_contains($categoryCreatePage, 'admin-product-create-field')
+    && str_contains($categoryCreatePage, 'admin-product-create-actions')
+    && str_contains($productCss, '.admin-product-create-section')
+    && str_contains($productCss, '.admin-product-create-actions')
+);
+$check('Category index adds only a responsive three-stat layout and inactive status treatment',
+    str_contains($productCss, '.admin-categories-summary')
+    && str_contains($productCss, 'grid-template-columns: repeat(3, minmax(0, 1fr));')
+    && str_contains($productCss, '.admin-categories-page .admin-products-status-inactive')
+);
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
 exit($failed === 0 ? 0 : 1);
