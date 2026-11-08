@@ -39,6 +39,8 @@ jobs:
           php -l admin/settings/index.php
           php -l pages/admin/dashboard.php
           php -l admin/profile/index.php
+          php -l admin/categories/index.php
+          php -l admin/categories/create.php
           php -l app/Controllers/AdminController.php
           php -l app/Controllers/AdminCapabilityController.php
           php -l app/Services/AdminDashboardMetricsService.php
