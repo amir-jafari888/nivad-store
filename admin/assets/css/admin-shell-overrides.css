@@ -1676,3 +1676,75 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* Collections index — reuse the catalog system and keep feedback states explicit. */
+.admin-collections-page .admin-collections-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.admin-collections-page .admin-products-status-inactive {
+  border-color: var(--admin-color-border);
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text-muted);
+}
+.admin-collections-page .admin-products-status-unknown {
+  border-color: var(--admin-color-border);
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text-muted);
+}
+.admin-collections-feedback {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--admin-space-3);
+  min-height: 76px;
+  padding: var(--admin-space-4);
+  color: var(--admin-color-text-muted);
+  font-size: var(--admin-font-size-sm);
+}
+.admin-collections-feedback[hidden],
+.admin-collections-table-wrap[hidden],
+.admin-collections-page .admin-products-empty[hidden] {
+  display: none !important;
+}
+.admin-collections-feedback[data-state="error"] {
+  color: var(--admin-color-error);
+  background: color-mix(in srgb, var(--admin-color-error) 5%, transparent);
+  border-block: 1px solid color-mix(in srgb, var(--admin-color-error) 22%, transparent);
+}
+.admin-collections-loading-indicator {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border: 2px solid var(--admin-color-border);
+  border-top-color: var(--admin-color-primary);
+  border-radius: 50%;
+  animation: admin-collections-spin .8s linear infinite;
+}
+.admin-collections-page button:disabled {
+  cursor: not-allowed;
+  opacity: .58;
+}
+.admin-collections-table { min-width: 980px; }
+.admin-collections-table td:nth-child(3) { direction: ltr; text-align: right; }
+.admin-collections-page .admin-products-primary-action:focus-visible,
+.admin-collections-page .admin-products-filter-actions button:focus-visible {
+  outline: 2px solid var(--admin-color-primary);
+  outline-offset: 3px;
+  box-shadow: var(--admin-focus-ring);
+}
+@keyframes admin-collections-spin {
+  to { transform: rotate(360deg); }
+}
+@media (max-width: 600px) {
+  .admin-collections-page .admin-collections-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .admin-collections-page .admin-collections-summary .admin-products-stat-total {
+    grid-column: 1 / -1;
+  }
+  .admin-collections-feedback { padding: var(--admin-space-3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-collections-loading-indicator { animation: none; }
+}
