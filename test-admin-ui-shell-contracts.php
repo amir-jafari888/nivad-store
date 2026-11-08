@@ -323,8 +323,8 @@ $check('Collections index shows collection-specific type, status, order and avai
     && str_contains($collectionsPage, 'item.sortOrder')
     && str_contains($collectionsPage, 'item.startsAt')
     && str_contains($collectionsPage, 'item.endsAt')
-    && str_contains($collectionsPage, 'admin-products-status-active')
-    && str_contains($collectionsPage, 'admin-products-status-inactive')
+    && str_contains($collectionsPage, "item.status === 'active'")
+    && str_contains($collectionsPage, "item.status === 'inactive'")
 );
 $check('Shared sidebar detects the active catalog route and exposes current navigation semantics',
     str_contains($sharedAuth, '$activeCatalogSection')
@@ -335,10 +335,10 @@ $check('Shared sidebar detects the active catalog route and exposes current navi
     && str_contains($sharedAuth, ' open')
 );
 $check('Products, categories, brands and collections share dynamic active sidebar links',
-    str_contains($sharedAuth, "$catalogLink('products'")
-    && str_contains($sharedAuth, "$catalogLink('categories'")
-    && str_contains($sharedAuth, "$catalogLink('brands'")
-    && str_contains($sharedAuth, "$catalogLink('collections'")
+    str_contains($sharedAuth, '$catalogLink(\'products\'')
+    && str_contains($sharedAuth, '$catalogLink(\'categories\'')
+    && str_contains($sharedAuth, '$catalogLink(\'brands\'')
+    && str_contains($sharedAuth, '$catalogLink(\'collections\'')
 );
 $check('Collections list adds responsive catalog summary, loading feedback and reduced-motion support',
     str_contains($productCss, '.admin-collections-summary')
