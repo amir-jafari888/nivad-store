@@ -29,6 +29,10 @@ RewriteRule ^nivad-panel/attributes/?$ admin/attributes/index.php [END,QSA]
 RewriteRule ^nivad-panel/attributes/create/?$ admin/attributes/create.php [END,QSA]
 RewriteRule ^nivad-panel/attributes/edit/?$ admin/attributes/edit.php [END,QSA]
 
+# Slider management pages map canonical list and edit URLs to the existing PHP entry points.
+RewriteRule ^nivad-panel/sliders/?$ admin/sliders/index.php [END,QSA]
+RewriteRule ^nivad-panel/sliders/edit/?$ admin/sliders/edit.php [END,QSA]
+
 # Specification management pages map extensionless URLs to the existing PHP entry points.
 RewriteRule ^nivad-panel/specifications/?$ admin/specifications/index.php [END,QSA]
 RewriteRule ^nivad-panel/specifications/create/?$ admin/specifications/create.php [END,QSA]
