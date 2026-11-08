@@ -1644,34 +1644,3 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
   .admin-product-create-actions > button { flex: 1 1 0; padding-inline: var(--admin-space-2); font-size: 12px; }
   .admin-product-create-heading > div > p:last-child { font-size: 12px; }
 }
-
-
-/* Final alignment pass for the product catalog filter row (RTL). */
-.admin-products-filters {
-  align-items: start;
-}
-.admin-products-status-filter select {
-  appearance: none;
-  -webkit-appearance: none;
-  padding-inline-end: calc(var(--admin-space-4) + 20px);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: left 14px center;
-  background-size: 14px;
-}
-.admin-products-filter-actions {
-  align-self: start;
-  height: auto;
-  min-height: 0;
-  padding-block-start: calc(12px * 1.6 + var(--admin-space-2));
-}
-.admin-products-filter-actions button {
-  flex: 0 0 auto;
-  height: 46px;
-  min-height: 46px;
-}
-@media (max-width: 1009px) {
-  .admin-products-filter-actions {
-    padding-block-start: 0;
-  }
-}
