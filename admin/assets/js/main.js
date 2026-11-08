@@ -12,6 +12,7 @@ import adminErrorBoundary from "./modules/error-boundary.js";
 import adminProductivityDiagnostics from "./modules/productivity-diagnostics.js";
 import adminDashboardUi from "./modules/admin-dashboard-ui.js";
 import adminProfile from "./modules/admin-profile.js";
+import adminDiscovery from "./modules/admin-discovery.js";
 
 adminDataExperience();
 adminNavigationState();
@@ -27,3 +28,4 @@ adminErrorBoundary();
 adminProductivityDiagnostics();
 adminDashboardUi();
 adminProfile();
+adminDiscovery();
