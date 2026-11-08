@@ -129,22 +129,23 @@ $check('Products catalog has responsive styling and shared spacing tokens',
     && str_contains($productCss, '@media (max-width: 600px)')
     && str_contains($productCss, '--admin-space-')
 );
-$check('Product filters align action controls to the same 46px control baseline',
-    str_contains($productCss, '.admin-products-filter-actions {')
+$check('Product filter controls share one bottom-aligned desktop row and a 46px control height',
+    str_contains($productCss, '.admin-products-filters {')
+    && str_contains($productCss, 'align-items: end;')
+    && str_contains($productCss, '.admin-products-filter-actions {')
     && str_contains($productCss, 'align-self: end;')
     && str_contains($productCss, 'height: 46px;')
+    && str_contains($productCss, '.admin-products-filter-actions button {')
 );
 
-$check('Product status dropdown arrow has breathing room and remains vertically centered',
-    str_contains($productCss, 'appearance: none;')
-    && str_contains($productCss, 'background-position: left 14px center;')
-    && str_contains($productCss, 'padding-inline-end: calc(var(--admin-space-4) + 20px);')
+$check('Product status dropdown keeps the browser-native arrow visible',
+    !str_contains($productCss, 'appearance: none;')
+    && !str_contains($productCss, 'background-position: left 14px center;')
+    && !str_contains($productCss, 'padding-inline-end: calc(var(--admin-space-4) + 20px);')
 );
-$check('Product filter submit button shares the input baseline without vertical drift',
-    str_contains($productCss, 'align-items: start;')
-    && str_contains($productCss, 'padding-block-start: calc(12px * 1.6 + var(--admin-space-2));')
-    && str_contains($productCss, '@media (max-width: 1009px)')
-    && str_contains($productCss, 'padding-block-start: 0;')
+$check('Product filter actions do not use compensating top padding or a separate alignment row',
+    !str_contains($productCss, 'padding-block-start: calc(12px * 1.6 + var(--admin-space-2));')
+    && !str_contains($productCss, 'align-items: start;')
 );
 $check('Product creation uses active brand and product-type selectors instead of manual IDs',
     str_contains($productCreatePage, '$brandService->findActive()')
