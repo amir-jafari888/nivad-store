@@ -79,7 +79,7 @@ require_once __DIR__ . '/../includes/auth.php';
         if (!value) return 'بدون محدودیت';
         const date = new Date(String(value).replace(' ', 'T'));
         if (Number.isNaN(date.getTime())) return 'تاریخ نامشخص';
-        return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium' }).format(date);
+        return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(date);
     };
     const updateCounts = () => {
         const totals = {
