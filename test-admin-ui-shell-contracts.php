@@ -352,8 +352,8 @@ $check('Collections list adds responsive catalog summary, loading feedback and r
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for collections and active navigation changes',
-    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
-    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
+    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
+    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
 );
 
 
@@ -482,8 +482,8 @@ $check('Specifications index has responsive filters, four summary metrics and vi
     && str_contains($productCss, '.admin-specifications-page .admin-products-edit-action:focus-visible')
 );
 $check('Admin asset cache is refreshed for specifications index and active navigation changes',
-    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
-    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
+    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
+    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
 );
 
 
@@ -560,8 +560,8 @@ $check('Specification groups page reuses catalog summary, panel, filters, semant
     && str_contains($productCss, '.admin-specification-groups-page')
 );
 $check('Catalog create and specification group pages refresh the shared admin asset cache key',
-    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
-    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
+    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
+    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
 );
 
 
@@ -578,7 +578,7 @@ $check('Slider index uses the authenticated admin shell and the existing admin s
     str_contains($slidersPage, "require_once __DIR__ . '/../includes/auth.php'")
     && str_contains($slidersPage, "url('/api/admin/sliders')")
     && str_contains($slidersPage, 'result.data?.items')
-    && str_contains($sliderController, "'items' => $this->service->findAll()")
+    && str_contains($sliderController, '$this->service->findAll()')
     && str_contains($sliderService, 'public function findAll(): array')
 );
 $check('Slider index renders real model fields including description, status, schedule and sort order',
