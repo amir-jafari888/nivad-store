@@ -56,6 +56,8 @@ $productRewrites = $read('.htaccess');
 $productCss = $read('admin/assets/css/admin-shell-overrides.css');
 $categoriesPage = $read('admin/categories/index.php');
 $categoryCreatePage = $read('admin/categories/create.php');
+$brandsPage = $read('admin/brands/index.php');
+$brandCreatePage = $read('admin/brands/create.php');
 
 
 $check('Admin design token file exists', $tokens !== '');
@@ -224,6 +226,63 @@ $check('Category index adds only a responsive three-stat layout and inactive sta
     str_contains($productCss, '.admin-categories-summary')
     && str_contains($productCss, 'grid-template-columns: repeat(3, minmax(0, 1fr));')
     && str_contains($productCss, '.admin-categories-page .admin-products-status-inactive')
+);
+
+
+$check('Brand list, create and edit pretty URLs rewrite to their existing PHP page files',
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/brands/?$ admin/brands/index.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/brands/create/?$ admin/brands/create.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/brands/edit/?$ admin/brands/edit.php [END,QSA]')
+);
+$check('Brands index reuses the shared catalog shell, BrandService data and edit/create routes',
+    str_contains($brandsPage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($brandsPage, 'new BrandService()')
+    && str_contains($brandsPage, '$service->findAll()')
+    && str_contains($brandsPage, 'admin-products-table')
+    && str_contains($brandsPage, "url('/admin/brands/create')")
+    && str_contains($brandsPage, "url('/admin/brands/edit?id='")
+);
+$check('Brands index filters escaped search terms and only supported active/inactive statuses',
+    str_contains($brandsPage, "Request::query('q'")
+    && str_contains($brandsPage, "Request::query('status'")
+    && str_contains($brandsPage, "['active', 'inactive']")
+    && str_contains($brandsPage, 'in_array($statusFilter, $allowedStatuses, true)')
+    && str_contains($brandsPage, 'e($search)')
+);
+$check('Brands index reuses product catalog layout, filters, table and empty-state components',
+    str_contains($brandsPage, 'admin-products-page admin-brands-page')
+    && str_contains($brandsPage, 'admin-products-summary admin-brands-summary')
+    && str_contains($brandsPage, 'admin-products-filters')
+    && str_contains($brandsPage, 'admin-products-table-wrap')
+    && str_contains($brandsPage, 'admin-products-empty')
+);
+$check('Brand creation preserves CSRF, BrandValidator, duplicate slug and BrandService create contract',
+    str_contains($brandCreatePage, 'Csrf::verify')
+    && str_contains($brandCreatePage, 'new BrandValidator()')
+    && str_contains($brandCreatePage, '$service->findBySlug(')
+    && str_contains($brandCreatePage, '$service->create(')
+);
+$check('Brand creation exposes only supported brand fields',
+    str_contains($brandCreatePage, 'name="name"')
+    && str_contains($brandCreatePage, 'name="slug"')
+    && str_contains($brandCreatePage, 'name="description"')
+    && str_contains($brandCreatePage, 'name="status"')
+    && str_contains($brandCreatePage, 'name="sortOrder"')
+    && !str_contains($brandCreatePage, 'name="parentId"')
+    && !str_contains($brandCreatePage, 'name="sku"')
+);
+$check('Brand creation reuses the exact product-create form sections, controls and sticky actions',
+    str_contains($brandCreatePage, 'admin-product-create-page')
+    && str_contains($brandCreatePage, 'admin-product-create-section')
+    && str_contains($brandCreatePage, 'admin-product-create-fields')
+    && str_contains($brandCreatePage, 'admin-product-create-field')
+    && str_contains($brandCreatePage, 'admin-product-create-actions')
+    && str_contains($productCss, '.admin-product-create-section')
+    && str_contains($productCss, '.admin-product-create-actions')
+);
+$check('Brand index adds a responsive three-stat layout and inactive status treatment',
+    str_contains($productCss, '.admin-brands-summary')
+    && str_contains($productCss, '.admin-brands-page .admin-products-status-inactive')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";

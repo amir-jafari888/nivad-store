@@ -19,6 +19,11 @@ RewriteRule ^nivad-panel/categories/?$ admin/categories/index.php [END,QSA]
 RewriteRule ^nivad-panel/categories/create/?$ admin/categories/create.php [END,QSA]
 RewriteRule ^nivad-panel/categories/edit/?$ admin/categories/edit.php [END,QSA]
 
+# Brand management pages use the same PHP-file routing contract as products and categories.
+RewriteRule ^nivad-panel/brands/?$ admin/brands/index.php [END,QSA]
+RewriteRule ^nivad-panel/brands/create/?$ admin/brands/create.php [END,QSA]
+RewriteRule ^nivad-panel/brands/edit/?$ admin/brands/edit.php [END,QSA]
+
 # Canonical admin routes -> physical /admin implementation.
 # END prevents a second per-directory rewrite pass after the internal mapping.
 RewriteRule ^nivad-panel/?$ admin/index.php [END,QSA]
