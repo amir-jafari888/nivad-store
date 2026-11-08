@@ -167,6 +167,13 @@ $check('Product creation groups core details, descriptions, publishing and optio
 
 
 
+
+$check('Category list, create and edit pretty URLs rewrite to their existing PHP page files',
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/categories/?$ admin/categories/index.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/categories/create/?$ admin/categories/create.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/categories/edit/?$ admin/categories/edit.php [END,QSA]')
+);
+
 $check('Categories index reuses the shared admin shell and CategoryService data contract',
     str_contains($categoriesPage, "require_once __DIR__ . '/../includes/auth.php'")
     && str_contains($categoriesPage, 'new CategoryService()')
