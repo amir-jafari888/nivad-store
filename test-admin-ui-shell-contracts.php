@@ -387,7 +387,7 @@ $check('Attributes index includes an actionable empty state and semantic respons
 );
 $check('Attributes route is included in the shared catalog active-state logic',
     str_contains($sharedAuth, '(products|categories|brands|collections|attributes)')
-    && str_contains($sharedAuth, '$catalogLink(\\'attributes\\'')
+    && str_contains($sharedAuth, '$catalogLink(\'attributes\'')
     && str_contains($sharedAuth, 'aria-current="page"')
 );
 $check('Attributes index has responsive capability badges, filters and keyboard focus styles',
