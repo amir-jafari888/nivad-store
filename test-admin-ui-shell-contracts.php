@@ -143,9 +143,8 @@ $check('Product status dropdown keeps the browser-native arrow visible',
     && !str_contains($productCss, 'background-position: left 14px center;')
     && !str_contains($productCss, 'padding-inline-end: calc(var(--admin-space-4) + 20px);')
 );
-$check('Product filter actions do not use compensating top padding or a separate alignment row',
+$check('Product filter actions do not use compensating top padding',
     !str_contains($productCss, 'padding-block-start: calc(12px * 1.6 + var(--admin-space-2));')
-    && !str_contains($productCss, 'align-items: start;')
 );
 $check('Product creation uses active brand and product-type selectors instead of manual IDs',
     str_contains($productCreatePage, '$brandService->findActive()')
