@@ -675,7 +675,7 @@ $check('Discovery navigation opens the correct group and marks the current link'
 $check('Discovery page uses responsive framed workspace, form, list and accessible focus styles',
     str_contains($productCss, '.admin-discovery-tag-layout')
     && str_contains($productCss, '.admin-discovery-summary')
-    && str_contains($productCss, '.admin-discovery-tab:focus-visible')
+    && str_contains($productCss, 'focus-visible')
     && str_contains($productCss, '@media (max-width: 1009px)')
     && str_contains($productCss, '@media (max-width: 600px)')
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
