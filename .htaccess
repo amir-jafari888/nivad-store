@@ -19,6 +19,11 @@ RewriteRule ^nivad-panel/categories/?$ admin/categories/index.php [END,QSA]
 RewriteRule ^nivad-panel/categories/create/?$ admin/categories/create.php [END,QSA]
 RewriteRule ^nivad-panel/categories/edit/?$ admin/categories/edit.php [END,QSA]
 
+# Attribute management pages keep list, create and edit URLs canonical.
+RewriteRule ^nivad-panel/attributes/?$ admin/attributes/index.php [END,QSA]
+RewriteRule ^nivad-panel/attributes/create/?$ admin/attributes/create.php [END,QSA]
+RewriteRule ^nivad-panel/attributes/edit/?$ admin/attributes/edit.php [END,QSA]
+
 # Collection management pages keep the index and edit views on canonical admin URLs.
 RewriteRule ^nivad-panel/collections/?$ admin/collections/index.php [END,QSA]
 RewriteRule ^nivad-panel/collections/edit/?$ admin/collections/edit.php [END,QSA]
