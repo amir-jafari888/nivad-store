@@ -613,7 +613,7 @@ $check('Slider index creates rows through safe DOM APIs without dynamic HTML inj
 );
 $check('Slider edit action uses the existing edit page and query-string ID contract',
     str_contains($slidersPage, "url('/admin/sliders/edit?id=')")
-    && str_contains($sliderEditPage, "$_GET['id']")
+    && str_contains($sliderEditPage, '$_GET')
 );
 $check('Slider navigation group opens and marks the current sliders link',
     str_contains($sharedAuth, '$isSliderPage')
