@@ -108,6 +108,12 @@ jobs:
           php -l admin/attributes/index.php
           php -l admin/product-types/index.php
           php -l admin/specifications/index.php
+          php -l admin/attributes/create.php
+          php -l admin/product-types/create.php
+          php -l admin/specifications/create.php
+          php -l admin/specifications/groups.php
+          php -l app/Services/SpecGroupService.php
+          php -l app/Repositories/SpecGroupRepository.php
           php -l test-admin-ui-shell-contracts.php
 
       - name: Run authentication and authorization regression

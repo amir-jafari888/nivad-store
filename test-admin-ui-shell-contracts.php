@@ -352,8 +352,8 @@ $check('Collections list adds responsive catalog summary, loading feedback and r
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for collections and active navigation changes',
-    str_contains($sharedAuth, '20261108-specifications-index-ux-v1')
-    && str_contains($mainCss, '20261108-specifications-index-ux-v1')
+    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
+    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
 );
 
 
@@ -482,8 +482,86 @@ $check('Specifications index has responsive filters, four summary metrics and vi
     && str_contains($productCss, '.admin-specifications-page .admin-products-edit-action:focus-visible')
 );
 $check('Admin asset cache is refreshed for specifications index and active navigation changes',
-    str_contains($sharedAuth, '20261108-specifications-index-ux-v1')
-    && str_contains($mainCss, '20261108-specifications-index-ux-v1')
+    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
+    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
+);
+
+
+
+$attributeCreatePage = $read('admin/attributes/create.php');
+$productTypeCreatePage = $read('admin/product-types/create.php');
+$specificationCreatePage = $read('admin/specifications/create.php');
+$specificationGroupsPage = $read('admin/specifications/groups.php');
+
+$check('All four requested extensionless catalog routes map to their existing PHP entry points', 
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/attributes/create/?$ admin/attributes/create.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/product-types/create/?$ admin/product-types/create.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/specifications/create/?$ admin/specifications/create.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/specifications/groups/?$ admin/specifications/groups.php [END,QSA]')
+);
+$check('Attribute create page uses authenticated shell, CSRF, validator, duplicate-slug guard and service contract',
+    str_contains($attributeCreatePage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($attributeCreatePage, 'Csrf::verify')
+    && str_contains($attributeCreatePage, 'new ProductAttributeValidator()')
+    && str_contains($attributeCreatePage, '$service->findBySlug(')
+    && str_contains($attributeCreatePage, '$service->create(')
+);
+$check('Attribute create page uses shared form sections and supported modeled fields',
+    str_contains($attributeCreatePage, 'admin-product-create-section')
+    && str_contains($attributeCreatePage, 'name="name"')
+    && str_contains($attributeCreatePage, 'name="slug"')
+    && str_contains($attributeCreatePage, 'name="type"')
+    && str_contains($attributeCreatePage, 'name="status"')
+    && str_contains($attributeCreatePage, 'name="sortOrder"')
+);
+$check('Product type create page uses authenticated shell, validator, duplicate-slug guard and service contract',
+    str_contains($productTypeCreatePage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($productTypeCreatePage, 'Csrf::verify')
+    && str_contains($productTypeCreatePage, 'new ProductTypeValidator()')
+    && str_contains($productTypeCreatePage, '$service->findBySlug(')
+    && str_contains($productTypeCreatePage, '$service->create(')
+);
+$check('Product type create page preserves form values and exposes only modeled fields',
+    str_contains($productTypeCreatePage, 'admin-product-create-section')
+    && str_contains($productTypeCreatePage, 'name="description"')
+    && str_contains($productTypeCreatePage, 'name="sortOrder"')
+    && str_contains($productTypeCreatePage, 'name="status"')
+);
+$check('Specification create page validates active group and unique slug before creating',
+    str_contains($specificationCreatePage, 'Csrf::verify')
+    && str_contains($specificationCreatePage, 'new SpecificationValidator()')
+    && str_contains($specificationCreatePage, '$groupService->findActiveById(')
+    && str_contains($specificationCreatePage, '$service->existsBySlug(')
+    && str_contains($specificationCreatePage, '$service->create(')
+);
+$check('Specification create page handles missing groups and reuses shared responsive form primitives',
+    str_contains($specificationCreatePage, 'admin-product-create-section')
+    && str_contains($specificationCreatePage, '$groups === []')
+    && str_contains($specificationCreatePage, 'admin-product-create-actions')
+);
+$check('Specification groups page provides searchable, filterable list and safe create/status/delete/restore actions',
+    str_contains($specificationGroupsPage, 'Request::query')
+    && str_contains($specificationGroupsPage, '$service->create(')
+    && str_contains($specificationGroupsPage, '$service->setStatus(')
+    && str_contains($specificationGroupsPage, '$service->delete(')
+    && str_contains($specificationGroupsPage, '$service->restore(')
+    && str_contains($specificationGroupsPage, 'Csrf::verify')
+);
+$check('Specification groups restore flow reads soft-deleted rows through the explicit service/repository method',
+    str_contains($specificationGroupsPage, '$service->findAllIncludingDeleted()')
+    && str_contains($read('app/Services/SpecGroupService.php'), 'findAllIncludingDeleted')
+    && str_contains($read('app/Repositories/SpecGroupRepository.php'), 'findAllIncludingDeleted')
+);
+$check('Specification groups page reuses catalog summary, panel, filters, semantic table and responsive styles',
+    str_contains($specificationGroupsPage, 'admin-specification-groups-summary')
+    && str_contains($specificationGroupsPage, 'admin-products-panel')
+    && str_contains($specificationGroupsPage, 'admin-products-filters')
+    && str_contains($specificationGroupsPage, 'scope="col"')
+    && str_contains($productCss, '.admin-specification-groups-page')
+);
+$check('Catalog create and specification group pages refresh the shared admin asset cache key',
+    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
+    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";

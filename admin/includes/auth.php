@@ -59,7 +59,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         }
 
         if (stripos($html, '/admin/assets/css/main.css') === false) {
-            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-specifications-index-ux-v1');
+            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-catalog-create-groups-ux-v1');
             $assets .= "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">";
         }
 
