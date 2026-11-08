@@ -59,7 +59,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         }
 
         if (stripos($html, '/admin/assets/css/main.css') === false) {
-            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-products-create-v2');
+            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-products-filter-align-v4');
             $assets .= "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">";
         }
 
