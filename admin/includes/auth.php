@@ -59,7 +59,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         }
 
         if (stripos($html, '/admin/assets/css/main.css') === false) {
-            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-collections-index-active-nav-v1');
+            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-attributes-index-ux-v1');
             $assets .= "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">";
         }
 
@@ -148,7 +148,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
     $requestPath = parse_url((string)($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
     $requestPath = is_string($requestPath) ? $requestPath : '';
     $activeCatalogSection = null;
-    if (preg_match('~/(?:admin|nivad-panel)/(products|categories|brands|collections)(?:/|$)~i', $requestPath, $catalogMatch) === 1) {
+    if (preg_match('~/(?:admin|nivad-panel)/(products|categories|brands|collections|attributes)(?:/|$)~i', $requestPath, $catalogMatch) === 1) {
         $activeCatalogSection = strtolower($catalogMatch[1]);
     }
     $catalogLink = static function (string $section, string $path, string $label) use ($activeCatalogSection): string {
@@ -172,7 +172,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
                     ' . $catalogLink('categories', '/admin/categories', 'دسته‌بندی‌ها') . '
                     ' . $catalogLink('brands', '/admin/brands', 'برندها') . '
                     ' . $catalogLink('collections', '/admin/collections', 'مجموعه‌ها') . '
-                    <a href="' . e(url('/admin/attributes')) . '">ویژگی‌ها</a>
+                    ' . $catalogLink('attributes', '/admin/attributes', 'ویژگی‌ها') . '
                     <a href="' . e(url('/admin/product-types')) . '">نوع محصول</a>
                     <a href="' . e(url('/admin/specifications')) . '">مشخصات فنی</a>
                     <a href="' . e(url('/admin/specifications/groups')) . '">گروه‌های مشخصات</a>
