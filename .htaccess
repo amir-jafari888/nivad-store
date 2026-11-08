@@ -19,6 +19,11 @@ RewriteRule ^nivad-panel/categories/?$ admin/categories/index.php [END,QSA]
 RewriteRule ^nivad-panel/categories/create/?$ admin/categories/create.php [END,QSA]
 RewriteRule ^nivad-panel/categories/edit/?$ admin/categories/edit.php [END,QSA]
 
+# Product type management pages use explicit canonical list, create and edit routes.
+RewriteRule ^nivad-panel/product-types/?$ admin/product-types/index.php [END,QSA]
+RewriteRule ^nivad-panel/product-types/create/?$ admin/product-types/create.php [END,QSA]
+RewriteRule ^nivad-panel/product-types/edit/?$ admin/product-types/edit.php [END,QSA]
+
 # Attribute management pages keep list, create and edit URLs canonical.
 RewriteRule ^nivad-panel/attributes/?$ admin/attributes/index.php [END,QSA]
 RewriteRule ^nivad-panel/attributes/create/?$ admin/attributes/create.php [END,QSA]
