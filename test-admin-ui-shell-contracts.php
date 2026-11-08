@@ -352,8 +352,8 @@ $check('Collections list adds responsive catalog summary, loading feedback and r
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for collections and active navigation changes',
-    str_contains($sharedAuth, '20261108-specifications-index-ux-v1')
-    && str_contains($mainCss, '20261108-specifications-index-ux-v1')
+    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
+    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
 );
 
 
@@ -482,8 +482,8 @@ $check('Specifications index has responsive filters, four summary metrics and vi
     && str_contains($productCss, '.admin-specifications-page .admin-products-edit-action:focus-visible')
 );
 $check('Admin asset cache is refreshed for specifications index and active navigation changes',
-    str_contains($sharedAuth, '20261108-specifications-index-ux-v1')
-    && str_contains($mainCss, '20261108-specifications-index-ux-v1')
+    str_contains($sharedAuth, '20261108-catalog-create-groups-ux-v1')
+    && str_contains($mainCss, '20261108-catalog-create-groups-ux-v1')
 );
 
 
