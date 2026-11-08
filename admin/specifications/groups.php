@@ -50,7 +50,7 @@ if (Request::isPost()) {
     }
 }
 
-$allGroups = $service->findAll();
+$allGroups = $service->findAllIncludingDeleted();
 $searchValue = Request::query('q', '');
 $statusValue = Request::query('status', '');
 $search = is_string($searchValue) ? trim($searchValue) : '';
