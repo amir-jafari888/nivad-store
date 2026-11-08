@@ -19,6 +19,10 @@ RewriteRule ^nivad-panel/categories/?$ admin/categories/index.php [END,QSA]
 RewriteRule ^nivad-panel/categories/create/?$ admin/categories/create.php [END,QSA]
 RewriteRule ^nivad-panel/categories/edit/?$ admin/categories/edit.php [END,QSA]
 
+# Collection management pages keep the index and edit views on canonical admin URLs.
+RewriteRule ^nivad-panel/collections/?$ admin/collections/index.php [END,QSA]
+RewriteRule ^nivad-panel/collections/edit/?$ admin/collections/edit.php [END,QSA]
+
 # Brand management pages use the same PHP-file routing contract as products and categories.
 RewriteRule ^nivad-panel/brands/?$ admin/brands/index.php [END,QSA]
 RewriteRule ^nivad-panel/brands/create/?$ admin/brands/create.php [END,QSA]
