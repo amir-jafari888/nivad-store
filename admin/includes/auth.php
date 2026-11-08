@@ -59,7 +59,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         }
 
         if (stripos($html, '/admin/assets/css/main.css') === false) {
-            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-brands-list-create-ux-v1');
+            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-collections-index-active-nav-v1');
             $assets .= "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">";
         }
 
@@ -145,6 +145,17 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         ? '<a class="admin-shared-nav-link" href="' . e(url('/admin/productivity/index.php')) . '">پایش بهره‌وری و سلامت</a>'
         : '';
 
+    $requestPath = parse_url((string)($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+    $requestPath = is_string($requestPath) ? $requestPath : '';
+    $activeCatalogSection = null;
+    if (preg_match('~/(?:admin|nivad-panel)/(products|categories|brands|collections)(?:/|$)~i', $requestPath, $catalogMatch) === 1) {
+        $activeCatalogSection = strtolower($catalogMatch[1]);
+    }
+    $catalogLink = static function (string $section, string $path, string $label) use ($activeCatalogSection): string {
+        $current = $activeCatalogSection === $section;
+        return '<a href="' . e(url($path)) . '"' . ($current ? ' aria-current="page"' : '') . '>' . $label . '</a>';
+    };
+
     $nav = '
     <aside id="admin-shared-sidebar" class="admin-shared-sidebar" data-admin-sidebar aria-label="ناوبری پنل مدیریت">
         <a class="admin-shared-brand" href="' . e(url('/admin')) . '">
@@ -154,13 +165,13 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         <nav class="admin-shared-nav">
             <a class="admin-shared-nav-link" href="' . e(url('/admin')) . '">داشبورد</a>
             <a class="admin-shared-nav-link" href="' . e(url('/admin/profile/index.php')) . '">پروفایل مدیر</a>
-            <details class="admin-shared-nav-group">
-                <summary>کاتالوگ محصولات</summary>
+            <details class="admin-shared-nav-group' . ($activeCatalogSection !== null ? ' is-current-group' : '') . '"' . ($activeCatalogSection !== null ? ' open' : '') . '>
+                <summary' . ($activeCatalogSection !== null ? ' aria-current="location"' : '') . '>کاتالوگ محصولات</summary>
                 <div class="admin-shared-submenu">
-                    <a href="' . e(url('/admin/products')) . '">محصولات</a>
-                    <a href="' . e(url('/admin/categories')) . '">دسته‌بندی‌ها</a>
-                    <a href="' . e(url('/admin/brands')) . '">برندها</a>
-                    <a href="' . e(url('/admin/collections')) . '">مجموعه‌ها</a>
+                    ' . $catalogLink('products', '/admin/products', 'محصولات') . '
+                    ' . $catalogLink('categories', '/admin/categories', 'دسته‌بندی‌ها') . '
+                    ' . $catalogLink('brands', '/admin/brands', 'برندها') . '
+                    ' . $catalogLink('collections', '/admin/collections', 'مجموعه‌ها') . '
                     <a href="' . e(url('/admin/attributes')) . '">ویژگی‌ها</a>
                     <a href="' . e(url('/admin/product-types')) . '">نوع محصول</a>
                     <a href="' . e(url('/admin/specifications')) . '">مشخصات فنی</a>
