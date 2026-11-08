@@ -44,6 +44,7 @@ jobs:
           php -l admin/collections/index.php
           php -l admin/attributes/index.php
           php -l admin/product-types/index.php
+          php -l admin/specifications/index.php
           php -l app/Controllers/AdminController.php
           php -l app/Controllers/AdminCapabilityController.php
           php -l app/Services/AdminDashboardMetricsService.php
