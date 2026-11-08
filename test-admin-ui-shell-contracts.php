@@ -61,6 +61,7 @@ $brandCreatePage = $read('admin/brands/create.php');
 $collectionsPage = $read('admin/collections/index.php');
 $attributesPage = $read('admin/attributes/index.php');
 $productTypesPage = $read('admin/product-types/index.php');
+$specificationsPage = $read('admin/specifications/index.php');
 
 
 $check('Admin design token file exists', $tokens !== '');
@@ -440,6 +441,49 @@ $check('Product types index has responsive filters, descriptions and visible key
     && str_contains($productCss, '.admin-product-types-filters')
     && str_contains($productCss, '.admin-product-types-description')
     && str_contains($productCss, '.admin-product-types-page .admin-products-edit-action:focus-visible')
+);
+
+$check('Specifications index uses the authenticated shell and existing specification/group services',
+    str_contains($specificationsPage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($specificationsPage, 'new SpecificationService()')
+    && str_contains($specificationsPage, '$service->findAll()')
+    && str_contains($specificationsPage, 'new SpecGroupService()')
+    && str_contains($specificationsPage, '$groupService->findAll()')
+);
+$check('Specifications index computes real totals and filters by search, group, status and value type',
+    str_contains($specificationsPage, '$totalSpecifications')
+    && str_contains($specificationsPage, '$statusCounts')
+    && str_contains($specificationsPage, '$groupFilter')
+    && str_contains($specificationsPage, '$typeFilter')
+    && str_contains($specificationsPage, 'mb_stripos')
+);
+$check('Specifications table exposes model-backed group, value type, unit, status, order and edit link',
+    str_contains($specificationsPage, '$item->specGroupId')
+    && str_contains($specificationsPage, '$item->valueType')
+    && str_contains($specificationsPage, '$item->unit')
+    && str_contains($specificationsPage, '$item->sortOrder')
+    && str_contains($specificationsPage, "url('/admin/specifications/edit?id='")
+);
+$check('Specifications index includes an actionable empty state and semantic responsive table',
+    str_contains($specificationsPage, 'admin-products-empty')
+    && str_contains($specificationsPage, 'scope="col"')
+    && str_contains($specificationsPage, 'admin-specifications-table')
+);
+$check('Specifications and specification-group routes activate the matching catalog navigation links',
+    str_contains($sharedAuth, "'specification-groups' : 'specifications'")
+    && str_contains($sharedAuth, "$catalogLink('specifications'")
+    && str_contains($sharedAuth, "$catalogLink('specification-groups'")
+    && str_contains($sharedAuth, 'aria-current="page"')
+);
+$check('Specifications index has responsive filters, four summary metrics and visible keyboard focus',
+    str_contains($productCss, '.admin-specifications-summary')
+    && str_contains($productCss, '.admin-specifications-filters')
+    && str_contains($productCss, '.admin-specifications-value-type')
+    && str_contains($productCss, '.admin-specifications-page .admin-products-edit-action:focus-visible')
+);
+$check('Admin asset cache is refreshed for specifications index and active navigation changes',
+    str_contains($sharedAuth, '20261108-specifications-index-ux-v1')
+    && str_contains($mainCss, '20261108-specifications-index-ux-v1')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
