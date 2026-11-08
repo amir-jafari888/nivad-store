@@ -1644,3 +1644,19 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
   .admin-product-create-actions > button { flex: 1 1 0; padding-inline: var(--admin-space-2); font-size: 12px; }
   .admin-product-create-heading > div > p:last-child { font-size: 12px; }
 }
+
+
+/* Categories index uses the exact catalog primitives from the products index. */
+.admin-categories-page .admin-categories-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.admin-categories-page .admin-products-status-inactive {
+  border-color: var(--admin-color-border);
+  background: var(--admin-color-bg);
+  color: var(--admin-color-text-muted);
+}
+@media (max-width: 600px) {
+  .admin-categories-page .admin-categories-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
