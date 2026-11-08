@@ -107,6 +107,7 @@ jobs:
           php -l admin/collections/index.php
           php -l admin/attributes/index.php
           php -l admin/product-types/index.php
+          php -l admin/specifications/index.php
           php -l test-admin-ui-shell-contracts.php
 
       - name: Run authentication and authorization regression
