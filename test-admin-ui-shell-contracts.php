@@ -59,6 +59,7 @@ $categoryCreatePage = $read('admin/categories/create.php');
 $brandsPage = $read('admin/brands/index.php');
 $brandCreatePage = $read('admin/brands/create.php');
 $collectionsPage = $read('admin/collections/index.php');
+$attributesPage = $read('admin/attributes/index.php');
 
 
 $check('Admin design token file exists', $tokens !== '');
@@ -328,7 +329,7 @@ $check('Collections index shows collection-specific type, status, order and avai
 );
 $check('Shared sidebar detects the active catalog route and exposes current navigation semantics',
     str_contains($sharedAuth, '$activeCatalogSection')
-    && str_contains($sharedAuth, '(products|categories|brands|collections)')
+    && str_contains($sharedAuth, '(products|categories|brands|collections|attributes)')
     && str_contains($sharedAuth, 'aria-current="page"')
     && str_contains($sharedAuth, 'is-current-group')
     && str_contains($sharedAuth, ' aria-current="location"')
@@ -339,6 +340,7 @@ $check('Products, categories, brands and collections share dynamic active sideba
     && str_contains($sharedAuth, '$catalogLink(\'categories\'')
     && str_contains($sharedAuth, '$catalogLink(\'brands\'')
     && str_contains($sharedAuth, '$catalogLink(\'collections\'')
+    && str_contains($sharedAuth, '$catalogLink(\'attributes\'')
 );
 $check('Collections list adds responsive catalog summary, loading feedback and reduced-motion support',
     str_contains($productCss, '.admin-collections-summary')
@@ -347,8 +349,52 @@ $check('Collections list adds responsive catalog summary, loading feedback and r
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for collections and active navigation changes',
-    str_contains($sharedAuth, '20261108-collections-index-active-nav-v1')
-    && str_contains($mainCss, '20261108-collections-index-active-nav-v1')
+    str_contains($sharedAuth, '20261108-attributes-index-ux-v1')
+    && str_contains($mainCss, '20261108-attributes-index-ux-v1')
+);
+
+
+$check('Attribute list, create and edit pages have canonical admin routes',
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/attributes/?$ admin/attributes/index.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/attributes/create/?$ admin/attributes/create.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/attributes/edit/?$ admin/attributes/edit.php [END,QSA]')
+);
+$check('Attributes index uses the authenticated shell and the existing ProductAttributeService',
+    str_contains($attributesPage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($attributesPage, 'new ProductAttributeService()')
+    && str_contains($attributesPage, '$service->findAll()')
+);
+$check('Attributes index provides real totals and filters by query, status, type and capability',
+    str_contains($attributesPage, '$totalAttributes')
+    && str_contains($attributesPage, '$statusCounts')
+    && str_contains($attributesPage, '$filterableCount')
+    && str_contains($attributesPage, '$statusFilter')
+    && str_contains($attributesPage, '$typeFilter')
+    && str_contains($attributesPage, '$capabilityFilter')
+    && str_contains($attributesPage, 'mb_stripos')
+);
+$check('Attributes table exposes all modeled capability flags and safe edit links',
+    str_contains($attributesPage, '$attribute->isVariant')
+    && str_contains($attributesPage, '$attribute->isFilterable')
+    && str_contains($attributesPage, '$attribute->isRequired')
+    && str_contains($attributesPage, '$attribute->sortOrder')
+    && str_contains($attributesPage, "url('/admin/attributes/edit?id='")
+);
+$check('Attributes index includes an actionable empty state and semantic responsive table',
+    str_contains($attributesPage, 'admin-products-empty')
+    && str_contains($attributesPage, 'scope="col"')
+    && str_contains($attributesPage, 'admin-attributes-table')
+);
+$check('Attributes route is included in the shared catalog active-state logic',
+    str_contains($sharedAuth, '(products|categories|brands|collections|attributes)')
+    && str_contains($sharedAuth, '$catalogLink(\\'attributes\\'')
+    && str_contains($sharedAuth, 'aria-current="page"')
+);
+$check('Attributes index has responsive capability badges, filters and keyboard focus styles',
+    str_contains($productCss, '.admin-attributes-summary')
+    && str_contains($productCss, '.admin-attributes-flags')
+    && str_contains($productCss, '.admin-attributes-filters')
+    && str_contains($productCss, '.admin-attributes-page .admin-products-edit-action:focus-visible')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
