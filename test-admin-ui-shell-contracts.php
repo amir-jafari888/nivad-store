@@ -60,6 +60,7 @@ $brandsPage = $read('admin/brands/index.php');
 $brandCreatePage = $read('admin/brands/create.php');
 $collectionsPage = $read('admin/collections/index.php');
 $attributesPage = $read('admin/attributes/index.php');
+$productTypesPage = $read('admin/product-types/index.php');
 
 
 $check('Admin design token file exists', $tokens !== '');
@@ -329,18 +330,19 @@ $check('Collections index shows collection-specific type, status, order and avai
 );
 $check('Shared sidebar detects the active catalog route and exposes current navigation semantics',
     str_contains($sharedAuth, '$activeCatalogSection')
-    && str_contains($sharedAuth, '(products|categories|brands|collections|attributes)')
+    && str_contains($sharedAuth, '(products|categories|brands|collections|attributes|product-types)')
     && str_contains($sharedAuth, 'aria-current="page"')
     && str_contains($sharedAuth, 'is-current-group')
     && str_contains($sharedAuth, ' aria-current="location"')
     && str_contains($sharedAuth, ' open')
 );
-$check('Catalog products, categories, brands, collections and attributes share dynamic active sidebar links',
+$check('Catalog products, categories, brands, collections, attributes and product types share dynamic active sidebar links',
     str_contains($sharedAuth, '$catalogLink(\'products\'')
     && str_contains($sharedAuth, '$catalogLink(\'categories\'')
     && str_contains($sharedAuth, '$catalogLink(\'brands\'')
     && str_contains($sharedAuth, '$catalogLink(\'collections\'')
     && str_contains($sharedAuth, '$catalogLink(\'attributes\'')
+    && str_contains($sharedAuth, '$catalogLink(\'product-types\'')
 );
 $check('Collections list adds responsive catalog summary, loading feedback and reduced-motion support',
     str_contains($productCss, '.admin-collections-summary')
@@ -349,8 +351,8 @@ $check('Collections list adds responsive catalog summary, loading feedback and r
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for collections and active navigation changes',
-    str_contains($sharedAuth, '20261108-attributes-index-ux-v1')
-    && str_contains($mainCss, '20261108-attributes-index-ux-v1')
+    str_contains($sharedAuth, '20261108-product-types-index-ux-v1')
+    && str_contains($mainCss, '20261108-product-types-index-ux-v1')
 );
 
 
@@ -395,6 +397,49 @@ $check('Attributes index has responsive capability badges, filters and keyboard 
     && str_contains($productCss, '.admin-attributes-flags')
     && str_contains($productCss, '.admin-attributes-filters')
     && str_contains($productCss, '.admin-attributes-page .admin-products-edit-action:focus-visible')
+);
+
+
+$check('Product type list, create and edit pages have canonical admin routes',
+    str_contains($productRewrites, 'RewriteRule ^nivad-panel/product-types/?$ admin/product-types/index.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/product-types/create/?$ admin/product-types/create.php [END,QSA]')
+    && str_contains($productRewrites, 'RewriteRule ^nivad-panel/product-types/edit/?$ admin/product-types/edit.php [END,QSA]')
+);
+$check('Product types index uses the authenticated shell and existing ProductTypeService',
+    str_contains($productTypesPage, "require_once __DIR__ . '/../includes/auth.php'")
+    && str_contains($productTypesPage, 'new ProductTypeService()')
+    && str_contains($productTypesPage, '$service->findAll()')
+);
+$check('Product types index computes honest totals and filters by search and supported statuses',
+    str_contains($productTypesPage, '$totalProductTypes')
+    && str_contains($productTypesPage, '$statusCounts')
+    && str_contains($productTypesPage, '$statusFilter')
+    && str_contains($productTypesPage, '$item->slug')
+    && str_contains($productTypesPage, 'mb_stripos')
+);
+$check('Product types table exposes model-backed name, slug, description, status, order and edit link',
+    str_contains($productTypesPage, '$item->name')
+    && str_contains($productTypesPage, '$item->slug')
+    && str_contains($productTypesPage, '$item->description')
+    && str_contains($productTypesPage, '$item->status')
+    && str_contains($productTypesPage, '$item->sortOrder')
+    && str_contains($productTypesPage, "url('/admin/product-types/edit?id='")
+);
+$check('Product types index includes a distinct empty state and semantic responsive table',
+    str_contains($productTypesPage, 'admin-products-empty')
+    && str_contains($productTypesPage, 'scope="col"')
+    && str_contains($productTypesPage, 'admin-product-types-table')
+);
+$check('Product types route is included in the shared catalog active-state logic',
+    str_contains($sharedAuth, '(products|categories|brands|collections|attributes|product-types)')
+    && str_contains($sharedAuth, '$catalogLink(\\'product-types\\'')
+    && str_contains($sharedAuth, 'aria-current="page"')
+);
+$check('Product types index has responsive filters, descriptions and visible keyboard focus',
+    str_contains($productCss, '.admin-product-types-summary')
+    && str_contains($productCss, '.admin-product-types-filters')
+    && str_contains($productCss, '.admin-product-types-description')
+    && str_contains($productCss, '.admin-product-types-page .admin-products-edit-action:focus-visible')
 );
 
 echo "\nSummary: {$passed} PASS, {$failed} FAIL\n";
