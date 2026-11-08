@@ -352,8 +352,8 @@ $check('Collections list adds responsive catalog summary, loading feedback and r
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for collections and active navigation changes',
-    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
-    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
 );
 
 
@@ -482,8 +482,8 @@ $check('Specifications index has responsive filters, four summary metrics and vi
     && str_contains($productCss, '.admin-specifications-page .admin-products-edit-action:focus-visible')
 );
 $check('Admin asset cache is refreshed for specifications index and active navigation changes',
-    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
-    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
 );
 
 
@@ -560,8 +560,8 @@ $check('Specification groups page reuses catalog summary, panel, filters, semant
     && str_contains($productCss, '.admin-specification-groups-page')
 );
 $check('Catalog create and specification group pages refresh the shared admin asset cache key',
-    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
-    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
 );
 
 
@@ -629,8 +629,8 @@ $check('Slider index has responsive count filters, table, focus and reduced-moti
     && str_contains($productCss, 'prefers-reduced-motion: reduce')
 );
 $check('Admin asset cache is refreshed for the slider index and navigation changes',
-    str_contains($sharedAuth, '20261108-sliders-index-ux-v1')
-    && str_contains($mainCss, '20261108-sliders-index-ux-v1')
+    str_contains($sharedAuth, '20261108-discovery-ux-v1')
+    && str_contains($mainCss, '20261108-discovery-ux-v1')
 );
 
 
