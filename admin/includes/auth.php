@@ -59,7 +59,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
         }
 
         if (stripos($html, '/admin/assets/css/main.css') === false) {
-            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-sliders-index-ux-v1');
+            $stylesheet = e(url('/admin/assets/css/main.css') . '?v=20261108-discovery-ux-v1');
             $assets .= "\n<link rel=\"stylesheet\" href=\"{$stylesheet}\">";
         }
 
@@ -149,6 +149,7 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
     $requestPath = is_string($requestPath) ? $requestPath : '';
     $activeCatalogSection = null;
     $isSliderPage = preg_match('~/(?:admin|nivad-panel)/sliders(?:/|$)~i', $requestPath) === 1;
+    $isDiscoveryPage = preg_match('~/(?:admin|nivad-panel)/discovery(?:/|$)~i', $requestPath) === 1;
     if (preg_match('~/(?:admin|nivad-panel)/specifications(?:/(groups))?(?:/|$)~i', $requestPath, $specificationsMatch) === 1) {
         $activeCatalogSection = !empty($specificationsMatch[1]) ? 'specification-groups' : 'specifications';
     } elseif (preg_match('~/(?:admin|nivad-panel)/(products|categories|brands|collections|attributes|product-types)(?:/|$)~i', $requestPath, $catalogMatch) === 1) {
@@ -181,11 +182,11 @@ ob_start(static function (string $html) use ($currentAdmin, $canUseGlobalSearch,
                     ' . $catalogLink('specification-groups', '/admin/specifications/groups', 'گروه‌های مشخصات') . '
                 </div>
             </details>
-            <details class="admin-shared-nav-group' . ($isSliderPage ? ' is-current-group' : '') . '"' . ($isSliderPage ? ' open' : '') . '>
-                <summary' . ($isSliderPage ? ' aria-current="location"' : '') . '>ویترین و دیسکاوری</summary>
+            <details class="admin-shared-nav-group' . (($isSliderPage || $isDiscoveryPage) ? ' is-current-group' : '') . '"' . (($isSliderPage || $isDiscoveryPage) ? ' open' : '') . '>
+                <summary' . (($isSliderPage || $isDiscoveryPage) ? ' aria-current="location"' : '') . '>ویترین و دیسکاوری</summary>
                 <div class="admin-shared-submenu">
                     <a href="' . e(url('/admin/sliders')) . '"' . ($isSliderPage ? ' aria-current="page"' : '') . '>اسلایدرها</a>
-                    <a href="' . e(url('/admin/discovery')) . '">دیسکاوری</a>
+                    <a href="' . e(url('/admin/discovery')) . '"' . ($isDiscoveryPage ? ' aria-current="page"' : '') . '>دیسکاوری</a>
                     <a href="' . e(url('/admin/compatibility')) . '">سازگاری</a>
                     <a href="' . e(url('/admin/compatibility/devices')) . '">دستگاه‌های سازگاری</a>
                     <a href="' . e(url('/admin/setups')) . '">ستاپ‌ها</a>
