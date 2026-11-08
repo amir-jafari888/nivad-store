@@ -471,8 +471,8 @@ $check('Specifications index includes an actionable empty state and semantic res
 );
 $check('Specifications and specification-group routes activate the matching catalog navigation links',
     str_contains($sharedAuth, "'specification-groups' : 'specifications'")
-    && str_contains($sharedAuth, "$catalogLink('specifications'")
-    && str_contains($sharedAuth, "$catalogLink('specification-groups'")
+    && str_contains($sharedAuth, "'/admin/specifications'")
+    && str_contains($sharedAuth, "'/admin/specifications/groups'")
     && str_contains($sharedAuth, 'aria-current="page"')
 );
 $check('Specifications index has responsive filters, four summary metrics and visible keyboard focus',
