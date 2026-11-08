@@ -335,7 +335,7 @@ $check('Shared sidebar detects the active catalog route and exposes current navi
     && str_contains($sharedAuth, ' aria-current="location"')
     && str_contains($sharedAuth, ' open')
 );
-$check('Products, categories, brands and collections share dynamic active sidebar links',
+$check('Catalog products, categories, brands, collections and attributes share dynamic active sidebar links',
     str_contains($sharedAuth, '$catalogLink(\'products\'')
     && str_contains($sharedAuth, '$catalogLink(\'categories\'')
     && str_contains($sharedAuth, '$catalogLink(\'brands\'')
