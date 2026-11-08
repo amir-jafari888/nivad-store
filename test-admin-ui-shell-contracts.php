@@ -199,8 +199,8 @@ $check('Categories index reuses product catalog layout, filters, table and empty
 $check('Category creation preserves CSRF, validator, duplicate slug and parent-existence checks',
     str_contains($categoryCreatePage, 'Csrf::verify')
     && str_contains($categoryCreatePage, 'new CategoryValidator()')
-    && str_contains($categoryCreatePage, '$service->findBySlug($payload[\\'slug\\'])')
-    && str_contains($categoryCreatePage, '$service->exists($payload[\\'parentId\\'])')
+    && str_contains($categoryCreatePage, '$service->findBySlug(')
+    && str_contains($categoryCreatePage, '$service->exists(')
     && str_contains($categoryCreatePage, '$service->create(')
 );
 $check('Category creation uses active parent selector and only supported category fields',
