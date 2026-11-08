@@ -56,6 +56,8 @@ $productRewrites = $read('.htaccess');
 $productCss = $read('admin/assets/css/admin-shell-overrides.css');
 $categoriesPage = $read('admin/categories/index.php');
 $categoryCreatePage = $read('admin/categories/create.php');
+$brandsPage = $read('admin/brands/index.php');
+$brandCreatePage = $read('admin/brands/create.php');
 
 
 $check('Admin design token file exists', $tokens !== '');
