@@ -1956,3 +1956,57 @@ html[dir="rtl"], html[dir="rtl"] body { direction: rtl; text-align: start; }
   .admin-specifications-table { min-width:860px; }
 }
 @media (prefers-reduced-motion:reduce) { .admin-specifications-page .admin-specifications-secondary-action { transition:none; } }
+
+
+/* Catalog create forms — shared visual language for attributes, product types and specifications. */
+.admin-catalog-create-page .admin-product-create-content { max-width: 1040px; }
+.admin-catalog-create-page .admin-product-create-heading { margin-block-end: var(--admin-space-2); }
+.admin-catalog-create-page .admin-product-create-section { scroll-margin-top: 24px; }
+.admin-catalog-create-page .admin-product-create-field input,
+.admin-catalog-create-page .admin-product-create-field select,
+.admin-catalog-create-page .admin-product-create-field textarea { transition: border-color var(--admin-transition-fast), box-shadow var(--admin-transition-fast); }
+.admin-catalog-create-page .admin-product-create-field input:hover,
+.admin-catalog-create-page .admin-product-create-field select:hover,
+.admin-catalog-create-page .admin-product-create-field textarea:hover { border-color: color-mix(in srgb, var(--admin-color-primary) 42%, var(--admin-color-border)); }
+.admin-catalog-create-page .admin-product-create-field input:focus-visible,
+.admin-catalog-create-page .admin-product-create-field select:focus-visible,
+.admin-catalog-create-page .admin-product-create-field textarea:focus-visible { outline: 0; border-color: var(--admin-color-primary); box-shadow: var(--admin-focus-ring); }
+.admin-catalog-create-page .admin-product-create-actions { margin-block-start: var(--admin-space-2); }
+.admin-catalog-create-page .admin-product-create-alert { gap: var(--admin-space-2); }
+.admin-specification-groups-page .admin-products-heading-copy .admin-product-create-back { display: inline-flex; margin-block-end: var(--admin-space-2); }
+.admin-specification-groups-page .admin-specification-groups-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.admin-specification-groups-page .admin-specification-groups-create-panel { scroll-margin-top: 24px; }
+.admin-specification-groups-page .admin-specification-group-form { gap: var(--admin-space-3); }
+.admin-specification-groups-page .admin-specification-group-submit { display: flex; justify-content: flex-start; }
+.admin-specification-groups-page .admin-specification-group-submit button,
+.admin-specification-groups-page .admin-specification-group-actions button {
+  min-height: 42px; padding: var(--admin-space-2) var(--admin-space-4);
+  border: 1px solid var(--admin-color-primary); border-radius: var(--admin-radius-md);
+  background: var(--admin-color-primary); color: #fff; font: inherit; font-size: var(--admin-font-size-sm);
+  font-weight: 700; cursor: pointer;
+}
+.admin-specification-groups-page .admin-specification-group-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--admin-space-2); }
+.admin-specification-groups-page .admin-specification-group-actions form { margin: 0; }
+.admin-specification-groups-page .admin-specification-group-actions button { min-height: 36px; padding-inline: var(--admin-space-3); font-size: 12px; }
+.admin-specification-groups-page .admin-specification-group-actions button.is-muted { border-color: var(--admin-color-border); background: var(--admin-color-bg); color: var(--admin-color-text-muted); }
+.admin-specification-groups-page .admin-specification-groups-table td:first-child { display: grid; gap: 2px; }
+.admin-specification-groups-page .admin-specification-groups-table td:first-child small { color: var(--admin-color-text-muted); font-size: 11px; }
+.admin-specification-groups-page .admin-specification-groups-table code { color: var(--admin-color-text-muted); font-size: 12px; }
+.admin-specification-groups-page .admin-specification-group-actions button:focus-visible,
+.admin-specification-groups-page .admin-specification-group-submit button:focus-visible { outline: 2px solid var(--admin-color-primary); outline-offset: 3px; box-shadow: var(--admin-focus-ring); }
+@media (max-width: 1009px) {
+  .admin-specification-groups-page .admin-specification-groups-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .admin-specification-groups-page .admin-specification-groups-summary { grid-template-columns: minmax(0, 1fr); }
+  .admin-specification-groups-page .admin-specification-group-actions { align-items: stretch; }
+  .admin-specification-groups-page .admin-specification-group-actions form,
+  .admin-specification-groups-page .admin-specification-group-actions a { flex: 1 1 auto; }
+  .admin-specification-groups-page .admin-specification-group-actions button,
+  .admin-specification-groups-page .admin-specification-group-actions a { width: 100%; min-height: 42px; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-catalog-create-page .admin-product-create-field input,
+  .admin-catalog-create-page .admin-product-create-field select,
+  .admin-catalog-create-page .admin-product-create-field textarea { transition: none; }
+}
