@@ -49,6 +49,11 @@ final class SpecGroupService
         return $this->repository->findAll();
     }
 
+    public function findAllIncludingDeleted(): array
+    {
+        return $this->repository->findAllIncludingDeleted();
+    }
+
     public function findActive(): array
     {
         return $this->repository->findActive();
